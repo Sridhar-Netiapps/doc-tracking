@@ -1,3 +1,14 @@
+
+
+:root {
+    --bs-primary: red;
+}
+
+.btn-primary{
+    background:var(--bs-primary);
+    border: var(--bs-primary);
+}
+
 .login{
     background:#056262;
     height: 100vh;

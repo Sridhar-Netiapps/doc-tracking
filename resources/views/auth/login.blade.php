@@ -42,9 +42,6 @@
                                     @enderror
                                 </div>
                             </div>
-
-
-
                             <div class="mb-0">
                                 <div class="">
                                     <button type="submit" class="btn btn-primary">
