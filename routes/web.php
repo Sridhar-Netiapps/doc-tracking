@@ -21,3 +21,8 @@ Route::delete('process_status/{id}', [ProcessStatusController::class, 'destroy']
 //  Route::post('/ProcessStatus/store', function () 
 //  {
 // Route::get('validate_gst', [ProcessStatusController::class,'validate_gst'])->name('validate_gst');
+Route::resource('roles', RoleController::class);
+Route::resource('permissions', PermissionController::class);
+
+Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
+Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
