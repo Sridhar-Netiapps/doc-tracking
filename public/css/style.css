@@ -1,7 +1,8 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
 :root {
-    --bs-primary: red;
+    --bs-primary: #FEB834;
 }
 
 .btn-primary{
@@ -9,11 +10,19 @@
     border: var(--bs-primary);
 }
 
+body{
+    background: #E6FDF7;
+    font-family: "Sora", sans-serif;
+    font-optical-sizing: auto;
+}
+
 .login{
-    background:#056262;
+    background: url("/images/login-bg.png")  #056262;
     height: 100vh;
     display: flex;
     justify-content: center;
+    background-repeat: no-repeat;
+    background-position: -60px center;
     align-items: center;
 }
 .login .logo{
@@ -28,4 +37,61 @@
     background: #ffffff;
     padding: 40px;
     border-radius: 20px;
+}
+
+.loginContent h2{
+    font-size: 44px;
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 60px;
+}
+
+.loginContent .logoIcon{
+    margin-bottom: 20px;
+}
+
+.headerCards .card{
+    margin-bottom: 20px;
+    border: none;
+}
+.headerCards .card p{
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+a{
+    text-decoration: none;
+    color: #229e82;
+    border-bottom: 1px solid #229e82;
+    line-height: 10px;
+}
+.headerCards .card img{
+    margin-bottom: 10px;
+}
+
+.headerCards .card h3{
+    margin: 0px;
+    padding: 0px;
+    color: #229e82;
+    font-weight: 600;
+}
+
+h2{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.dashboardCards .card{
+    min-height: 360px;
+}
+
+.form-select{
+    font-size: 14px;
+}
+
+.bg-new{
+    background: #ececec;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }

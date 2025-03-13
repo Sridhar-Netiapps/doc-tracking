@@ -21,12 +21,19 @@
             <div class="login">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-8 logo">
-                            <img src="/images/logo.svg" />
+                        <div class="col-8">
+
                         </div>
                     </div>
-                    <div class="row justify-content-center">
-
+                    <div class="row justify-content-between">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5">
+                            <div class="loginContent">
+                                <img class="logoIcon" src="/images/logoIcon.svg"/>
+                                <h2>DOCUMENT TRACKING SYSTEM</h2>
+                                <div> <img width="300" src="/images/logo.svg" /> </div>
+                            </div>
+                        </div>
                         <div class="col-md-4">
                             <div class="login-bg">
                                 <form method="POST" action="{{ route('login') }}">
@@ -65,11 +72,6 @@
                                                 {{ __('Login') }}
                                             </button>
 
-                                            {{--                                        @if (Route::has('password.request'))--}}
-                                            {{--                                            <a class="btn btn-link" href="{{ route('password.request') }}">--}}
-                                            {{--                                                {{ __('Forgot Your Password?') }}--}}
-                                            {{--                                            </a>--}}
-                                            {{--                                        @endif--}}
                                         </div>
                                     </div>
                                 </form>
@@ -81,4 +83,3 @@
         </div>
     </body>
 </html>
-    
