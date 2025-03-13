@@ -1,12 +1,5 @@
 /* General Body Styling */
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f5f7;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-}
+
 
 /* Navbar */
 .navbar {

@@ -7,8 +7,13 @@ use App\Http\Controllers\ProcessStatusController;
 
  Route::get('/', function () {
 //     return 123;
-      return view('welcome');
+      return view('home');
  });
+
+Route::get('/sample', function () {
+//     return 123;
+    return view('sample.index');
+});
 
 // ProcessStatus resource routes for the ProcessStatusController
 Route::get('process_status', [ProcessStatusController::class,'index'])->name('process_status.index');
