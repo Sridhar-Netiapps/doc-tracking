@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProcessStatusController;
-
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 
 // Route::resource('process_status', ProcessStatusController::class);
 
- Route::get('/', function () {
+ Route::get('/home', function () {
 //     return 123;
       return view('home');
  });
