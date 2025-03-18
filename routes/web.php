@@ -14,7 +14,7 @@ Route::get('/sample', function () {
 //     return 123;
     return view('sample.index');
 });
-
+Auth::routes();
 // ProcessStatus resource routes for the ProcessStatusController
 Route::get('process_status', [ProcessStatusController::class,'index'])->name('process_status.index');
 Route::get('process_status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
