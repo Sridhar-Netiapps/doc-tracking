@@ -87,6 +87,12 @@ a{
     margin-bottom: 10px;
 }
 
+.nav-tabs .nav-link.active{
+    border-color: #fff !important;
+    padding: 10px 34px;
+    font-size: 15px;
+}
+
 .headerCards .card h3{
     margin: 0px;
     padding: 0px;
