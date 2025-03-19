@@ -13,6 +13,7 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
@@ -72,11 +73,22 @@
                 </div>
             </div>
         </nav>
-
         <main class="">
-            @include('layouts.sidemenu')
-            @yield('content')
+            <div class="row h-100 px-0">
+                <div class="col-2 bg-white h-100 px-0">
+                    <div class="leftMenu">
+                        @include('layouts.sidemenu')
+                    </div>
+
+                </div>
+                <div class="col-10 px-0">
+                    @yield('content')
+                </div>
+            </div>
+
+
         </main>
+
     </div>
 </body>
 </html>

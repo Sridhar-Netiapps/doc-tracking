@@ -1,9 +1,13 @@
-<div class="col-2">
-    <div class="leftPanel">
-        <div class="treeList">
+
+        <div class="treeList h-100">
             <ul>
-                <li><a href="{{route('process_status.index')}}"><span class="material-symbols-outlined">folder</span> Groups <span>30</span></a></li>
+                <li class="mb-auto"><a href="/">Back to Dashboard</a></li>
+                <li><a href="">Group</a></li>
+                <li><a href="/">Users</a></li>
+                <li><a href="/">Roles</a></li>
+                <li><a href="/">Permission</a></li>
+                <li class="mt-auto"><a href="/">Settings</a></li>
             </ul>
         </div>
-    </div>
-</div>
+
+

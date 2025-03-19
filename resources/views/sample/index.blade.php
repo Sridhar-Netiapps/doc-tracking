@@ -32,7 +32,7 @@
         </ul>
         <div class="tab-content bg-white" id="myTabContent">
             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                     <tr>
                         <th scope="col"><input type="checkbox" /> </th>
