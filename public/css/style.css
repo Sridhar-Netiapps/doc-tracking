@@ -165,3 +165,18 @@ h2{
 .rightPanel .card{
     border: none;
 }
+
+.rounded-new{
+    background: #efefef;
+    border-radius: 40px;
+    padding:2px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rounded-new img{
+    width: 16px;
+}

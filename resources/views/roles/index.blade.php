@@ -23,8 +23,10 @@
                     <p>34 Total Users</p>
 
                     <div class="d-flex justify-content-between">
-                        <a href="/">Delete Users</a>
-                        <img src="/images/material-symbols--edit.svg" />
+                        <div><a href="/">Delete Users</a></div>
+                        <div class="rounded-new">
+                            <img src="/images/material-symbols--edit.svg" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,8 +38,10 @@
                     <p>34 Total Users</p>
 
                     <div class="d-flex justify-content-between">
-                        <a href="/">Delete Users</a>
-                        <img src="/images/material-symbols--edit.svg" />
+                        <div><a href="/">Delete Users</a></div>
+                        <div class="rounded-new">
+                            <img src="/images/material-symbols--edit.svg" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,21 +53,10 @@
                     <p>34 Total Users</p>
 
                     <div class="d-flex justify-content-between">
-                        <a href="/">Delete Users</a>
-                        <img src="/images/material-symbols--edit.svg" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <h2>Role Name</h2>
-                    <p>34 Total Users</p>
-
-                    <div class="d-flex justify-content-between">
-                        <a href="/">Delete Users</a>
-                        <img src="/images/material-symbols--edit.svg" />
+                        <div><a href="/">Delete Users</a></div>
+                        <div class="rounded-new">
+                            <img src="/images/material-symbols--edit.svg" />
+                        </div>
                     </div>
                 </div>
             </div>
