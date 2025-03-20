@@ -1,21 +1,21 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
 @section('content')
-<link href="{{ asset('css/styledoc.css') }}" rel="stylesheet">
-<div class="container mt-5">
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-        Process Status List
+<div class="rightPanel">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h3>Process Status</h3>
+        <a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a>
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-card">
-        <!-- Add New Status Button -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">Statuses</h4>
-            <a href="{{ route('process_status.create') }}" class="btn ujjivan-green">Create New Status</a>
-        </div>
 
-        <!-- Status Table -->
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+
+    <div class="row">
         <div class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
                 <thead>
