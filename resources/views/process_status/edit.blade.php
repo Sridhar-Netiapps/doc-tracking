@@ -43,7 +43,7 @@
                 </div>
                 
                 <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn ujjivan-green">Update</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                     <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
