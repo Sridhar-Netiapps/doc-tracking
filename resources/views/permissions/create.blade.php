@@ -1,9 +1,22 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="rightPanel">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h1>Create New Permission</h1>
+<div class="rightPanel h-100">
+
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Create New Permission</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
+
+        </div>
     </div>
 
     <!-- Validation errors -->
@@ -17,17 +30,24 @@
         </div>
     @endif
 
-    <!-- Create Permission Form -->
-    <form action="{{ route('permissions.store') }}" method="POST" id="permissionCreateForm">
-        @csrf
+    <div class="row h-100 justify-content-center align-items-center align-content-lg-stretch">
+        <div class="col-6">
+            <div class="form-card">
 
-        <div class="form-group">
-            <label for="name">Permission Name</label>
-            <input type="text" name="name" class="form-control" id="name" value="{{ old('name') }}" required>
+                <form action="{{ route('permissions.store') }}" method="POST" id="permissionCreateForm">
+                    @csrf
+                    <label class="form-label">Create Permission</label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="name" placeholder="Type Permission Name" class="form-control" id="name" value="{{ old('name') }}" required>
+                        <button class="btn btn-primary" type="submit" id="button-addon1">Create Permission</button>
+                    </div>
+
+                </form>
+            </div>
+            <p class="small text-center opacity-50 text-muted">Dummy Content Here's a template for a Permission Form. Feel free to customize it according to your needs</p>
         </div>
+    </div>
 
-        <button type="submit" class="btn btn-success">Create Permission</button>
-    </form>
 </div>
 
 <script>
