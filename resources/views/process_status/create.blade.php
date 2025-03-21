@@ -67,14 +67,13 @@
                     </div>
 
 
-
-
                     <div class="d-flex">
                         <button type="submit" class="btn btn-primary me-3">Save</button>
                         <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 
