@@ -75,7 +75,7 @@
         </nav>
         <main class="page-container">
             <div class="row h-100 px-0">
-                <div class="col-2 bg-white h-100 px-0 position-fixed">
+                <div class="col-2 bg-tran-white h-100 px-0 position-fixed">
                     <div class="leftMenu">
                         @include('layouts.sidemenu')
                     </div>
