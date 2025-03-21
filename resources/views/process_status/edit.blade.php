@@ -1,4 +1,55 @@
-<!DOCTYPE html>
+@extends('layouts.admin')
+
+@section('content')
+<div class="rightPanel">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h3>Process Status</h3>
+        <a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a>
+    </div>
+
+
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+    <form action="{{ route('process_status.update', $status->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" value="{{ $status->name }}" required placeholder="Enter status name">
+                </div>
+
+                <div class="mb-4">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" class="form-control" required>
+                        <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
+                        <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="created_by" class="form-label">Created By</label>
+                    <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
+                </div>
+
+                <div class="mb-4">
+                    <label for="updated_by" class="form-label">Updated By</label>
+                    <select name="updated_by" class="form-control" required>
+                        <option value="1" {{ $status->updated_by == 'Person 1' ? 'selected' : '' }}>Person 1</option>
+                        <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn ujjivan-green">Update</button>
+                    <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Edit Process Status</title>
@@ -7,11 +58,11 @@
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <style>
         body {
-            background-color: #f8f9fa; /* Light background for a clean look */
+            background-color: #f8f9fa; 
         }
 
         .dashboard-header {
-            background-color: #2E8B57; /* Ujjivan green color */
+            background-color: #2E8B57; 
             color: white;
             padding: 20px;
             text-align: center;
@@ -43,24 +94,22 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- Header -->
+        
         <div class="dashboard-header">
             Edit Process Status
         </div>
-
-        <!-- Form Card -->
-        <div class="dashboard-card">
+ -->
+  
+<!-- <div class="dashboard-card">
             <form id= "doc"action="{{ route('process_status.update', $status->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
-                <!-- Name Input -->
                 <div class="mb-4">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" name="name" class="form-control" value="{{ $status->name }}" required placeholder="Enter status name">
                 </div>
 
-                <!-- Status Dropdown -->
                 <div class="mb-4">
                     <label for="status" class="form-label">Status</label>
                     <select name="status" class="form-control" required>
@@ -69,13 +118,11 @@
                     </select>
                 </div>
                 
-                <!-- Created By (Read-Only) -->
                 <div class="mb-4">
                     <label for="created_by" class="form-label">Created By</label>
                     <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
                 </div>
 
-                <!-- Updated By Dropdown -->
                 <div class="mb-4">
                     <label for="updated_by" class="form-label">Updated By</label>
                     <select name="updated_by" class="form-control" required>
@@ -83,8 +130,7 @@
                         <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
                     </select>
                 </div>
-
-                <!-- Action Buttons -->
+                
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn ujjivan-green">Update</button>
                     <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
@@ -95,4 +141,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> -->
