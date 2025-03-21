@@ -231,7 +231,7 @@ h2{
     padding-top: 66px;
 }
 
-.bg-tran-white{
+.bg-tran-white, .bg-new{
     background: rgba(255, 255, 255, 0.41);
 }
 
@@ -243,4 +243,33 @@ h2{
     padding: 10px;
     font-size: 13px;
 
+}
+.treeList ul{
+    padding-left: 1rem;
+}
+
+.treeList ul li:hover{
+    background: #ffffff;
+    border-radius: 30px;
+}
+
+.treeList ul li.active{
+    background: #ffffff;
+    border-radius: 30px;
+}
+
+.treeList ul li img{
+    transform: translateY(-3px);
+}
+
+.rotateAni img{
+    animation: rotateImage 4s linear infinite;
+}
+@keyframes rotateImage {
+    0% {
+        transform: rotate(0deg); /* Start at 0 degrees */
+    }
+    100% {
+        transform: rotate(360deg); /* Rotate to 360 degrees */
+    }
 }
