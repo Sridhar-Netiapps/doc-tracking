@@ -27,10 +27,24 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('process_status/{id}', [ProcessStatusController::class, 'destroy'])->name('process_status.destroy');
     //  Route::post('/ProcessStatus/store', function ()
     //  {
-    // Route::get('validate_gst', [ProcessStatusController::class,'validate_gst'])->name('validate_gst');
+    // Route::post('process_status',RoleController::class);
+    
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
-
+    Route::resource('users', UserController::class);
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
+
+
+    
+        // Route::get('/', [UserController::class, 'index'])->name('index');
+        // Route::get('/create', [UserController::class, 'create'])->name('create');
+        // Route::post('/', [UserController::class, 'store'])->name('store');
+        // Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        // Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        // Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        // Route::post('/{user}/assign-role', [UserController::class, 'assignRole'])->name('assignRole');
+        // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
+  
+    
 });

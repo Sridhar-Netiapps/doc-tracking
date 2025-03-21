@@ -3,26 +3,15 @@
 @section('content')
 <div class="rightPanel">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <h3>Process Status</h3>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Library</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-            </nav>
-        </div>
+        <h3>Process Status</h3>
         <a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a>
     </div>
-
 
     @if (session('success'))
         <div class="alert alert-success mt-3">
             {{ session('success') }}
         </div>
     @endif
-
 
     <div class="row">
         <div class="table-responsive">
