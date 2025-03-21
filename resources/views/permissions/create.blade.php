@@ -30,7 +30,7 @@
         </div>
     @endif
 
-    <div class="row h-100 justify-content-center align-items-center align-content-lg-stretch">
+    <div class="row">
         <div class="col-6">
             <div class="form-card">
 

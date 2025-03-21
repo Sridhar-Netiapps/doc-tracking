@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="rightPanel">
+    <div class="rightPanel h-100">
     <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
         <div>
             <div class="d-flex justify-content-center align-items-center">
@@ -19,8 +19,8 @@
     </div>
 
 
-<div class="row">
-    <div class="col-8">
+<div class="row h-100">
+    <div class="col-6">
         <div class="form-card">
             <h2 class="mb-4">Create New Process Status</h2>
             <div class="form-fields">

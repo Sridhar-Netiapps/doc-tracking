@@ -32,7 +32,7 @@
     @endif
 
 
-    <div class="row h-100 justify-content-center align-items-center align-content-lg-stretch">
+    <div class="row h-100 align-items-start align-content-lg-stretch">
         <div class="col-6">
             <div class="form-card">
                 <form action="{{ route('roles.store') }}" method="POST">
