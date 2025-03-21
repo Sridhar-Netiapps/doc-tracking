@@ -3,7 +3,17 @@
 @section('content')
 <div class="rightPanel">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <h3>Process Status</h3>
+        <div>
+            <h3>Process Status</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Library</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+            </nav>
+        </div>
+
         <a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a>
     </div>
 
@@ -13,40 +23,45 @@
             {{ session('success') }}
         </div>
     @endif
-    <form action="{{ route('process_status.update', $status->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="mb-4">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" name="name" class="form-control" value="{{ $status->name }}" required placeholder="Enter status name">
-                </div>
 
-                <div class="mb-4">
-                    <label for="status" class="form-label">Status</label>
-                    <select name="status" class="form-control" required>
-                        <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
-                    </select>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="created_by" class="form-label">Created By</label>
-                    <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
-                </div>
+    <div class="card-from">
+        <form action="{{ route('process_status.update', $status->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="mb-4">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" value="{{ $status->name }}" required placeholder="Enter status name">
+            </div>
 
-                <div class="mb-4">
-                    <label for="updated_by" class="form-label">Updated By</label>
-                    <select name="updated_by" class="form-control" required>
-                        <option value="1" {{ $status->updated_by == 'Person 1' ? 'selected' : '' }}>Person 1</option>
-                        <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
-                    </select>
-                </div>
-                
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                    <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
+            <div class="mb-4">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" class="form-control" required>
+                    <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="created_by" class="form-label">Created By</label>
+                <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
+            </div>
+
+            <div class="mb-4">
+                <label for="updated_by" class="form-label">Updated By</label>
+                <select name="updated_by" class="form-control" required>
+                    <option value="1" {{ $status->updated_by == 'Person 1' ? 'selected' : '' }}>Person 1</option>
+                    <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+
         </div>
     </div>
 <!-- <!DOCTYPE html>
@@ -58,11 +73,11 @@
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <style>
         body {
-            background-color: #f8f9fa; 
+            background-color: #f8f9fa;
         }
 
         .dashboard-header {
-            background-color: #2E8B57; 
+            background-color: #2E8B57;
             color: white;
             padding: 20px;
             text-align: center;
@@ -94,12 +109,12 @@
 </head>
 <body>
     <div class="container mt-5">
-        
+
         <div class="dashboard-header">
             Edit Process Status
         </div>
  -->
-  
+
 <!-- <div class="dashboard-card">
             <form id= "doc"action="{{ route('process_status.update', $status->id) }}" method="POST">
                 @csrf
@@ -117,7 +132,7 @@
                         <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="created_by" class="form-label">Created By</label>
                     <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
@@ -130,7 +145,7 @@
                         <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
                     </select>
                 </div>
-                
+
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn ujjivan-green">Update</button>
                     <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>

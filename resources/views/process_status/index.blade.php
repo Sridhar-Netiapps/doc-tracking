@@ -3,7 +3,16 @@
 @section('content')
 <div class="rightPanel">
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <h3>Process Status</h3>
+        <div>
+            <h3>Process Status</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Library</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+            </nav>
+        </div>
         <a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a>
     </div>
 
