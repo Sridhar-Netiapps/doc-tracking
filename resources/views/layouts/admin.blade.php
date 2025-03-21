@@ -36,6 +36,10 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        <a class="btn btn-primary logout" href=""> {{ __('Logout') }} </a>
+                        <form id="logout-form" action="" method="POST" class="d-none">
+                            @csrf
+                        </form>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -55,7 +59,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {{-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href=""
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -65,18 +69,23 @@
                                     <form id="logout-form" action="" method="POST" class="d-none">
                                         @csrf
                                     </form>
-                                </div>
+                                </div> --}}
                             </li>
                         @endguest
                     </ul>
                 </div>
             </div>
         </nav>
-
         <main class="">
             @include('layouts.sidemenu')
             @yield('content')
         </main>
     </div>
 </body>
+<script>
+    function formSubmit()
+    {
+        document.getElementById("logout-form").submit();
+    }
+</script>
 </html>
