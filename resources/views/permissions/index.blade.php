@@ -1,10 +1,28 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid pageContainer">
-    <h1>Permissions</h1>
+<div class="rightPanel">
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Permission</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
 
-    <a href="{{ route('permissions.create') }}" class="btn btn-primary">Create Permission</a>
+        </div>
+        <div>
+            <a href="{{ route('permissions.create') }}" class="btn btn-primary">Create Permission</a>
+        </div>
+    </div>
+
+
+
 
     @if (session('success'))
         <div class="alert alert-success mt-3">
@@ -12,28 +30,36 @@
         </div>
     @endif
 
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($permissions as $permission)
-                <tr>
-                    <td>{{ $permission->name }}</td>
-                    <td>
-                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-8">
+            <div class="form-card">
+                <table class="table table-bordered mt-3">
+                    <thead>
+                    <tr>
+                        <th width="80%">Name</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($permissions as $permission)
+                        <tr>
+                            <td>{{ $permission->name }}</td>
+                            <td>
+                                <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 @endsection
