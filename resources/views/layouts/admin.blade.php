@@ -7,19 +7,20 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Doc Tracking') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container">
                 <a class="navbar-brand border-0" href="{{ url('/') }}">
                     <img src="/images/logo1.svg" />
@@ -76,10 +77,22 @@
                 </div>
             </div>
         </nav>
-        <main class="">
-            @include('layouts.sidemenu')
-            @yield('content')
+        <main class="page-container">
+            <div class="row h-100 px-0">
+                <div class="col-2 bg-tran-white h-100 px-0 position-fixed">
+                    <div class="leftMenu">
+                        @include('layouts.sidemenu')
+                    </div>
+
+                </div>
+                <div class="col-10 px-0 pushLeft">
+                    @yield('content')
+                </div>
+            </div>
+
+
         </main>
+
     </div>
 </body>
 <script>

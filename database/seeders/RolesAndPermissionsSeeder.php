@@ -39,12 +39,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $role->givePermissionTo('pair-device');
         $role->givePermissionTo('unpair-device');
 
-        $users = User::factory(10)->create();
+        $users = User::factory(50)->create();
 
         foreach ($users as $index => $user) {
-            if ($index === 0) {
+            if ($index <= 5) {
                 $user->assignRole('master'); // First user gets Master
-            } elseif ($index <= 3) {
+            } elseif ($index <= 20) {
                 $user->assignRole('super_admin'); // Next 3 users get Super Admin
             } else {
                 $user->assignRole('admin'); // Remaining users get Admin

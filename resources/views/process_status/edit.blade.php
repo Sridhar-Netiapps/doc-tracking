@@ -1,98 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Process Status</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="{{ asset('js/validation.js') }}"></script>
-    <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
-    <style>
-        body {
-            background-color: #f8f9fa; /* Light background for a clean look */
-        }
+@extends('layouts.admin')
 
-        .dashboard-header {
-            background-color: #2E8B57; /* Ujjivan green color */
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+@section('content')
+<div class="rightPanel">
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Edit Process Status</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
 
-        .dashboard-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .ujjivan-green {
-            background-color: #2E8B57;
-            color: white;
-            border: none;
-        }
-
-        .ujjivan-green:hover {
-            background-color: #276a4b;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <!-- Header -->
-        <div class="dashboard-header">
-            Edit Process Status
-        </div>
-
-        <!-- Form Card -->
-        <div class="dashboard-card">
-            <form id= "doc"action="{{ route('process_status.update', $status->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <!-- Name Input -->
-                <div class="mb-4">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" name="name" class="form-control" value="{{ $status->name }}" required placeholder="Enter status name">
-                </div>
-
-                <!-- Status Dropdown -->
-                <div class="mb-4">
-                    <label for="status" class="form-label">Status</label>
-                    <select name="status" class="form-control" required>
-                        <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
-                    </select>
-                </div>
-                
-                <!-- Created By (Read-Only) -->
-                <div class="mb-4">
-                    <label for="created_by" class="form-label">Created By</label>
-                    <input type="text" class="form-control" value="{{ $status->created_by }}" readonly>
-                </div>
-
-                <!-- Updated By Dropdown -->
-                <div class="mb-4">
-                    <label for="updated_by" class="form-label">Updated By</label>
-                    <select name="updated_by" class="form-control" required>
-                        <option value="1" {{ $status->updated_by == 'Person 1' ? 'selected' : '' }}>Person 1</option>
-                        <option value="2" {{ $status->updated_by == 'Person 2' ? 'selected' : '' }}>Person 2</option>
-                    </select>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn ujjivan-green">Update</button>
-                    <a href="{{ route('process_status.index') }}" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+
+
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="row">
+        <div class="col-6">
+            <div class="form-card">
+                <form action="{{ route('process_status.update', $status->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-4">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" id="name" required pattern="^[a-zA-Z\s]+$" maxlength="55" value="{{ old('name', $status->name) }}">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label for="status" class="form-label">Status</label>
+                                <select name="status" class="form-select" required>
+                                    <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
+                                    <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label for="updated_by" class="form-label">Updated By</label>
+                                <select name="updated_by" class="form-select" required>
+                                    <option value="1" {{ $status->updated_by == 1 ? 'selected' : '' }}>Person 1</option>
+                                    <option value="2" {{ $status->updated_by == 2 ? 'selected' : '' }}>Person 2</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="d-flex ">
+                        <!-- Save Button -->
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <!-- Cancel Button to Redirect to Process Status Index -->
+                        <a href="{{ route('process_status.index') }}" class="btn btn-secondary ms-3">Cancel</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+@endsection

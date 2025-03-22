@@ -1,13 +1,23 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
+body{
+    overflow-x: hidden;
+}
+
 :root {
-    --bs-primary: #FEB834;
+    --bs-primary: #f78f35;
+    --bs-btn-bg: #f78f35;
 }
 
 .btn-primary{
     background:var(--bs-primary);
     border: var(--bs-primary);
+}
+
+.btn-primary:hover{
+    background: #fcb53e;
+    border-color: #fcb53e;
 }
 
 body{
@@ -47,7 +57,7 @@ body{
 }
 
 .table{
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 0px !important;
 }
 
@@ -81,7 +91,6 @@ a{
     text-decoration: none;
     color: #229e82;
     border-bottom: 1px solid #229e82;
-    line-height: 10px;
 }
 .headerCards .card img{
     margin-bottom: 10px;
@@ -122,4 +131,145 @@ h2{
 
 .bg-new h4{
     font-size: 16px;
+}
+
+.leftMenu{
+    height: 90vh;
+    padding: 10px;
+}
+
+.leftMenu ul{
+    list-style: none;
+    font-size: 14px;
+}
+
+.leftMenu ul li{
+    padding: 10px 15px;
+}
+
+.leftMenu ul li a{
+    border: none;
+    color: #000000;
+}
+
+.leftMenu ul li i{
+    color: #229e82;
+    padding-right: 10px;
+
+}
+
+.rightPanel{
+    padding: 20px;
+}
+
+.pushLeft{
+    margin-left: 17vw;
+}
+
+.form-control:focus{
+    border-color: #e6fdf7;
+    box-shadow: 0 0 0 0.25rem rgb(230 253 247 / 50%);
+}
+.form-select:focus{
+    border-color: #e6fdf7;
+    box-shadow: 0 0 0 0.25rem rgb(230 253 247 / 50%);
+}
+
+
+.breadcrumb{
+    font-size: 13px;
+}
+
+.rightPanel h3{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.rightPanel ol{
+    margin-bottom: 0px;
+}
+
+.treeList ul{
+   display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.rightPanel .card{
+    border: none;
+    box-shadow: 0px 3px 4px 0px rgba(0,0,0,.03);
+    background-color: #ffffff;
+    border-radius: .75rem;
+    border: 1px solid #f1f1f4;
+}
+
+.rounded-new{
+    background: #efefef;
+    border-radius: 40px;
+    padding:2px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rounded-new img{
+    width: 16px;
+}
+
+.form-card{
+    background: #ffffff;
+    border-radius: 5px;
+    padding: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.page-container{
+    padding-top: 66px;
+}
+
+.bg-tran-white, .bg-new{
+    background: rgba(255, 255, 255, 0.41);
+}
+
+.btn{
+    font-size: 13px;
+}
+
+.alert{
+    padding: 10px;
+    font-size: 13px;
+
+}
+.treeList ul{
+    padding-left: 1rem;
+}
+
+.treeList ul li:hover{
+    background: #ffffff;
+    border-radius: 30px;
+}
+
+.treeList ul li.active{
+    background: #ffffff;
+    border-radius: 30px;
+}
+
+.treeList ul li img{
+    transform: translateY(-3px);
+}
+
+.rotateAni img{
+    animation: rotateImage 4s linear infinite;
+}
+@keyframes rotateImage {
+    0% {
+        transform: rotate(0deg); /* Start at 0 degrees */
+    }
+    100% {
+        transform: rotate(360deg); /* Rotate to 360 degrees */
+    }
 }

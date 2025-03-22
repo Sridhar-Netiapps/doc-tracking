@@ -28,6 +28,7 @@
                             <div class="icon"><img src="/images/icon-1.svg" /></div>
                             <p class="card-text">Total Submitted</p>
                             <h3>12,393</h3>
+
                         </div>
                     </div>
                 </div>
