@@ -15,6 +15,7 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
 
 </head>
 <body>
@@ -50,6 +51,16 @@
                                 </li>
                             @endif
                         @else
+
+                            <div class="dropdown">
+                                <a class="nav-item dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item">{{ __('Logout') }}</a></li>
+                                </ul>
+                            </div>
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
