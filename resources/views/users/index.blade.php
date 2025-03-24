@@ -22,7 +22,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Roles</th>
-                        <th>Permissions</th>
+                        <!-- <th>Permissions</th> --> 
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -37,11 +37,11 @@
                                     <span class="badge bg-info">{{ $role->name }}</span>
                                 @endforeach
                             </td>
-                            <td>
+                            <!-- <td>
                                 @foreach ($user->permissions as $permission)
                                     <span class="badge bg-primary">{{ $permission->name }}</span>
                                 @endforeach
-                            </td>
+                            </td> -->
                             <td>
                                 <div class="btn-actions">
                                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -54,10 +54,10 @@
                                     </form>
                                     
                                     <!-- Assign Role -->
-                                    <a href="{{ route('users.assignRole', $user->id) }}" class="btn btn-warning btn-sm">Assign Role</a>
+                                    <!-- <a href="{{ route('users.assignRole', $user->id) }}" class="btn btn-warning btn-sm">Assign Role</a> -->
                                     
                                     <!-- Assign Permission -->
-                                    <a href="{{ route('users.assignPermission', $user->id) }}" class="btn btn-success btn-sm">Assign Permission</a>
+                                    <!-- <a href="{{ route('users.assignPermission', $user->id) }}" class="btn btn-success btn-sm">Assign Permission</a> -->
                                 </div>
                             </td>
                         </tr>

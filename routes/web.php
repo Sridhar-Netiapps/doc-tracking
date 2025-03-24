@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProcessStatusController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserController;
 
 // Route::resource('process_status', ProcessStatusController::class);
 
@@ -12,12 +13,12 @@ use App\Http\Controllers\PermissionController;
  });
 
 Route::get('/sample', function () {
-//     return 123;
+
     return view('sample.index');
 });
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    // ProcessStatus resource routes for the ProcessStatusController
+    
     Route::get('process_status', [ProcessStatusController::class,'index'])->name('process_status.index');
     Route::get('process_status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
     Route::post('process_status/store', [ProcessStatusController::class, 'store'])->name('process_status.store');
@@ -46,5 +47,5 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('/{user}/assign-role', [UserController::class, 'assignRole'])->name('assignRole');
         // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
   
-    
+
 });

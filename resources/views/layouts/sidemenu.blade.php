@@ -3,7 +3,7 @@
             <ul>
                 <li class="mb-auto"><a href="/"><img src="/images/material-symbols-light--dashboard-outline-rounded.svg" /> Back to Dashboard</a></li>
                 <li><a href="/"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Group</a></li>
-                <li><a href="/"><img src="/images/material-symbols-light--group-add.svg"/> Users</a></li>
+                <li><a href="{{ route('users.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Users</a></li>
                 <li><a href="{{ route('roles.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Roles</a></li>
                 <li><a href="{{ route('process_status.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Process Status</a></li>
                 <li><a href="{{ route('permissions.index') }}"><img src="/images/material-symbols-light--lock-person-outline-rounded.svg"/> Permission</a></li>
