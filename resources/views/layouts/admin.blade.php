@@ -15,7 +15,9 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
+
+
 
 </head>
 <body>
@@ -37,7 +39,7 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
-                        <a class="btn btn-primary logout" href=""> {{ __('Logout') }} </a>
+
                         <form id="logout-form" action="" method="POST" class="d-none">
                             @csrf
                         </form>
@@ -55,23 +57,16 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+
+                            <div class="dropdown">
+                                <a class="nav-item dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ Auth::user()->name }}
                                 </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item">{{ __('Logout') }}</a></li>
+                                </ul>
+                            </div>
 
-                                {{-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href=""
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div> --}}
-                            </li>
                         @endguest
                     </ul>
                 </div>
