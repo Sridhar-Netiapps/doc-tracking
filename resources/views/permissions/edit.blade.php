@@ -2,8 +2,21 @@
 
 @section('content')
 <div class="rightPanel">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h1>Edit Permission</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Edit Permission</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
+
+        </div>
     </div>
 
     <!-- Validation errors -->
@@ -17,17 +30,30 @@
         </div>
     @endif
 
-    <!-- Edit Permission Form -->
-    <form action="{{ route('permissions.update', $permission->id) }}" method="POST" id="permissionEditForm">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="name">Permission Name</label>
-            <input type="text" name="name" class="form-control" value="{{ $permission->name }}" id="name" required>
+    <div class="row">
+        <div class="col-6">
+            <div class="form-card">
+                <form action="{{ route('permissions.update', $permission->id) }}" method="POST" id="permissionEditForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="input-group">
+
+                    <label for="name" class="form-label">Permission Name</label>
+                        <div class="input-group mb-3">
+                            <input type="text" name="name" class="form-control" value="{{ $permission->name }}" id="name" required>
+                            <button type="submit" class="btn btn-primary">Update Permission</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <p class="small text-center opacity-50 text-muted">Dummy Content Here's a template for a Permission Form. Feel free to customize it according to your needs</p>
+
         </div>
-        
-        <button type="submit" class="btn btn-success">Update Permission</button>
-    </form>
+    </div>
+
 </div>
 
 <script>

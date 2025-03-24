@@ -2,10 +2,25 @@
 
 @section('content')
 <div class="rightPanel">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h3>Roles</h3>
-        <a href="{{ route('roles.create') }}" class="btn btn-primary">Create Role</a>
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Role</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div>
+            <a href="{{ route('roles.create') }}" class="btn btn-primary">Create Role</a>
+        </div>
     </div>
+
+
 
 
     @if (session('success'))
@@ -15,8 +30,8 @@
     @endif
 
 
-    <div class="row">
-        <div class="col-3">
+    <div class="row flex-column">
+        <div class="col-3 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h2>Role Name</h2>
@@ -31,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-3 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h2>Role Name</h2>
@@ -46,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-3 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h2>Role Name</h2>

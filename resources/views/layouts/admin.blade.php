@@ -20,7 +20,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container">
                 <a class="navbar-brand border-0" href="{{ url('/') }}">
                     <img src="/images/logo1.svg" />
@@ -37,6 +37,10 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        <a class="btn btn-primary logout" href=""> {{ __('Logout') }} </a>
+                        <form id="logout-form" action="" method="POST" class="d-none">
+                            @csrf
+                        </form>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -56,7 +60,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {{-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href=""
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -66,22 +70,22 @@
                                     <form id="logout-form" action="" method="POST" class="d-none">
                                         @csrf
                                     </form>
-                                </div>
+                                </div> --}}
                             </li>
                         @endguest
                     </ul>
                 </div>
             </div>
         </nav>
-        <main class="">
+        <main class="page-container">
             <div class="row h-100 px-0">
-                <div class="col-2 bg-white h-100 px-0">
+                <div class="col-2 bg-tran-white h-100 px-0 position-fixed">
                     <div class="leftMenu">
                         @include('layouts.sidemenu')
                     </div>
 
                 </div>
-                <div class="col-10 px-0">
+                <div class="col-10 px-0 pushLeft">
                     @yield('content')
                 </div>
             </div>
@@ -91,4 +95,10 @@
 
     </div>
 </body>
+<script>
+    function formSubmit()
+    {
+        document.getElementById("logout-form").submit();
+    }
+</script>
 </html>
