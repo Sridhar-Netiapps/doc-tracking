@@ -59,7 +59,7 @@
                         @else
 
                             <div class="dropdown">
-                                <a class="nav-item dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-item dropdown dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu">
