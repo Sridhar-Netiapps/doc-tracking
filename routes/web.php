@@ -6,17 +6,17 @@ use App\Http\Controllers\PermissionController;
 
 // Route::resource('process_status', ProcessStatusController::class);
 
- Route::get('/home', function () {
-//     return 123;
-      return view('home');
- });
 
 Route::get('/sample', function () {
-//     return 123;
+    //     return 123;
     return view('sample.index');
 });
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/home', function () {
+    //     return 123;
+         return view('home');
+    });
     // ProcessStatus resource routes for the ProcessStatusController
     Route::get('process_status', [ProcessStatusController::class,'index'])->name('process_status.index');
     Route::get('process_status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
