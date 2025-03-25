@@ -8,8 +8,8 @@
                 <h3 class="me-3">Role</h3>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
@@ -38,7 +38,7 @@
                     <p>34 Total Users</p>
 
                     <div class="d-flex justify-content-between">
-                        <div><a href="/">Delete Users</a></div>
+                        <div><a href="/users/delete">Delete Users</a></div>
                         <div class="rounded-new">
                             <img src="/images/material-symbols--edit.svg" />
                         </div>
