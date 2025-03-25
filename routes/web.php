@@ -16,18 +16,15 @@ Route::get('/sample', function () {
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     
-    Route::get('/home', function () {
-    //     return 123;
-         return view('home');
-    });
+    Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
-    Route::get('process_status', [ProcessStatusController::class,'index'])->name('process_status.index');
-    Route::get('process_status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
-    Route::post('process_status/store', [ProcessStatusController::class, 'store'])->name('process_status.store');
-    Route::get('process_status/edit/{id}', [ProcessStatusController::class,'edit'])->name('process_status.edit');
-    Route::put('process_status/{id}', [ProcessStatusController::class, 'update'])->name('process_status.update');
-    Route::get('process_status/show/{id}', [ProcessStatusController::class,'show'])->name('process_status.show');
-    Route::delete('process_status/{id}', [ProcessStatusController::class, 'destroy'])->name('process_status.destroy');
+    Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');
+    Route::get('process-status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
+    Route::post('process-status/store', [ProcessStatusController::class, 'store'])->name('process_status.store');
+    Route::get('process-status/edit/{id}', [ProcessStatusController::class,'edit'])->name('process_status.edit');
+    Route::put('process-status/{id}', [ProcessStatusController::class, 'update'])->name('process_status.update');
+    Route::get('process-status/show/{id}', [ProcessStatusController::class,'show'])->name('process_status.show');
+    Route::delete('process-status/{id}', [ProcessStatusController::class, 'destroy'])->name('process_status.destroy');
     //  Route::post('/ProcessStatus/store', function ()
     //  {
     // Route::post('process_status',RoleController::class);

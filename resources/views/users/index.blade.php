@@ -31,7 +31,7 @@
         <div class="col-12">
             <div class="form-card">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered align-middle">
+                    <table class="table table-hover table-bordered align-middle">
                         <thead>
                         <tr>
                             <th>ID</th>
