@@ -39,10 +39,6 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
-
-                        <form id="logout-form" action="" method="POST" class="d-none">
-                            @csrf
-                        </form>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -57,16 +53,19 @@
                                 </li>
                             @endif
                         @else
-
-                            <div class="dropdown">
-                                <a class="nav-item dropdown dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item">{{ __('Logout') }}</a></li>
-                                </ul>
-                            </div>
-
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+                                    <form id="logout-form" action="" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
                         @endguest
                     </ul>
                 </div>
@@ -90,10 +89,4 @@
 
     </div>
 </body>
-<script>
-    function formSubmit()
-    {
-        document.getElementById("logout-form").submit();
-    }
-</script>
 </html>

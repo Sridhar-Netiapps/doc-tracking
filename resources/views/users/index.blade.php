@@ -61,19 +61,14 @@
                                 <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm">Edit</a>
-
-                                        <!-- Delete User -->
                                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                         </form>
-
-                                        <!-- Assign Role -->
-                                        <!-- <a href="{{ route('users.assignRole', $user->id) }}" class="btn btn-warning btn-sm">Assign Role</a> -->
-
-                                        <!-- Assign Permission -->
-                                        <!-- <a href="{{ route('users.assignPermission', $user->id) }}" class="btn btn-success btn-sm">Assign Permission</a> -->
+                                        
+                                        <a href="{{ route('users.assignRole', $user->id) }}" class="btn btn-warning btn-sm">Assign Role</a> 
+                                        <a href="{{ route('users.assignPermission', $user->id) }}" class="btn btn-success btn-sm">Assign Permission</a> 
                                     </div>
                                 </td>
                             </tr>
