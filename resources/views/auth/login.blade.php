@@ -30,7 +30,7 @@
                         <div class="col-md-5">
                             <div class="loginContent">
                                 <img class="logoIcon" src="/images/logoIcon.svg"/>
-                                <h2>DOCUMENT TRACKING SYSTEM</h2>
+                                <h2>DOCUMENT TRACKER</h2>
                                 <div> <img width="300" src="/images/logo.svg" /> </div>
                             </div>
                         </div>
