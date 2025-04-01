@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="rightPanel">
-
     <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
         <div>
             <div class="d-flex justify-content-center align-items-center">
@@ -10,76 +9,77 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                        <li class="breadcrumb-item"><a href="/users">Users</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create</li>
                     </ol>
                 </nav>
             </div>
-
         </div>
     </div>
+    <div class="row h-100 align-items-start align-content-lg-stretch">
+        <div class="col-6">
+            <div class="form-card">
+    <form action="{{ route('users.store') }}" method="POST">
+        @csrf
 
-
-
-    <!-- Display Success Message -->
-    @if (session('success'))
-        <div class="alert alert-success mt-3">
-            {{ session('success') }}
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" required>
         </div>
-    @endif
 
-    <!-- Display Validation Errors -->
-    @if ($errors->any())
-        <div class="alert alert-danger mt-3">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="form-group">
+            <label for="middle_name">Middle Name</label>
+            <input type="text" class="form-control" id="middle_name" name="middle_name">
         </div>
-    @endif
 
-    <div class="row">
-       <div class="col-6">
-           <div class="form-card">
-               <form action="{{ route('users.store') }}" method="POST">
-                   @csrf
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" required>
+        </div>
 
-                   <!-- Name Input -->
-                   <div class="mb-4">
-                       <label for="name" class="form-label">Name</label>
-                       <input type="text" name="name" class="form-control" id="name" required maxlength="255" value="{{ old('name') }}">
-                   </div>
+        <div class="form-group">
+            <label for="employee_id">Employee ID</label>
+            <input type="text" class="form-control" id="employee_id" name="employee_id" required>
+        </div>
 
-                   <!-- Email Input -->
-                   <div class="mb-4">
-                       <label for="email" class="form-label">Email</label>
-                       <input type="email" name="email" class="form-control" id="email" required value="{{ old('email') }}">
-                   </div>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
 
-                   <!-- Password Input -->
-                   <div class="mb-4">
-                       <label for="password" class="form-label">Password</label>
-                       <input type="password" name="password" class="form-control" id="password" required>
-                   </div>
+        <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" name="dob" required>
+        </div>
 
-                   <!-- Confirm Password Input -->
-                   <div class="mb-4">
-                       <label for="password_confirmation" class="form-label">Confirm Password</label>
-                       <input type="password" name="password_confirmation" class="form-control" id="password_confirmation" required>
-                   </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
 
-                   <!-- Submit and Cancel Buttons -->
-                   <div class="form-group d-flex justify-content-end">
-                       <a href="{{ route('users.index') }}" class="btn btn-outline-dark">Cancel</a>
-                       <button type="submit" class="btn btn-primary ms-3">Create New user</button>
-                   </div>
-               </form>
-           </div>
-       </div>
-    </div>
+        <div class="form-group">
+            <label for="mobile_number">Mobile Number</label>
+            <input type="text" class="form-control" id="mobile_number" name="mobile_number" required>
+        </div>
 
-    <!-- User Creation Form -->
+        <div class="form-group">
+            <label for="doj">Date of Joining</label>
+            <input type="date" class="form-control" id="doj" name="doj" required>
+        </div>
 
+        <div class="form-group">
+            <label for="dor">Date of Releaving</label>
+            <input type="date" class="form-control" id="dor" name="dor">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
 </div>
 @endsection
