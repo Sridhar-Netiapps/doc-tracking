@@ -15,19 +15,19 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Add new columns
-            $table->renameColumn('name','First_name');
-            $table->string('middle_name')->nullable()->after('first_name');
-            $table->string('last_name')->after('first_name');
+            $table->renameColumn('name','first_name');
             $table->string('employee_id')->after('first_name');
-            $table->string('gender')->after('password');
-            $table->date('dob')->nullable()->after('password'); // Ensure this is nullable
+            $table->string('last_name')->after('first_name');
+            $table->string('middle_name')->nullable()->after('first_name');
             $table->string('status')->after('remember_token');
-            $table->string('mobile_number')->after('password');
-            $table->foreignId('branch_id')->constrained()->onDelete('cascade')->after('status');
-            $table->foreignId('designation_id')->constrained()->onDelete('cascade')->after('status');
-            $table->date('doj')->after('password');
             $table->date('dor')->nullable()->after('password');
-            $table->foreignId('department_id')->constrained()->onDelete('cascade')->after('department_id');
+            $table->date('doj')->nullable()->after('password');
+            $table->string('mobile_number')->after('password');
+            $table->date('dob')->nullable()->after('password'); // Ensure this is nullable
+            $table->string('gender')->after('password');
+            // $table->foreignId('branch_id')->constrained()->onDelete('cascade')->after('status');
+            // $table->foreignId('designation_id')->constrained()->onDelete('cascade')->after('status');
+            // $table->foreignId('department_id')->constrained()->onDelete('cascade')->after('department_id');
         });
     }
 
