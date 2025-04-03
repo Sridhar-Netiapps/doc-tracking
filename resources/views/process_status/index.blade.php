@@ -39,8 +39,8 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Status</th>
-                            <th>Created By</th>
-                            <th>Updated By</th>
+                            <!-- <th>Created By</th>
+                            <th>Updated By</th> -->
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -54,7 +54,7 @@
                                     {{ $status->status ? __('Active') : __('Inactive') }}
                                 </span>
                                 </td>
-                                <td>
+                                <!-- <td>
                                 <span class="badge {{ $status->created_by ? 'bg-success' : 'bg-secondary' }}">
                                     {{ $status->created_by == 1 ? __('Person 1') : __('Person 2') }}
                                 </span>
@@ -63,7 +63,7 @@
                                 <span class="badge {{ $status->updated_by ? 'bg-success' : 'bg-secondary' }}">
                                     {{ $status->updated_by == 1 ? __('Person 1') : __('Person 2') }}
                                 </span>
-                                </td>
+                                </td> -->
                                 <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('process_status.edit', $status->id) }}" class="btn btn-primary btn-sm">Edit</a>

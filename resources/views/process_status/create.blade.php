@@ -8,8 +8,8 @@
                 <h3 class="me-3">Process Status</h3>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Library</a></li>
+                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
@@ -29,23 +29,23 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <form action="{{ route('process_status.store') }}" method="POST">
+                <form id="process-status" action="{{ route('process_status.store') }}" method="POST">
                     @csrf
 
                     <div class="mb-4">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" id="name" required pattern="^[a-zA-Z\s]+$" maxlength="55" value="{{ old('name') }}">
+                        <input type="text" name="name" class="form-control" id="name" required value="{{ old('name') }}">
                     </div>
 
                     <div class="mb-4">
                         <label for="status" class="form-label">Status</label>
                         <select name="status" class="form-select" required>
-                            <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
-                            <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
                         </select>
                     </div>
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col">
                             <div class="mb-4">
                                 <label for="created_by" class="form-label">Created By:</label>
@@ -62,7 +62,7 @@
                                     <option value="1">Person 1</option>
                                     <option value="2">Person 2</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -76,7 +76,27 @@
 
         </div>
     </div>
-
-
 </div>
+<script>
+    $(document).ready(function () {   
+        $("#process-status").validate({
+            rules: {
+                name: { required: true },
+            },
+            messages: {
+                name: { required: "Process Status is required" },
+            },
+            submitHandler: function(form) {
+                event.preventDefault();
+                $('#confirmModal').modal('show');
+                $('button.yes').on('click', function() {
+                    form.submit();
+                });
+                $('button.no').on('click', function() {
+                    $('#myModal').modal('hide');
+                });
+            }
+        });
+    });
+</script>
 @endsection

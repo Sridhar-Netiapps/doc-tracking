@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProcessStatus;
 use Illuminate\Http\Request;
+use Auth;
 
 class ProcessStatusController extends Controller
 {
@@ -27,16 +28,13 @@ class ProcessStatusController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|regex:/^[a-zA-Z\s]+$/|max:55',  // Name validation
             'status' => 'required|in:0,1', // Status validation (0 or 1)
-            'created_by' => 'required|integer', // Creator validation
-            'updated_by' => 'required|integer', // Updater validation
         ]);
 
         // Save the data to the database
         ProcessStatus::create([
             'name' => $validatedData['name'],
             'status' => $validatedData['status'],
-            'created_by' => $validatedData['created_by'],
-            'updated_by' => $validatedData['updated_by'],
+            'created_by' => Auth::user()->id,
         ]);
 
         // Redirect with success message
@@ -58,7 +56,6 @@ class ProcessStatusController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|regex:/^[a-zA-Z\s]+$/|max:55',  // Name validation
             'status' => 'required|in:0,1', // Status validation (0 or 1)
-            'updated_by' => 'required|integer', // Updater validation
         ]);
 
         // Find the process status by ID
@@ -68,7 +65,7 @@ class ProcessStatusController extends Controller
         $status->update([
             'name' => $validatedData['name'],
             'status' => $validatedData['status'],
-            'updated_by' => $validatedData['updated_by'],
+            'updated_by' => Auth::user()->id,
         ]);
 
         // Redirect with success message

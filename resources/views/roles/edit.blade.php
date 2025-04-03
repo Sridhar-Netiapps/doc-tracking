@@ -1,8 +1,22 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid pageContainer">
-    <h1>Edit Role: {{ $role->name }}</h1>
+<div class="rightPanel h-100">
+
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Edit Role: {{ $role->name }}</h3>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
 
     <!-- Validation errors -->
     @if ($errors->any())
@@ -15,6 +29,10 @@
         </div>
     @endif
 
+
+    <div class="row h-100 align-items-start align-content-lg-stretch">
+        <div class="col-6">
+            <div class="form-card">
     <!-- Edit Role Form -->
     <form action="{{ route('roles.update', $role->id) }}" method="POST">
         @csrf

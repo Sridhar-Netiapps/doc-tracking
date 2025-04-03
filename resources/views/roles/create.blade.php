@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-
+    
 
 
     <!-- Validation errors -->
@@ -35,7 +35,7 @@
     <div class="row h-100 align-items-start align-content-lg-stretch">
         <div class="col-6">
             <div class="form-card">
-                <form action="{{ route('roles.store') }}" method="POST">
+                <form id="roles"action="{{ route('roles.store') }}" method="POST">
                     @csrf
 
                     <!-- Role Name -->
@@ -68,4 +68,26 @@
 
 
 </div>
+<script>
+    $(document).ready(function () {   
+        $("#roles").validate({
+            rules: {
+                name: { required: true },
+            },
+            messages: {
+                name: { required: "Proles is required" },
+            },
+            submitHandler: function(form) {
+                event.preventDefault();
+                $('#confirmModal').modal('show');
+                $('button.yes').on('click', function() {
+                    form.submit();
+                });
+                $('button.no').on('click', function() {
+                    $('#myModal').modal('hide');
+                });
+            }
+        });
+    });
+</script>
 @endsection
