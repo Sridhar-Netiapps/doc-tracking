@@ -20,7 +20,7 @@
 
 
 <div class="row h-100">
-    <div class="col-6">
+    <div class="col-12">
         <div class="form-card">
             <h2 class="mb-4">Create New Department</h2>
             <div class="form-fields">
@@ -29,27 +29,27 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <form id="departments" action="{{ isset($branch) ? route('departments.update', $branch->id) : route('departments.store') }}" method="POST">
+                <form id="departments" action="{{ isset($department) ? route('departments.update', $department->id) : route('departments.store') }}" method="POST">
                     @csrf
-                    @if(isset($branch))
+                    @if(isset($department))
                         @method('PUT')
                     @endif
-
+            
                     <div class="row">
-                        <div class="col-6 mb-4">
+                        <div class="col-4 mb-4">
                             <label for="name">Department Name</label>
-                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $branch->name ?? '') }}" required>
+                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $department->name ?? '') }}" required>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-
-                        <div class="col-6 mb-4">
+            
+                        <div class="col-4 mb-4">
                             <label for="slug">Department Slug</label>
-                            <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $branch->slug ?? '') }}" required>
+                            <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $department->slug ?? '') }}" required>
                             @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary ">{{ isset($branch) ? 'Update' : 'Save' }}</button>
+            
+                    <button type="submit" class="btn btn-primary ">{{ isset($department) ? 'Update' : 'Save' }}</button>
                     <a href="{{ route('departments.index') }}" class="  btn btn-secondary">Cancel</a>
                 </form>
             </div>
@@ -62,7 +62,7 @@
         $("#departments").on("submit", function () {
             $(".text-danger").html(""); // Clear previous errors
         });
-
+    
         $("#departments").validate({
             rules: {
                 name: { required: true },
@@ -77,13 +77,26 @@
                 error.insertAfter(element);
             },
             submitHandler: function(form) {
-                event.preventDefault();
-                $('#confirmModal').modal('show');
-                $('button.yes').on('click', function() {
-                    form.submit();
-                });
-                $('button.no').on('click', function() {
-                    $('#myModal').modal('hide');
+                // event.preventDefault();
+                // $('#confirmModal').modal('show');
+                // $('button.yes').on('click', function() {
+                //     form.submit();
+                // });
+                // $('button.no').on('click', function() {
+                //     $('#myModal').modal('hide');
+                // });
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this form?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
             }
         });

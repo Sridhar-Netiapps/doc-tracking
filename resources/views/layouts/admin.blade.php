@@ -96,9 +96,8 @@
                         </div>
                     </div>
                     <div class="modal-footer flex-nowrap p-0">
-                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"  data-dismiss="modal"><strong>Cancel</strong></button>
-                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal"><strong>Success</strong></button>
-
+                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end no"  data-dismiss="modal"><strong>Cancel</strong></button>
+                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 yes" data-bs-dismiss="modal"><strong>Submit</strong></button>
                     </div>
                 </div>
             </div>

@@ -29,7 +29,14 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:100',
+        ]);
+        $validated['created_by'] = Auth::user()->id;
+        Department::create($validated);
+        
+        return redirect()->route('departments.index')->with('success', 'Department created successfully.');
     }
 
     /**
