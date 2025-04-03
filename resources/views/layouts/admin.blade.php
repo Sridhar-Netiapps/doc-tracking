@@ -88,13 +88,17 @@
         </main>
         <div id="confirmModal" class="modal fade">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content p-3">
+                <div class="modal-content p-0">
                     <div class="modal-body text-center">
                         <h4 class="p-2">Are You Sure You Want to Submit this Form?</h4>
                         <div>
-                            <button class="btn mx-3 no btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button class="btn mx-3 yes btn-success">Submit</button>
+
                         </div>
+                    </div>
+                    <div class="modal-footer flex-nowrap p-0">
+                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"  data-dismiss="modal"><strong>Cancel</strong></button>
+                        <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal"><strong>Success</strong></button>
+
                     </div>
                 </div>
             </div>

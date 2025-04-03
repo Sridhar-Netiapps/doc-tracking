@@ -275,3 +275,16 @@ h2{
         transform: rotate(360deg); /* Rotate to 360 degrees */
     }
 }
+
+.form-select{
+    --bs-form-select-bg-img: url('/images/arrow.svg');
+}
+
+.form-check-input:checked[type=checkbox]{
+    --bs-form-check-bg-image: url('/images/check-icon.svg');
+}
+
+.error {
+    font-size: 12px;
+    padding-top: 4px;
+}
