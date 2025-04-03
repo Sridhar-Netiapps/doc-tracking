@@ -15,10 +15,13 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
-
-
-
+    <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('js/validation.js') }}"></script>
 </head>
 <body>
     <div id="app">
@@ -77,16 +80,25 @@
                     <div class="leftMenu">
                         @include('layouts.sidemenu')
                     </div>
-
                 </div>
                 <div class="col-10 px-0 pushLeft">
                     @yield('content')
                 </div>
             </div>
-
-
         </main>
-
+        <div id="confirmModal" class="modal fade">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                    <div class="modal-body text-center">
+                        <h4 class="p-2">Are You Sure You Want to Submit this Form?</h4>
+                        <div>
+                            <button class="btn mx-3 no btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button class="btn mx-3 yes btn-success">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -4,9 +4,8 @@ use App\Http\Controllers\ProcessStatusController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
-
-// Route::resource('process_status', ProcessStatusController::class);
-
+use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DepartmentController;
 
 Route::get('/sample', function () {
 
@@ -25,6 +24,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('process-status/{id}', [ProcessStatusController::class, 'update'])->name('process_status.update');
     Route::get('process-status/show/{id}', [ProcessStatusController::class,'show'])->name('process_status.show');
     Route::delete('process-status/{id}', [ProcessStatusController::class, 'destroy'])->name('process_status.destroy');
+    
+    Route::get('branches', [BranchController::class,'index'])->name('branches.index');
+    Route::get('branches/create', [BranchController::class,'create'])->name('branches.create');
+    Route::post('branches/store', [BranchController::class, 'store'])->name('branches.store');
+    Route::get('branches/edit/{id}', [BranchController::class,'edit'])->name('branches.edit');
+    Route::put('branches/{id}', [BranchController::class, 'update'])->name('branches.update');
+    Route::get('branches/show/{id}', [BranchController::class,'show'])->name('branches.show');
+    Route::delete('branches/{id}', [BranchController::class, 'destroy'])->name('branches.destroy');
+
+    Route::get('departments', [DepartmentController::class,'index'])->name('departments.index');
+    Route::get('departments/create', [DepartmentController::class,'create'])->name('departments.create');
+    Route::post('departments/store', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::get('departments/edit/{id}', [DepartmentController::class,'edit'])->name('departments.edit');
+    Route::put('departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
+    Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
     //  Route::post('/ProcessStatus/store', function ()
     //  {
     // Route::post('process_status',RoleController::class);
@@ -32,6 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UserController::class);
+    // Route::resource('branches', BranchController::class);
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
 
