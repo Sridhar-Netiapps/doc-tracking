@@ -20,7 +20,7 @@
 
 
 <div class="row h-100">
-    <div class="col-12">
+    <div class="col-6">
         <div class="form-card">
             <h2 class="mb-4">Create New Department</h2>
             <div class="form-fields">
@@ -34,21 +34,21 @@
                     @if(isset($branch))
                         @method('PUT')
                     @endif
-            
+
                     <div class="row">
-                        <div class="col-4 mb-4">
+                        <div class="col-6 mb-4">
                             <label for="name">Department Name</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $branch->name ?? '') }}" required>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-            
-                        <div class="col-4 mb-4">
+
+                        <div class="col-6 mb-4">
                             <label for="slug">Department Slug</label>
                             <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $branch->slug ?? '') }}" required>
                             @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-            
+
                     <button type="submit" class="btn btn-primary ">{{ isset($branch) ? 'Update' : 'Save' }}</button>
                     <a href="{{ route('departments.index') }}" class="  btn btn-secondary">Cancel</a>
                 </form>
@@ -62,7 +62,7 @@
         $("#departments").on("submit", function () {
             $(".text-danger").html(""); // Clear previous errors
         });
-    
+
         $("#departments").validate({
             rules: {
                 name: { required: true },
