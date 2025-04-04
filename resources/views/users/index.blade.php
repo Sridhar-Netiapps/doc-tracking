@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    
+
     <div class="row">
         <div class="col-12">
             <div class="form-card">
@@ -28,9 +28,8 @@
                     <table class="table table-bordered align-middle">
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Middle Name</th>
-                                <th>Last Name</th>
+                                <th>S.No</th>
+                                <th>Name</th>
                                 <th>Employee ID</th>
                                 <th>Email</th>
                                 <th>Gender</th>
@@ -38,16 +37,15 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
-                                <th>Date of Relieving</th>
+                                <!-- <th>Date of Relieving</th> -->
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ $user->first_name }}</td>
-                                    <td>{{ $user->middle_name }}</td>
-                                    <td>{{ $user->last_name }}</td>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $user->employee_id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ ucfirst($user->gender) }}</td>
@@ -55,7 +53,7 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
-                                    <td>{{ $user->dor }}</td>
+                                    <!-- <td>{{ $user->dor }}</td> -->
                                     <td>
                                         <div class="btn-actions">
                                             <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>

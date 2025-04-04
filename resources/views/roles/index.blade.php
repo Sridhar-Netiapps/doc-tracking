@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    
+
 
 
     @if (session('success'))
@@ -28,56 +28,6 @@
             {{ session('success') }}
         </div>
     @endif
-
-
-    <div class="row flex-column">
-        <div class="col-3 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h2>Role Name</h2>
-                    <p>34 Total Users</p>
-
-                    <div class="d-flex justify-content-between">
-                        <div><a href="/users/delete">Delete Users</a></div>
-                        <div class="rounded-new">
-                            <img src="/images/material-symbols--edit.svg" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-3 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h2>Role Name</h2>
-                    <p>34 Total Users</p>
-
-                    <div class="d-flex justify-content-between">
-                        <div><a href="/">Delete Users</a></div>
-                        <div class="rounded-new">
-                            <img src="/images/material-symbols--edit.svg" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-3 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h2>Role Name</h2>
-                    <p>34 Total Users</p>
-
-                    <div class="d-flex justify-content-between">
-                        <div><a href="/">Delete Users</a></div>
-                        <div class="rounded-new">
-                            <img src="/images/material-symbols--edit.svg" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
 
    <table class="table mt-3">
        <thead>
