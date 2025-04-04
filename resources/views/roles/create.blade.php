@@ -18,7 +18,7 @@
         </div>
     </div>
     
-
+    
 
     <!-- Validation errors -->
     @if ($errors->any())
