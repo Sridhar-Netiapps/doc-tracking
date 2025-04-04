@@ -38,7 +38,7 @@ class DepartmentController extends Controller
         Department::create($validated);
         
         // return redirect('web-forms')->with('success', 'Record created successfully.');
-        return redirect('departments.index')->with('success', 'Department created successfully.');
+        return redirect('departments')->with('success', 'Department created successfully.');
     }
 
     /**
