@@ -19,7 +19,7 @@
     <div class="row h-100 align-items-start align-content-lg-stretch">
         <div class="col-6">
             <div class="form-card">
-                <form id="users"action="{{ route('users.store') }}" method="POST">
+                <form id="users" action="{{ route('users.store') }}" method="POST">
                     @csrf
 
                     <div class="form-group">
@@ -47,6 +47,14 @@
                         <label for="employee_id">Employee ID</label>
                         <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" required>
                         @error('employee_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Id</label>
+                        <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" required>
+                        @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -88,29 +96,34 @@
                         <input type="date" class="form-control" id="dor" name="dor">
                     </div>
 
-                    <!-- <div class="form-group">
-                        <label for="role">Role</label>
-                        <select class="form-control" id="role" name="role">
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="manager">Manager</option>
-                        </select>
-                    </div> -->
+                    <!-- Buttons -->
+                    <div class="mt-3 d-flex ">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                    </div>
 
-                    <button type="submit" class="btn btn-primary">Create User</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {   
         $("#users").validate({
             rules: {
-                name: { required: true },
+                first_name: { required: true },
+                last_name: { required: true },
+                email: { required: true },
+                employee_id: { required: true },
+                mobile_number: { required: true }
             },
             messages: {
-                name: { required: "users is required" },
+                first_name: { required: "First name is required" },
+                last_name: { required: "Last name is required" },
+                email: { required: "email is required" },
+                employee_id: { required: "Employee ID is required" },
+                mobile_number: { required: "Mobile number is required" }
             },
             submitHandler: function(form) {
                 event.preventDefault();
@@ -119,7 +132,7 @@
                     form.submit();
                 });
                 $('button.no').on('click', function() {
-                    $('#myModal').modal('hide');
+                    $('#confirmModal').modal('hide');
                 });
             }
         });
