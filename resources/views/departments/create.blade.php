@@ -90,8 +90,8 @@
                     text: "Do you want to submit this form?",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#f78f35',
+                    cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Yes, submit it!'
                 }).then((result) => {
                     if (result.isConfirmed) {

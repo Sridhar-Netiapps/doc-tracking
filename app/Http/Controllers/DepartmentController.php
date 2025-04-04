@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Auth;
 
 class DepartmentController extends Controller
 {
@@ -36,7 +37,8 @@ class DepartmentController extends Controller
         $validated['created_by'] = Auth::user()->id;
         Department::create($validated);
         
-        return redirect()->route('departments.index')->with('success', 'Department created successfully.');
+        // return redirect('web-forms')->with('success', 'Record created successfully.');
+        return redirect('departments.index')->with('success', 'Department created successfully.');
     }
 
     /**
@@ -50,17 +52,32 @@ class DepartmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $department = Department::findOrFail($id);
+        return view('departments.create', compact('department'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:100',
+        ]);
+    
+        $department = Department::findOrFail($id);
+        $department->name = $validated['name'];
+        $department->slug = $validated['slug'];
+        if ($department->isDirty()) {
+            $department->updated_by = Auth::user()->id;
+            $department->save();
+            return redirect('departments')->with('success','Department Updated Successfully!');
+        } else {
+            return redirect('departments');
+        }
     }
 
     /**
