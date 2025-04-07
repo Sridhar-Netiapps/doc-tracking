@@ -140,7 +140,10 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary">Update User</button>
+                   <div class="d-flex ">
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                        <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
+                    </div>
                 </form>
             </div>
         </div>

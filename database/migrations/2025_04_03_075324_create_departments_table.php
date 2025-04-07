@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->softDeletes();
         });
     }
 

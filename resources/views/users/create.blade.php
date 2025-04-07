@@ -97,9 +97,9 @@
                     </div>
 
                     <!-- Buttons -->
-                    <div class="mt-3 d-flex ">
-                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                    <div class="d-flex ">
                         <button type="submit" class="btn btn-primary">Create User</button>
+                        <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
                     </div>
 
                 </form>

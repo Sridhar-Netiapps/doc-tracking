@@ -87,13 +87,18 @@
                 name: { required: "Process Status is required" },
             },
             submitHandler: function(form) {
-                event.preventDefault();
-                $('#confirmModal').modal('show');
-                $('button.yes').on('click', function() {
-                    form.submit();
-                });
-                $('button.no').on('click', function() {
-                    $('#myModal').modal('hide');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this form?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f78f35',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
             }
         });

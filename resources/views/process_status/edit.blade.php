@@ -49,7 +49,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <!-- <div class="col-6">
                             <div class="mb-4">
                                 <label for="updated_by" class="form-label">Updated By</label>
                                 <select name="updated_by" class="form-select" required>
@@ -57,7 +57,7 @@
                                     <option value="2" {{ $status->updated_by == 2 ? 'selected' : '' }}>Person 2</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
 
@@ -79,4 +79,31 @@
     </div>
 
 </div>
+<script>
+    $(document).ready(function () {   
+        $("#process-status").validate({
+            rules: {
+                name: { required: true },
+            },
+            messages: {
+                name: { required: "Process Status is required" },
+            },
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this form?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f78f35',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
+    });
+</script>
 @endsection
