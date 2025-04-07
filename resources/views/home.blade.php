@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="icon"><img src="/images/icon-2.svg" /></div>
                             <p class="card-text">Pending Accounts for Updates</p>
-                            <h3>9,393</h3>
+                            <h3>5,200</h3>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         <div class="card-body">
                             <div class="icon"><img src="/images/icon-3.svg" /></div>
                             <p class="card-text">Verified Accounts</p>
-                            <h3>1,393</h3>
+                            <h3>4,000</h3>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                         <div class="card-body">
                             <div class="icon"><img src="/images/icon-4.svg" /></div>
                             <p class="card-text">Rejected Requests</p>
-                            <h3>5,211</h3>
+                            <h3>3,193</h3>
                         </div>
 
                     </div>
