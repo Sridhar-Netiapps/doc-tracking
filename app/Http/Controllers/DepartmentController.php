@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Department;
 use Auth;
+use Log;
 
 class DepartmentController extends Controller
 {
@@ -38,7 +39,7 @@ class DepartmentController extends Controller
         Department::create($validated);
         
         // return redirect('web-forms')->with('success', 'Record created successfully.');
-        return redirect('departments')->with('success', 'Department created successfully.');
+        return redirect('departments.index')->with('success', 'Department created successfully.');
     }
 
     /**
@@ -74,9 +75,9 @@ class DepartmentController extends Controller
         if ($department->isDirty()) {
             $department->updated_by = Auth::user()->id;
             $department->save();
-            return redirect('departments')->with('success','Department Updated Successfully!');
+            return redirect()->route('departments.index')->with('success', 'Department Updated Successfully.');
         } else {
-            return redirect('departments');
+            return redirect()->route('departments.index');
         }
     }
 
