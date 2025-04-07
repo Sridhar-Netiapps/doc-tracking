@@ -18,12 +18,6 @@
         </div>
         <div><a href="{{ route('departments.create') }}" class="btn btn-primary">Create New Department</a></div>
     </div>
-    @if (session('success'))
-        <div class="alert alert-success mt-3">
-            {{ session('success') }}
-        </div>
-    @endif
-    <pre>{{ print_r(session()->all(), true) }}</pre>
     <div class="row">
         <div class="col-12">
             <div class="form-card">
@@ -80,25 +74,4 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        @if(session('success'))
-            Swal.fire({
-                title: "Success!",
-                text: "{{ session('success') }}",
-                icon: "success",
-                confirmButtonText: "OK"
-            });
-        @endif
-    
-        @if(session('error'))
-            Swal.fire({
-                title: "Error!",
-                text: "{{ session('error') }}",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-        @endif
-    });
-    </script>
 @endsection

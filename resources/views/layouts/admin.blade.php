@@ -103,33 +103,6 @@
             </div>
         </div>
     </div>
-    @if(session('success'))
-        <script>
-            $(document).ready(function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "{{ session('success') }}",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                });
-            });
-        </script>
-    @endif
-    @if(session('error'))
-        <script>
-            $(document).ready(function () {
-                Swal.fire({
-                    title: "Error!",
-                    text: "{{ session('error') }}",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            });
-        </script>
-    @endif
-    @stack('scripts')
-    <script>
-        $(document).ready(function () { });
-    </script>
+    @include('layouts.scripts')
 </body>
 </html>

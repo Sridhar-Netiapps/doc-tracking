@@ -96,5 +96,6 @@
             @yield('content')
         </main>
     </div>
+    @include('layouts.scripts')
 </body>
 </html>
