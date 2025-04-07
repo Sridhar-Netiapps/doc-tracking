@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
         <div>
             <div class="d-flex justify-content-center align-items-center">
-                <h3 class="me-3">Departments List</h3>
+                <h3 class="me-3">Department List</h3>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -25,9 +25,9 @@
                     <table class="table table-bordered align-middle">
                         <thead>
                         <tr>
-                            <th>S.No</th>
+                            <!-- <th>S.No</th> -->
                             <th>Department Name</th>
-                            <th>Department Slug</th>
+                            <th>Short Name</th>
                             {{-- <th>Region Name</th>
                             <th>Business Type</th>
                             <th>RBI Classification</th>
@@ -43,7 +43,7 @@
                         <tbody>
                         @foreach ($departments as $department)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <!-- <td>{{ $loop->iteration }}</td> -->
                                 <td>{{ $department->name }}</td>
                                 <td>{{ $department->slug }}</td>
                                 {{-- <td>{{ $department->region_name }}</td>

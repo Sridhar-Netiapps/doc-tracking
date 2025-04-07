@@ -43,7 +43,7 @@
                         </div>
             
                         <div class="col-4 mb-4">
-                            <label for="slug">Department Slug</label>
+                            <label for="slug">Short Name</label>
                             <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $department->slug ?? '') }}" required>
                             @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
