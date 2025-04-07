@@ -289,3 +289,28 @@ h2{
     padding-top: 4px;
     color: #dc3545;
 }
+
+.doughnutChart{
+    margin: auto;
+}
+
+.text-primary{
+    color: #229e82 !important;
+}
+
+.modal-header h5{
+    color: #229e82;
+}
+
+.nav-link{
+    color: #229e82 !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: #229e82 !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
+    color: #ffffff !important;
+    background-color: #229e82 !important;
+}

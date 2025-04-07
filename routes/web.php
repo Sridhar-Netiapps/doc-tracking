@@ -8,9 +8,10 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 
 Route::get('/sample', function () {
-
-    //     return 123;
     return view('sample.index');
+});
+Route::get('/accounts', function () {
+    return view('sample.accounts');
 });
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
