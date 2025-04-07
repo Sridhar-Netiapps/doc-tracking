@@ -74,12 +74,12 @@
                                             @if(auth()->user()->can('edit-user'))
                                             <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
                                             @endif
-                                            @if(auth()->user()->can('delete-user'))
-                                            <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
+                                            @if(auth()->user()->can('delete-user'))                                            
+                                            <!-- <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                                            </form>
+                                            </form> -->
                                             @endif
                                         </div>
                                     </td>

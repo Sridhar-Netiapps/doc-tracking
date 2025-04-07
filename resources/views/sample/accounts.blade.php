@@ -269,10 +269,6 @@
                         <td>UJJ029921</td>
                         <td class="border-start"><button  class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
-
-
-
-
                     </tbody>
                 </table>
 
@@ -286,35 +282,35 @@
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Update Details</h5>
                 </div>
-                <div class="modal-body p-4 text-center row">
-                    <div class="col-4">
+                <div class="modal-body p-4 row">
+                    <div class="col-4 pb-4">
                         <label>Unique Number</label>
                         <h5 class="unique_number">UJJ029921</h5>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 pb-4">
                         <label>Customer Name</label>
                         <h5 class="customer_name">Cali</h5>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 pb-4">
                         <label>Channel</label>
                         <h5 class="channel">GL</h5>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">Courier Name</label>
                         <input type="text" name="courier_name" class="form-control">
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWD/POD</label>
                         <input type="text" name="awb_pod" class="form-control">
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">Dispatch Date</label>
                         <input type="Date" name="dispatch_date" class="form-control">
                     </div>
                 </div>
-                <div class="modal-footer flex-nowrap p-0">
-                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">Cancel</button>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>

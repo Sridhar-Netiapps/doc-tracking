@@ -112,14 +112,22 @@
                 last_name: { required: true },
                 email: { required: true },
                 employee_id: { required: true },
-                mobile_number: { required: true }
+                mobile_number: { 
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                }
             },
             messages: {
                 first_name: { required: "First name is required" },
                 last_name: { required: "Last name is required" },
                 email: { required: "email is required" },
                 employee_id: { required: "Employee ID is required" },
-                mobile_number: { required: "Mobile number is required" }
+                mobile_number: { 
+            required: "Mobile number is required",
+            pattern: "Mobile number must be exactly 10 digits"
+            }
             },
             submitHandler: function(form) {
                 event.preventDefault();
