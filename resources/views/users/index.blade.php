@@ -15,9 +15,11 @@
                 </nav>
             </div>
         </div>
+        @if(auth()->user()->can('create-user'))
         <div>
             <a href="{{ route('users.create') }}" class="btn btn-primary">Create User</a>
         </div>
+        @endif
     </div>
 
 
@@ -37,8 +39,11 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
-                                <!-- <th>Date of Relieving</th> -->
+                                <th>Roles</th>
+                                <th>Permissions</th>
+                                @if(auth()->user()->can('edit-user') || auth()->user()->can('delete-user'))
                                 <th>Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -53,17 +58,32 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
-                                    <!-- <td>{{ $user->dor }}</td> -->
+                                    <td>
+                                        @foreach ($user->roles as $role)
+                                            <span class="badge text-bg-primary">{{ $role->name }}</span>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($user->getAllPermissions() as $permission)
+                                            <span class="badge text-bg-secondary">{{ $permission->name }}</span>
+                                        @endforeach
+                                    </td>
+                                    @if(auth()->user()->can('edit-user') || auth()->user()->can('delete-user'))
                                     <td>
                                         <div class="btn-actions">
+                                            @if(auth()->user()->can('edit-user'))
                                             <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
+                                            @endif
+                                            @if(auth()->user()->can('delete-user'))
                                             <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

@@ -129,43 +129,31 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
-    // Delete the specified user from the database
     public function destroy(User $user)
     {
-        // Deleting the user
         $user->delete();
-
-        // Redirecting back with success message
+        
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
-    // // Assign a role to a user
-    // public function assignRole(Request $request, User $user)
-    // {
-    //     // Validating the role input
-    //     $request->validate([
-    //         'role' => 'required|exists:roles,name',
-    //     ]);
-
-    //     // Syncing the role with the user
-    //     $user->syncRoles([$request->input('role')]);
-
-    //     // Redirecting back with success message
-    //     return redirect()->back()->with('success', 'Role assigned successfully.');
-    // }
-
-    // // Assign a permission to a user
-    // public function assignPermission(Request $request, User $user)
-    // {
-    //     // Validating the permission input
-    //     $request->validate([
-    //         'permission' => 'required|exists:permissions,name',
-    //     ]);
-
-    //     // Giving permission to the user
-    //     $user->givePermissionTo($request->input('permission'));
-
-    //     // Redirecting back with success message
-    //     return redirect()->back()->with('success', 'Permission assigned successfully.');
-    // }
+    public function assignRole(Request $request, User $user)
+    {
+        $request->validate([
+            'role' => 'required|exists:roles,name',
+        ]);
+        $user->syncRoles([$request->input('role')]);
+        
+        return redirect()->back()->with('success', 'Role assigned successfully.');
+    }
+    
+    public function assignPermission(Request $request, User $user)
+    {
+        $request->validate([
+            'permission' => 'required|exists:permissions,name',
+        ]);
+        
+        $user->givePermissionTo($request->input('permission'));
+        
+        return redirect()->back()->with('success', 'Permission assigned successfully.');
+    }
 }
