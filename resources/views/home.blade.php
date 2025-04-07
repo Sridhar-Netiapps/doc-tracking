@@ -37,7 +37,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="icon"><img src="/images/icon-2.svg" /></div>
-                            <p class="card-text">Pending Approvals</p>
+                            <p class="card-text">Pending Accounts for Updates</p>
                             <h3>9,393</h3>
                         </div>
                     </div>
@@ -67,31 +67,46 @@
         </div>
 
         <div class="dashboardCards mt-4">
-                <div class="row">
-                    <!-- Line Chart -->
-                    <div class="col-md-6">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Submissions Over Time</h5>
-                                <canvas id="lineChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Doughnut Chart -->
-                    <div class="col-md-6">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Category Breakdown</h5>
-                                <canvas id="doughnutChart"></canvas>
-                            </div>
-                        </div>
+    <div class="row">
+        <!-- Line Chart -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Submissions Over Time</h5>
+                    <div style="height: 300px;">
+                        <canvas id="lineChart" style="width: 100%; height: 100% !important;"></canvas>
                     </div>
                 </div>
             </div>
-
         </div>
+
+        <!-- Doughnut Chart -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Category Breakdown</h5>
+                    <div style="height: 300px;">
+                        <canvas id="doughnutChart" style="width: 100%; height: 100% !important;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                    <!-- Bar Chart -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Verifications</h5>
+                    <div style="height: 300px;">
+                        <canvas id="barChart" style="width: 100%; height: 100% !important;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
+
 
     {{-- Chart.js CDN --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -143,8 +158,35 @@
                 }
             }
         });
-    </script>
 
+                // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Verified',
+                    data: [300, 500, 800, 600, 900],
+                    backgroundColor: '#20c997'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    </script>
 
 
 
