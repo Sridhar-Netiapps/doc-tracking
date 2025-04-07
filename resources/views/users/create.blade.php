@@ -16,95 +16,91 @@
             </div>
         </div>
     </div>
-    <div class="row h-100 align-items-start align-content-lg-stretch">
-        <div class="col-6">
-            <div class="form-card">
-                <form id="users" action="{{ route('users.store') }}" method="POST">
-                    @csrf
+    <div class="h-100 align-items-start align-content-lg-stretch">
+        <form id="users" action="{{ route('users.store') }}" method="POST">
+            @csrf
+            <div class="row form-card">
+                <div class="form-group col-4 mb-4">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" required>
+                    @error('first_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <div class="form-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" required>
-                        @error('first_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="middle_name">Middle Name</label>
+                    <input type="text" class="form-control" id="middle_name" name="middle_name">
+                </div>
 
-                    <div class="form-group">
-                        <label for="middle_name">Middle Name</label>
-                        <input type="text" class="form-control" id="middle_name" name="middle_name">
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" required>
+                    @error('last_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <div class="form-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" required>
-                        @error('last_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="employee_id">Employee ID</label>
+                    <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" required>
+                    @error('employee_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <div class="form-group">
-                        <label for="employee_id">Employee ID</label>
-                        <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" required>
-                        @error('employee_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="email">Email Id</label>
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" required>
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Id</label>
-                        <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" required>
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" id="gender" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <select class="form-control" id="gender" name="gender">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="dob" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" class="form-control" id="dob" name="dob" required>
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select class="form-control" id="status" name="status">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="mobile_number">Mobile Number</label>
+                    <input type="text" class="form-control" id="mobile_number" name="mobile_number" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="mobile_number">Mobile Number</label>
-                        <input type="text" class="form-control" id="mobile_number" name="mobile_number" required>
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="doj">Date of Joining</label>
+                    <input type="date" class="form-control" id="doj" name="doj" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="doj">Date of Joining</label>
-                        <input type="date" class="form-control" id="doj" name="doj" required>
-                    </div>
+                <div class="form-group col-4 mb-4">
+                    <label for="dor">Date of Releaving</label>
+                    <input type="date" class="form-control" id="dor" name="dor">
+                </div>
 
-                    <div class="form-group">
-                        <label for="dor">Date of Releaving</label>
-                        <input type="date" class="form-control" id="dor" name="dor">
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="d-flex ">
-                        <button type="submit" class="btn btn-primary">Create User</button>
-                        <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
-                    </div>
-
-                </form>
+                <!-- Buttons -->
+                <div class="d-flex ">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
+                </div>
             </div>
-        </div>
+            </form>
     </div>
 </div>
 
