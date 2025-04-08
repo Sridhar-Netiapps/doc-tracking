@@ -225,14 +225,17 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col"><input type="checkbox" /> </th>
+                         <th scope="col"><input type="checkbox" /> </th>
                         <th scope="col">Unique Number</th>
+                        <th scope="col">Branch Code</th>
+                        <th scope="col">Branch Name</th>
                         <th scope="col">CIF ID</th>
                         <th scope="col">Account Number</th>
                         <th scope="col">Customer Name</th>
                         <th scope="col">Account Creation Date</th>
                         <th scope="col">Channel</th>
                         <th scope="col">PGK No. / Glow application ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col" class="border-start">Action</th>
                     </tr>
                     </thead>
