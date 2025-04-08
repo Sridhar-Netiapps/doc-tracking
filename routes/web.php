@@ -13,6 +13,9 @@ Route::get('/sample', function () {
 Route::get('/accounts', function () {
     return view('sample.accounts');
 });
+Route::get('/', function () {
+    return view('auth.login');
+});
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     
