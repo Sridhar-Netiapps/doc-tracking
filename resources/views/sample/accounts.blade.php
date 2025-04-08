@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<link href="{{ asset('css/styledoc.css') }}" rel="stylesheet">
 
 <div class="bg-new">
     <div class="container">
@@ -34,8 +33,6 @@
         </ul>
         <div class="tab-content bg-white" id="myTabContent">
             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-
-
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -49,6 +46,7 @@
                         <th scope="col">Account Creation Date</th>
                         <th scope="col">Channel</th>
                         <th scope="col">PGK No. / Glow application ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col" class="border-start">Action</th>
                     </tr>
                     </thead>
@@ -64,6 +62,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -77,6 +76,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -90,6 +90,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr><tr>
                         <td><input type="checkbox" /></td>
@@ -102,6 +103,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -115,6 +117,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -128,6 +131,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -141,6 +145,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -154,6 +159,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -167,6 +173,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -180,6 +187,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -193,6 +201,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -206,6 +215,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     </tbody>
@@ -238,6 +248,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -251,6 +262,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -264,6 +276,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr><tr>
                         <td><input type="checkbox" /></td>
@@ -276,6 +289,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -289,6 +303,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -302,6 +317,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
+                        <td>Pending</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     </tbody>
@@ -314,7 +330,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content rounded-3 shadow">
-                <form id="update-courier" action="/accounts-update" method="POST">
+                {{-- <form id="update-courier" action="/accounts-update" method="POST"> --}}
                     <div class="modal-header p-4 text-center">
                         <h5 class="mb-0 text-primary">Update Details</h5>
                     </div>
@@ -336,7 +352,7 @@
                             <input type="text" name="courier_name" class="form-control" required>
                         </div>
                         <div class="col-4 pb-2">
-                            <label for="status" class="form-label">AWD/POD</label>
+                            <label for="status" class="form-label">AWB/POD</label>
                             <input type="text" name="awb_pod" class="form-control" required>
                         </div>
                         <div class="col-4 pb-2">
@@ -349,7 +365,7 @@
                         {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
                         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                     </div>
-                </form>
+                {{-- </form> --}}
             </div>
         </div>
     </div>

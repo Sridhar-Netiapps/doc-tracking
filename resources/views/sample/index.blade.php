@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<link href="{{ asset('css/styledoc.css') }}" rel="stylesheet">
 
 <div class="bg-new">
     <div class="container">

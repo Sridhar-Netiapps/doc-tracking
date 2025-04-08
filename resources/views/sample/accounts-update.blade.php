@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<link href="{{ asset('css/styledoc.css') }}" rel="stylesheet">
 
 <div class="bg-new">
     <div class="container">
@@ -44,6 +43,7 @@
                             <th scope="col">Account Creation Date</th>
                             <th scope="col">Channel</th>
                             <th scope="col">AWB / POD</th>
+                            <th scope="col">Status</th>
                             <th scope="col" class="border-start">Action</th>
                         </tr>
                     </thead>
@@ -57,6 +57,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -68,6 +69,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -79,6 +81,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr><tr>
                             <td><input type="checkbox" /></td>
@@ -89,6 +92,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -100,6 +104,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -111,6 +116,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -122,6 +128,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -133,6 +140,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -144,28 +152,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ029921</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ000555661</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -177,6 +164,31 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                     </tbody>
@@ -207,6 +219,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -218,6 +231,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -229,6 +243,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr><tr>
                             <td><input type="checkbox" /></td>
@@ -239,6 +254,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -250,6 +266,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                         <tr>
@@ -261,6 +278,7 @@
                             <td>14-05-2024</td>
                             <td>GL</td>
                             <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
                             <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                         </tr>
                     </tbody>

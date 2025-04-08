@@ -59,7 +59,6 @@
                                 </li>
                             @endif
                         @else
-
                             {{-- <div class="dropdown">
                                 <a class="nav-item dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ Auth::user()->first_name }}
@@ -72,7 +71,6 @@
                                     <li><a class="dropdown-item">{{ __('Logout') }}</a></li>
                                 </ul>
                             </div> --}}
-
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->first_name }}
@@ -90,8 +88,7 @@
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
-                                    <form id="logout-form" action="" method="POST" class="d-none">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
                                 </div>
@@ -101,7 +98,6 @@
                 </div>
             </div>
         </nav>
-
         <main class="">
             @yield('content')
         </main>
