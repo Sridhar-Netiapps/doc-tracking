@@ -18,7 +18,7 @@
     </div>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="d-flex mb-3"><h2>Account Creation</h2> <div class="ms-2"><a href="/sample">View All</a></div></div>
+        <div class="d-flex mb-3"><h2>Account Creation</h2> <div class="ms-2"><a href="/accounts">View All</a></div></div>
 
         <div class="headerCards">
             <div class="row">

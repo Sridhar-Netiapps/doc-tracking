@@ -96,8 +96,8 @@
 
                 <!-- Buttons -->
                 <div class="d-flex ">
-                    <button type="submit" class="btn btn-primary">Create User</button>
-                    <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{{ route('users.index') }}" class="btn btn-secondary ms-3">Cancel</a>
                 </div>
             </div>
             </form>
@@ -130,14 +130,27 @@
             }
             },
             submitHandler: function(form) {
-                event.preventDefault();
-                $('#confirmModal').modal('show');
-                $('button.yes').on('click', function() {
-                    form.submit();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this form?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f78f35',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
-                $('button.no').on('click', function() {
-                    $('#confirmModal').modal('hide');
-                });
+                // event.preventDefault();
+                // $('#confirmModal').modal('show');
+                // $('button.yes').on('click', function() {
+                //     form.submit();
+                // });
+                // $('button.no').on('click', function() {
+                //     $('#confirmModal').modal('hide');
+                // });
             }
         });
     });

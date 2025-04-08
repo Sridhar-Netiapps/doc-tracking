@@ -7,17 +7,24 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 
-Route::get('/sample', function () {
-    return view('sample.index');
-});
-Route::get('/accounts', function () {
-    return view('sample.accounts');
-});
-Route::get('/', function () {
-    return view('auth.login');
-});
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/sample', function () {
+        return view('sample.index');
+    });
+    Route::get('/accounts', function () {
+        return view('sample.accounts');
+    });
+    Route::get('/accounts-process', function () {
+        // exit('1');
+        return view('sample.accounts-process');
+    });
+    Route::get('/accounts-update', function () {
+        return view('sample.accounts-update');
+    });
+    Route::get('/', function () {
+        return view('auth.login');
+    });
     
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
