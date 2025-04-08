@@ -58,7 +58,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -70,7 +70,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -82,7 +82,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr><tr>
                             <td><input type="checkbox" /></td>
                             <td>UJJ029921</td>
@@ -93,7 +93,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -105,7 +105,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -117,7 +117,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -129,7 +129,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -141,7 +141,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -153,19 +153,7 @@
                             <td>GL</td>
                             <td>UJJ029921</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ000555661</td>
-                            <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -177,7 +165,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -189,7 +177,19 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ000555661</td>
+                            <td>Sent to RMA</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                     </tbody>
                 </table>
@@ -220,7 +220,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -232,7 +232,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -244,7 +244,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr><tr>
                             <td><input type="checkbox" /></td>
                             <td>UJJ029921</td>
@@ -255,7 +255,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -267,7 +267,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" /></td>
@@ -279,7 +279,7 @@
                             <td>GL</td>
                             <td>UJJ000555661</td>
                             <td>Sent to RMA</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm">Retrive</button> </td>
                         </tr>
                     </tbody>
                 </table>

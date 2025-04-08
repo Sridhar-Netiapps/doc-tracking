@@ -53,7 +53,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -65,7 +65,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -77,7 +77,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr><tr>
                         <td><input type="checkbox" /></td>
@@ -88,7 +88,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -100,7 +100,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -112,7 +112,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -124,7 +124,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -136,7 +136,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -148,19 +148,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ029921</td>
-                        <td>Sent to RO</td>
-                        <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>UJJ029921</td>
-                        <td>UJJ029921</td>
-                        <td>6283830405022</td>
-                        <td>Cali</td>
-                        <td>14-05-2024</td>
-                        <td>GL</td>
-                        <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -172,7 +160,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -184,7 +172,19 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
+                        <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>UJJ029921</td>
+                        <td>UJJ029921</td>
+                        <td>6283830405022</td>
+                        <td>Cali</td>
+                        <td>14-05-2024</td>
+                        <td>GL</td>
+                        <td>UJJ000555661</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                 </tbody>
@@ -216,7 +216,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -228,7 +228,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -240,7 +240,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr><tr>
                         <td><input type="checkbox" /></td>
@@ -251,7 +251,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -263,7 +263,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                     <tr>
@@ -275,7 +275,7 @@
                         <td>14-05-2024</td>
                         <td>GL</td>
                         <td>UJJ000555661</td>
-                        <td>Sent to RO</td>
+                        <td>Received</td>
                         <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
                     </tr>
                 </tbody>
@@ -290,7 +290,7 @@
             <div class="modal-content rounded-3 shadow">
                 <form id="update-courier" action="/accounts-update" method="POST">
                     <div class="modal-header p-4 text-center">
-                        <h5 class="mb-0 text-primary">Inward Team Update</h5>
+                        <h5 class="mb-0 text-primary">Upload Vendor Movement Information</h5>
                     </div>
                     <div class="modal-body p-4 row">
                         <div class="col-4 pb-4">
@@ -305,20 +305,46 @@
                             <label>Channel</label>
                             <h5 class="channel">GL</h5>
                         </div>
-                        <div class="col-6 pb-2">
-                            <label for="status" class="form-label">Remarks</label>
-                            <select name="status" class="form-select" required>
-                                <option value="Received">Received</option>
-                                <option value="Rejected">Rejected</option>
-                            </select>
-                        </div>
-                        <div class="col-6 pb-2">
-                            <label for="status" class="form-label">Reason for Rejection</label>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Lot No.</label>
                             <input type="text" name="lot_no" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Work Order No.</label>
+                            <input type="text" name="work_order_no" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Vendor Name</label>
+                            <input type="text" name="vendor_name" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Date of Vendor Movement</label>
+                            <input type="date" name="vendor_movement_date" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">File barcode againt Lot No.</label>
+                            <input type="file" name="file_barcode" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Box Barcode</label>
+                            <input type="file" name="box_barcode" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Date of addition vendor Data</label>
+                            <input type="date" name="vendor_addition_date" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" class="form-select" required>
+                                <option value="In">In</option>
+                                <option value="Out">Out</option>
+                                <option value="Permout">Permout</option>
+                                <option value="Destroyed">Destroyed</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
-                        <a href="/accounts-received" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
+                        <a href="/accounts-update" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
                         {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
                         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                     </div>

@@ -22,6 +22,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounts-update', function () {
         return view('sample.accounts-update');
     });
+    Route::get('/accounts-received', function () {
+        return view('sample.accounts-received');
+    });
     Route::get('/', function () {
         return view('auth.login');
     });
