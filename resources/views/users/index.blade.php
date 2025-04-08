@@ -39,11 +39,13 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
+                                @role('master')
                                 <th>Roles</th>
                                 <th>Permissions</th>
-                                @if(auth()->user()->can('edit-user') || auth()->user()->can('delete-user'))
+                                @endrole
+                                @canany(['edit-user','delete-user'])
                                 <th>Actions</th>
-                                @endif
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
@@ -58,6 +60,7 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
+                                    @role('master')
                                     <td>
                                         @foreach ($user->roles as $role)
                                             <span class="badge text-bg-primary">{{ $role->name }}</span>
@@ -68,22 +71,23 @@
                                             <span class="badge text-bg-secondary">{{ $permission->name }}</span>
                                         @endforeach
                                     </td>
-                                    @if(auth()->user()->can('edit-user') || auth()->user()->can('delete-user'))
+                                    @endrole
+                                    @canany(['edit-user','delete-user'])
                                     <td>
                                         <div class="btn-actions">
-                                            @if(auth()->user()->can('edit-user'))
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
-                                            @endif
-                                            @if(auth()->user()->can('delete-user'))                                            
-                                            <!-- <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
+                                            @can('edit-user')
+                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>                                                
+                                            @endcan
+                                            @can('delete-user')                                    
+                                            <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                                            </form> -->
-                                            @endif
+                                            </form>
+                                            @endcan
                                         </div>
                                     </td>
-                                    @endif
+                                    @endcanany
                                 </tr>
                             @endforeach
                         </tbody>
