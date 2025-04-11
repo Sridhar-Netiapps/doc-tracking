@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\VendorController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -67,7 +68,8 @@ Route::group(['middleware' => ['auth']], function () {
     //  Route::post('/ProcessStatus/store', function ()
     //  {
     // Route::post('process_status',RoleController::class);
-    
+    Route::resource('vendor', VendorController::class);
+
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UserController::class);
