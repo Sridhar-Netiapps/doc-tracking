@@ -7,6 +7,16 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
+    // Constructor for middleware
+    // public function __construct()
+    // {
+    //     // Add the permission middleware as needed for each method
+    //     // Example:
+    //     // $this->middleware('permission:view-user')->only('index','show');
+    //     // $this->middleware('permission:create-user')->only(['create', 'store']);
+    //     // $this->middleware('permission:edit-user')->only(['edit', 'update']);
+    //     // $this->middleware('permission:delete-user')->only('destroy');
+    // }
     // List all permissions
     public function index()
     {

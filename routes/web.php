@@ -6,14 +6,15 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AccountController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/sample', function () {
         return view('sample.index');
     });
-    Route::get('/accounts', function () {
-        return view('sample.accounts');
+    Route::get('/accounts-index', function () {
+        return view('sample.index');
     });
     Route::get('/accounts-process', function () {
         // exit('1');
@@ -22,13 +23,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounts-update', function () {
         return view('sample.accounts-update');
     });
-    Route::get('/accounts-received', function () {
-        return view('sample.accounts-received');
-    });
     Route::get('/', function () {
         return view('auth.login');
     });
+
+    Route::prefix('accounts')->group(function () {
+        Route::get('/', [AccountController::class, 'index'])->name('accounts.index'); // Show all accounts
+        Route::get('/create', [AccountController::class, 'create'])->name('accounts.create'); // Show form to create
+        Route::post('/', [AccountController::class, 'store'])->name('accounts.store'); // Store new approval
+        
+        Route::get('/{approvalType}', [AccountController::class, 'show'])->name('accounts.show'); // Show details
+        Route::get('/{approvalType}/edit', [AccountController::class, 'edit'])->name('accounts.edit'); // Edit form
+        Route::put('/{approvalType}', [AccountController::class, 'update'])->name('accounts.update'); // Update approval
+        Route::delete('/{approvalType}', [AccountController::class, 'destroy'])->name('accounts.destroy'); // Delete approval
     
+        Route::get('/{approvalType}/download', [AccountController::class, 'downloadPDF'])->name('accounts.download'); // Download as PDF
+    });
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
     Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');

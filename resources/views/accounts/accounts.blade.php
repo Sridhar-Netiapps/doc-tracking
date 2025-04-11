@@ -32,20 +32,23 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">New Accounts <span class="badge text-bg-warning">2300</span></button>
+                    <button class="nav-link active" id="savings-tab" data-bs-toggle="tab" data-bs-target="#savings-tab-pane" type="button" role="tab" aria-controls="savings-tab-pane" aria-selected="true">Savings Accounts <span class="badge text-bg-warning">{{count($accounts['savings'])}}</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Accounts list <span class="badge text-bg-warning">200</span></button>
+                    <button class="nav-link" id="current-tab" data-bs-toggle="tab" data-bs-target="#current-tab-pane" type="button" role="tab" aria-controls="current-tab-pane" aria-selected="false">Current Accounts<span class="badge text-bg-warning">{{count($accounts['current'])}}</span></button>
                 </li>
-
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="false">Loan Accounts<span class="badge text-bg-warning">{{count($accounts['loan'])}}</span></button>
+                </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="tab-pane fade show active" id="savings-tab-pane" role="tabpanel" aria-labelledby="savings-tab" tabindex="0">
                     <table class="table table-hover">
                         <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" /> </th>
                             <th scope="col">Unique Number</th>
+                            {{-- <th scope="col">Region</th> --}}
                             <th scope="col">Branch Code</th>
                             <th scope="col">Branch Name</th>
                             <th scope="col">CIF ID</th>
@@ -59,6 +62,40 @@
                         </tr>
                         </thead>
                         <tbody>
+                            @foreach ($accounts['savings'] as $row)
+                                <tr>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    <td><input type="checkbox" /></td>
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                    {{-- <td>{{ $row->region }}</td> --}}
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->cif_id }}</td>
+                                    <td>{{ $row->account_number }}</td>
+                                    <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>
+                                    <td>{{ $row->business_category }}</td>
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    {{-- <td>{{ $row->channel }}</td> --}}
+                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
+                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
+                                    {{-- <td>{{ $row->branch_office_type }}</td>
+                                    <td>{{ $row->pincode }}</td>
+                                    <td>{{ $row->city }}</td> --}}
+                                    <td>{{ $row->status }}</td>
+                                    <td class="border-start">
+                                        <div class="btn-actions">
+                                            <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         <tr>
                             <td><input type="checkbox" /></td>
                             <td>UJJ029921</td>
@@ -229,7 +266,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <div class="tab-pane fade" id="current-tab-pane" role="tabpanel" aria-labelledby="current-tab" tabindex="0">
                     <table class="table">
                         <thead>
                         <tr>
@@ -248,6 +285,182 @@
                         </tr>
                         </thead>
                         <tbody>
+                            @foreach ($accounts['current'] as $row)
+                                <tr>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    <td><input type="checkbox" /></td>
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                    {{-- <td>{{ $row->region }}</td> --}}
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->cif_id }}</td>
+                                    <td>{{ $row->account_number }}</td>
+                                    <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>
+                                    <td>{{ $row->business_category }}</td>
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    {{-- <td>{{ $row->channel }}</td> --}}
+                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
+                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
+                                    {{-- <td>{{ $row->branch_office_type }}</td>
+                                    <td>{{ $row->pincode }}</td>
+                                    <td>{{ $row->city }}</td> --}}
+                                    <td>
+                                        {{ $row->status }}
+                                    </td>
+                                    <td class="border-start">
+                                        <div class="btn-actions">
+                                            <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr><tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>UJJ029921</td>
+                            <td>1111</td>
+                            <td>GALA</td>
+                            <td>UJJ029921</td>
+                            <td>6283830405022</td>
+                            <td>Cali</td>
+                            <td>14-05-2024</td>
+                            <td>GL</td>
+                            <td>UJJ029921</td>
+                            <td>Pending</td>
+                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="tab-pane fade" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col"><input type="checkbox" /> </th>
+                            <th scope="col">Unique Number</th>
+                            <th scope="col">Branch Code</th>
+                            <th scope="col">Branch Name</th>
+                            <th scope="col">CIF ID</th>
+                            <th scope="col">Account Number</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Account Creation Date</th>
+                            <th scope="col">Channel</th>
+                            <th scope="col">PGK No. / Glow application ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="border-start">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($accounts['loan'] as $row)
+                                <tr>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    <td><input type="checkbox" /></td>
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                    {{-- <td>{{ $row->region }}</td> --}}
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->cif_id }}</td>
+                                    <td>{{ $row->account_number }}</td>
+                                    <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>
+                                    <td>{{ $row->business_category }}</td>
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    {{-- <td>{{ $row->channel }}</td> --}}
+                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
+                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
+                                    {{-- <td>{{ $row->branch_office_type }}</td>
+                                    <td>{{ $row->pincode }}</td>
+                                    <td>{{ $row->city }}</td> --}}
+                                    <td>{{ $row->status }}</td>
+                                    <td class="border-start">
+                                        <div class="btn-actions">
+                                            <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         <tr>
                             <td><input type="checkbox" /></td>
                             <td>UJJ029921</td>
