@@ -24,30 +24,41 @@
         </div>
     @endif
 
-   <table class="table mt-3">
-       <thead>
-           <tr>
-               <th>Name</th>
-               <th>Location</th>
-               <th>Actions</th>
-           </tr>
-       </thead>
-       <tbody>
-           @foreach ($vendors as $vendor)
-               <tr>
-                   <td>{{ $vendor->name }}</td>
-                   <td>{{ $vendor->location }}</td>
-                   <td>
-                       <a href="{{ route('vendor.edit', $vendor->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                       <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" style="display:inline-block;">
-                           @csrf
-                           @method('DELETE')
-                           <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                       </form>
-                   </td>
-               </tr>
-           @endforeach
-       </tbody>
-   </table>
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(count($vendors) > 0)
+                    @foreach ($vendors as $vendor)
+                        <tr>
+                            <td>{{ $vendor->name }}</td>
+                            <td>{{ $vendor->location }}</td>
+                            <td>
+                                <a href="{{ route('vendor.edit', $vendor->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="3">No Vendors Found...</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+
+        <!-- Pagination block -->
+        {{ !empty($vendors) ? $vendors->links() : '' }}
+    </div>
 </div>
 @endsection

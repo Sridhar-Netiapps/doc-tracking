@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->renameColumn('sender','process');
-            $table->renameColumn('sent_at','deleted_at');            
+            // $table->renameColumn('sender','process');
+            // $table->renameColumn('sent_at','deleted_at');            
             $table->enum('status', ['active', 'inactive'])->default('active')->change();
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();

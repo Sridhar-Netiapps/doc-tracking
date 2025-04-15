@@ -21,8 +21,9 @@ class ProcessStatusController extends Controller
     // Display all process statuses
     public function index()
     {
-        $statuses = ProcessStatus::all();
+        $statuses = ProcessStatus::paginate(3);
         return view('process_status.index', compact('statuses'));
+
     }
 
     // Display form to create a new process status

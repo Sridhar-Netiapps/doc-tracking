@@ -78,6 +78,10 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $statuses->links() }}
+                    </div>
+                    
                 </div>
             </div>
         </div>

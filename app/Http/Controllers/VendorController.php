@@ -9,26 +9,32 @@ class VendorController extends Controller
 {
     public function index()
     {
-        $vendors = Vendor::all();
+        $vendors = Vendor::paginate(5)->withQueryString();
         return view('vendor.index', compact('vendors'));
     }
+
 
     public function create()
     {
         return view('vendor.create');
     }
 
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
         ]);
 
-        Vendor::create($request->all());
+        Vendor::create([
+            'name' => $request->name,
+            'location' => $request->location,
+            'created_by' => auth()->id(), // This line fixes the error
+        ]);
 
         return redirect()->route('vendor.index')->with('success', 'Vendor created successfully.');
     }
+
 
     public function edit(Vendor $vendor)
     {

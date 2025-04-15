@@ -25,10 +25,8 @@ class UserController extends Controller
     // List all users
     public function index()
     {
-        // Fetching all users and eager loading their roles and permissions
-        $users = User::with('roles', 'permissions')->get();
+        $users = User::with('roles', 'permissions')->paginate(10);
 
-        // Passing the users data to the view
         return view('users.index', compact('users'));
     }
 
