@@ -8,6 +8,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\EmailController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -74,6 +75,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UserController::class);
     // Route::resource('branches', BranchController::class);
+    Route::resource('emails', EmailController::class);
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
