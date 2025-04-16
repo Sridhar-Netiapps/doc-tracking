@@ -25,7 +25,7 @@ class UserController extends Controller
     // List all users
     public function index()
     {
-        $users = User::with('roles', 'permissions')->paginate(10);
+        $users = User::with('roles', 'permissions')->paginate(5);
 
         return view('users.index', compact('users'));
     }
@@ -120,7 +120,7 @@ class UserController extends Controller
             'mobile_number' => $request->input('mobile_number'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
-            
+
         ]);
 
         // Redirecting back with success message
@@ -130,7 +130,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        
+
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
@@ -140,18 +140,18 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
         $user->syncRoles([$request->input('role')]);
-        
+
         return redirect()->back()->with('success', 'Role assigned successfully.');
     }
-    
+
     public function assignPermission(Request $request, User $user)
     {
         $request->validate([
             'permission' => 'required|exists:permissions,name',
         ]);
-        
+
         $user->givePermissionTo($request->input('permission'));
-        
+
         return redirect()->back()->with('success', 'Permission assigned successfully.');
     }
 }

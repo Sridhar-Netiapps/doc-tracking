@@ -76,9 +76,9 @@
                                     <td>
                                         <div class="btn-actions">
                                             @can('edit-user')
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>                                                
+                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
                                             @endcan
-                                            @can('delete-user')                                    
+                                            @can('delete-user')
                                             <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -92,7 +92,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-center mt-3">
+                    <div class="">
                         {{ $users->links('pagination::bootstrap-5') }}
                     </div>
                 </div>

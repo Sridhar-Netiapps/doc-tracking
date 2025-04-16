@@ -312,5 +312,26 @@ h2{
 
 div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
     color: #ffffff !important;
-    background-color: #229e82 !important;
+    background-color: #f78f35 !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):focus-visible{
+    box-shadow: none;
+}
+
+#doughnutChart{
+    margin: auto;
+}
+
+.page-link.active, .active > .page-link{
+    background-color: #229e82;
+    border-color: #229e82;
+}
+
+.page-link{
+    color: #229e82;
+}
+
+.page-link:focus{
+    color: #229e82;
 }
