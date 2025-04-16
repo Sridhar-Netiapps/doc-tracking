@@ -57,8 +57,12 @@
             </tbody>
         </table>
 
-        <!-- Pagination block -->
-        {{ !empty($vendors) ? $vendors->links() : '' }}
+        <div class="row justify-content-center mt-3">
+            <div class="col-auto">
+                {{ !empty($vendors) ? $vendors->links() : '' }}
+            </div>
+        </div>
+        
     </div>
 </div>
 @endsection

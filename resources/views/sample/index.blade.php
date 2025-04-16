@@ -200,6 +200,7 @@
                         <th scope="col">Channel</th>
                         <th scope="col">PGK No. / Glow application ID</th>
                         <th scope="col" class="border-start">Action</th>
+                        
                     </tr>
                     </thead>
                     <tbody>
