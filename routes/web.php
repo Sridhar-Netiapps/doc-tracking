@@ -25,21 +25,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounts-update', function () {
         return view('sample.accounts-update');
     });
-    Route::get('/', function () {
-        return view('auth.login');
+    Route::get('/', function () { 
+        return redirect(route('login'));
     });
 
     Route::prefix('accounts')->group(function () {
-        Route::get('/', [AccountController::class, 'index'])->name('accounts.index'); // Show all accounts
-        Route::get('/create', [AccountController::class, 'create'])->name('accounts.create'); // Show form to create
-        Route::post('/', [AccountController::class, 'store'])->name('accounts.store'); // Store new approval
+        Route::get('/{type}', [AccountController::class, 'index'])->name('accounts.index');
+        Route::post('/', [AccountController::class, 'filter'])->name('accounts.filter');
+        Route::get('/create', [AccountController::class, 'create'])->name('accounts.create');
+        Route::post('/', [AccountController::class, 'store'])->name('accounts.store');
         
-        Route::get('/{approvalType}', [AccountController::class, 'show'])->name('accounts.show'); // Show details
-        Route::get('/{approvalType}/edit', [AccountController::class, 'edit'])->name('accounts.edit'); // Edit form
-        Route::put('/{approvalType}', [AccountController::class, 'update'])->name('accounts.update'); // Update approval
-        Route::delete('/{approvalType}', [AccountController::class, 'destroy'])->name('accounts.destroy'); // Delete approval
+        Route::get('/{approvalType}', [AccountController::class, 'show'])->name('accounts.show');
+        Route::get('/{approvalType}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
+        Route::put('/{approvalType}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::delete('/{approvalType}', [AccountController::class, 'destroy'])->name('accounts.destroy');
     
-        Route::get('/{approvalType}/download', [AccountController::class, 'downloadPDF'])->name('accounts.download'); // Download as PDF
+        Route::get('/{approvalType}/download', [AccountController::class, 'downloadPDF'])->name('accounts.download');
     });
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController

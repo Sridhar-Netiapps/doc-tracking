@@ -1,16 +1,19 @@
-<div class="col-1">
-    <div class="listNav">
-        <div class="navigationBlock">
-            <a class="navbar-brand" href="{{ url('home') }}"><img src="/images/dashboard_Inactive_btn.svg"> Dashboard</a>
-            <a class="navbar-brand" href="{{ url('devices') }}"><img src="/images/devices_Inactive_btn.svg"> Devices</a>
-            <a class="navbar-brand" href="{{ url('files') }}"><img src="/images/media_Inactive_btn.svg"> Media</a>
-            <a class="navbar-brand" href="{{ url('playlists') }}"><img src="/images/playlist_Inactive_btn.svg"> Playlist</a>
-            <a class="navbar-brand" href="{{ url('publish') }}"><img src="/images/publish_Inactive_btn.svg">  Publish</a>
-            <a class="navbar-brand" href="{{ url('templates') }}"><img src="/images/template_Inactive_btn.svg"> Template</a>
-            <a class="navbar-brand" href="{{ url('queue') }}"><img src="/images/queue_Inactive_btn.svg"> Queue</a>
-            @if (auth()->user()->hasRole('super_admin'))
-            {{-- <a class="navbar-brand" href="{{ url('settings') }}"><img src="/images/settings_Inactive_btn.svg"> Settings</a> --}}
-            @endif
+<div class="bg-new">
+    <div class="container-fluid">
+        <div class="row justify-content-start align-items-center">
+            {{-- <div class="col-3">
+                <select class="form-select" data-bs-placement="Select Category">
+                    <option>Account Creation</option>
+                    <option>Voucher</option>
+                    <option>Insurance</option>
+                </select>
+            </div> --}}
+            <div class="treeList h-100">
+                <ul>
+                    <li class="mb-auto"><a href="{{ route('accounts.index','new') }}">New Accounts</a></li>
+                    <li class="mb-auto"><a href="{{ route('accounts.index','all') }}">All Accounts</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

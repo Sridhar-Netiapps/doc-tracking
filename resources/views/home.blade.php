@@ -1,21 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="bg-new">
-        <div class="container">
-            <div class="row justify-content-start align-items-center">
-                <div class="col-3">
-                    <select class="form-select" data-bs-placement="Select Category">
-                        <option>Account Creation</option>
-                        <option>Voucher</option>
-                        <option>Insurance</option>
-                    </select>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
 <div class="container">
     <div class="row justify-content-center">
         <div class="d-flex mb-3"><h2>Account Creation</h2> <div class="ms-2"><a href="/accounts">View All</a></div></div>
