@@ -335,3 +335,10 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):fo
 .page-link:focus{
     color: #229e82;
 }
+
+.filter-bg{
+   background: rgb(255 255 255 / 77%);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+}

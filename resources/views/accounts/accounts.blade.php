@@ -1,55 +1,69 @@
 @extends('layouts.app')
 @section('content')
 <div class="container-fluid mt-3">
-    <div class="row">
-        <div class="col-3">
-            <h3>{{ ucfirst($type) }} Accounts</h3>
-        </div>
-        <div class="col-9">
-            <form method="POST" action="{{ route('accounts.index',$type) }}">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
                 <div class="row">
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
+                    <div class="col-12 px-0">
+                        <div class="filter-bg px-4">
+                            <form method="POST" action="{{ route('accounts.index',$type) }}">
+                                <div class="row gx-3 gy-3">
+                                    <div class="col-2">
+                                        <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
+                                    </div>
+                                    <div class="col-2">
+                                        <select class="form-select select2" name="region">
+                                            <option value="">Select Region</option>
+                                            <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
+                                            <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
+                                            <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
+                                            <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                                            <!-- Add more -->
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
+                                    </div>
+                                    <div class="col-2 ">
+                                        <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
+                                    </div>
+                                    <div class="col-2 ">
+                                        <button class="btn btn-secondary" type="reset">Clear</button>
+                                        <button class="btn btn-primary" type="submit">Filter</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
+                    <div class="col-12 ">
+                        <h3>{{ ucfirst($type) }} Accounts</h3>
                     </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <select class="form-control select2" name="region">
-                            <option value="">Select Region</option>
-                            <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                            <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                            <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                            <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                            <!-- Add more -->
-                        </select>
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <button class="btn btn-secondary" type="reset">Clear</button>
-                        <button class="btn btn-primary" type="submit">Filter</button>
-                    </div>
+
                 </div>
-            </form>            
+            </div>
+            <div class="col-1"></div>
         </div>
     </div>
+
 </div>
 <div class="container-fluid mt-3">
-    <div class="row">
+    <div class="row ">
         <div class="col-1"></div>
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -61,6 +75,9 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="false">Loan Accounts <span class="badge text-bg-warning">{{count($accounts['Loan'])}}</span></button>
+                </li>
+                <li class="nav-item ms-auto">
+                    <button class="btn btn-primary text-end">Proceed</button>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
