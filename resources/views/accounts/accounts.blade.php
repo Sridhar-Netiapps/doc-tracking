@@ -43,8 +43,16 @@
                         <button class="btn btn-secondary" type="reset">Clear</button>
                         <button class="btn btn-primary" type="submit">Filter</button>
                     </div>
+                    <form method="POST" action="{{ route('accounts.bulkReview') }}" id="selectedForm">
+                        @csrf
+                        <div class="col-2 mt-3">
+                            
+                                <button class="btn btn-success btn-sm proceed" type="submit">Proceed with Selected</button>
+                            
+                        </div>
+                
                 </div>
-            </form>            
+                       
         </div>
     </div>
 </div>
@@ -65,9 +73,11 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="savings-tab-pane" role="tabpanel" aria-labelledby="savings-tab" tabindex="0">
+                   
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            
                             <th scope="col"><input type="checkbox" /> </th>
                             <th scope="col">Unique Number</th>
                             {{-- <th scope="col">Region</th> --}}
@@ -86,8 +96,13 @@
                         <tbody>
                             @foreach ($accounts['Savings'] as $row)
                                 <tr>
+                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                        <!-- Other table data -->
+                                    {{-- </tr>
+                                    
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    <td><input type="checkbox" /></td>
+                                    {{-- <td><input type="checkbox" /></td> --}} 
                                     <td>{{ $row->unique_ref_no }}</td>
                                     {{-- <td>{{ $row->region }}</td> --}}
                                     <td>{{ $row->branch_code }}</td>
@@ -106,185 +121,21 @@
                                     <td>{{ $row->pincode }}</td>
                                     <td>{{ $row->city }}</td> --}}
                                     <td>{{ $row->status }}</td>
-                                    <td class="border-start">
-                                        <div class="btn-actions">
-                                            <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    {{-- <td class="border-start">
+                                        <div class="btn-actions"> --}}
+                                            {{-- <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             {{-- <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
                                             </form> --}}
-                                        </div>
+                                        {{-- </div> --}}
                                     </td>
                                 </tr>
                             @endforeach
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr><tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
+                        </tbody>
+                    </table>
+                </form>
                         </tbody>
                     </table>
                 </div>
@@ -309,9 +160,10 @@
                         <tbody>
                             @foreach ($accounts['Current'] as $row)
                                 <tr>
+                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    <td><input type="checkbox" /></td>
-                                    <td>{{ $row->unique_ref_no }}</td>
+                                    {{-- <td><input type="checkbox" /></td>
+                                    <td>{{ $row->unique_ref_no }}</td> --}}
                                     {{-- <td>{{ $row->region }}</td> --}}
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
@@ -343,89 +195,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr><tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
                         </tbody>
                     </table>
 
@@ -451,8 +220,9 @@
                         <tbody>
                             @foreach ($accounts['Loan'] as $row)
                                 <tr>
+                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    <td><input type="checkbox" /></td>
+                                    {{-- <td><input type="checkbox" /></td> --}}
                                     <td>{{ $row->unique_ref_no }}</td>
                                     {{-- <td>{{ $row->region }}</td> --}}
                                     <td>{{ $row->branch_code }}</td>
@@ -483,89 +253,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr><tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>UJJ029921</td>
-                            <td>1111</td>
-                            <td>GALA</td>
-                            <td>UJJ029921</td>
-                            <td>6283830405022</td>
-                            <td>Cali</td>
-                            <td>14-05-2024</td>
-                            <td>GL</td>
-                            <td>UJJ029921</td>
-                            <td>Pending</td>
-                            <td class="border-start"><button  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button> </td>
-                        </tr>
                         </tbody>
                     </table>
 
@@ -617,4 +304,21 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.proceed').click(function(){
+            var ids = [];
+            $('input.account:checked').each(function() {
+                ids.push($(this).attr('data-id'));
+            });
+            console.log(ids);
+        })
+    });
+    document.getElementById('selectAll').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('input[name="account_ids[]"]');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+</script>
 @endsection
+
+

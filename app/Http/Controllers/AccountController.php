@@ -69,5 +69,21 @@ class AccountController extends Controller
         $accounts = $query->groupBy('type_of_account');
         // dd($accounts);
         return view('accounts.accounts', compact('accounts','type'));
+
     }
+        public function bulkReview(Request $request)
+    {
+        $accountIds = $request->input('account_ids', []);
+        
+        if (empty($accountIds)) {
+            return redirect()->back()->with('error', 'Please select at least one account.');
+        }
+
+        $accounts = Account::whereIn('id', $accountIds)->get();
+
+        return view('accounts.bulk_review', compact('accounts'))->with('type', 'Savings');
+
+    }
+
+
 }
