@@ -56,13 +56,9 @@
                 @endif
             </tbody>
         </table>
-
-        <div class="row justify-content-center mt-3">
-            <div class="col-auto">
-                {{ !empty($vendors) ? $vendors->links() : '' }}
-            </div>
+        <div class="">
+            {{ $vendors->links('pagination::bootstrap-5') }}
         </div>
-        
     </div>
 </div>
 @endsection
