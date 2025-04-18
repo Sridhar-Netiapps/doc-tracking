@@ -50,9 +50,9 @@
                                 <button class="btn btn-success btn-sm proceed" type="submit">Proceed with Selected</button>
                             
                         </div>
-                
+                </form>
                 </div>
-                       
+            </form>            
         </div>
     </div>
 </div>
@@ -77,7 +77,6 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            
                             <th scope="col"><input type="checkbox" /> </th>
                             <th scope="col">Unique Number</th>
                             {{-- <th scope="col">Region</th> --}}
