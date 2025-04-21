@@ -81,9 +81,10 @@ class AccountController extends Controller
 
         $accounts = Account::whereIn('id', $accountIds)->get();
 
-        return view('accounts.bulk_review', compact('accounts'))->with('type', 'Savings');
+        return view('accounts.bulkReview', compact('accounts'))->with('type', 'Savings');
 
     }
+    
 
 
 }

@@ -42,17 +42,16 @@
                     <div class="col-2 mt-3">
                         <button class="btn btn-secondary" type="reset">Clear</button>
                         <button class="btn btn-primary" type="submit">Filter</button>
-                    </div>
-                    <form method="POST" action="{{ route('accounts.bulkReview') }}" id="selectedForm">
-                        @csrf
-                        <div class="col-2 mt-3">
-                            
-                                <button class="btn btn-success btn-sm proceed" type="submit">Proceed with Selected</button>
-                            
-                        </div>
-                </form>
+                    </div>                    
                 </div>
-            </form>            
+            </form>  
+            <form method="POST" action="{{ route('accounts.bulkReview') }}" id="selectedForm">
+                @csrf
+                <input type="hidden" name="account_ids[]">
+                <div class="col-2 mt-3">
+                    <button class="btn btn-success btn-sm proceed" type="submit">Proceed with Selected</button>   
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -304,20 +303,27 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('.proceed').click(function(){
-            var ids = [];
-            $('input.account:checked').each(function() {
-                ids.push($(this).attr('data-id'));
+    $(document).ready(function () {
+        $('#selectedForm').submit(function () {
+            let selected = [];
+
+            // Collect checked account IDs from all tabs
+            $('.account:checked').each(function () {
+                selected.push($(this).data('id'));
             });
-            console.log(ids);
-        })
-    });
-    document.getElementById('selectAll').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('input[name="account_ids[]"]');
-        checkboxes.forEach(cb => cb.checked = this.checked);
+            
+            if (selected.length > 0) {
+                $('input[name="account_ids[]"]').val(selected);
+                console.log(selected);
+                $('#selectedForm').submit();
+            } else {
+                alert("Please select at least one account.");
+                return false;
+            }
+        });
     });
 </script>
+
 @endsection
 
 

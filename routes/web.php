@@ -29,14 +29,15 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect(route('login'));
     });
     
-
-    Route::post('/accounts/bulkReview', [AccountController::class, 'bulkReview'])->name('accounts.bulkReview');
+    
+    // Route::post('/accounts/bulkReview', [AccountController::class, 'bulkReview'])->name('accounts.bulkReview');
 
     Route::prefix('accounts')->group(function () {
         Route::get('/{type}', [AccountController::class, 'index'])->name('accounts.index');
         Route::post('/', [AccountController::class, 'filter'])->name('accounts.filter');
         Route::get('/create', [AccountController::class, 'create'])->name('accounts.create');
         Route::post('/', [AccountController::class, 'store'])->name('accounts.store');
+        Route::post('/bulkReview', [AccountController::class, 'bulkReview'])->name('accounts.bulkReview');
         
         Route::get('/{approvalType}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/{approvalType}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
