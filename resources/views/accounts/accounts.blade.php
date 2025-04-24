@@ -375,36 +375,31 @@
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
         $('.proceed').click(function () {
-            let loan_ids = [];
-            let goldloan_ids = [];
-            let aof_ids = [];
-            let dtrf_ids = [];
+            let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+            let hasSelection = false;
 
-            $('input.loan:checked').each(function () {
-                loan_ids.push($(this).data('id'));
+            $('#proceed').find('input[name$="_ids[]"]').remove();
+
+            documentTypes.forEach(function (type) {
+                let ids = [];
+
+                $('input.' + type + ':checked').each(function () {
+                    ids.push($(this).data('id'));
+                });
+
+                if (ids.length > 0) {
+                    hasSelection = true;
+
+                    ids.forEach(function (id) {
+                        $('#proceed').append(
+                            '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+                        );
+                    });
+                }
             });
-            $('input.goldloan:checked').each(function () {
-                goldloan_ids.push($(this).data('id'));
-            });
-            $('input.aof:checked').each(function () {
-                aof_ids.push($(this).data('id'));
-            });
-            $('input.dtrf:checked').each(function () {
-                dtrf_ids.push($(this).data('id'));
-            });
-            
-            if (loan_ids.length > 0 || goldloan_ids.length > 0 || aof_ids.length > 0 || dtrf_ids.length > 0) {
-                console.log(loan_ids);
-                console.log(goldloan_ids);
-                console.log(aof_ids);
-                console.log(dtrf_ids);
-                
-                $('input[name="loan_ids[]"]').val(loan_ids);
-                $('input[name="goldloan_ids[]"]').val(goldloan_ids);
-                $('input[name="aof_ids[]"]').val(aof_ids);
-                $('input[name="dtrf_ids[]"]').val(dtrf_ids);
-                return false;
-                // $('#proceed').submit();
+
+            if (hasSelection) {
+                $('#proceed').submit();
             } else {
                 Swal.fire({
                     title: "Warning!",
@@ -412,7 +407,6 @@
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
-                return false;
             }
         });
     });
