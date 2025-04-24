@@ -83,6 +83,7 @@ class DocumentController extends Controller
     }
         public function bulkReview(Request $request)
     {
+        dd($request->all());
         $accountIds = $request->input('account_ids', []);
         
         if (empty($accountIds)) {
