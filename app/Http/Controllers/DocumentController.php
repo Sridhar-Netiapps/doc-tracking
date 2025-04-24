@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Account;
+use App\Models\AccountOpeningDocument;
+use App\Models\DtrfDocument;
+use App\Models\GoldLoanDocument;
+use App\Models\LoanDocument;
 use Carbon\Carbon;
 
-class AccountController extends Controller
+class DocumentController extends Controller
 {
     // Constructor for middleware
     // public function __construct()
@@ -23,7 +26,18 @@ class AccountController extends Controller
         // dd($type);
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
-        $query = Account::whereIn('type_of_account', ['Savings', 'Current', 'Loan']);
+        if($type =='new'){
+            $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
+            $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
+            $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(50);
+            $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
+        }
+        else{
+            $loan_document = LoanDocument::paginate(50);
+            $gold_loan_document = GoldLoanDocument::paginate(50);
+            $dtrf_document = DtrfDocument::paginate(50);
+            $account_opening_document = AccountOpeningDocument::paginate(50);
+        }
         // if ($request->filled('unique_ref_no')) {
         //     $query->where('unique_ref_no', 'like', '%' . $request->unique_ref_no . '%');
         // }
@@ -57,19 +71,15 @@ class AccountController extends Controller
         // if ($request->filled('from_date') && $request->filled('to_date')) {
         //     $query->whereBetween('account_creation_date', [$request->from_date, $request->to_date]);
         // }
-        if($type =='new'){
-            $query->whereBetween('account_creation_date', [$start_date, $end_date]);
-        }
 
-        // $accounts['savings'] = Account::where('type_of_account','Savings')->get();
-        // $accounts['current'] = Account::where('type_of_account','Current')->get();
-        // $accounts['loan'] = Account::where('type_of_account','Loan')->get();
-        $query = $query->get();
+        // $accounts['savings'] = LoanDocument::where('type_of_account','Savings')->get();
+        // $accounts['current'] = LoanDocument::where('type_of_account','Current')->get();
+        // $accounts['loan'] = LoanDocument::where('type_of_account','Loan')->get();
+        // $query = $query->get();
 
-        $accounts = $query->groupBy('type_of_account');
-        // dd($accounts);
-        return view('accounts.accounts', compact('accounts','type'));
-
+        // $accounts = $query->groupBy('type_of_account');
+        // dd($loan_document);
+        return view('accounts.accounts', compact('loan_document','gold_loan_document','dtrf_document','account_opening_document','type'));
     }
         public function bulkReview(Request $request)
     {
@@ -79,7 +89,7 @@ class AccountController extends Controller
             return redirect()->back()->with('error', 'Please select at least one account.');
         }
 
-        $accounts = Account::whereIn('id', $accountIds)->get();
+        $accounts = LoanDocument::whereIn('id', $accountIds)->get();
 
         return view('accounts.bulkReview', compact('accounts'))->with('type', 'Savings');
 
