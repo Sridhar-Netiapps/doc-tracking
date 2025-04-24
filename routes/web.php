@@ -6,7 +6,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 
@@ -28,19 +28,23 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () { 
         return redirect(route('login'));
     });
-
-    Route::prefix('accounts')->group(function () {
-        Route::get('/{type}', [AccountController::class, 'index'])->name('accounts.index');
-        Route::post('/', [AccountController::class, 'filter'])->name('accounts.filter');
-        Route::get('/create', [AccountController::class, 'create'])->name('accounts.create');
-        Route::post('/', [AccountController::class, 'store'])->name('accounts.store');
-        
-        Route::get('/{approvalType}', [AccountController::class, 'show'])->name('accounts.show');
-        Route::get('/{approvalType}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
-        Route::put('/{approvalType}', [AccountController::class, 'update'])->name('accounts.update');
-        Route::delete('/{approvalType}', [AccountController::class, 'destroy'])->name('accounts.destroy');
     
-        Route::get('/{approvalType}/download', [AccountController::class, 'downloadPDF'])->name('accounts.download');
+    
+    // Route::post('/accounts/proceed', [DocumentController::class, 'proceed'])->name('accounts.proceed');
+
+    Route::prefix('documents')->group(function () {
+        Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
+        Route::post('/', [DocumentController::class, 'filter'])->name('accounts.filter');
+        Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
+        Route::post('/', [DocumentController::class, 'store'])->name('accounts.store');
+        Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
+        
+        Route::get('/{approvalType}', [DocumentController::class, 'show'])->name('accounts.show');
+        Route::get('/{approvalType}/edit', [DocumentController::class, 'edit'])->name('accounts.edit');
+        Route::put('/{approvalType}', [DocumentController::class, 'update'])->name('accounts.update');
+        Route::delete('/{approvalType}', [DocumentController::class, 'destroy'])->name('accounts.destroy');
+    
+        Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
@@ -80,7 +84,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
-
+    
 
     
         // Route::get('/', [UserController::class, 'index'])->name('index');
