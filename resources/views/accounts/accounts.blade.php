@@ -2,59 +2,58 @@
 @section('content')
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-3">
-            <h3>{{ ucfirst($type) }} Accounts</h3>
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="filter-bg">
+                <form method="POST" action="{{ route('accounts.index',$type) }}">
+                    <div class="row">
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-control select2" name="region">
+                                <option value="">Select Region</option>
+                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
+                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
+                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
+                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                                <!-- Add more -->
+                            </select>
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <button class="btn btn-secondary" type="reset">Clear</button>
+                            <button class="btn btn-primary" type="submit">Filter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="col-9">
-            <form method="POST" action="{{ route('accounts.index',$type) }}">
-                <div class="row">
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <select class="form-control select2" name="region">
-                            <option value="">Select Region</option>
-                            <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                            <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                            <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                            <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                            <!-- Add more -->
-                        </select>
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <button class="btn btn-secondary" type="reset">Clear</button>
-                        <button class="btn btn-primary" type="submit">Filter</button>
-                    </div>                    
-                </div>
-            </form>  
-            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
-                @csrf
-                <input type="hidden" name="loan_ids[]">
-                <input type="hidden" name="goldloan_ids[]">
-                <input type="hidden" name="aof_ids[]">
-                <input type="hidden" name="dtrf_ids[]">
-                <div class="col-2 mt-3">
-                    <button class="btn btn-success btn-sm proceed" type="button">Proceed</button>   
-                </div>
-            </form>
+        <div class="col-1"></div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <h3>{{ ucfirst($type) }} Accounts</h3>
         </div>
         <div class="col-1"></div>
     </div>
@@ -75,6 +74,12 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{count($dtrf_document)}}</span></button>
+                </li>
+                <li class="ms-auto">
+                    <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                        @csrf
+                        <button class="btn btn-primary proceed" type="button">Proceed</button>
+                    </form>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -365,36 +370,31 @@
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
         $('.proceed').click(function () {
-            let loan_ids = [];
-            let goldloan_ids = [];
-            let aof_ids = [];
-            let dtrf_ids = [];
+            let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+            let hasSelection = false;
 
-            $('input.loan:checked').each(function () {
-                loan_ids.push($(this).data('id'));
-            });
-            $('input.goldloan:checked').each(function () {
-                goldloan_ids.push($(this).data('id'));
-            });
-            $('input.aof:checked').each(function () {
-                aof_ids.push($(this).data('id'));
-            });
-            $('input.dtrf:checked').each(function () {
-                dtrf_ids.push($(this).data('id'));
+            $('#proceed').find('input[name$="_ids[]"]').remove();
+
+            documentTypes.forEach(function (type) {
+                let ids = [];
+
+                $('input.' + type + ':checked').each(function () {
+                    ids.push($(this).data('id'));
+                });
+
+                if (ids.length > 0) {
+                    hasSelection = true;
+
+                    ids.forEach(function (id) {
+                        $('#proceed').append(
+                            '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+                        );
+                    });
+                }
             });
 
-            if (loan_ids.length > 0 || goldloan_ids.length > 0 || aof_ids.length > 0 || dtrf_ids.length > 0) {
-                console.log(loan_ids);
-                console.log(goldloan_ids);
-                console.log(aof_ids);
-                console.log(dtrf_ids);
-
-                $('input[name="loan_ids[]"]').val(loan_ids);
-                $('input[name="goldloan_ids[]"]').val(goldloan_ids);
-                $('input[name="aof_ids[]"]').val(aof_ids);
-                $('input[name="dtrf_ids[]"]').val(dtrf_ids);
-                return false;
-                // $('#proceed').submit();
+            if (hasSelection) {
+                $('#proceed').submit();
             } else {
                 Swal.fire({
                     title: "Warning!",
@@ -402,7 +402,6 @@
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
-                return false;
             }
         });
     });
