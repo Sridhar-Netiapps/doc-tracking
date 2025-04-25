@@ -65,11 +65,13 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
+                                {{-- <th scope="col">Barcode</th> --}}
                                 {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 {{-- <th scope="col" class="border-start">Action</th> --}}
+                            
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +89,7 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ $row->account_creation_date }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        {{-- <td>{{ $row->barcode }}</td> --}}
                                         {{-- <td>{{ $row->barcode }}</td> --}}
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
@@ -109,14 +112,18 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                 <th scope="col">Unique Number</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
+                                {{-- <th scope="col">Loan Cycle</th> --}}
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                <th scope="col">PGK No. / Glow application ID</th>
+                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
+                                {{-- <th scope="col">Barcode</th> --}}
+                                <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 {{-- <th scope="col" class="border-start">Action</th> --}}
                             </tr>
@@ -126,38 +133,20 @@
                                 @foreach ($gold_loan_document as $row)
                                     <tr>
                                         <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                                        {{-- <td><input type="checkbox" /></td>
-                                        <td>{{ $row->unique_ref_no }}</td> --}}
-                                        {{-- <td>{{ $row->region }}</td> --}}
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->channel }}</td> --}}
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
-                                        <td>
-                                            {{ $row->status }}
-                                        </td>
-                                        <td class="border-start">
-                                            <div class="btn-actions">
-                                                <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                {{-- <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                                </form> --}}
-                                            </div>
-                                        </td>
+                                        
+                                    <td>{{ $row->unique_ref_no }}</td> 
+                                    <td>{{ $row->region }}</td> 
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->cif_id }}</td>
+                                    <td>{{ $row->account_number }}</td>
+                                    <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>
+                                    <td>{{ $row->business_category }}</td> 
+                                    <td>
+                                        {{ $row->status }}
+                                    </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -170,16 +159,22 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                 <th scope="col">Unique Number</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
+                                {{-- <th scope="col">Loan Cycle</th> --}}
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                <th scope="col">PGK No. / Glow application ID</th>
+                                {{-- <th scope="col">Barcode</th> --}}
+                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
+                                <th scope="col">Type of Account Opening</th>
+                                <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 {{-- <th scope="col" class="border-start">Action</th> --}}
+                            
                             </tr>
                         </thead>
                         <tbody>
@@ -187,37 +182,30 @@
                                 @foreach ($account_opening_document as $row)
                                     <tr>
                                         <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
-                                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                                        {{-- <td><input type="checkbox" /></td> --}}
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        {{-- <td>{{ $row->region }}</td> --}}
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->channel }}</td> --}}
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
-                                        <td class="border-start">
-                                            <div class="btn-actions">
-                                                <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                {{-- <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                                </form> --}}
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    {{-- <td><input type="checkbox" /></td> --}}
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                    <td>{{ $row->region }}</td>
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->cif_id }}</td>
+                                    <td>{{ $row->account_number }}</td>
+                                    {{-- <td>{{ $row->loan_cycle }}</td> --}}
+                                    <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>        
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    <td>{{ $row->type_of_account_opening }}</td>
+                                    <td>{{ $row->business_category }}</td>
+                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
+                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
+                                    {{-- <td>{{ $row->branch_office_type }}</td>
+                                    <td>{{ $row->pincode }}</td>
+                                    <td>{{ $row->city }}</td> --}}
+                                    <td>{{ $row->status }}</td>
+                                    </td>                                 
+                                 </tr>
                                 @endforeach
                             @endif
                         </tbody>
@@ -229,16 +217,20 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                 <th scope="col">Unique Number</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
+                                <th scope="col">DTR File Date</th>
+                                {{-- <th scope="col">barcode</th> --}}
+                                {{-- <th scope="col">Loan Cycle</th>
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                <th scope="col">PGK No. / Glow application ID</th>
+                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
+                                {{-- <th scope="col">Type of Loan<br>Disbursement</th>  --}}
+                                <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -246,36 +238,28 @@
                                 @foreach ($dtrf_document as $row)
                                     <tr>
                                         <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
-                                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                                        {{-- <td><input type="checkbox" /></td> --}}
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        {{-- <td>{{ $row->region }}</td> --}}
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->channel }}</td> --}}
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
-                                        <td class="border-start">
-                                            <div class="btn-actions">
-                                                <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                {{-- <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                                </form> --}}
-                                            </div>
-                                        </td>
+                                        
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    {{-- <td><input type="checkbox" /></td> --}}
+                                    <td>{{ $row->unique_ref_no }}</td>
+                                    <td>{{ $row->region }}</td>
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->branch_name }}</td>
+                                    <td>{{ $row->dtr_file_date}}</td>
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    <td>{{ $row->business_category}}</td>
+                                    {{-- <td>{{ $row->customer_name }}</td>
+                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ $row->channel }}</td>
+                                    {{-- <td>{{ $row->barcode }}</td> --}}
+                                    {{-- <td>{{ $row->loan_disbursement_type }}</td>
+                                    <td>{{ $row->business_category }}</td> --}} 
+                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
+                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
+                                    {{-- <td>{{ $row->branch_office_type }}</td>
+                                    <td>{{ $row->pincode }}</td>
+                                    <td>{{ $row->city }}</td> --}}
+                                    <td>{{ $row->status }}</td>
                                     </tr>
                                 @endforeach
                             @endif
