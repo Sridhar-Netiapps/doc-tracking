@@ -38,6 +38,20 @@ class DocumentController extends Controller
             $dtrf_document = DtrfDocument::paginate(100);
             $account_opening_document = AccountOpeningDocument::paginate(100);
         }
+        return view('accounts.accounts', compact(
+            'loan_document',
+            'gold_loan_document',
+            'dtrf_document',
+            'account_opening_document',
+            'type'
+        ))->with([
+            'loan_total' => $loan_document->total(),
+            'gold_loan_total' => $gold_loan_document->total(),
+            'dtrf_total' => $dtrf_document->total(),
+            'aof_total' => $account_opening_document->total(),
+        ]);
+        
+        
         // if ($request->filled('unique_ref_no')) {
         //     $query->where('unique_ref_no', 'like', '%' . $request->unique_ref_no . '%');
         // }
@@ -79,7 +93,7 @@ class DocumentController extends Controller
 
         // $accounts = $query->groupBy('type_of_account');
         // dd($loan_document);
-        return view('accounts.accounts', compact('loan_document','gold_loan_document','dtrf_document','account_opening_document','type'));
+        // return view('accounts.accounts', compact('loan_document','gold_loan_document','dtrf_document','account_opening_document','type'));
     }
         public function bulkReview(Request $request)
     {
