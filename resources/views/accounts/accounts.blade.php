@@ -160,26 +160,16 @@
                             @foreach ($gold_loan_document as $row)
                                 <tr>
                                     <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                    {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    {{-- <td><input type="checkbox" /></td>
-                                    <td>{{ $row->unique_ref_no }}</td> --}}
-                                    {{-- <td>{{ $row->region }}</td> --}}
-                                    {{-- <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->unique_ref_no }}</td> 
+                                    <td>{{ $row->region }}</td> 
+                                    <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
                                     <td>{{ $row->cif_id }}</td>
                                     <td>{{ $row->account_number }}</td>
                                     <td>{{ $row->customer_name }}</td>
                                     <td>{{ $row->account_creation_date }}</td>
                                     <td>{{ $row->channel }}</td>
-                                    <td>{{ $row->loan_disbursement_type }}</td>
-                                    <td>{{ $row->business_category }}</td> --}}
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    {{-- <td>{{ $row->channel }}</td> --}}
-                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                    {{-- <td>{{ $row->branch_office_type }}</td>
-                                    <td>{{ $row->pincode }}</td>
-                                    <td>{{ $row->city }}</td> --}}
+                                    <td>{{ $row->business_category }}</td> 
                                     <td>
                                         {{ $row->status }}
                                     </td>
