@@ -28,9 +28,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () { 
         return redirect(route('login'));
     });
-    
-    
-    // Route::post('/accounts/proceed', [DocumentController::class, 'proceed'])->name('accounts.proceed');
 
     Route::prefix('documents')->group(function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
@@ -46,6 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
+    
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
     Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');

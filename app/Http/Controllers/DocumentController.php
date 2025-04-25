@@ -84,16 +84,16 @@ class DocumentController extends Controller
         public function bulkReview(Request $request)
     {
         // dd($request->all());
-        $loan_document = $gold_loan_document = $dtrf_document = $account_opening_document = NULL;
+        // $loan_document = $gold_loan_document = $dtrf_document = $account_opening_document = NULL;
         
-        if(isset($request->loan_ids))
-        $loan_document = LoanDocument::whereIn('id',$request->loan_ids)->get();
-        if(isset($request->goldloan_ids))
-        $gold_loan_document = GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get();
-        if(isset($request->aof_ids))
-        $dtrf_document = DtrfDocument::whereIn('id',$request->aof_ids)->get();
-        if(isset($request->dtrf_ids))
-        $account_opening_document = AccountOpeningDocument::whereIn('id',$request->dtrf_ids)->get();
+        // if(isset($request->loan_ids))
+        //     $loan_document = LoanDocument::whereIn('id',$request->loan_ids)->get();
+        // if(isset($request->goldloan_ids))
+        //     $gold_loan_document = GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get();
+        // if(isset($request->dtrf_ids))
+        //     $dtrf_document = DtrfDocument::whereIn('id',$request->dtrf_ids)->get();
+        // if(isset($request->aof_ids))
+        //     $account_opening_document = AccountOpeningDocument::whereIn('id',$request->aof_ids)->get();
         // $accountIds = $request->input('account_ids', []);
         
         // if (empty($accountIds)) {
@@ -103,10 +103,42 @@ class DocumentController extends Controller
         $type = 'new';
         // $accounts = LoanDocument::whereIn('id', $accountIds)->get();
 
-        return view('accounts.bulkReview', compact('gold_loan_document','type','dtrf_document','account_opening_document','loan_document'));
+        $allDocuments = collect(); 
+        if (isset($request->loan_ids)) {
+            $loans = LoanDocument::whereIn('id', $request->loan_ids)->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'loan';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($loans);
+        }
+        if (isset($request->goldloan_ids)) {
+            $goldloans = GoldLoanDocument::whereIn('id', $request->goldloan_ids)->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'goldloan';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($goldloans);
+        }
+        if (isset($request->dtrf_ids)) {
+            $dtrfs = DtrfDocument::whereIn('id', $request->dtrf_ids)->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'dtrf';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($dtrfs);
+        }
+        if (isset($request->aof_ids)) {
+            $aofs = AccountOpeningDocument::whereIn('id', $request->aof_ids)->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'aof';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($aofs);
+        }
+        dd($allDocuments->toArray());
+        // return view('accounts.bulkReview', compact('gold_loan_document','type','dtrf_document','account_opening_document','loan_document'));
 
+        return view('accounts.index', compact('allDocuments','type'));
     }
-    
-
-
 }
