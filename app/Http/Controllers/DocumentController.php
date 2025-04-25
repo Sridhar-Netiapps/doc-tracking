@@ -83,16 +83,27 @@ class DocumentController extends Controller
     }
         public function bulkReview(Request $request)
     {
-        dd($request->all());
-        $accountIds = $request->input('account_ids', []);
+        // dd($request->all());
+        $loan_document = $gold_loan_document = $dtrf_document = $account_opening_document = NULL;
         
-        if (empty($accountIds)) {
-            return redirect()->back()->with('error', 'Please select at least one account.');
-        }
+        if(isset($request->loan_ids))
+        $loan_document = LoanDocument::whereIn('id',$request->loan_ids)->get();
+        if(isset($request->goldloan_ids))
+        $gold_loan_document = GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get();
+        if(isset($request->aof_ids))
+        $dtrf_document = DtrfDocument::whereIn('id',$request->aof_ids)->get();
+        if(isset($request->dtrf_ids))
+        $account_opening_document = AccountOpeningDocument::whereIn('id',$request->dtrf_ids)->get();
+        // $accountIds = $request->input('account_ids', []);
+        
+        // if (empty($accountIds)) {
+        //     return redirect()->back()->with('error', 'Please select at least one account.');
+        // }
+        // dd($loan_document);
+        $type = 'new';
+        // $accounts = LoanDocument::whereIn('id', $accountIds)->get();
 
-        $accounts = LoanDocument::whereIn('id', $accountIds)->get();
-
-        return view('accounts.bulkReview', compact('accounts'))->with('type', 'Savings');
+        return view('accounts.bulkReview', compact('gold_loan_document','type','dtrf_document','account_opening_document','loan_document'));
 
     }
     
