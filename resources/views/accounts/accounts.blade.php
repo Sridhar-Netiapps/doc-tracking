@@ -2,57 +2,62 @@
 @section('content')
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-3">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="filter-bg">
+                <form method="POST" action="{{ route('accounts.index',$type) }}">
+                        <div class="row">
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <select class="form-control select2" name="region">
+                                    <option value="">Select Region</option>
+                                    <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
+                                    <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
+                                    <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
+                                    <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                                    <!-- Add more -->
+                                </select>
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
+                            </div>
+                            <div class="col-2 mt-3">
+                                <button class="btn btn-secondary" type="reset">Clear</button>
+                                <button class="btn btn-primary" type="submit">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
             <h3>{{ ucfirst($type) }} Accounts</h3>
         </div>
-        <div class="col-9">
-            <form method="POST" action="{{ route('accounts.index',$type) }}">
-                <div class="row">
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <select class="form-control select2" name="region">
-                            <option value="">Select Region</option>
-                            <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                            <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                            <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                            <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                            <!-- Add more -->
-                        </select>
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
-                    </div>
-                    <div class="col-2 mt-3">
-                        <button class="btn btn-secondary" type="reset">Clear</button>
-                        <button class="btn btn-primary" type="submit">Filter</button>
-                    </div>                    
-                </div>
-            </form>  
-            <form method="POST" action="{{ route('accounts.bulkReview') }}" id="selectedForm">
-                @csrf
-                <input type="hidden" name="account_ids[]">
-                <div class="col-2 mt-3">
-                    <button class="btn btn-success btn-sm proceed" type="submit">Proceed with Selected</button>   
-                </div>
-            </form>
-        </div>
+        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
@@ -72,13 +77,26 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{count($dtrf_document)}}</span></button>
                 </li>
+
+                <li class="ms-auto">
+                    <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                        @csrf
+                        <input type="hidden" name="loan_ids[]">
+                        <input type="hidden" name="goldloan_ids[]">
+                        <input type="hidden" name="aof_ids[]">
+                        <input type="hidden" name="dtrf_ids[]">
+
+                            <button class="btn btn-primary" type="button">Proceed</button>
+
+                    </form>
+                </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
-                    <table class="table table-hover">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" /> </th>
+                                <th scope="col"><input type="checkbox" class="loan_all" /> </th>
                                 <th scope="col">Unique Number</th>
                                 <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
@@ -100,7 +118,7 @@
                         <tbody>
                             @foreach ($loan_document as $row)
                                 <tr>
-                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
+                                    <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                     <td>{{ $row->unique_ref_no }}</td>
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
@@ -131,10 +149,10 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
-                    <table class="table">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" /> </th>
+                                <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                 <th scope="col">Unique Number</th>
                                 <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
@@ -155,26 +173,7 @@
                         <tbody>
                             @foreach ($gold_loan_document as $row)
                                 <tr>
-                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
-                                    <td>{{ $row->unique_ref_no }}</td>
-                                    <td>{{ $row->region }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->cif_id }}</td>
-                                    <td>{{ $row->account_number }}</td>
-                                    {{-- <td>{{ $row->loan_cycle }}</td> --}}
-                                    <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
-                                    <td>{{ $row->channel }}</td>
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    <td>{{ $row->business_category }}</td>
-                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                    {{-- <td>{{ $row->branch_office_type }}</td>
-                                    <td>{{ $row->pincode }}</td>
-                                    <td>{{ $row->city }}</td> --}}
-                                    {{-- <td>{{ $row->status }}</td> --}}
+                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
                                     {{-- <td><input type="checkbox" /></td>
                                     <td>{{ $row->unique_ref_no }}</td> --}}
@@ -217,10 +216,10 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
-                    <table class="table">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" /> </th>
+                                <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                 <th scope="col">Unique Number</th>
                                 <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
@@ -242,7 +241,9 @@
                         <tbody>
                             @foreach ($account_opening_document as $row)
                                 <tr>
-                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
+                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    {{-- <td><input type="checkbox" /></td> --}}
                                     <td>{{ $row->unique_ref_no }}</td>
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
@@ -272,10 +273,10 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
-                    <table class="table">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" /> </th>
+                                <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                 <th scope="col">Unique Number</th>
                                 <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
@@ -296,8 +297,9 @@
                         <tbody>
                             @foreach ($dtrf_document as $row)
                                 <tr>
-                                    <td><input type="checkbox" class="account" name="account_ids[]" data-id="{{ $row->id }}"></td>
-                                    
+                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                    {{-- <td>{{ $loop->iteration }}</td> --}}
+                                    {{-- <td><input type="checkbox" /></td> --}}
                                     <td>{{ $row->unique_ref_no }}</td>
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
@@ -374,20 +376,56 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('#selectedForm').submit(function () {
-            let selected = [];
+        $(".loan_all").click(function () {
+            $(".loan").prop('checked', $(this).prop('checked'));
+        });
+        $(".goldloan_all").click(function () {
+            $(".goldloan").prop('checked', $(this).prop('checked'));
+        });
+        $(".aof_all").click(function () {
+            $(".aof").prop('checked', $(this).prop('checked'));
+        });
+        $(".dtrf_all").click(function () {
+            $(".dtrf").prop('checked', $(this).prop('checked'));
+        });
+        $('.proceed').click(function () {
+            let loan_ids = [];
+            let goldloan_ids = [];
+            let aof_ids = [];
+            let dtrf_ids = [];
 
-            // Collect checked account IDs from all tabs
-            $('.account:checked').each(function () {
-                selected.push($(this).data('id'));
+            $('input.loan:checked').each(function () {
+                loan_ids.push($(this).data('id'));
             });
-            
-            if (selected.length > 0) {
-                $('input[name="account_ids[]"]').val(selected);
-                console.log(selected);
-                $('#selectedForm').submit();
+            $('input.goldloan:checked').each(function () {
+                goldloan_ids.push($(this).data('id'));
+            });
+            $('input.aof:checked').each(function () {
+                aof_ids.push($(this).data('id'));
+            });
+            $('input.dtrf:checked').each(function () {
+                dtrf_ids.push($(this).data('id'));
+            });
+
+            if (loan_ids.length > 0 || goldloan_ids.length > 0 || aof_ids.length > 0 || dtrf_ids.length > 0) {
+                console.log(loan_ids);
+                console.log(goldloan_ids);
+                console.log(aof_ids);
+                console.log(dtrf_ids);
+
+                $('input[name="loan_ids[]"]').val(loan_ids);
+                $('input[name="goldloan_ids[]"]').val(goldloan_ids);
+                $('input[name="aof_ids[]"]').val(aof_ids);
+                $('input[name="dtrf_ids[]"]').val(dtrf_ids);
+                return false;
+                // $('#proceed').submit();
             } else {
-                alert("Please select at least one account.");
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
                 return false;
             }
         });

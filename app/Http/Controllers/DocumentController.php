@@ -27,16 +27,16 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
         if($type =='new'){
-            $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
-            $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
-            $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(50);
-            $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(50);
+            $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+            $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+            $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(100);
+            $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
         }
         else{
-            $loan_document = LoanDocument::paginate(50);
-            $gold_loan_document = GoldLoanDocument::paginate(50);
-            $dtrf_document = DtrfDocument::paginate(50);
-            $account_opening_document = AccountOpeningDocument::paginate(50);
+            $loan_document = LoanDocument::paginate(100);
+            $gold_loan_document = GoldLoanDocument::paginate(100);
+            $dtrf_document = DtrfDocument::paginate(100);
+            $account_opening_document = AccountOpeningDocument::paginate(100);
         }
         // if ($request->filled('unique_ref_no')) {
         //     $query->where('unique_ref_no', 'like', '%' . $request->unique_ref_no . '%');
@@ -83,6 +83,7 @@ class DocumentController extends Controller
     }
         public function bulkReview(Request $request)
     {
+        dd($request->all());
         $accountIds = $request->input('account_ids', []);
         
         if (empty($accountIds)) {
