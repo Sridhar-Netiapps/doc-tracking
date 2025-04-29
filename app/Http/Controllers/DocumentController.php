@@ -38,6 +38,8 @@ class DocumentController extends Controller
             $dtrf_document = DtrfDocument::paginate(100);
             $account_opening_document = AccountOpeningDocument::paginate(100);
         }
+
+
         return view('accounts.accounts', compact(
             'loan_document',
             'gold_loan_document',
@@ -95,7 +97,7 @@ class DocumentController extends Controller
         // dd($loan_document);
         // return view('accounts.accounts', compact('loan_document','gold_loan_document','dtrf_document','account_opening_document','type'));
     }
-        public function bulkReview(Request $request)
+    public function bulkReview(Request $request)
     {
         // dd($request->all());
         // $loan_document = $gold_loan_document = $dtrf_document = $account_opening_document = NULL;
@@ -150,8 +152,33 @@ class DocumentController extends Controller
                         });
             $allDocuments = $allDocuments->merge($aofs);
         }
-        dd($allDocuments->toArray());
+        // dd($allDocuments->toArray());
         // return view('accounts.bulkReview', compact('gold_loan_document','type','dtrf_document','account_opening_document','loan_document'));
+
+        return view('accounts.index', compact('allDocuments','type'));
+    }
+
+    public function addCourierDetails(Request $request)
+    {
+        dd($request->all());
+        $validated = $request->validate([
+            'courier_name' => 'required|string',
+            'awb_pod' => 'required|string',
+            'dispatch_date' => 'required|date',
+            'loan_ids'=> 'required|array',
+            'goldloan_ids'=> 'required|array',
+            'dtrf_ids'=> 'required|array',
+            'aof_ids'=> 'required|array'
+        ]);
+
+        $dispatch = new CourierDispatch;
+        $dispatch->courier_name = $validated['courier_name'];
+        $dispatch->awb_pod = $validated['awb_pod'];
+        $dispatch->dispatch_date = $validated['dispatch_date'];
+        $dispatch->loan_ids= $validated['loan_ids'];
+        $dispatch->goldloan_ids= $validated['goldloan_ids'];
+        $dispatch->dtrf_ids= $validated['dtrf_ids'];
+        $dispatch->aof_ids= $validated['aof_ids'];
 
         return view('accounts.index', compact('allDocuments','type'));
     }
