@@ -24,52 +24,50 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <table class="table table-hover">
+                    <table class="table table-striped">
                         <thead>
-                        <tr>
-                            <th scope="col"><input type="checkbox" class="select_all" /> </th>
-                            <th scope="col">Unique Number</th>
-                            <th scope="col">CIF ID</th>
-                            <th scope="col">Account Number</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Account Creation Date</th>
-                            <th scope="col">Channel</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Account Creation Date</th>
-                            <th scope="col">Channel</th>
-                            <th scope="col">Loan Cycle</th>
-                            <th scope="col">PGK No. / Glow application ID</th>
-                            <th scope="col" class="border-start">Action</th>
-                        </tr>
+                            <tr> 
+                                <th scope="col"><input type="checkbox" class="select_all"/> </th>     
+                                <th scope="col"> Document Type</th>
+                                <th scope="col"> Unique Number</th>
+                                <th scope="col"> Region</th>
+                                <th scope="col"> Branch Code</th>
+                                <th scope="col"> Branch Name</th>
+                                <th scope="col"> CIF ID</th>
+                                <th scope="col"> Account Number</th>
+                                <th scope="col"> Loan Cycle</th>
+                                <th scope="col"> Scheme</th>
+                                <th scope="col"> Customer Name</th>
+                                <th scope="col"> Account Creation Date</th>
+                                <th scope="col"> Channel</th>
+                                <th scope="col"> Loan Disbursement Type / Account Opening</th>
+                                <th scope="col"> DTR File Date</th>
+                                <th scope="col"> Business Category</th>
+                                <th scope="col"> Status</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @if($allDocuments)
-                                @foreach ($allDocuments as $row)
-                                    <tr>
-                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->region }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->loan_cycle }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        <td>{{ $row->loan_disbursement_type }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
+                            @foreach ($allDocuments as $doc)
+                                <tr>
+                                    <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                    <td>{{ ucfirst($doc->doc_type) }}</td>
+                                    <td>{{ $doc->unique_ref_no ?? '-' }}</td>
+                                    <td>{{ $doc->region ?? '-' }}</td>
+                                    <td>{{ $doc->branch_code ?? '-' }}</td>
+                                    <td>{{ $doc->branch_name ?? '-' }}</td>
+                                    <td>{{ $doc->cif_id ?? '-' }}</td>
+                                    <td>{{ $doc->account_number ?? '-' }}</td>
+                                    <td>{{ $doc->loan_cycle ?? '-' }}</td>
+                                    <td>{{ $doc->scheme ?? '-' }}</td>
+                                    <td>{{ $doc->customer_name ?? '-' }}</td>
+                                    <td>{{ $doc->account_creation_date ?? '-' }}</td>
+                                    <td>{{ $doc->channel ?? '-' }}</td>
+                                    <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
+                                    <td>{{ $doc->dtr_file_date ?? '-' }}</td>
+                                    <td>{{ $doc->business_category ?? '-' }}</td>
+                                    <td>{{ $doc->status ?? '-' }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
