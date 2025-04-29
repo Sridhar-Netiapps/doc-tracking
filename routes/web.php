@@ -33,14 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
         Route::post('/', [DocumentController::class, 'filter'])->name('accounts.filter');
         Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
-        Route::post('/', [DocumentController::class, 'store'])->name('accounts.store');
-        Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
-        
-        Route::get('/{approvalType}', [DocumentController::class, 'show'])->name('accounts.show');
-        Route::get('/{approvalType}/edit', [DocumentController::class, 'edit'])->name('accounts.edit');
-        Route::put('/{approvalType}', [DocumentController::class, 'update'])->name('accounts.update');
-        Route::delete('/{approvalType}', [DocumentController::class, 'destroy'])->name('accounts.destroy');
-    
+        Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
+        Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');    
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
