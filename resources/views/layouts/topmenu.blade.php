@@ -8,6 +8,9 @@
                 <li class="nav-item px-4">
                     <a class="nav-link" href="{{ route('accounts.index','all') }}">All Accounts</a>
                 </li>
+                <li class="nav-item px-4">
+                    <a class="nav-link" href="{{ route('dispatches') }}">Dispatches</a>
+                </li>
             </ul>
         </div>
     </div>

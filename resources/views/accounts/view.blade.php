@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <h3>Selected Accounts</h3>
+            <h3>Dispatched Documents</h3>
         </div>
         <div class="col-1"></div>
     </div>
@@ -15,11 +15,11 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Accounts <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dispatched Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
-                    <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
-                    <a class="btn btn-secondary" href="{{ route('accounts.index',$type)}}">Go Back</a>
+                    {{-- <button class="btn btn-primary proceed" type="button">Add Courier Details</button> --}}
+                    <a class="btn btn-secondary" href="{{ route('dispatches')}}">Go Back</a>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -43,7 +43,7 @@
                                 <th scope="col"> Loan Disbursement Type / Account Opening</th>
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
-                                <th scope="col"> Status</th>
+                                {{-- <th scope="col"> Status</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -65,7 +65,7 @@
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
                                     <td>{{ $doc->dtr_file_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
-                                    <td>{{ $doc->status ?? '-' }}</td>
+                                    {{-- <td>{{ $doc->status ?? '-' }}</td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -165,7 +165,7 @@
                             $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
                         });
                         if ($('input.select').length === 0) {
-                            window.location.href = `{{ route('dispatches')}}`;
+                            window.location.href = `{{ route('accounts.index',$type)}}`;
                         }
                         else{
                             $('#update-courier')[0].reset();

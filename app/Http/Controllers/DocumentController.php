@@ -7,7 +7,9 @@ use App\Models\AccountOpeningDocument;
 use App\Models\DtrfDocument;
 use App\Models\GoldLoanDocument;
 use App\Models\LoanDocument;
+use App\Models\CourierDispatch;
 use Carbon\Carbon;
+use Auth;
 
 class DocumentController extends Controller
 {
@@ -122,28 +124,80 @@ class DocumentController extends Controller
     }
     public function addCourierDetails(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $validated = $request->validate([
             'courier_name' => 'required|string',
             'awb_pod' => 'required|string',
             'dispatch_date' => 'required|date',
-            'loan_ids'=> 'required|array',
-            'goldloan_ids'=> 'required|array',
-            'dtrf_ids'=> 'required|array',
-            'aof_ids'=> 'required|array'
+            'loan_ids'=> 'nullable|array',
+            'goldloan_ids'=> 'nullable|array',
+            'dtrf_ids'=> 'nullable|array',
+            'aof_ids'=> 'nullable|array'
         ]);
-
+        // dd($validated);
         $dispatch = new CourierDispatch;
         $dispatch->courier_name = $validated['courier_name'];
         $dispatch->awb_pod = $validated['awb_pod'];
+        $dispatch->dispatched_by = Auth::user()->id;
         $dispatch->dispatch_date = $validated['dispatch_date'];
-        $dispatch->loan_ids= $validated['loan_ids'];
-        $dispatch->goldloan_ids= $validated['goldloan_ids'];
-        $dispatch->dtrf_ids= $validated['dtrf_ids'];
-        $dispatch->aof_ids= $validated['aof_ids'];
-
-        return view('accounts.index', compact('allDocuments','type'));
+        $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
+        $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
+        $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
+        $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
+        $dispatch->status = "Waiting Checker's Approval";
+        $dispatch->save();
+        return response()->json(['success' => true]);
     }
 
+    public function getDispatches()
+    {
+        $dispatches = CourierDispatch::get();
+        // dd($dispatches);
+        return view('accounts.dispatches', compact('dispatches'));
+
+    }
+
+    public function viewDispatches($id)
+    {
+        $dispatch = CourierDispatch::find($id);
+        $type = 'new';
+
+        $allDocuments = collect(); 
+        if (isset($dispatch->loan_ids)) {
+            $loans = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'loan';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($loans);
+        }
+        if (isset($dispatch->goldloan_ids)) {
+            $goldloans = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'goldloan';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($goldloans);
+        }
+        if (isset($dispatch->dtrf_ids)) {
+            $dtrfs = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'dtrf';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($dtrfs);
+        }
+        if (isset($dispatch->aof_ids)) {
+            $aofs = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->get()
+                        ->map(function ($item) {
+                            $item->doc_type = 'aof';
+                            return $item;
+                        });
+            $allDocuments = $allDocuments->merge($aofs);    
+        }
+        // dd($allDocuments);
+
+        return view('accounts.view', compact('allDocuments','type'));
+    }
 }
 

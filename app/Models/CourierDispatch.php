@@ -24,4 +24,13 @@ class CourierDispatch extends Model
         'updated_by',
         'deleted_by'
     ];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'dispatched_by');
+    }
+    public function modifier()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }
