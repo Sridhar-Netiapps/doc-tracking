@@ -63,16 +63,16 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">New Dispatches <span class="badge text-bg-warning">2300</span></button>
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch <span class="badge text-bg-warning">{{$ready_to_dispatch != Null ?count($ready_to_dispatch):0}}</span></button>
                 </li>
-                {{-- <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Accounts list <span class="badge text-bg-warning">200</span></button>
-                </li> --}}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List <span class="badge text-bg-warning">{{$dispatched != Null ?count($dispatched):0}}</span></button>
+                </li>
                 <li class="ms-auto">
-                    {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
-                        {{-- @csrf --}}
+                    <form method="POST" action="{{ route('dispatched') }}" id="proceed">
+                        @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
-                    {{-- </form> --}}
+                    </form>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -80,7 +80,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" class="select_all"/></th>
+                                <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>
                                 <th scope="col">No of Loan Documents</th>
@@ -94,9 +94,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($dispatches as $row)
+                            @foreach ($ready_to_dispatch as $row)
                                 <tr>
-                                    <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
+                                    <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                     <td>{{ $row->awb_pod }}</td>
                                     <td>{{ $row->courier_name }}</td>
                                     <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
@@ -116,6 +116,43 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col"><input type="checkbox" class="select_all"/></th>
+                                <th scope="col">AWB/POD Number</th>
+                                <th scope="col">Courier Name</th>
+                                <th scope="col">No of Loan Documents</th>
+                                <th scope="col">No of Gold Loan Documents</th>
+                                <th scope="col">No of DTRF Documents</th>
+                                <th scope="col">No of AOF Documents</th>
+                                <th scope="col">Dispatch Date</th>
+                                <th scope="col">Dispatch By</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" class="border-start">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($dispatched as $row)
+                                <tr>
+                                    <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
+                                    <td>{{ $row->awb_pod }}</td>
+                                    <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
+                                    <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
+                                    <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
+                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
+                                    <td>{{ $row->dispatch_date }}</td>
+                                    <td>{{ $row->creator->first_name }}</td>
+                                    <td>{{ $row->status }}</td>
+                                    <td class="border-start">
+                                        {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
+                                        <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -192,8 +229,41 @@
 </div>
 <script>
     $(document).ready(function () {
-        $(".select_all").click(function () {
-            $(".select").prop('checked', $(this).prop('checked'));
+        $(".readytodispatch_all").click(function () {
+            $(".readytodispatch").prop('checked', $(this).prop('checked'));
+        });
+        $('.proceed').click(function () {
+            hasSelection = false;
+            let ids = [];
+            $('input.readytodispatch:checked').each(function () {
+                ids.push($(this).data('id'));
+            });
+            $('#proceed').find('input[name$="_ids[]"]').remove();
+            if (ids.length > 0) {
+                hasSelection = true;
+                ids.forEach(function (id) {
+                    $('#proceed').append(
+                        '<input type="hidden" name="readytodispatch_ids[]" value="' + id + '">'
+                    );
+                });
+            }
+            if (hasSelection) {
+                Swal.fire({
+                    title: "Alert!",
+                    text: "Are Sure You Want Dispatch.",
+                    icon: "warning",
+                    confirmButtonText: "YES"
+                }).then(() => {
+                    $('#proceed').submit();                     
+                });
+            } else {
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            }
         });
     });
 </script>

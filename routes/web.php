@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('dispatches', [DocumentController::class,'getDispatches'])->name('dispatches');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
-    Route::get('dispatches', [DocumentController::class,'getDispatches'])->name('dispatches');
+    Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     
     Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController

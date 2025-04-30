@@ -151,16 +151,15 @@ class DocumentController extends Controller
 
     public function getDispatches()
     {
-        $dispatches = CourierDispatch::get();
-        // dd($dispatches);
-        return view('accounts.dispatches', compact('dispatches'));
-
+        $ready_to_dispatch = CourierDispatch::where('status',"Waiting Checker's Approval")->get();
+        $dispatched = CourierDispatch::where('status','Dispatched')->get();
+        return view('accounts.dispatches', compact('ready_to_dispatch','dispatched'));
     }
 
     public function viewDispatches($id)
     {
         $dispatch = CourierDispatch::find($id);
-        $type = 'new';
+        $type = 'dispatch';
 
         $allDocuments = collect(); 
         if (isset($dispatch->loan_ids)) {
@@ -195,9 +194,22 @@ class DocumentController extends Controller
                         });
             $allDocuments = $allDocuments->merge($aofs);    
         }
-        // dd($allDocuments);
 
         return view('accounts.view', compact('allDocuments','type'));
     }
-}
 
+    public function updateCourier(Request $request)
+    {
+        $validated = $request->validate([
+            'readytodispatch_ids' => 'required|array'
+        ]);
+        $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
+        foreach($dispatched as $dispatch){
+            $dispatch->status = "Dispatched";
+            $dispatch->save();
+        }
+
+        return redirect()->route('dispatches')->with('success', 'Courier Dispatched Successfully.');
+        // return view('accounts.', compact('ready_to_dispatch','dispatched'));
+    }
+}
