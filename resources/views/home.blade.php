@@ -49,58 +49,49 @@
                     </div>
                 </div>
 
-            </div>
-        </div>
-
-
-        <div class="headerCards">
-            <div class="row">
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon"><img src="/images/icon-3.svg" /></div>
-                            <p class="card-text">Loan Documents</p>
-                            <h3>123</h3>
-
+                <div class="headerCards">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="icon"><img src="/images/icon-1.svg" /></div>
+                                    <p class="card-text">Loan Documents</p>
+                                    <h3>{{ $loan_total }}</h3>  <!-- Display dynamic total here -->
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
+                                    <p class="card-text">Gold Loan Documents</p>
+                                    <h3>{{ $gold_loan_total }}</h3>  <!-- Display dynamic total here -->
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
+                                    <p class="card-text">AOF</p>
+                                    <h3>{{ $aof_total }}</h3>  <!-- Display dynamic total here -->
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
+                                    <p class="card-text">DTRF</p>
+                                    <h3>{{ $dtrf_total }}</h3>  <!-- Display dynamic total here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon"><img src="/images/icon-3.svg" /></div>
-                            <p class="card-text">Gold Loan Documents</p>
-                            <h3>520</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon"><img src="/images/icon-3.svg" /></div>
-                            <p class="card-text">AOF</p>
-                            <h3>400</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon"><img src="/images/icon-3.svg" /></div>
-                            <p class="card-text">DTRF</p>
-                            <h3>193</h3>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-
 
         <div class="dashboardCards mt-4">
     <div class="row">
@@ -139,7 +130,7 @@
                 </div>
             </div>
         </div>
-
+        
     </div>
 </div>
         <div class="container">
