@@ -53,6 +53,7 @@ class DocumentController extends Controller
             'aof_total' => $aof_total,
         ]);
     }
+    
     public function bulkReview(Request $request)
     {
         // dd($request->all());

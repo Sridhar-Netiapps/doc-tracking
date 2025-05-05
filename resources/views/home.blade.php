@@ -61,7 +61,7 @@
                             </div>
                         </div>
                 
-                        <div class="col-3">
+                <div class="col-3">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="icon"><img src="/images/icon-3.svg" /></div>
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                 
-                        <div class="col-3">
+                <div class="col-3">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="icon"><img src="/images/icon-3.svg" /></div>
