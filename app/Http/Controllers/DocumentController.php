@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Models\AccountOpeningDocument;
 use App\Models\DtrfDocument;
 use App\Models\GoldLoanDocument;
@@ -13,45 +15,56 @@ use Auth;
 
 class DocumentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
+        });
+    }
     public function index(Request $request, $type)
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
+        $loan_document = LoanDocument::query();
+        $gold_loan_document = GoldLoanDocument::query();
+        $dtrf_document = DtrfDocument::query();
+        $account_opening_document = AccountOpeningDocument::query();
 
         if ($type == 'new') {
-            $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
-            $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
-            $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(100);
-            $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
-
-            // Set totals as 0 when type is 'new' (optional, or you can calculate if needed)
-            $loan_total = $loan_document->total();
-            $gold_loan_total = $gold_loan_document->total();
-            $dtrf_total = $dtrf_document->total();
-            $aof_total = $account_opening_document->total();
+            $loan_document->whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+            $gold_loan_document->whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+            $dtrf_document->whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(100);
+            $account_opening_document->whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
         } else {
-            $loan_document = LoanDocument::paginate(100);
-            $gold_loan_document = GoldLoanDocument::paginate(100);
-            $dtrf_document = DtrfDocument::paginate(100);
-            $account_opening_document = AccountOpeningDocument::paginate(100);
-
-            $loan_total = $loan_document->total();
-            $gold_loan_total = $gold_loan_document->total();
-            $dtrf_total = $dtrf_document->total();
-            $aof_total = $account_opening_document->total();
+            $loan_document->paginate(100);
+            $gold_loan_document->paginate(100);
+            $dtrf_document->paginate(100);
+            $account_opening_document->paginate(100);
         }
 
-        return view('accounts.accounts', [
-            'loan_document' => $loan_document,
-            'gold_loan_document' => $gold_loan_document,
-            'dtrf_document' => $dtrf_document,
-            'account_opening_document' => $account_opening_document,
-            'type' => $type,
-            'loan_total' => $loan_total,
-            'gold_loan_total' => $gold_loan_total,
-            'dtrf_total' => $dtrf_total,
-            'aof_total' => $aof_total,
-        ]);
+        // if ($type == 'new') {
+        //     $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+        //     $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+        //     $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(100);
+        //     $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+        // } else {
+        //     $loan_document = LoanDocument::paginate(100);
+        //     $gold_loan_document = GoldLoanDocument::paginate(100);
+        //     $dtrf_document = DtrfDocument::paginate(100);
+        //     $account_opening_document = AccountOpeningDocument::paginate(100);
+        // }
+        // dd($this->user->hasRole('bo-maker'));
+        // if($this->user->hasRole('bo-maker')) {
+        //     exit('here');
+        // }
+        dd($loan_document->total());
+        $loan_total = $loan_document->total();
+        $gold_loan_total = $gold_loan_document->total();
+        $dtrf_total = $dtrf_document->total();
+        $aof_total = $account_opening_document->total();
+
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
     public function bulkReview(Request $request)
     {
