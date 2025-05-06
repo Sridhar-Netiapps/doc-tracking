@@ -63,7 +63,7 @@
                                         <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                         <td>{{ $doc->channel ?? '-' }}</td>
                                         <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                        <td>{{ $doc->dtr_file_date ?? '-' }}</td>
+                                        <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                         <td>{{ $doc->business_category ?? '-' }}</td>
                                         <td>{{ $doc->status ?? '-' }}</td>
                                     </tr>
@@ -169,7 +169,7 @@
                                 $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
                             });
                             if ($('input.select').length === 0) {
-                                window.location.href = `{{ route('dispatches')}}`;
+                                window.location.href = `{{ route('dispatches','list')}}`;
                             }
                             else{
                                 $('#update-courier')[0].reset();

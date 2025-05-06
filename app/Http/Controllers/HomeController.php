@@ -35,7 +35,7 @@ class HomeController extends Controller
         // Get the totals based on the selected time period (new or all)
         $loan_total = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
         $gold_loan_total = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
-        $dtrf_total = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->count();
+        $dtrf_total = DtrfDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
         $aof_total = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
 
         // Return the view with the totals

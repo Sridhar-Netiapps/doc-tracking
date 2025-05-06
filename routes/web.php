@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
-    Route::get('dispatches', [DocumentController::class,'getDispatches'])->name('dispatches');
+    Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
