@@ -98,7 +98,15 @@
                         </div>
                         <div class="col-4 pb-2">
                             <label for="status" class="form-label">MMRP Barcode No.</label>
-                            <input type="text" name="dispatch_date" class="form-control" required>
+                            <input type="text" name="mmrp_barcode" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Branch code</label>
+                            <input type="text" name="branch_code" class="form-control" required>
+                        </div>
+                        <div class="col-4 pb-2">
+                            <label for="status" class="form-label">Region</label>
+                            <input type="text" name="mregion" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -143,6 +151,9 @@
                 let formData = {
                     _token: $('input[name="_token"]').val(),
                     courier_name: $('input[name="courier_name"]').val(),
+                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
+                    branch_code: $('input[name="branch_code"]').val(),
+                    region: $('input[name="region"]').val(),
                     awb_pod: $('input[name="awb_pod"]').val(),
                     dispatch_date: $('input[name="dispatch_date"]').val(),
                     loan_ids: [],

@@ -1,3 +1,4 @@
+@if (!(request()->segment(1) === 'documents' && request()->segment(2) === 'proceed'))
 <div class="bg-new">
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">
@@ -15,3 +16,4 @@
         </div>
     </div>
 </div>
+@endif
