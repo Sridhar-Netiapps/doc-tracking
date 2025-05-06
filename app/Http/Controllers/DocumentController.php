@@ -129,7 +129,10 @@ class DocumentController extends Controller
         $validated = $request->validate([
             'courier_name' => 'required|string',
             'awb_pod' => 'required|string',
+            'mmrp_barcode' => 'required|string',
             'dispatch_date' => 'required|date',
+            'branch_code'  => 'required|string',
+            'region' => 'required|string',
             'loan_ids'=> 'nullable|array',
             'goldloan_ids'=> 'nullable|array',
             'dtrf_ids'=> 'nullable|array',
@@ -139,6 +142,9 @@ class DocumentController extends Controller
         $dispatch = new CourierDispatch;
         $dispatch->courier_name = $validated['courier_name'];
         $dispatch->awb_pod = $validated['awb_pod'];
+        $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
+        $dispatch->branch_code = $validated['branch_code']; 
+        $dispatch->region = $validated['region']; 
         $dispatch->dispatched_by = Auth::user()->id;
         $dispatch->dispatch_date = $validated['dispatch_date'];
         $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;

@@ -12,6 +12,9 @@ class CourierDispatch extends Model
     protected $fillable = [
         'awb_pod',
         'courier_id',
+        'mmrp_barcode',
+        'branch_code',
+        'region',
         'courier_name',
         'loan_ids',
         'goldloan_ids',
