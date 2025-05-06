@@ -246,7 +246,7 @@
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->dtr_file_date}}</td>
+                                    <td>{{ $row->account_creation_date}}</td>
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     <td>{{ $row->business_category}}</td>
                                     {{-- <td>{{ $row->customer_name }}</td>

@@ -64,17 +64,19 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch <span class="badge text-bg-warning">{{$ready_to_dispatch != Null ?count($ready_to_dispatch):0}}</span></button>
+                    <button class="nav-link {{$type == 'ready' ? 'active':''}}" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch <span class="badge text-bg-warning">{{$ready_to_dispatch != Null ?count($ready_to_dispatch):0}}</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List <span class="badge text-bg-warning">{{$dispatched != Null ?count($dispatched):0}}</span></button>
+                    <button class="nav-link {{$type == 'list' ? 'active':''}}" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List <span class="badge text-bg-warning">{{$dispatched != Null ?count($dispatched):0}}</span></button>
                 </li>
+                @role('bo-checker')
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
                 </li>
+                @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">

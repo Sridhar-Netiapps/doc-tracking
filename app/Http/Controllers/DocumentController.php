@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Models\AccountOpeningDocument;
 use App\Models\DtrfDocument;
 use App\Models\GoldLoanDocument;
@@ -13,45 +15,40 @@ use Auth;
 
 class DocumentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
+        });
+    }
     public function index(Request $request, $type)
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
-        if ($type == 'new') {
-            $loan_document = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
-            $gold_loan_document = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
-            $dtrf_document = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->paginate(100);
-            $account_opening_document = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->paginate(100);
+        $filter = function ($query) use ($type, $start_date, $end_date) {
+            if ($this->user->hasRole('ro-user')) {
+                $query->where('region', $this->user->region);
+            }
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                $query->where('branch_code', $this->user->branch_id);
+            }
+            return $query
+                ->when($type === 'new', function ($q) use ($start_date, $end_date) {
+                    $q->whereBetween('account_creation_date', [$start_date, $end_date]);
+                });
+        };
+        $loan_document = $filter(LoanDocument::query())->paginate(100);
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100);
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(100);
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100);
+        $loan_total = $loan_document->total();
+        $gold_loan_total = $gold_loan_document->total();
+        $dtrf_total = $dtrf_document->total();
+        $aof_total = $account_opening_document->total();
 
-            // Set totals as 0 when type is 'new' (optional, or you can calculate if needed)
-            $loan_total = $loan_document->total();
-            $gold_loan_total = $gold_loan_document->total();
-            $dtrf_total = $dtrf_document->total();
-            $aof_total = $account_opening_document->total();
-        } else {
-            $loan_document = LoanDocument::paginate(100);
-            $gold_loan_document = GoldLoanDocument::paginate(100);
-            $dtrf_document = DtrfDocument::paginate(100);
-            $account_opening_document = AccountOpeningDocument::paginate(100);
-
-            $loan_total = $loan_document->total();
-            $gold_loan_total = $gold_loan_document->total();
-            $dtrf_total = $dtrf_document->total();
-            $aof_total = $account_opening_document->total();
-        }
-
-        return view('accounts.accounts', [
-            'loan_document' => $loan_document,
-            'gold_loan_document' => $gold_loan_document,
-            'dtrf_document' => $dtrf_document,
-            'account_opening_document' => $account_opening_document,
-            'type' => $type,
-            'loan_total' => $loan_total,
-            'gold_loan_total' => $gold_loan_total,
-            'dtrf_total' => $dtrf_total,
-            'aof_total' => $aof_total,
-        ]);
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
     
     public function bulkReview(Request $request)
@@ -156,11 +153,31 @@ class DocumentController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function getDispatches()
+    public function getDispatches($type)
     {
+        $filter = function ($query) use ($type) {
+            // if ($this->user->hasRole('ro-user')) {
+            //     $query->where('region', $this->user->region);
+            // }
+            // if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            //     $query->where('branch_code', $this->user->branch_id);
+            // }
+            // return $query
+            //     ->when($type === 'ready', function ($q){
+            //         $q->where('status', "Waiting Checker's Approval");
+            //     })
+            //     ->when($type === 'list', function ($q){
+            //         $q->where('status', 'Dispatched');
+            //     });
+        };
+
+        // $records = $filter(CourierDispatch::query())->paginate(100);
+
+        // dd($records);
+        
         $ready_to_dispatch = CourierDispatch::where('status',"Waiting Checker's Approval")->get();
         $dispatched = CourierDispatch::where('status','Dispatched')->get();
-        return view('accounts.dispatches', compact('ready_to_dispatch','dispatched'));
+        return view('accounts.dispatches', compact('ready_to_dispatch','dispatched','type'));
     }
 
     public function viewDispatches($id)
