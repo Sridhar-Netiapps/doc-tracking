@@ -66,6 +66,7 @@ class DocumentController extends Controller
 
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
+    
     public function bulkReview(Request $request)
     {
         // dd($request->all());

@@ -48,6 +48,7 @@
         <div class="col-1"></div>
     </div> --}}
 </div>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-1"></div>
@@ -83,6 +84,7 @@
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>
+                                <th scope="col">MMRP Internal Barcode No.</th>
                                 <th scope="col">No of Loan Documents</th>
                                 <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
@@ -99,6 +101,7 @@
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                     <td>{{ $row->awb_pod }}</td>
                                     <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->mmrp_barcode }}</td>
                                     <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
                                     <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>

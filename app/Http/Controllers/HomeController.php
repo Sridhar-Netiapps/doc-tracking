@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\LoanDocument;
+use App\Models\GoldLoanDocument;
+use App\Models\DtrfDocument;
+use App\Models\AccountOpeningDocument;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -21,8 +26,19 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('home');
+        // Set date range for the previous week
+        $start_date = Carbon::now()->subWeek()->startOfWeek();
+        $end_date = Carbon::now()->subWeek()->endOfWeek();
+
+        // Get the totals based on the selected time period (new or all)
+        $loan_total = LoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
+        $gold_loan_total = GoldLoanDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
+        $dtrf_total = DtrfDocument::whereBetween('dtr_file_date', [$start_date, $end_date])->count();
+        $aof_total = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
+
+        // Return the view with the totals
+        return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
 }

@@ -9,6 +9,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\HomeController;
+
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -37,12 +39,16 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');    
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
+    
     Route::get('dispatches', [DocumentController::class,'getDispatches'])->name('dispatches');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
-    
-    Route::get('home', function () { return view('home'); })->name('home');
+   
+
+    Route::get('home', [HomeController::class, 'index'])->name('home');
+    // Route::get('home', [HomeController::class, 'index'])->name('home');
+    // Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController
     Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');
     Route::get('process-status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
