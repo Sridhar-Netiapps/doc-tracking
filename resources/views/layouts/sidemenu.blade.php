@@ -8,9 +8,9 @@
                 <li><a href="{{ route('users.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Users</a></li>
                 <li><a href="{{ route('vendor.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Vendor</a></li>
                 <li><a href="{{ route('emails.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Emails</a></li>
-                <li><a href="{{ route('roles.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Roles</a></li>
                 <li><a href="{{ route('process_status.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Process Status</a></li>
                 @role('master')
+                <li><a href="{{ route('couriers.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Courier</a></li>
                 <li><a href="{{ route('roles.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Roles</a></li>
                 <li><a href="{{ route('permissions.index') }}"><img src="/images/material-symbols-light--lock-person-outline-rounded.svg"/> Permission</a></li>
                 @endrole
