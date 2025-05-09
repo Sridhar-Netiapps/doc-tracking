@@ -145,6 +145,19 @@
                 </div>
             </div>
         </form>
+        <h2 class="mt-5">Assign Roles</h2>
+        <form action="{{ route('users.assignRole', $user->id) }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="role">Roles</label>
+                <select name="role" class="form-control">
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Assign Role</button>
+        </form>
     </div>
 </div>
 @endsection

@@ -11,9 +11,9 @@ class DtrfDocumentFactory extends Factory
         return [
             'unique_ref_no' => 'REF' . fake()->unique()->numberBetween(1000, 9999),
             'region' => fake()->randomElement(['South', 'North', 'East', 'West']),
-            'branch_code' => fake()->numberBetween(1000, 9999),
+            'branch_code' => fake()->numberBetween(1100, 1199),
             'branch_name' => fake()->city(),
-            'dtr_file_date' => fake()->dateTimeBetween('-2 week', 'now'),
+            'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'barcode' => Null,
             'business_category' => fake()->word(),
         ];

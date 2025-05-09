@@ -63,7 +63,7 @@
                                         <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                         <td>{{ $doc->channel ?? '-' }}</td>
                                         <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                        <td>{{ $doc->dtr_file_date ?? '-' }}</td>
+                                        <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                         <td>{{ $doc->business_category ?? '-' }}</td>
                                         <td>{{ $doc->status ?? '-' }}</td>
                                     </tr>
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col-4 pb-2">
                             <label for="status" class="form-label">MMRP Barcode No.</label>
-                            <input type="text" name="dispatch_date" class="form-control" required>
+                            <input type="text" name="mmrp_barcode" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -143,6 +143,7 @@
                 let formData = {
                     _token: $('input[name="_token"]').val(),
                     courier_name: $('input[name="courier_name"]').val(),
+                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
                     awb_pod: $('input[name="awb_pod"]').val(),
                     dispatch_date: $('input[name="dispatch_date"]').val(),
                     loan_ids: [],
@@ -169,7 +170,7 @@
                                 $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
                             });
                             if ($('input.select').length === 0) {
-                                window.location.href = `{{ route('dispatches')}}`;
+                                window.location.href = `{{ route('dispatches','list')}}`;
                             }
                             else{
                                 $('#update-courier')[0].reset();

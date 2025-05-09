@@ -64,17 +64,19 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch <span class="badge text-bg-warning">{{$ready_to_dispatch != Null ?count($ready_to_dispatch):0}}</span></button>
+                    <button class="nav-link {{$type == 'ready' ? 'active':''}}" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch <span class="badge text-bg-warning">{{$ready_to_dispatch != Null ?count($ready_to_dispatch):0}}</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List <span class="badge text-bg-warning">{{$dispatched != Null ?count($dispatched):0}}</span></button>
+                    <button class="nav-link {{$type == 'list' ? 'active':''}}" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List <span class="badge text-bg-warning">{{$dispatched != Null ?count($dispatched):0}}</span></button>
                 </li>
+                @role('bo-checker')
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
-                </li>
+                </li>                                                                                                                                         
+                @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
@@ -85,6 +87,8 @@
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>
                                 <th scope="col">MMRP Internal Barcode No.</th>
+                                <th scope="col">Branch code</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">No of Loan Documents</th>
                                 <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
@@ -102,6 +106,8 @@
                                     <td>{{ $row->awb_pod }}</td>
                                     <td>{{ $row->courier_name }}</td>
                                     <td>{{ $row->mmrp_barcode }}</td>
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->region }}</td>
                                     <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
                                     <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
@@ -125,6 +131,9 @@
                                 <th scope="col"><input type="checkbox" class="select_all"/></th>
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>
+                                <th scope="col">MMRP Internal Barcode No.</th>
+                                <th scope="col">Branch code</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">No of Loan Documents</th>
                                 <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
@@ -141,6 +150,9 @@
                                     <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                     <td>{{ $row->awb_pod }}</td>
                                     <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->mmrp_barcode }}</td>
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->region }}</td>
                                     <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
                                     <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
@@ -154,7 +166,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody>Status
                     </table>
                 </div>
             </div>

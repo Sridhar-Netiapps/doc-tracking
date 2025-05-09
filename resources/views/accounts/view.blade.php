@@ -19,7 +19,7 @@
                 </li>
                 <li class="ms-auto">
                     {{-- <button class="btn btn-primary proceed" type="button">Add Courier Details</button> --}}
-                    <a class="btn btn-secondary" href="{{ route('dispatches')}}">Go Back</a>
+                    <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -63,7 +63,7 @@
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                    <td>{{ $doc->dtr_file_date ?? '-' }}</td>
+                                    <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     {{-- <td>{{ $doc->status ?? '-' }}</td> --}}
                                 </tr>
