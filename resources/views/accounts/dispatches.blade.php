@@ -79,7 +79,7 @@
                 @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="tab-pane fade {{$type == 'ready' ? 'active show':''}}" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -124,7 +124,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <div class="tab-pane fade {{$type == 'list' ? 'active show':''}}" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>

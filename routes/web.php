@@ -30,13 +30,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () { 
         return redirect(route('login'));
     });
-
+    
+    Route::get('documents/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
     Route::prefix('documents')->group(function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
         Route::post('/', [DocumentController::class, 'filter'])->name('accounts.filter');
         Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
-        Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');    
+        // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
+        Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
