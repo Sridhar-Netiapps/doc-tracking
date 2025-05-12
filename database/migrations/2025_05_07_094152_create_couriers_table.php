@@ -14,7 +14,7 @@ class CreateCouriersTable extends Migration
             $table->string('name'); // Name of the courier
             $table->string('number'); // Courier contact number
             $table->text('address'); // Courier address (pickup/delivery address)
-            $table->enum('status', ['Pending', 'In Transit', 'Delivered'])->default('Pending'); // Courier status
+            $table->enum('status', ['Active', 'Inactive'])->default('Active'); // Courier status
             $table->timestamps(); // created_at and updated_at timestamps
         });
     }

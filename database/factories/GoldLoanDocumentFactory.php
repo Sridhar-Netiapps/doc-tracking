@@ -11,7 +11,7 @@ class GoldLoanDocumentFactory extends Factory
         return [
             'unique_ref_no' => 'REF' . fake()->unique()->numberBetween(1000, 9999),
             'region' => fake()->randomElement(['South', 'North', 'East', 'West']),
-            'branch_code' => fake()->numberBetween(1100, 1199),
+            'branch_code' => fake()->numberBetween(1110, 1119),
             'branch_name' => fake()->city(),
             'cif_id' => 'CIF' . fake()->unique()->numberBetween(100000, 999999),
             'account_number' => 'ACC' . fake()->unique()->numberBetween(1000000, 9999999),

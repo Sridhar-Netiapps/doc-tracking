@@ -12,6 +12,7 @@ use App\Models\LoanDocument;
 use App\Models\CourierDispatch;
 use Carbon\Carbon;
 use Auth;
+use DB;
 
 class DocumentController extends Controller
 {
@@ -27,6 +28,15 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
+        // // if(isset($request->loan_ids))
+        //     LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
+        // // if(isset($request->goldloan_ids))
+        //     GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
+        // // if(isset($request->dtrf_ids))
+        //     DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
+        // // if(isset($request->aof_ids))
+        //     AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
+
         $filter = function ($query) use ($type, $start_date, $end_date) {
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
@@ -36,7 +46,7 @@ class DocumentController extends Controller
             }
             return $query
                 ->when($type === 'new', function ($q) use ($start_date, $end_date) {
-                    $q->whereBetween('account_creation_date', [$start_date, $end_date]);
+                    $q->where('status','pending')->whereBetween('account_creation_date', [$start_date, $end_date]);
                 });
         };
         $loan_document = $filter(LoanDocument::query())->paginate(100);
@@ -53,76 +63,49 @@ class DocumentController extends Controller
     
     public function bulkReview(Request $request)
     {
-        // dd($request->all());
-        // $loan_document = $gold_loan_document = $dtrf_document = $account_opening_document = NULL;
-        
-        // if(isset($request->loan_ids))
-        //     $loan_document = LoanDocument::whereIn('id',$request->loan_ids)->get();
-        // if(isset($request->goldloan_ids))
-        //     $gold_loan_document = GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get();
-        // if(isset($request->dtrf_ids))
-        //     $dtrf_document = DtrfDocument::whereIn('id',$request->dtrf_ids)->get();
-        // if(isset($request->aof_ids))
-        //     $account_opening_document = AccountOpeningDocument::whereIn('id',$request->aof_ids)->get();
-        // $accountIds = $request->input('account_ids', []);
-        
-        // if (empty($accountIds)) {
-        //     return redirect()->back()->with('error', 'Please select at least one account.');
-        // }
-        // dd($loan_document);
-        $type = 'new';
-        // $accounts = LoanDocument::whereIn('id', $accountIds)->get();
+        if(isset($request->loan_ids))
+            LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>'selected']);
+        if(isset($request->goldloan_ids))
+            GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>'selected']);
+        if(isset($request->dtrf_ids))
+            DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>'selected']);
+        if(isset($request->aof_ids))
+            AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>'selected']);
 
-        $allDocuments = collect(); 
-        if (isset($request->loan_ids)) {
-            $loans = LoanDocument::whereIn('id', $request->loan_ids)->get()
-                        ->map(function ($item) {
-                            $item->doc_type = 'loan';
-                            return $item;
-                        });
-            $allDocuments = $allDocuments->merge($loans);
-        }
-        if (isset($request->goldloan_ids)) {
-            $goldloans = GoldLoanDocument::whereIn('id', $request->goldloan_ids)->get()
-                        ->map(function ($item) {
-                            $item->doc_type = 'goldloan';
-                            return $item;
-                        });
-            $allDocuments = $allDocuments->merge($goldloans);
-        }
-        if (isset($request->dtrf_ids)) {
-            $dtrfs = DtrfDocument::whereIn('id', $request->dtrf_ids)->get()
-                        ->map(function ($item) {
-                            $item->doc_type = 'dtrf';
-                            return $item;
-                        });
-            $allDocuments = $allDocuments->merge($dtrfs);
-        }
-        if (isset($request->aof_ids)) {
-            $aofs = AccountOpeningDocument::whereIn('id', $request->aof_ids)->get()
-                        ->map(function ($item) {
-                            $item->doc_type = 'aof';
-                            return $item;
-                        });
-            $allDocuments = $allDocuments->merge($aofs);
-        }
-        // dd($allDocuments->toArray());
-        // return view('accounts.bulkReview', compact('gold_loan_document','type','dtrf_document','account_opening_document','loan_document'));
-        return view('accounts.index', compact('allDocuments','type'));
+        return redirect()->route('accounts.selected');
+    }
 
-        // if (isset($request->loan_ids)) {
-        //     $loans = LoanDocument::whereIn('id', $request->loan_ids)->get()
-        //         ->map(function ($item) {
-        //             $item->doc_type = 'loan';
-        //             return $item;
-        //         });
-        //     $allDocuments = $allDocuments->merge($loans);
-        // }
-
+    public function getBulkReview()
+    {
+        $allDocuments = collect();
+        $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+            ->map(function ($item) {
+                $item->doc_type = 'loan';
+                return $item;
+            });
+        $allDocuments = $allDocuments->merge($loans);
+        $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+            ->map(function ($item) {
+                $item->doc_type = 'goldloan';
+                return $item;
+            });
+        $allDocuments = $allDocuments->merge($goldloans);
+        $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+            ->map(function ($item) {
+                $item->doc_type = 'dtrf';
+                return $item;
+            });
+        $allDocuments = $allDocuments->merge($dtrfs);
+        $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+            ->map(function ($item) {
+                $item->doc_type = 'aof';
+                return $item;
+            });
+        $allDocuments = $allDocuments->merge($aofs);
+        return view('accounts.index', compact('allDocuments'));
     }
     public function addCourierDetails(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'courier_name' => 'required|string',
             'awb_pod' => 'required|string',
@@ -133,33 +116,53 @@ class DocumentController extends Controller
             'dtrf_ids'=> 'nullable|array',
             'aof_ids'=> 'nullable|array'
         ]);
-        // dd($validated);
-        $dispatch = new CourierDispatch;
-        $dispatch->courier_name = $validated['courier_name'];
-        $dispatch->awb_pod = $validated['awb_pod'];
-        $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
-        $dispatch->branch_code = $this->user->branch_id; 
-        $dispatch->region = $this->user->region; 
-        $dispatch->dispatched_by = Auth::user()->id;
-        $dispatch->dispatch_date = $validated['dispatch_date'];
-        $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
-        $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
-        $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
-        $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
-        $dispatch->status = "Waiting Checker's Approval";
-        $dispatch->save();
-        return response()->json(['success' => true]);
+
+        DB::beginTransaction(); // Start Transaction
+
+        try {
+            $dispatch = new CourierDispatch;
+            $dispatch->courier_name = $validated['courier_name'];
+            $dispatch->awb_pod = $validated['awb_pod'];
+            $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
+            $dispatch->branch_code = $this->user->branch_id; 
+            $dispatch->region = $this->user->region; 
+            $dispatch->dispatched_by = Auth::user()->id;
+            $dispatch->dispatch_date = $validated['dispatch_date'];
+            $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
+            $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
+            $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
+            $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
+            $dispatch->status = "Waiting Checker's Approval";
+            $dispatch->save();
+
+            if(isset($request->loan_ids))
+                LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>"Waiting Checker's Approval"]);
+            if(isset($request->goldloan_ids))
+                GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>"Waiting Checker's Approval"]);
+            if(isset($request->dtrf_ids))
+                DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>"Waiting Checker's Approval"]);
+            if(isset($request->aof_ids))
+                AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>"Waiting Checker's Approval"]);
+            
+            DB::commit();
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
+        
     }
 
     public function getDispatches($type)
     {
         $filter = function ($query) use ($type) {
-            // if ($this->user->hasRole('ro-user')) {
-            //     $query->where('region', $this->user->region);
-            // }
-            // if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-            //     $query->where('branch_code', $this->user->branch_id);
-            // }
+            if ($this->user->hasRole('ro-user')) {
+                $query->where('region', $this->user->region);
+            }
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                $query->where('branch_code', $this->user->branch_id);
+            }   
             // return $query
             //     ->when($type === 'ready', function ($q){
             //         $q->where('status', "Waiting Checker's Approval");
@@ -171,10 +174,10 @@ class DocumentController extends Controller
 
         // $records = $filter(CourierDispatch::query())->paginate(100);
 
-        // dd($records);
         
         $ready_to_dispatch = CourierDispatch::where('status',"Waiting Checker's Approval")->get();
         $dispatched = CourierDispatch::where('status','Dispatched')->get();
+        // dd($dispatched);
         return view('accounts.dispatches', compact('ready_to_dispatch','dispatched','type'));
     }
 
@@ -231,7 +234,25 @@ class DocumentController extends Controller
             $dispatch->save();
         }
 
-        return redirect()->route('dispatches')->with('success', 'Courier Dispatched Successfully.');
+        return redirect()->route('dispatches','list')->with('success', 'Courier Dispatched Successfully.');
         // return view('accounts.', compact('ready_to_dispatch','dispatched'));
+    }
+
+    public function generateDispatchNumber(string $branchCode, string $regionCode, string $courierName): string
+    {
+        $today = Carbon::today();
+        $datePart = $today->format('dm y'); // e.g., 120524
+        $slug = strtoupper(Str::slug($courierName, ''));
+
+        // Fetch today's count for the same branch and courier
+        $count = DB::table('courier_dispatches')
+            ->where('branch_code', $branchCode)
+            ->where('courier_slug', $slug)
+            ->whereDate('created_at', $today)
+            ->count();
+
+        $sequence = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+
+        return "{$branchCode}{$regionCode}{$slug}{$datePart}{$sequence}";
     }
 }

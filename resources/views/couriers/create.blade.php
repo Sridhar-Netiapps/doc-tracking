@@ -43,9 +43,8 @@
         <div class="mb-3">
             <label>Status</label>
             <select name="status" class="form-control">
-                <option value="Pending">Pending</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Delivered">Delivered</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
             </select>
         </div>
         <button class="btn btn-primary">Save</button>

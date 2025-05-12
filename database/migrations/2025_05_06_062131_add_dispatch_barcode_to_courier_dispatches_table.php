@@ -8,9 +8,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courier_dispatches', function (Blueprint $table) {
-            $table->string('mmrp_barcode')->nullable()->after('courier_id');
-            $table->string('branch_code')->nullable()->after('courier_id');
-            $table->string('region')->nullable()->after('courier_id');
+            $table->string('mmrp_barcode')->after('courier_id');
+            $table->string('branch_code')->after('courier_id');
+            $table->string('region')->after('courier_id');
         });
     }
 

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@include('layouts.topmenu')
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-1"></div>
@@ -76,12 +77,14 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{ $dtrf_total }}</span></button>
                 </li>
+                @hasanyrole('master|bo-maker|bo-checker')
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed</button>
                     </form>
                 </li>
+                @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">

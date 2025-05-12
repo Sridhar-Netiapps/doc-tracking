@@ -1,6 +1,6 @@
     @extends('layouts.app')
     @section('content')
-    <div class="container-fluid">
+    {{-- <div class="container-fluid">
         <div class="row">
             <div class="col-1"></div>
             <div class="col-10">
@@ -8,7 +8,7 @@
             </div>
             <div class="col-1"></div>
         </div>
-    </div>
+    </div> --}}
     <div class="container-fluid mt-3">
         <div class="row">
             <div class="col-1"></div>
@@ -19,7 +19,7 @@
                     </li>
                     <li class="ms-auto">
                         <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
-                        <a class="btn btn-secondary" href="{{ route('accounts.index',$type)}}">Go Back</a>
+                        <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
                     </li>
                 </ul>
                 <div class="tab-content bg-white" id="myTabContent">
@@ -65,7 +65,7 @@
                                         <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
                                         <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                         <td>{{ $doc->business_category ?? '-' }}</td>
-                                        <td>{{ $doc->status ?? '-' }}</td>
+                                        <td>{{ ucfirst($doc->status) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -170,7 +170,7 @@
                                 $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
                             });
                             if ($('input.select').length === 0) {
-                                window.location.href = `{{ route('dispatches','list')}}`;
+                                window.location.href = `{{ route('dispatches','ready')}}`;
                             }
                             else{
                                 $('#update-courier')[0].reset();

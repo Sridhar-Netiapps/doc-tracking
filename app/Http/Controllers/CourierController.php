@@ -29,9 +29,8 @@ class CourierController extends Controller
             'name' => 'required',
             'number' => 'required',
             'address' => 'required',
-            'status' => 'required|in:Pending,In Transit,Delivered'
+            'status' => 'required|in:Active,Inactive'
         ]);
-
         Courier::create($request->all());
 
         return redirect()->route('couriers.index')->with('success', 'Courier added successfully.');

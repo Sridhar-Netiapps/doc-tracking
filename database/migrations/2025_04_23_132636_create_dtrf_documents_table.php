@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('region');
             $table->string('branch_code');
             $table->string('branch_name');
-            $table->date('account_creation_date');
+            $table->date('dtr_file_date');
             $table->string('barcode')->nullable();
             $table->string('business_category');
             $table->string('status', 100)->default('Pending');

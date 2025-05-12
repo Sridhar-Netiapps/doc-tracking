@@ -43,7 +43,7 @@
                                 <th scope="col"> Loan Disbursement Type / Account Opening</th>
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
-                                {{-- <th scope="col"> Status</th> --}}
+                                <th scope="col"> Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,7 +65,7 @@
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
-                                    {{-- <td>{{ $doc->status ?? '-' }}</td> --}}
+                                    <td>{{ $doc->status ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

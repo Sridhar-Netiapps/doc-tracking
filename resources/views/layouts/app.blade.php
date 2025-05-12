@@ -101,7 +101,6 @@
             </div>
         </nav>
         <main class="">
-            @include('layouts.topmenu')
             @yield('content')
         </main>
     </div>
