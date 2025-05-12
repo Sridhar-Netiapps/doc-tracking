@@ -75,7 +75,7 @@
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
-                </li>
+                </li>                                                                                                                                         
                 @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -131,6 +131,9 @@
                                 <th scope="col"><input type="checkbox" class="select_all"/></th>
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>
+                                <th scope="col">MMRP Internal Barcode No.</th>
+                                <th scope="col">Branch code</th>
+                                <th scope="col">Region</th>
                                 <th scope="col">No of Loan Documents</th>
                                 <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
@@ -147,6 +150,9 @@
                                     <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                     <td>{{ $row->awb_pod }}</td>
                                     <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->mmrp_barcode }}</td>
+                                    <td>{{ $row->branch_code }}</td>
+                                    <td>{{ $row->region }}</td>
                                     <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
                                     <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
@@ -160,7 +166,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody>Status
                     </table>
                 </div>
             </div>

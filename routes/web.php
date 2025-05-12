@@ -10,7 +10,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\CourierController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
    
-
+    
     Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', function () { return view('home'); })->name('home');
@@ -79,7 +79,7 @@ Route::group(['middleware' => ['auth']], function () {
     //  {
     // Route::post('process_status',RoleController::class);
     Route::resource('vendor', VendorController::class);
-
+    Route::resource('couriers', CourierController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UserController::class);

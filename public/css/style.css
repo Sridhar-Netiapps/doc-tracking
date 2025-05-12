@@ -20,6 +20,18 @@ body{
     border-color: #fcb53e;
 }
 
+.btn-primary:focus-visible, .btn-primary:active{
+    background: #fcb53e ;
+}
+
+:not(.btn-check) + .btn:active{
+    background: #f78f35;
+}
+
+.btn-primary:focus{
+    background: #fcb53e ;
+}
+
 body{
     background: #E6FDF7;
     font-family: "Sora", sans-serif;
@@ -346,3 +358,4 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):fo
 input[type=checkbox]{
     transform: scale(1.2);
 }
+
