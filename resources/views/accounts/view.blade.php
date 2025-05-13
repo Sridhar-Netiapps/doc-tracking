@@ -18,7 +18,7 @@
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dispatched Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
-                    {{-- <button class="btn btn-primary proceed" type="button">Add Courier Details</button> --}}
+                    <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
                     <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
                 </li>
             </ul>

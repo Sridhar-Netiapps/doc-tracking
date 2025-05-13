@@ -125,7 +125,7 @@ class DocumentController extends Controller
             $dispatch->awb_pod = $validated['awb_pod'];
             $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
             $dispatch->branch_code = $this->user->branch_id; 
-            $dispatch->region = $this->user->region; 
+            $dispatch->region_id = $this->user->region_id; 
             $dispatch->dispatched_by = Auth::user()->id;
             $dispatch->dispatch_date = $validated['dispatch_date'];
             $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
@@ -158,27 +158,26 @@ class DocumentController extends Controller
     {
         $filter = function ($query) use ($type) {
             if ($this->user->hasRole('ro-user')) {
-                $query->where('region', $this->user->region);
+                $query->where('region_id', $this->user->region_id);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
             }   
-            // return $query
-            //     ->when($type === 'ready', function ($q){
-            //         $q->where('status', "Waiting Checker's Approval");
-            //     })
-            //     ->when($type === 'list', function ($q){
-            //         $q->where('status', 'Dispatched');
-            //     });
+            return $query
+                ->when($type === 'ready', function ($q){
+                    $q->where('status', "Waiting Checker's Approval");
+                })
+                ->when($type === 'list', function ($q){
+                    $q->where('status', 'Dispatched');
+                });
         };
 
-        // $records = $filter(CourierDispatch::query())->paginate(100);
+        $records = $filter(CourierDispatch::query())->paginate(100);
 
-        
-        $ready_to_dispatch = CourierDispatch::where('status',"Waiting Checker's Approval")->get();
-        $dispatched = CourierDispatch::where('status','Dispatched')->get();
-        // dd($dispatched);
-        return view('accounts.dispatches', compact('ready_to_dispatch','dispatched','type'));
+        $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',"Waiting Checker's Approval")->count();
+        $dispatched_count = $filter(CourierDispatch::query())->where('status','Dispatched')->count();
+
+        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records'));
     }
 
     public function viewDispatches($id)
@@ -228,31 +227,47 @@ class DocumentController extends Controller
         $validated = $request->validate([
             'readytodispatch_ids' => 'required|array'
         ]);
-        $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
-        foreach($dispatched as $dispatch){
-            $dispatch->status = "Dispatched";
-            $dispatch->save();
+        DB::beginTransaction(); // Start Transaction
+
+        try {
+            $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
+            $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
+            $dispatchNumbers = [];
+            foreach ($dispatched as $dispatch) {
+                $sequence++;
+                $dispatch->status = "Dispatched";
+                $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, '0'.$this->user->region_id, $dispatch->courier_name, $sequence,now());
+                $dispatch->save();
+                if($dispatch->loan_ids != null)
+                LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->update(['status'=>"Dispatched"]);
+                if($dispatch->goldloan_ids != null)
+                    GoldLoanDocument::whereIn('id',explode(',', $dispatch->goldloan_ids))->update(['status'=>"Dispatched"]);
+                if($dispatch->dtrf_ids != null)
+                    DtrfDocument::whereIn('id',explode(',', $dispatch->dtrf_ids))->update(['status'=>"Dispatched"]);
+                if($dispatch->aof_ids != null)
+                    AccountOpeningDocument::whereIn('id',explode(',', $dispatch->aof_ids))->update(['status'=>"Dispatched"]);
+
+                $dispatchNumbers[] = '#'.$dispatch->dispatch_no;
+            }
+            // dd($dispatchNumbers);
+            DB::commit();
+            return redirect()->route('dispatches', 'list')->with('success', '<b>' . implode(', ', $dispatchNumbers) . '</b><br>Couriers Dispatched Successfully.');
+            // return redirect()->route('dispatches','list')->with('success', '<b>' . implode(', ', $dispatchNumbers) . '</b><br>Couriers Dispatched Successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
         }
 
-        return redirect()->route('dispatches','list')->with('success', 'Courier Dispatched Successfully.');
-        // return view('accounts.', compact('ready_to_dispatch','dispatched'));
     }
 
-    public function generateDispatchNumber(string $branchCode, string $regionCode, string $courierName): string
+    public function buildDispatchNumber($branchCode, $region, $courierSlug, $sequence, $date)
     {
-        $today = Carbon::today();
-        $datePart = $today->format('dm y'); // e.g., 120524
-        $slug = strtoupper(Str::slug($courierName, ''));
+        $day = $date->format('d');
+        $month = $date->format('m');
+        $year = $date->format('y');
+        $seqStr = str_pad($sequence, 3, '0', STR_PAD_LEFT);
 
-        // Fetch today's count for the same branch and courier
-        $count = DB::table('courier_dispatches')
-            ->where('branch_code', $branchCode)
-            ->where('courier_slug', $slug)
-            ->whereDate('created_at', $today)
-            ->count();
-
-        $sequence = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-
-        return "{$branchCode}{$regionCode}{$slug}{$datePart}{$sequence}";
+        return "{$branchCode}{$courierSlug}{$day}{$month}{$year}{$seqStr}";
     }
 }
