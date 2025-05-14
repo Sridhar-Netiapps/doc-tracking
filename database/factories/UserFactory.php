@@ -23,12 +23,35 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $regions = [
+            'South' => 1,
+            'North' => 2,
+            'East'  => 3,
+            'West'  => 4,
+        ];
+    
+        $regionName = $this->faker->randomElement(array_keys($regions));
+        $gender = $this->faker->randomElement(['Male', 'Female']);
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'first_name'        => $this->faker->firstName($gender),
+            'last_name'         => $this->faker->lastName,
+            'middle_name'       => $this->faker->optional()->firstName,
+            'employee_id'       => strtoupper('NET' . $this->faker->unique()->numberBetween(1000, 9999)),
+            'email'             => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'password'          => Hash::make('password'), // Use bcrypt or Hash::make
+            'dor'               => NULL, // Date of resignation
+            'doj'               => $this->faker->dateTimeBetween('-10 years', '-6 years'), // Date of joining
+            'mobile_number'     => $this->faker->numerify('9#########'),
+            'dob'               => $this->faker->dateTimeBetween('-50 years', '-22 years'),
+            'gender'            => $gender,
+            'remember_token'    => Str::random(10),
+            'status'            => $this->faker->randomElement(['active', 'inactive']),
+            'created_at'        => now(),
+            'updated_at'        => NULL,
+            'branch_id'         => $this->faker->numberBetween(1111, 1119),
+            'region'            => $regionName,
+            'region_id'         => $regions[$regionName],
         ];
     }
 

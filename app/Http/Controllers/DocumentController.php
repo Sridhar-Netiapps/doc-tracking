@@ -251,7 +251,7 @@ class DocumentController extends Controller
             }
             // dd($dispatchNumbers);
             DB::commit();
-            return redirect()->route('dispatches', 'list')->with('success', '<b>' . implode(', ', $dispatchNumbers) . '</b><br>Couriers Dispatched Successfully.');
+            return redirect()->route('dispatches', 'list')->with('success', implode(', ', $dispatchNumbers) . ' Couriers Dispatched Successfully.');
             // return redirect()->route('dispatches','list')->with('success', '<b>' . implode(', ', $dispatchNumbers) . '</b><br>Couriers Dispatched Successfully.');
 
         } catch (\Exception $e) {
