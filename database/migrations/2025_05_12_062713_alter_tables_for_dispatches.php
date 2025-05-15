@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('region_id')->default(1);
+            $table->integer('branch_id')->default(1);
         });
         Schema::table('courier_dispatches', function (Blueprint $table) {
             $table->renameColumn('region','region_id');
