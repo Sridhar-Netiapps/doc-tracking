@@ -351,4 +351,51 @@ class DocumentController extends Controller
 
         return "{$branchCode}{$courierSlug}{$day}{$month}{$year}{$seqStr}";
     }
+
+    public function dispatchDetails(Request $request)
+    {
+        // dd($request->all());
+        $validated = $request->validate([
+            'courier_received_date' => 'required|date',
+            'tracked_by' => 'required|string',
+            'remarks' => 'nullable|string',
+            'reason_for_rejection' => 'nullable|string',
+            'loan_ids' => 'nullable|array',
+            'goldloan_ids' => 'nullable|array',
+            'dtrf_ids' => 'nullable|array',
+            'aof_ids' => 'nullable|array',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $updateData = [
+                'courier_received_date' => $validated['courier_received_date'],
+                'tracked_by' => $validated['tracked_by'],
+                'remarks' => $validated['remarks'] ?? null,
+                'reason_for_rejection' => $validated['reason_for_rejection'] ?? null,
+                'status' => 'Dispatched'
+            ];
+
+            if (!empty($validated['loan_ids'])) {
+                LoanDocument::whereIn('id', $validated['loan_ids'])->update($updateData);
+            }
+            if (!empty($validated['goldloan_ids'])) {
+                GoldLoanDocument::whereIn('id', $validated['goldloan_ids'])->update($updateData);
+            }
+            if (!empty($validated['dtrf_ids'])) {
+                DtrfDocument::whereIn('id', $validated['dtrf_ids'])->update($updateData);
+            }
+            if (!empty($validated['aof_ids'])) {
+                AccountOpeningDocument::whereIn('id', $validated['aof_ids'])->update($updateData);
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

@@ -18,7 +18,7 @@
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dispatched Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
-                    <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
+                    <button class="btn btn-primary proceed" type="button">Add Dispatch Details</button>
                     <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
                 </li>
             </ul>
@@ -78,26 +78,31 @@
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('courier.update')}}" method="POST">
+            <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
                 @csrf
                 <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Update Details</h5>
+                    <h5 class="mb-0 text-primary" id="modal-title">Rejected Dispatch Details</h5>
                 </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name</label>
-                        <input type="text" name="courier_name" class="form-control" required>
+            
+                    <div class="modal-body p-4 row">
+                        <div class="col-md-4 pb-2">
+                            <label for="courier_received_date" class="form-label">Courier Received Date</label>
+                            <input type="date" name="courier_received_date" class="form-control">
+                        </div>
+                        <div class="col-md-4 pb-2">
+                            <label for="tracked_by" class="form-label">Tracked By</label>
+                            <input type="text" name="tracked_by" class="form-control">
+                        </div>
+                        <div class="col-md-4 pb-2">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea name="remarks" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-12 pb-2">
+                            <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
+                            <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
+                        </div>
                     </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Dispatch Date</label>
-                        <input type="Date" name="dispatch_date" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
+                    <div class="modal-footer border-0">
                     {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
@@ -106,6 +111,7 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         $(".select_all").click(function () {
@@ -136,11 +142,13 @@
         $('#update-courier').submit(function (e) {
             e.preventDefault();
 
-            let formData = {
+
+                let formData = {
                 _token: $('input[name="_token"]').val(),
-                courier_name: $('input[name="courier_name"]').val(),
-                awb_pod: $('input[name="awb_pod"]').val(),
-                dispatch_date: $('input[name="dispatch_date"]').val(),
+                courier_received_date: $('input[name="courier_received_date"]').val(),
+                tracked_by: $('input[name="tracked_by"]').val(),
+                remarks: $('textarea[name="remarks"]').val(),
+                reason_for_rejection: $('textarea[name="reason_for_rejection"]').val(),
                 loan_ids: [],
                 goldloan_ids: [],
                 dtrf_ids: [],
@@ -152,12 +160,13 @@
                     formData[doc.doc_type + '_ids'].push(doc.id);
                 }
             });
-
+            // console.log(formData);
+            
             $.post($(this).attr('action'), formData)
                 .done(function () {
                     Swal.fire({
                         title: "Success!",
-                        text: "Courier details updated successfully.",
+                        text: "dispatch details updated successfully.",
                         icon: "success",
                         confirmButtonText: "OK"
                     }).then(() => {
