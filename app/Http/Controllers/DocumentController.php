@@ -10,6 +10,7 @@ use App\Models\DtrfDocument;
 use App\Models\GoldLoanDocument;
 use App\Models\LoanDocument;
 use App\Models\CourierDispatch;
+use App\Models\Courier;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -28,16 +29,8 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
-        // // if(isset($request->loan_ids))
-        //     LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
-        // // if(isset($request->goldloan_ids))
-        //     GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
-        // // if(isset($request->dtrf_ids))
-        //     DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
-        // // if(isset($request->aof_ids))
-        //     AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->update(['status'=>'pending']);
-
         $filter = function ($query) use ($type, $start_date, $end_date) {
+            $query->where('status','pending');
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
             }
@@ -46,7 +39,7 @@ class DocumentController extends Controller
             }
             return $query
                 ->when($type === 'new', function ($q) use ($start_date, $end_date) {
-                    $q->where('status','pending')->whereBetween('account_creation_date', [$start_date, $end_date]);
+                    $q->whereBetween('account_creation_date', [$start_date, $end_date]);
                 });
         };
         $loan_document = $filter(LoanDocument::query())->paginate(100);
@@ -59,6 +52,93 @@ class DocumentController extends Controller
         $aof_total = $account_opening_document->total();
 
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+    }
+
+    public function filter(Request $request)
+    {
+        $user = Auth::user();
+        $docType = $request->input('doc_type');
+
+        $filters = [
+            'unique_number'          => $request->input('unique_number'),
+            'region'                 => $request->input('region'),
+            'branch_code'            => $request->input('branch_code'),
+            'branch_name'            => $request->input('branch_name'),
+            'account_creation_date'  => $request->input('account_creation_date'),
+            'business_category'      => $request->input('business_category'),
+            'status'                 => $request->input('status'),
+            'cif_id'                 => $request->input('cif_id'),
+            'account_number'         => $request->input('account_number'),
+            'customer_name'          => $request->input('customer_name'),
+            'channel'                => $request->input('channel'),
+            'loan_disbursement_type' => $request->input('loan_disbursement_type'),
+            'account_opening_type'   => $request->input('account_opening_type'),
+            'loan_cycle'             => $request->input('loan_cycle'),
+            'scheme'                 => $request->input('scheme'),
+        ];
+
+        $filterFunction = function ($query, $table) use ($user, $filters) {
+            $query->where('status', 'pending');
+
+            if ($user->hasRole('ro-user')) {
+                $query->where('region', $user->region);
+            }
+
+            if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+                $query->where('branch_code', $user->branch_id);
+            }
+
+            // Apply filters dynamically
+            foreach ($filters as $field => $value) {
+                if (!empty($value)) {
+                    if (\Schema::hasColumn($table, $field)) {
+                        $query->where($field, $value);
+                    }
+                }
+            }
+        };
+
+        $results = [];
+
+        if ($docType === 'loan') {
+            $results['loan_documents'] = LoanDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'loan_documents');
+            })->paginate(100);
+
+        } elseif ($docType === 'gold_loan') {
+            $results['gold_loan_documents'] = GoldLoanDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'gold_loan_documents');
+            })->paginate(100);
+
+        } elseif ($docType === 'dtrf') {
+            $results['dtrf_documents'] = DtrfDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'dtrf_documents');
+            })->paginate(100);
+
+        } elseif ($docType === 'aof') {
+            $results['account_opening_documents'] = AccountOpeningDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'account_opening_documents');
+            })->paginate(100);
+
+        } else {
+            $results['loan_documents'] = LoanDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'loan_documents');
+            })->paginate(100);
+
+            $results['gold_loan_documents'] = GoldLoanDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'gold_loan_documents');
+            })->paginate(100);
+
+            $results['dtrf_documents'] = DtrfDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'dtrf_documents');
+            })->paginate(100);
+
+            $results['account_opening_documents'] = AccountOpeningDocument::query()->where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'account_opening_documents');
+            })->paginate(100);
+        }
+
+        return response()->json($results);
     }
     
     public function bulkReview(Request $request)
@@ -102,7 +182,8 @@ class DocumentController extends Controller
                 return $item;
             });
         $allDocuments = $allDocuments->merge($aofs);
-        return view('accounts.index', compact('allDocuments'));
+        $couriers = Courier::pluck('name','id');
+        return view('accounts.index', compact('allDocuments','couriers'));
     }
     public function addCourierDetails(Request $request)
     {
