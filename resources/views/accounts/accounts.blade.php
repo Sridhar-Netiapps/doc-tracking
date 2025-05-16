@@ -9,39 +9,82 @@
                 <form method="POST" action="{{ route('accounts.index',$type) }}">
                     <div class="row">
                         <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
+                            <select class="form-select" name="region">
+                                <option value="">Select Document Type</option>
+                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>MB Loan Documents</option>
+                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>Gold Loan Documents</option>
+                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>Liablities Documents</option>
+                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>DTR Files</option>
+                            </select>
                         </div>
                         <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
+                            <input type="text" class="form-control" placeholder="Unique Number" value="{{ request('unique_number') }}" name="unique_number">
                         </div>
                         <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <select class="form-control select2" name="region">
+                            <select class="form-select" name="region">
                                 <option value="">Select Region</option>
                                 <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
                                 <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
                                 <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
                                 <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                                <!-- Add more -->
                             </select>
                         </div>
                         <div class="col-2 mt-3">
-                            <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
+                            <input type="text" class="form-control" placeholder="Branch Code" value="{{ request('branch_code') }}" name="branch_code">
                         </div>
                         <div class="col-2 mt-3">
-                            <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
+                            <input type="text" class="form-control" placeholder="Branch Name" value="{{ request('branch_name') }}" name="branch_name">
+                        </div>
+                        {{-- <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="CIF ID" value="{{ request('cif_id') }}" name="cif_id">
+                        </div> --}}
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Account Number" value="{{ request('account_number') }}" name="account_number">
+                        </div>
+                        {{-- <div class="col-2 mt-3">
+                            <input type="number" class="form-control" placeholder="Loan Cycle" value="{{ request('loan_cycle') }}" name="loan_cycle">
+                        </div> --}}
+                        {{-- <div class="col-2 mt-3">
+                            <select class="form-select" name="scheme">
+                                <option value="">Select Scheme</option>
+                                <option value="GL" {{ request('scheme') == 'GL' ? 'selected' : '' }}>GL</option>
+                                <option value="IL" {{ request('scheme') == 'IL' ? 'selected' : '' }}>IL</option>
+                            </select>
+                        </div> --}}
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Customer Name" value="{{ request('customer_name') }}" name="customer_name">
                         </div>
                         <div class="col-2 mt-3">
-                            <button class="btn btn-secondary" type="reset">Clear</button>
-                            <button class="btn btn-primary" type="submit">Filter</button>
+                            <input type="date" class="form-control" placeholder="Account Creation Date" value="{{ request('account_creation_date') }}" name="account_creation_date">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Channel" value="{{ request('channel') }}" name="channel">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-select" name="type">
+                                <option value="">Loan Disbursement/Account Opening</option>
+                                <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                                <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                            </select>
+                            {{-- <input type="text" class="form-control" placeholder="Loan Disbursement/Account Opening" value="{{ request('loan_disbursement_type') }}" name="loan_disbursement_type"> --}}
+                        </div>
+                        {{-- <div class="col-2 mt-3">
+                            <input type="date" class="form-control" placeholder="DTR File Date" value="{{ request('dtr_file_date') }}" name="dtr_file_date">
+                        </div> --}}
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Business Category" value="{{ request('business_category') }}" name="business_category">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-select" placeholder="Status" value="{{ request('status') }}" name="status">
+                                <option value="">Select Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Dispatched">Dispatched</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
                         </div>
                     </div>
                 </form>
@@ -65,17 +108,17 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}
+                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}
                         </span></button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{ $aof_total }}</span></button>
+                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{ $dtrf_total }}</span></button>
+                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span></button>
                 </li>
                 @hasanyrole('master|bo-maker|bo-checker')
                 <li class="ms-auto">

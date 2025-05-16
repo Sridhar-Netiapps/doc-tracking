@@ -17,6 +17,8 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
@@ -25,8 +27,7 @@
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-
+    <script src="{{ asset('js/flatpickr.min.js') }}"></script>
 </head>
 <body>
     <div id="app">

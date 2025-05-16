@@ -252,6 +252,46 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="update-courier" action="/accounts-update" method="POST">
+                <div class="modal-header p-4 text-center">
+                    <h5 class="mb-0 text-primary">Inward Team Update</h5>
+                </div>
+                <div class="modal-body p-4 row">
+                    <div class="col-4 pb-4">
+                        <label>Unique Number</label>
+                        <h5 class="unique_number">UJJ029921</h5>
+                    </div>
+                    <div class="col-4 pb-4">
+                        <label>Customer Name</label>
+                        <h5 class="customer_name">Cali</h5>
+                    </div>
+                    <div class="col-4 pb-4">
+                        <label>Channel</label>
+                        <h5 class="channel">GL</h5>
+                    </div>
+                    <div class="col-6 pb-2">
+                        <label for="status" class="form-label">Remarks</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Received">Received</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-6 pb-2">
+                        <label for="status" class="form-label">Reason for Rejection</label>
+                        <input type="text" name="lot_no" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <a href="/accounts-received" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $(".readytodispatch_all").click(function () {

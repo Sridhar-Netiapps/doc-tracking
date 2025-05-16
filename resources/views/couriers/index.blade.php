@@ -16,7 +16,7 @@
             </div>
 
         </div>
-        <div><a href="{{ route('couriers.create') }}" class="btn btn-primary">Create New Department</a></div>
+        <div><a href="{{ route('couriers.create') }}" class="btn btn-primary">Add New Courier</a></div>
     </div>{{-- @extends('layouts.app')
 
 @section('content')
