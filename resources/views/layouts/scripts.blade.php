@@ -1,5 +1,9 @@
 <script>
     $(document).ready(function () {
+        $(".datepicker").flatpickr({
+            dateFormat: "d-m-Y",
+            allowInput: true
+        });
         @if(session('success'))
             Swal.fire({
                 title: "Success!",

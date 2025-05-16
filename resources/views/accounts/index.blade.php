@@ -1,15 +1,98 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
-{{-- <div class="container-fluid">
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10">
-                <h3>Selected Accounts</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="filter-bg">
+                {{-- <form method="POST" action="{{ route('accounts.index',$type) }}"> --}}
+                    <div class="row">
+                        <div class="col-2 mt-3">
+                            <select class="form-select" name="region">
+                                <option value="">Select Document Type</option>
+                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>MB Loan Documents</option>
+                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>Gold Loan Documents</option>
+                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>Liablities Documents</option>
+                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>DTR Files</option>
+                            </select>
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Unique Number" value="{{ request('unique_number') }}" name="unique_number">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-select" name="region">
+                                <option value="">Select Region</option>
+                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
+                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
+                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
+                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                            </select>
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Branch Code" value="{{ request('branch_code') }}" name="branch_code">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Branch Name" value="{{ request('branch_name') }}" name="branch_name">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}" name="cif_id">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ request('account_number') }}" name="account_number">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ request('loan_cycle') }}" name="loan_cycle">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <select class="form-select scheme" name="scheme">
+                                <option value="">Select Scheme</option>
+                                <option value="GL" {{ request('scheme') == 'GL' ? 'selected' : '' }}>GL</option>
+                                <option value="IL" {{ request('scheme') == 'IL' ? 'selected' : '' }}>IL</option>
+                            </select>
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ request('customer_name') }}" name="customer_name">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="text" class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ request('account_creation_date') }}" name="account_creation_date">
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="text" class="form-control channel" placeholder="Channel" value="{{ request('channel') }}" name="channel">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-select" name="type">
+                                <option value="">Loan Disbursement/Account Opening</option>
+                                <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                                <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                            </select>
+                            {{-- <input type="text" class="form-control" placeholder="Loan Disbursement/Account Opening" value="{{ request('loan_disbursement_type') }}" name="loan_disbursement_type"> --}}
+                        </div>
+                        <div class="col-2 mt-3 d-none">
+                            <input type="date" class="form-control" placeholder="DTR File Date" value="{{ request('dtr_file_date') }}" name="dtr_file_date">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control" placeholder="Business Category" value="{{ request('business_category') }}" name="business_category">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <select class="form-select" placeholder="Status" value="{{ request('status') }}" name="status">
+                                <option value="">Select Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Dispatched">Dispatched</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="col-1"></div>
         </div>
-    </div> --}}
+        <div class="col-1"></div>
+    </div>
+</div>
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-1"></div>
@@ -42,7 +125,7 @@
                                 <th scope="col"> Account Creation Date</th>
                                 <th scope="col"> Channel</th>
                                 <th scope="col"> Loan Disbursement Type / Account Opening</th>
-                                <th scope="col"> DTR File Date</th>
+                                {{-- <th scope="col"> DTR File Date</th> --}}
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
                             </tr>
@@ -64,7 +147,7 @@
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                    <td>{{ $doc->account_creation_date ?? '-' }}</td>
+                                    {{-- <td>{{ $doc->account_creation_date ?? '-' }}</td> --}}
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ ucfirst($doc->status) ?? '-' }}</td>
                                 </tr>
@@ -86,24 +169,30 @@
                 </div>
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name</label>
-                        <input type="text" name="courier_name" class="form-control" required>
+                        <label for="status" class="form-label">Courier Name *</label>
+                        <select id="courier_name" name="courier_name" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            @foreach($couriers as $key => $courier)
+                                <option value='{{ $key }}'>{{ $courier }}</option>
+                            @endforeach
+                        </select>
+                        <label id="courier_name-error" class="error" for="designation_ids"></label>
+                        {{-- <input type="text" name="courier_name" class="form-control" required> --}}
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
+                        <input type="text" name="awb_pod" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Dispatch Date</label>
                         <input type="Date" name="dispatch_date" class="form-control" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No.</label>
+                        <label for="status" class="form-label">MMRP Barcode No. *</label>
                         <input type="text" name="mmrp_barcode" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                 </div>
@@ -116,6 +205,7 @@
         $(".select_all").click(function () {
             $(".select").prop('checked', $(this).prop('checked'));
         });
+
         let selectedDocuments = [];
 
         $('.proceed').click(function () {
@@ -138,56 +228,168 @@
             }
         });
 
-        $('#update-courier').submit(function (e) {
-            e.preventDefault();
-
-            let formData = {
-                _token: $('input[name="_token"]').val(),
-                courier_name: $('input[name="courier_name"]').val(),
-                mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-                awb_pod: $('input[name="awb_pod"]').val(),
-                dispatch_date: $('input[name="dispatch_date"]').val(),
-                loan_ids: [],
-                goldloan_ids: [],
-                dtrf_ids: [],
-                aof_ids: []
-            };
-
-            selectedDocuments.forEach(doc => {
-                if (formData.hasOwnProperty(doc.doc_type + '_ids')) {
-                    formData[doc.doc_type + '_ids'].push(doc.id);
+        $('#update-courier').validate({
+            rules: {
+                awb_pod: {
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                courier_name: {
+                    required: true,
+                    sanitize: true
+                },
+                dispatch_date: {
+                    required: true,
+                    sanitize: true
+                },
+                mmrp_barcode: {
+                    required: true,
+                    sanitize: true
                 }
-            });
+            },
+            messages: {
+                awb_pod: {
+                    required: "AWB/POD is required",
+                    alphanumeric: "Only letters and numbers allowed"
+                },
+                courier_name: {
+                    required: "Courier name is required"
+                },
+                courier_name: {
+                    required: "Dispatch date is required"
+                },
+                mmrp_barcode: {
+                    required: "Barcode is required"
+                }
+            },
+            submitHandler: function (form) {
+                const formData = {
+                    _token: $('input[name="_token"]').val(),
+                    courier_name: $('select[name="courier_name"]').val(),
+                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
+                    awb_pod: $('input[name="awb_pod"]').val(),
+                    dispatch_date: $('input[name="dispatch_date"]').val(),
+                    loan_ids: [],
+                    goldloan_ids: [],
+                    dtrf_ids: [],
+                    aof_ids: []
+                };
 
-            $.post($(this).attr('action'), formData)
-                .done(function () {
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Courier details updated successfully.",
-                        icon: "success",
-                        confirmButtonText: "OK"
-                    }).then(() => {
-                        selectedDocuments.forEach(doc => {
-                            $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-                        });
-                        if ($('input.select').length === 0) {
-                            window.location.href = `{{ route('dispatches','ready')}}`;
-                        }
-                        else{
-                            $('#update-courier')[0].reset();
-                            $('#add-courier').modal('hide');
-                        }
-                    });
-                })
-                .fail(function () {
-                    Swal.fire({
-                        title: "Error!",
-                        text: "Something went wrong!",
-                        icon: "error",
-                        confirmButtonText: "OK"
-                    });
+                selectedDocuments.forEach(doc => {
+                    const key = doc.doc_type + '_ids';
+                    if (formData.hasOwnProperty(key)) {
+                        formData[key].push(doc.id);
+                    }
                 });
+
+                $.post($(form).attr('action'), formData)
+                    .done(function () {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Courier details updated successfully.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            selectedDocuments.forEach(doc => {
+                                $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
+                            });
+                            if ($('input.select').length === 0) {
+                                window.location.href = `{{ route('dispatches','ready')}}`;
+                            } else {
+                                $('#update-courier')[0].reset();
+                                $('#add-courier').modal('hide');
+                            }
+                        });
+                    })
+                    .fail(function () {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Something went wrong!",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    });
+            }
         });
+        // let selectedDocuments = [];
+
+        // $('.proceed').click(function () {
+        //     selectedDocuments = $('input.select:checked').map(function () {
+        //         return {
+        //             id: $(this).data('id'),
+        //             doc_type: $(this).data('doc_type')
+        //         };
+        //     }).get();
+
+        //     if (selectedDocuments.length) {
+        //         $('#add-courier').modal('show');
+        //     } else {
+        //         Swal.fire({
+        //             title: "Warning!",
+        //             text: "Please select at least one Document.",
+        //             icon: "warning",
+        //             confirmButtonText: "OK"
+        //         });
+        //     }
+        // });
+
+        // $('#update-courier').submit(function (e) {
+        //     e.preventDefault();
+
+        //     let formData = {
+        //         _token: $('input[name="_token"]').val(),
+        //         courier_name: $('input[name="courier_name"]').val(),
+        //         mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
+        //         awb_pod: $('input[name="awb_pod"]').val(),
+        //         dispatch_date: $('input[name="dispatch_date"]').val(),
+        //         loan_ids: [],
+        //         goldloan_ids: [],
+        //         dtrf_ids: [],
+        //         aof_ids: []
+        //     };
+
+        //     selectedDocuments.forEach(doc => {
+        //         if (formData.hasOwnProperty(doc.doc_type + '_ids')) {
+        //             formData[doc.doc_type + '_ids'].push(doc.id);
+        //         }
+        //     });
+        //     if(mmrp_barcode !='' && courier_name !=''){
+        //         $.post($(this).attr('action'), formData).done(function () {
+        //             Swal.fire({
+        //                 title: "Success!",
+        //                 text: "Courier details updated successfully.",
+        //                 icon: "success",
+        //                 confirmButtonText: "OK"
+        //             }).then(() => {
+        //                 selectedDocuments.forEach(doc => {
+        //                     $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
+        //                 });
+        //                 if ($('input.select').length === 0) {
+        //                     window.location.href = `{{ route('dispatches','ready')}}`;
+        //                 }
+        //                 else{
+        //                     $('#update-courier')[0].reset();
+        //                     $('#add-courier').modal('hide');
+        //                 }
+        //             });
+        //         }).fail(function () {
+        //             Swal.fire({
+        //                 title: "Error!",
+        //                 text: "Something went wrong!",
+        //                 icon: "error",
+        //                 confirmButtonText: "OK"
+        //             });
+        //         });
+        //     }
+        //     else{
+        //         Swal.fire({
+        //             title: "Error!",
+        //             text: "Please Fill the Courier Details",
+        //             icon: "error",
+        //             confirmButtonText: "OK"
+        //         });
+        //     }
+        // });
     });
 </script>
 @endsection
