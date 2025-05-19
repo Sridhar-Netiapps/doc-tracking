@@ -5,23 +5,23 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <div class="filter-bg">
-                {{-- <form method="POST" action="{{ route('accounts.index',$type) }}"> --}}
+            {{-- <div class="filter-bg">
+                <form method="POST" action="{{ route('accounts.index',$type) }}">
                     <div class="row">
                         <div class="col-2 mt-3">
-                            <select class="form-select" name="region">
+                            <select class="form-select document_type" name="document_type">
                                 <option value="">Select Document Type</option>
-                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>MB Loan Documents</option>
-                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>Gold Loan Documents</option>
-                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>Liablities Documents</option>
-                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>DTR Files</option>
+                                <option value="South" {{ request('document_type') == 'South' ? 'selected' : '' }}>MB Loan Documents</option>
+                                <option value="North" {{ request('document_type') == 'North' ? 'selected' : '' }}>Gold Loan Documents</option>
+                                <option value="East" {{ request('document_type') == 'East' ? 'selected' : '' }}>Liablities Documents</option>
+                                <option value="West" {{ request('document_type') == 'West' ? 'selected' : '' }}>DTR Files</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3">
                             <input type="text" class="form-control" placeholder="Unique Number" value="{{ request('unique_number') }}" name="unique_number">
                         </div>
                         <div class="col-2 mt-3">
-                            <select class="form-select" name="region">
+                            <select class="form-select region" name="region">
                                 <option value="">Select Region</option>
                                 <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
                                 <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
@@ -66,7 +66,6 @@
                                 <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
                                 <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
-                            {{-- <input type="text" class="form-control" placeholder="Loan Disbursement/Account Opening" value="{{ request('loan_disbursement_type') }}" name="loan_disbursement_type"> --}}
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="date" class="form-control" placeholder="DTR File Date" value="{{ request('dtr_file_date') }}" name="dtr_file_date">
@@ -88,7 +87,7 @@
                         </div>
                     </div>
                 </form>
-            </div>
+            </div> --}}
         </div>
         <div class="col-1"></div>
     </div>
@@ -309,6 +308,95 @@
                             confirmButtonText: "OK"
                         });
                     });
+            }
+        });
+
+        $('#approval_type').change(function () {
+            var type = $(this).val();
+            $('#gl_account_no').val($(this).find(':selected').data('acc_no'));
+            if (type == '1' || type == '2') {
+                $('.CDI-group').removeClass('d-none');
+                $('.EPD-group').addClass('d-none');
+                $('.TPB-group').addClass('d-none');
+                $('.CRW-group').addClass('d-none');
+                $('.EPT-group').addClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('.FY-group').addClass('d-none');
+                $('.OLR-group').addClass('d-none');
+                $('option.7').addClass('d-none');
+                $('option.0').removeClass('d-none');
+                $('label[for="reversal_type"]').html('Request for');
+            }
+            else if (type == '3' || type == '4') {
+                $('.CDI-group').addClass('d-none');
+                $('.EPD-group').removeClass('d-none');
+                $('.TPB-group').addClass('d-none');
+                $('.CRW-group').addClass('d-none');
+                $('.EPT-group').addClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('.FY-group').addClass('d-none');
+                $('.OLR-group').addClass('d-none');
+                $('option.7').addClass('d-none');
+                $('option.0').removeClass('d-none');
+                $('label[for="reversal_type"]').html('Request for');
+            }
+            else if (type == '5' || type == '6') {
+                $('.CDI-group').addClass('d-none');
+                $('.EPD-group').addClass('d-none');
+                $('.TPB-group').removeClass('d-none');
+                $('.CRW-group').addClass('d-none');
+                $('.EPT-group').addClass('d-none');
+                $('option.7').addClass('d-none');
+                $('option.0').removeClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('.FY-group').addClass('d-none');
+                $('.OLR-group').addClass('d-none');
+                $('label[for="reversal_type"]').html('Request for');
+            }
+            else if (type == '7') {
+                $('.CDI-group').addClass('d-none');
+                $('.EPD-group').addClass('d-none');
+                $('.TPB-group').addClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('option.7').removeClass('d-none');
+                $('option.0').addClass('d-none');
+                $('label[for="reversal_type"]').html('Request for Approval');
+                $('.CRW-group').removeClass('d-none');
+                $('.EPT-group').addClass('d-none');
+                $('.FY-group').addClass('d-none');
+                $('.OLR-group').addClass('d-none');
+            }
+            else if (type == '8' || type == '9') {
+                $('.CDI-group').addClass('d-none');
+                $('.EPD-group').addClass('d-none');
+                $('.TPB-group').addClass('d-none');
+                $('.CRW-group').addClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('option.7').addClass('d-none');
+                $('option.0').removeClass('d-none');
+                $('.EPT-group').removeClass('d-none');
+                $('label[for="reversal_type"]').html('Request for');
+                $('.FY-group').addClass('d-none');
+                $('.OLR-group').addClass('d-none');
+            }
+            else if (type == '10') {
+                $('.CDI-group').addClass('d-none');
+                $('.EPD-group').removeClass('d-none');
+                $('.TPB-group').addClass('d-none');
+                $('.CRW-group').addClass('d-none');
+                $('.OE-group').addClass('d-none');
+                $('.OT-group').addClass('d-none');
+                $('option.7').addClass('d-none');
+                $('option.0').removeClass('d-none');
+                $('.EPT-group').removeClass('d-none');
+                $('.FY-group').removeClass('d-none');
+                $('.OLR-group').removeClass('d-none');
+                $('label[for="reversal_type"]').html('Request for');
             }
         });
         // let selectedDocuments = [];

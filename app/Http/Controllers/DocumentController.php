@@ -53,92 +53,97 @@ class DocumentController extends Controller
 
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
-
     public function filter(Request $request)
     {
-        $user = Auth::user();
-        $docType = $request->input('doc_type');
+        session(['filters' => $request->all()]);
+        return redirect()->route('document.filtered');
+    }
+    
+    public function filteredList()
+    {
+        $request = $filters = session()->pull('filters', []);
+        $user = $this->user;
+        $hasFilters = collect($filters)->filter()->isNotEmpty();
 
-        $filters = [
-            'unique_number'          => $request->input('unique_number'),
-            'region'                 => $request->input('region'),
-            'branch_code'            => $request->input('branch_code'),
-            'branch_name'            => $request->input('branch_name'),
-            'account_creation_date'  => $request->input('account_creation_date'),
-            'business_category'      => $request->input('business_category'),
-            'status'                 => $request->input('status'),
-            'cif_id'                 => $request->input('cif_id'),
-            'account_number'         => $request->input('account_number'),
-            'customer_name'          => $request->input('customer_name'),
-            'channel'                => $request->input('channel'),
-            'loan_disbursement_type' => $request->input('loan_disbursement_type'),
-            'account_opening_type'   => $request->input('account_opening_type'),
-            'loan_cycle'             => $request->input('loan_cycle'),
-            'scheme'                 => $request->input('scheme'),
+        $docType = $filters['document_type'] ?? null;
+        // dd($filters);
+        $tables = [
+            'loan' => LoanDocument::getModel()->getTable(),
+            'gold_loan' => GoldLoanDocument::getModel()->getTable(),
+            'dtrf' => DtrfDocument::getModel()->getTable(),
+            'aof' => AccountOpeningDocument::getModel()->getTable()
         ];
 
-        $filterFunction = function ($query, $table) use ($user, $filters) {
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters) {
             $query->where('status', 'pending');
 
             if ($user->hasRole('ro-user')) {
                 $query->where('region', $user->region);
             }
-
+        
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
             }
-
-            // Apply filters dynamically
-            foreach ($filters as $field => $value) {
-                if (!empty($value)) {
-                    if (\Schema::hasColumn($table, $field)) {
+        
+            if ($hasFilters) {
+                foreach ($filters as $field => $value) {
+                    if (!empty($value) && \Schema::hasColumn($table, $field)) {
                         $query->where($field, $value);
                     }
                 }
             }
         };
 
-        $results = [];
+        $loan_document = null;
+        $gold_loan_document = null;
+        $dtrf_document = null;
+        $account_opening_document = null;
 
         if ($docType === 'loan') {
-            $results['loan_documents'] = LoanDocument::query()->where(function ($q) use ($filterFunction) {
+            $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
             })->paginate(100);
 
         } elseif ($docType === 'gold_loan') {
-            $results['gold_loan_documents'] = GoldLoanDocument::query()->where(function ($q) use ($filterFunction) {
+            $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100);
 
         } elseif ($docType === 'dtrf') {
-            $results['dtrf_documents'] = DtrfDocument::query()->where(function ($q) use ($filterFunction) {
+            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'dtrf_documents');
             })->paginate(100);
 
         } elseif ($docType === 'aof') {
-            $results['account_opening_documents'] = AccountOpeningDocument::query()->where(function ($q) use ($filterFunction) {
+            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100);
 
         } else {
-            $results['loan_documents'] = LoanDocument::query()->where(function ($q) use ($filterFunction) {
+            // exit('here');
+            $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
             })->paginate(100);
-
-            $results['gold_loan_documents'] = GoldLoanDocument::query()->where(function ($q) use ($filterFunction) {
+            
+            $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100);
-
-            $results['dtrf_documents'] = DtrfDocument::query()->where(function ($q) use ($filterFunction) {
+            
+            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'dtrf_documents');
             })->paginate(100);
-
-            $results['account_opening_documents'] = AccountOpeningDocument::query()->where(function ($q) use ($filterFunction) {
+            
+            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100);
         }
+        $loan_total =$loan_document != null ? $loan_document->total():0;
+        $gold_loan_total = $gold_loan_document != null ? $gold_loan_document->total():0;
+        $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
+        $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
 
-        return response()->json($results);
+        $type = 'all';
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','request'));
     }
     
     public function bulkReview(Request $request)

@@ -32,9 +32,10 @@ Route::group(['middleware' => ['auth']], function () {
     });
     
     Route::get('documents/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
+    Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
+    Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
-        Route::post('/', [DocumentController::class, 'filter'])->name('accounts.filter');
         Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');

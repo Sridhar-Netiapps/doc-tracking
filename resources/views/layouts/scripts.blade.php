@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function () {
         $(".datepicker").flatpickr({
-            dateFormat: "d-m-Y",
+            dateFormat: "d-M-Y",
             allowInput: true
         });
         @if(session('success'))
