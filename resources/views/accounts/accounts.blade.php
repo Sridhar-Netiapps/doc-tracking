@@ -397,8 +397,13 @@
                         <input type="text" name="awb_pod" class="form-control" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Dispatch Date</label>
-                        <input type="Date" name="dispatch_date" class="form-control" required>
+                        <label for="dispatch_date" class="form-label">Dispatch Date</label>
+                        <input type="text"
+                               class="form-control datepicker dispatch_date"
+                               value="{{ request('dispatch_date') }}"
+                               name="dispatch_date"
+                               id="dispatch_date"
+                               required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

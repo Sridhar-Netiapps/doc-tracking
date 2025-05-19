@@ -84,11 +84,15 @@
                     <h5 class="mb-0 text-primary" id="modal-title">Rejected Dispatch Details</h5>
                 </div>
             
-                    <div class="modal-body p-4 row">
-                        <div class="col-md-4 pb-2">
-                            <label for="courier_received_date" class="form-label">Courier Received Date</label>
-                            <input type="date" name="courier_received_date" class="form-control">
-                        </div>
+                        <div class="modal-body p-4 row">
+                            <div class="col-md-4 pb-2">
+                                <label for="courier_received_date" class="form-label">Courier Received Date</label>
+                                <input type="text"
+                                    name="courier_received_date"
+                                    class="form-control datepicker courier_received_date"
+                                    value="{{ request('courier_received_date') }}">
+                                </div>
+                
                         <div class="col-md-4 pb-2">
                             <label for="tracked_by" class="form-label">Tracked By</label>
                             <input type="text" name="tracked_by" class="form-control">
