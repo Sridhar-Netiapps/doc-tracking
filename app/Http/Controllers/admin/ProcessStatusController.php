@@ -22,7 +22,7 @@ class ProcessStatusController extends Controller
     {
         // Validation rules for storing new process status
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|max:255',
             'status' => 'required|in:0,1',
             'created_by' => 'required|exists:process_status,id', // Assumes 'users' table exists
         ]);
