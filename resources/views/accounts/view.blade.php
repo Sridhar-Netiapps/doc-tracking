@@ -27,7 +27,9 @@
                     <table class="table table-striped">
                         <thead>
                             <tr> 
-                                <th scope="col"><input type="checkbox" class="select_all"/> </th>     
+                                @hasanyrole('master|ro-user')
+                                <th scope="col"><input type="checkbox" class="select_all"/> </th>
+                                @endhasanyrole
                                 <th scope="col"> Document Type</th>
                                 <th scope="col"> Unique Number</th>
                                 <th scope="col"> Region</th>
@@ -49,7 +51,9 @@
                         <tbody>
                             @foreach ($allDocuments as $doc)
                                 <tr>
+                                    @hasanyrole('master|ro-user')
                                     <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                    @endhasanyrole
                                     <td>{{ ucfirst($doc->doc_type) }}</td>
                                     <td>{{ $doc->unique_ref_no ?? '-' }}</td>
                                     <td>{{ $doc->region ?? '-' }}</td>
@@ -80,33 +84,35 @@
         <div class="modal-content rounded-3 shadow">
             <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
                 @csrf
+                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Rejected Dispatch Details</h5>
                 </div>
-            
-                        <div class="modal-body p-4 row">
-                            <div class="col-md-4 pb-2">
-                                <label for="courier_received_date" class="form-label">Courier Received Date</label>
-                                <input type="text"
-                                    name="courier_received_date"
-                                    class="form-control datepicker courier_received_date"
-                                    value="{{ request('courier_received_date') }}">
-                                </div>
-                
-                        <div class="col-md-4 pb-2">
-                            <label for="tracked_by" class="form-label">Tracked By</label>
-                            <input type="text" name="tracked_by" class="form-control">
-                        </div>
-                        <div class="col-md-4 pb-2">
-                            <label for="remarks" class="form-label">Remarks</label>
-                            <textarea name="remarks" class="form-control" rows="2"></textarea>
-                        </div>
-                        <div class="col-md-12 pb-2">
-                            <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
-                            <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
-                        </div>
+                <div class="modal-body p-4 row">
+                    <div class="col-6 pb-2">
+                        <label for="courier_received_date" class="form-label">Courier Received Date</label>
+                        <input type="text" name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
+                        {{-- <input type="date" name="courier_received_date" class="form-control courier_received_date" value="{{ request('courier_received_date') }}"> --}}
                     </div>
-                    <div class="modal-footer border-0">
+                    {{-- <div class="col-6 pb-2">
+                        <label for="tracked_by" class="form-label">Tracked By</label>
+                        <input type="text" name="tracked_by" class="form-control">
+                    </div> --}}
+                    <div class="col-6 pb-2">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <select id="remarks" name="remarks" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            <option value='Received'>Received</option>
+                            <option value='Rejected'>Rejected</option>
+                        </select>
+                        {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
+                    </div>
+                    <div class="col-12 pb-2 d-none ">
+                        <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
+                        <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
                     {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
@@ -142,16 +148,20 @@
                 });
             }
         });
-
+        $('select[name="remarks"]').change(function (e) {
+            if($(this).val() == 'Rejected')
+                $('textarea[name="reason_for_rejection"]').parent('div').removeClass('d-none');
+            else
+                $('textarea[name="reason_for_rejection"]').parent('div').addClass('d-none');
+        });
         $('#update-courier').submit(function (e) {
             e.preventDefault();
-
-
-                let formData = {
+            let formData = {
                 _token: $('input[name="_token"]').val(),
+                dispatch_id: $('input[name="dispatch_id"]').val(),
                 courier_received_date: $('input[name="courier_received_date"]').val(),
-                tracked_by: $('input[name="tracked_by"]').val(),
-                remarks: $('textarea[name="remarks"]').val(),
+                // tracked_by: $('input[name="tracked_by"]').val(),
+                remarks: $('select[name="remarks"]').val(),
                 reason_for_rejection: $('textarea[name="reason_for_rejection"]').val(),
                 loan_ids: [],
                 goldloan_ids: [],

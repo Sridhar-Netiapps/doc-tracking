@@ -20,6 +20,15 @@
                     <div class="col-2">
                         <div class="card">
                             <div class="card-body">
+                                <div class="icon"><img src="/images/icon-4.svg" /></div>
+                                <p class="card-text">Pending Documents</p>
+                                <h3>3,193</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="icon"><img src="/images/icon-2.svg" /></div>
                                 <p class="card-text">Pending for Dispatch</p>
                                 <h3>5,200</h3>
@@ -49,15 +58,6 @@
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>3,193</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                <p class="card-text">Rejected Requests</p>
                                 <h3>3,193</h3>
                             </div>
                         </div>

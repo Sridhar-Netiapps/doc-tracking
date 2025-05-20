@@ -185,12 +185,7 @@
                     <div class="w-100"></div> 
                     <div class="col-6 pb-2">
                         <label for="dispatch_date" class="form-label">Dispatch Date</label>
-                        <input type="text"
-                               class="form-control datepicker dispatch_date"
-                               value="{{ request('dispatch_date') }}"
-                               name="dispatch_date"
-                               id="dispatch_date"
-                               required>
+                        <input type="text" class="form-control datepicker dispatch_date" value="{{ request('dispatch_date') }}" name="dispatch_date" id="dispatch_date" required>
                     </div>
                                         
                     
@@ -320,171 +315,92 @@
             }
         });
 
-        $('#approval_type').change(function () {
-            var type = $(this).val();
-            $('#gl_account_no').val($(this).find(':selected').data('acc_no'));
-            if (type == '1' || type == '2') {
-                $('.CDI-group').removeClass('d-none');
-                $('.EPD-group').addClass('d-none');
-                $('.TPB-group').addClass('d-none');
-                $('.CRW-group').addClass('d-none');
-                $('.EPT-group').addClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('.FY-group').addClass('d-none');
-                $('.OLR-group').addClass('d-none');
-                $('option.7').addClass('d-none');
-                $('option.0').removeClass('d-none');
-                $('label[for="reversal_type"]').html('Request for');
-            }
-            else if (type == '3' || type == '4') {
-                $('.CDI-group').addClass('d-none');
-                $('.EPD-group').removeClass('d-none');
-                $('.TPB-group').addClass('d-none');
-                $('.CRW-group').addClass('d-none');
-                $('.EPT-group').addClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('.FY-group').addClass('d-none');
-                $('.OLR-group').addClass('d-none');
-                $('option.7').addClass('d-none');
-                $('option.0').removeClass('d-none');
-                $('label[for="reversal_type"]').html('Request for');
-            }
-            else if (type == '5' || type == '6') {
-                $('.CDI-group').addClass('d-none');
-                $('.EPD-group').addClass('d-none');
-                $('.TPB-group').removeClass('d-none');
-                $('.CRW-group').addClass('d-none');
-                $('.EPT-group').addClass('d-none');
-                $('option.7').addClass('d-none');
-                $('option.0').removeClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('.FY-group').addClass('d-none');
-                $('.OLR-group').addClass('d-none');
-                $('label[for="reversal_type"]').html('Request for');
-            }
-            else if (type == '7') {
-                $('.CDI-group').addClass('d-none');
-                $('.EPD-group').addClass('d-none');
-                $('.TPB-group').addClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('option.7').removeClass('d-none');
-                $('option.0').addClass('d-none');
-                $('label[for="reversal_type"]').html('Request for Approval');
-                $('.CRW-group').removeClass('d-none');
-                $('.EPT-group').addClass('d-none');
-                $('.FY-group').addClass('d-none');
-                $('.OLR-group').addClass('d-none');
-            }
-            else if (type == '8' || type == '9') {
-                $('.CDI-group').addClass('d-none');
-                $('.EPD-group').addClass('d-none');
-                $('.TPB-group').addClass('d-none');
-                $('.CRW-group').addClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('option.7').addClass('d-none');
-                $('option.0').removeClass('d-none');
-                $('.EPT-group').removeClass('d-none');
-                $('label[for="reversal_type"]').html('Request for');
-                $('.FY-group').addClass('d-none');
-                $('.OLR-group').addClass('d-none');
-            }
-            else if (type == '10') {
-                $('.CDI-group').addClass('d-none');
-                $('.EPD-group').removeClass('d-none');
-                $('.TPB-group').addClass('d-none');
-                $('.CRW-group').addClass('d-none');
-                $('.OE-group').addClass('d-none');
-                $('.OT-group').addClass('d-none');
-                $('option.7').addClass('d-none');
-                $('option.0').removeClass('d-none');
-                $('.EPT-group').removeClass('d-none');
-                $('.FY-group').removeClass('d-none');
-                $('.OLR-group').removeClass('d-none');
-                $('label[for="reversal_type"]').html('Request for');
-            }
-        });
-        // let selectedDocuments = [];
-
-        // $('.proceed').click(function () {
-        //     selectedDocuments = $('input.select:checked').map(function () {
-        //         return {
-        //             id: $(this).data('id'),
-        //             doc_type: $(this).data('doc_type')
-        //         };
-        //     }).get();
-
-        //     if (selectedDocuments.length) {
-        //         $('#add-courier').modal('show');
-        //     } else {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
+        // $('#approval_type').change(function () {
+        //     var type = $(this).val();
+        //     $('#gl_account_no').val($(this).find(':selected').data('acc_no'));
+        //     if (type == '1' || type == '2') {
+        //         $('.CDI-group').removeClass('d-none');
+        //         $('.EPD-group').addClass('d-none');
+        //         $('.TPB-group').addClass('d-none');
+        //         $('.CRW-group').addClass('d-none');
+        //         $('.EPT-group').addClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('.FY-group').addClass('d-none');
+        //         $('.OLR-group').addClass('d-none');
+        //         $('option.7').addClass('d-none');
+        //         $('option.0').removeClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for');
         //     }
-        // });
-
-        // $('#update-courier').submit(function (e) {
-        //     e.preventDefault();
-
-        //     let formData = {
-        //         _token: $('input[name="_token"]').val(),
-        //         courier_name: $('input[name="courier_name"]').val(),
-        //         mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-        //         awb_pod: $('input[name="awb_pod"]').val(),
-        //         dispatch_date: $('input[name="dispatch_date"]').val(),
-        //         loan_ids: [],
-        //         goldloan_ids: [],
-        //         dtrf_ids: [],
-        //         aof_ids: []
-        //     };
-
-        //     selectedDocuments.forEach(doc => {
-        //         if (formData.hasOwnProperty(doc.doc_type + '_ids')) {
-        //             formData[doc.doc_type + '_ids'].push(doc.id);
-        //         }
-        //     });
-        //     if(mmrp_barcode !='' && courier_name !=''){
-        //         $.post($(this).attr('action'), formData).done(function () {
-        //             Swal.fire({
-        //                 title: "Success!",
-        //                 text: "Courier details updated successfully.",
-        //                 icon: "success",
-        //                 confirmButtonText: "OK"
-        //             }).then(() => {
-        //                 selectedDocuments.forEach(doc => {
-        //                     $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-        //                 });
-        //                 if ($('input.select').length === 0) {
-        //                     window.location.href = `{{ route('dispatches','ready')}}`;
-        //                 }
-        //                 else{
-        //                     $('#update-courier')[0].reset();
-        //                     $('#add-courier').modal('hide');
-        //                 }
-        //             });
-        //         }).fail(function () {
-        //             Swal.fire({
-        //                 title: "Error!",
-        //                 text: "Something went wrong!",
-        //                 icon: "error",
-        //                 confirmButtonText: "OK"
-        //             });
-        //         });
+        //     else if (type == '3' || type == '4') {
+        //         $('.CDI-group').addClass('d-none');
+        //         $('.EPD-group').removeClass('d-none');
+        //         $('.TPB-group').addClass('d-none');
+        //         $('.CRW-group').addClass('d-none');
+        //         $('.EPT-group').addClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('.FY-group').addClass('d-none');
+        //         $('.OLR-group').addClass('d-none');
+        //         $('option.7').addClass('d-none');
+        //         $('option.0').removeClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for');
         //     }
-        //     else{
-        //         Swal.fire({
-        //             title: "Error!",
-        //             text: "Please Fill the Courier Details",
-        //             icon: "error",
-        //             confirmButtonText: "OK"
-        //         });
+        //     else if (type == '5' || type == '6') {
+        //         $('.CDI-group').addClass('d-none');
+        //         $('.EPD-group').addClass('d-none');
+        //         $('.TPB-group').removeClass('d-none');
+        //         $('.CRW-group').addClass('d-none');
+        //         $('.EPT-group').addClass('d-none');
+        //         $('option.7').addClass('d-none');
+        //         $('option.0').removeClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('.FY-group').addClass('d-none');
+        //         $('.OLR-group').addClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for');
+        //     }
+        //     else if (type == '7') {
+        //         $('.CDI-group').addClass('d-none');
+        //         $('.EPD-group').addClass('d-none');
+        //         $('.TPB-group').addClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('option.7').removeClass('d-none');
+        //         $('option.0').addClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for Approval');
+        //         $('.CRW-group').removeClass('d-none');
+        //         $('.EPT-group').addClass('d-none');
+        //         $('.FY-group').addClass('d-none');
+        //         $('.OLR-group').addClass('d-none');
+        //     }
+        //     else if (type == '8' || type == '9') {
+        //         $('.CDI-group').addClass('d-none');
+        //         $('.EPD-group').addClass('d-none');
+        //         $('.TPB-group').addClass('d-none');
+        //         $('.CRW-group').addClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('option.7').addClass('d-none');
+        //         $('option.0').removeClass('d-none');
+        //         $('.EPT-group').removeClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for');
+        //         $('.FY-group').addClass('d-none');
+        //         $('.OLR-group').addClass('d-none');
+        //     }
+        //     else if (type == '10') {
+        //         $('.CDI-group').addClass('d-none');
+        //         $('.EPD-group').removeClass('d-none');
+        //         $('.TPB-group').addClass('d-none');
+        //         $('.CRW-group').addClass('d-none');
+        //         $('.OE-group').addClass('d-none');
+        //         $('.OT-group').addClass('d-none');
+        //         $('option.7').addClass('d-none');
+        //         $('option.0').removeClass('d-none');
+        //         $('.EPT-group').removeClass('d-none');
+        //         $('.FY-group').removeClass('d-none');
+        //         $('.OLR-group').removeClass('d-none');
+        //         $('label[for="reversal_type"]').html('Request for');
         //     }
         // });
     });

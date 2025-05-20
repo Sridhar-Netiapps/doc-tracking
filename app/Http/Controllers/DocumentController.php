@@ -28,6 +28,12 @@ class DocumentController extends Controller
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            LoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+            GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+            DtrfDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+            AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        }
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
             $query->where('status','pending');
@@ -61,7 +67,7 @@ class DocumentController extends Controller
     
     public function filteredList()
     {
-        $request = $filters = session()->pull('filters', []);
+        $filters = session('filters', []);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
 
@@ -143,7 +149,7 @@ class DocumentController extends Controller
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
 
         $type = 'all';
-        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','request'));
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters'));
     }
     
     public function bulkReview(Request $request)
@@ -255,6 +261,9 @@ class DocumentController extends Controller
                 })
                 ->when($type === 'list', function ($q){
                     $q->where('status', 'Dispatched');
+                })
+                ->when($type === 'received', function ($q){
+                    $q->where('status', 'Delivered');
                 });
         };
 
@@ -262,8 +271,9 @@ class DocumentController extends Controller
 
         $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',"Waiting Checker's Approval")->count();
         $dispatched_count = $filter(CourierDispatch::query())->where('status','Dispatched')->count();
+        $received_count = $filter(CourierDispatch::query())->where('status','Delivered')->count();
 
-        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records'));
+        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count'));
     }
 
     public function viewDispatches($id)
@@ -305,7 +315,7 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($aofs);    
         }
 
-        return view('accounts.view', compact('allDocuments','type'));
+        return view('accounts.view', compact('allDocuments','type','dispatch'));
     }
 
     public function updateCourier(Request $request)
@@ -359,27 +369,27 @@ class DocumentController extends Controller
 
     public function dispatchDetails(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'courier_received_date' => 'required|date',
-            'tracked_by' => 'required|string',
-            'remarks' => 'nullable|string',
+            // 'tracked_by' => 'required|string',
+            'remarks' => 'required|string',
             'reason_for_rejection' => 'nullable|string',
             'loan_ids' => 'nullable|array',
             'goldloan_ids' => 'nullable|array',
             'dtrf_ids' => 'nullable|array',
             'aof_ids' => 'nullable|array',
         ]);
+        // dd($request->all());
 
         try {
             DB::beginTransaction();
 
             $updateData = [
-                'courier_received_date' => $validated['courier_received_date'],
-                'tracked_by' => $validated['tracked_by'],
-                'remarks' => $validated['remarks'] ?? null,
-                'reason_for_rejection' => $validated['reason_for_rejection'] ?? null,
-                'status' => 'Dispatched'
+                // 'courier_received_date' => $validated['courier_received_date'],
+                // 'tracked_by' => $this->user->id,
+                'updated_by' => $this->user->id,
+                'status' => $validated['remarks'],
+                'reason' => $validated['reason_for_rejection'] ?? null
             ];
 
             if (!empty($validated['loan_ids'])) {
@@ -394,6 +404,11 @@ class DocumentController extends Controller
             if (!empty($validated['aof_ids'])) {
                 AccountOpeningDocument::whereIn('id', $validated['aof_ids'])->update($updateData);
             }
+
+            $dispatch = CourierDispatch::find($request->dispatch_id);
+            $dispatch->status = "Delivered";
+            $dispatch->updated_by = $this->user->id;
+            $dispatch->save();
 
             DB::commit();
 

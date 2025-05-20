@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <div class="filter-bg">
+            {{-- <div class="filter-bg">
                 <form method="POST" action="{{ route('accounts.index',$type) }}">
                     <div class="row">
                         <div class="col-2 mt-3">
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </form>
-            </div>
+            </div> --}}
         </div>
         <div class="col-1"></div>
     </div>
@@ -64,25 +64,32 @@
         <div class="col-1"></div>
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
+                @hasanyrole('master|bo-maker|bo-checker')
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="home-tab" role="tab" aria-controls="home-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
+                @endhasanyrole
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="profile-tab" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Dispatched List @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Dispatched List @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
+                @hasanyrole('ro-user')
+                <li class="nav-item" role="presentation">
+                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Received Documents @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                </li>
+                @endhasanyrole
                 @if ($type == 'ready')
-                @role('bo-checker')
+                @hasanyrole('bo-checker')
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
-                </li>                                                                                                                                         
-                @endrole
+                </li>
+                @endhasanyrole
                 @endif
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade active show" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -135,7 +142,7 @@
                         </tbody>
                     </table>
                 </div>
-                {{-- <div class="tab-pane fade {{$type == 'list' ? 'active show':''}}" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                {{-- <div class="tab-pane fade {{$type == 'list' ? 'active show':''}}" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>

@@ -19,7 +19,7 @@
                             </select>
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ request('unique_ref_no') }}" name="unique_ref_no">
+                            <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                         </div>
                         <div class="col-2 mt-3">
                             <select class="form-select region" name="region">
@@ -31,19 +31,19 @@
                             </select>
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}" name="branch_code">
+                            <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}" name="branch_name">
+                            <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}" name="cif_id">
+                            <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ request('account_number') }}" name="account_number">
+                            <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ request('loan_cycle') }}" name="loan_cycle">
+                            <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <select class="form-select scheme" name="scheme">
@@ -53,13 +53,13 @@
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ request('customer_name') }}" name="customer_name">
+                            <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ request('account_creation_date') }}" name="account_creation_date">
+                            <input type="text" class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ old('account_creation_date', $filters['account_creation_date'] ?? '') }}" name="account_creation_date">
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control channel" placeholder="Channel" value="{{ request('channel') }}" name="channel">
+                            <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                         </div>
                         <div class="col-2 mt-3">
                             <select class="form-select" name="type">
@@ -69,13 +69,13 @@
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
-                            <input type="date" class="form-control" placeholder="DTR File Date" value="{{ request('dtr_file_date') }}" name="dtr_file_date">
+                            <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control" placeholder="Business Category" value="{{ request('business_category') }}" name="business_category">
+                            <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                         </div>
                         <div class="col-2 mt-3">
-                            <select class="form-select" placeholder="Status" value="{{ request('status') }}" name="status">
+                            <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
                                 <option value="">Select Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Dispatched">Dispatched</option>
@@ -400,7 +400,7 @@
                         <label for="dispatch_date" class="form-label">Dispatch Date</label>
                         <input type="text"
                                class="form-control datepicker dispatch_date"
-                               value="{{ request('dispatch_date') }}"
+                               value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}"
                                name="dispatch_date"
                                id="dispatch_date"
                                required>
