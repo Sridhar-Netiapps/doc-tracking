@@ -21,6 +21,7 @@
                         <div class="col-2 mt-3">
                             <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                         </div>
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                         <div class="col-2 mt-3">
                             <select class="form-select region" name="region">
                                 <option value="">Select Region</option>
@@ -30,12 +31,15 @@
                                 <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
                             </select>
                         </div>
+                        @endunless
                         <div class="col-2 mt-3">
                             <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                         </div>
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                         <div class="col-2 mt-3">
                             <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                         </div>
+                        @endunless
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                         </div>
@@ -136,11 +140,11 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="loan_all" /> </th>
                                 <th scope="col">Unique Number</th>
-                                @unless(auth()->user()->hasRole('bo-maker'))
+                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
-                                <th scope="col">Branch Code</th>
-                                @endunless
                                 <th scope="col">Branch Name</th>
+                                @endunless
+                                <th scope="col">Branch Code</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
                                 <th scope="col">Loan Cycle</th>
@@ -161,11 +165,11 @@
                                     <tr>
                                         <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                         <td>{{ $row->unique_ref_no }}</td>
-                                        @unless(auth()->user()->hasRole('bo-maker'))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        @endunless
                                         <td>{{ $row->branch_name }}</td>
+                                        @endunless
+                                        <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->loan_cycle }}</td>
@@ -198,11 +202,11 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                 <th scope="col">Unique Number</th>
-                                @unless(auth()->user()->hasRole('bo-maker'))
+                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
-                                <th scope="col">Branch Code</th>
-                                @endunless
                                 <th scope="col">Branch Name</th>
+                                @endunless
+                                <th scope="col">Branch Code</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
                                 {{-- <th scope="col">Loan Cycle</th> --}}
@@ -222,11 +226,11 @@
                                     <tr>
                                         <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                         <td>{{ $row->unique_ref_no }}</td> 
-                                        @unless(auth()->user()->hasRole('bo-maker'))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        @endunless
                                         <td>{{ $row->branch_name }}</td>
+                                        @endunless
+                                        <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->customer_name }}</td>
@@ -261,11 +265,11 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                 <th scope="col">Unique Number</th>
-                                @unless(auth()->user()->hasRole('bo-maker'))
+                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
-                                <th scope="col">Branch Code</th>
-                                @endunless
                                 <th scope="col">Branch Name</th>
+                                @endunless
+                                <th scope="col">Branch Code</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
                                 {{-- <th scope="col">Loan Cycle</th> --}}
@@ -288,11 +292,11 @@
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
                                         <td>{{ $row->unique_ref_no }}</td>
-                                        @unless(auth()->user()->hasRole('bo-maker'))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        @endunless
                                         <td>{{ $row->branch_name }}</td>
+                                        @endunless
+                                        <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
                                         {{-- <td>{{ $row->loan_cycle }}</td> --}}
@@ -324,11 +328,11 @@
                             <tr>
                                 <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                 <th scope="col">Unique Number</th>
-                                @unless(auth()->user()->hasRole('bo-maker'))
+                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
-                                <th scope="col">Branch Code</th>
-                                @endunless
                                 <th scope="col">Branch Name</th>
+                                @endunless
+                                <th scope="col">Branch Code</th>
                                 <th scope="col">DTR File Date</th>
                                 {{-- <th scope="col">barcode</th> --}}
                                 {{-- <th scope="col">Loan Cycle</th>
@@ -350,11 +354,11 @@
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
                                         <td>{{ $row->unique_ref_no }}</td>
-                                        @unless(auth()->user()->hasRole('bo-maker'))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        @endunless
                                         <td>{{ $row->branch_name }}</td>
+                                        @endunless
+                                        <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->account_creation_date}}</td>
                                         {{-- <td>{{ $row->barcode }}</td> --}}
                                         <td>{{ $row->business_category}}</td>
