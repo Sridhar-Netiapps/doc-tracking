@@ -12,10 +12,10 @@
                         <div class="col-2 mt-3">
                             <select class="form-select document_type" name="document_type">
                                 <option value="">Select Document Type</option>
-                                <option value="loan" {{ request('document_type') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                                <option value="gold_loan" {{ request('document_type') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                                <option value="aof" {{ request('document_type') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
-                                <option value="dtrf" {{ request('document_type') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
+                                <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
+                                <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
+                                <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                                <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3">
@@ -24,10 +24,10 @@
                         <div class="col-2 mt-3">
                             <select class="form-select region" name="region">
                                 <option value="">Select Region</option>
-                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                                <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
+                                <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
+                                <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
+                                <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3">
@@ -48,24 +48,27 @@
                         <div class="col-2 mt-3 d-none">
                             <select class="form-select scheme" name="scheme">
                                 <option value="">Select Scheme</option>
-                                <option value="GL" {{ request('scheme') == 'GL' ? 'selected' : '' }}>GL</option>
-                                <option value="IL" {{ request('scheme') == 'IL' ? 'selected' : '' }}>IL</option>
+                                <option value="GL" {{ ($filters['scheme'] ?? '') == 'GL' ? 'selected' : '' }}>GL</option>
+                                <option value="IL" {{ ($filters['scheme'] ?? '') == 'IL' ? 'selected' : '' }}>IL</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ old('account_creation_date', $filters['account_creation_date'] ?? '') }}" name="account_creation_date">
+                            <input type="text" class="form-control datepicker" placeholder="Account Creation Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control datepicker" placeholder="Account Creation Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                         </div>
-                        <div class="col-2 mt-3">
+                        <div class="col-2 mt-3 d-none">
                             <select class="form-select" name="type">
                                 <option value="">Loan Disbursement/Account Opening</option>
-                                <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
-                                <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                                <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                                <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
@@ -77,14 +80,14 @@
                         <div class="col-2 mt-3">
                             <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
                                 <option value="">Select Status</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Dispatched">Dispatched</option>
-                                <option value="Completed">Completed</option>
+                                <option {{ ($filters['status'] ?? '') == 'Pending' ? 'selected' : '' }} value="Pending">Pending</option>
+                                <option {{ ($filters['status'] ?? '') == "Waiting Checker's Approval" ? 'selected' : '' }} value="Waiting Checker's Approval">Waiting Checker's Approval</option>
+                                <option {{ ($filters['status'] ?? '') == 'Dispatched' ? 'selected' : '' }} value="Dispatched">Dispatched</option>
                             </select>
                         </div>
                         <div class="col-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Filter</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
+                            <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
                         </div>
                     </div>
                 </form>

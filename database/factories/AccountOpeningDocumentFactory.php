@@ -21,7 +21,7 @@ class AccountOpeningDocumentFactory extends Factory
             'channel' => fake()->randomElement(['Swagat', 'HHD', 'CRM']),
             'barcode' => NULL,
             'type_of_account_opening' => fake()->randomElement(['Esign', 'Manual']),
-            'business_category' => fake()->word(),
+            'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];
     }
 }

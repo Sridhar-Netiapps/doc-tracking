@@ -81,7 +81,7 @@ class DocumentController extends Controller
         ];
 
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters) {
-            $query->where('status', 'pending');
+            // $query->where('status', 'pending');
 
             if ($user->hasRole('ro-user')) {
                 $query->where('region', $user->region);

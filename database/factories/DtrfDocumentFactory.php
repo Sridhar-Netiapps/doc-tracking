@@ -15,7 +15,7 @@ class DtrfDocumentFactory extends Factory
             'branch_name' => fake()->city(),
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'barcode' => Null,
-            'business_category' => fake()->word(),
+            'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];
     }
 }
