@@ -113,9 +113,11 @@
                                 <th scope="col"><input type="checkbox" class="select_all"/> </th>     
                                 <th scope="col"> Document Type</th>
                                 <th scope="col"> Unique Number</th>
+                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col"> Region</th>
-                                <th scope="col"> Branch Code</th>
                                 <th scope="col"> Branch Name</th>
+                                @endunless
+                                <th scope="col"> Branch Code</th>
                                 <th scope="col"> CIF ID</th>
                                 <th scope="col"> Account Number</th>
                                 <th scope="col"> Loan Cycle</th>
@@ -135,9 +137,11 @@
                                     <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                     <td>{{ ucfirst($doc->doc_type) }}</td>
                                     <td>{{ $doc->unique_ref_no ?? '-' }}</td>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <td>{{ $doc->region ?? '-' }}</td>
-                                    <td>{{ $doc->branch_code ?? '-' }}</td>
                                     <td>{{ $doc->branch_name ?? '-' }}</td>
+                                    @endunless
+                                    <td>{{ $doc->branch_code ?? '-' }}</td>
                                     <td>{{ $doc->cif_id ?? '-' }}</td>
                                     <td>{{ $doc->account_number ?? '-' }}</td>
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
