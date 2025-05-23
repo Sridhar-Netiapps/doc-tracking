@@ -52,6 +52,7 @@
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
+                                <th scope="col" class="border-start"> Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,6 +77,9 @@
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->status ?? '-' }}</td>
+                                    <td class="border-start">
+                                        <button class="btn btn-danger remove"><img src="/images/delete_icon_w.svg"/></button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

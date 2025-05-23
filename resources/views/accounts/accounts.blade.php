@@ -60,10 +60,10 @@
                             <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control datepicker" placeholder="Account Creation Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                            <input type="text" class="form-control datepicker" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control datepicker" placeholder="Account Creation Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                            <input type="text" class="form-control datepicker" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
@@ -115,17 +115,24 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}
-                        </span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">
+                        MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
+                        Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
+                        Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">
+                        DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
+                    </button>
                 </li>
                 @hasanyrole('master|bo-maker|bo-checker')
                 <li class="ms-auto">
@@ -137,7 +144,7 @@
                 @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -199,7 +206,7 @@
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -240,9 +247,7 @@
                                         <td>{{ $row->account_creation_date }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>
-                                            {{ $row->status }}
-                                        </td>
+                                        <td>{{ $row->status }}</td>
                                         {{-- <td class="border-start">
                                             <div class="btn-actions">
                                                 <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -262,7 +267,7 @@
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -325,7 +330,7 @@
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
