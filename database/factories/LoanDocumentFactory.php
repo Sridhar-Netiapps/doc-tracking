@@ -21,7 +21,7 @@ class LoanDocumentFactory extends Factory
             'channel' => $this->faker->randomElement(['GL', 'IL']),
             'barcode' => NULL,
             'loan_disbursement_type' => fake()->randomElement(['Esign', 'Manual']),
-            'business_category' => $this->faker->word,
+            'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];
     }
 }

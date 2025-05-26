@@ -19,7 +19,7 @@ class GoldLoanDocumentFactory extends Factory
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'channel' => 'Gold Loan',
             'barcode' => NULL,
-            'business_category' => fake()->word(),
+            'business_category' => 'Gold Loan',
         ];
     }
 }

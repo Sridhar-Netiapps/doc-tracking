@@ -12,10 +12,10 @@
                         <div class="col-2 mt-3">
                             <select class="form-select document_type" name="document_type">
                                 <option value="">Select Document Type</option>
-                                <option value="loan" {{ request('document_type') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                                <option value="gold_loan" {{ request('document_type') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                                <option value="aof" {{ request('document_type') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
-                                <option value="dtrf" {{ request('document_type') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
+                                <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
+                                <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
+                                <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                                <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3">
@@ -25,10 +25,10 @@
                         <div class="col-2 mt-3">
                             <select class="form-select region" name="region">
                                 <option value="">Select Region</option>
-                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
+                                <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
+                                <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
+                                <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
+                                <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                             </select>
                         </div>
                         @endunless
@@ -52,24 +52,27 @@
                         <div class="col-2 mt-3 d-none">
                             <select class="form-select scheme" name="scheme">
                                 <option value="">Select Scheme</option>
-                                <option value="GL" {{ request('scheme') == 'GL' ? 'selected' : '' }}>GL</option>
-                                <option value="IL" {{ request('scheme') == 'IL' ? 'selected' : '' }}>IL</option>
+                                <option value="GL" {{ ($filters['scheme'] ?? '') == 'GL' ? 'selected' : '' }}>GL</option>
+                                <option value="IL" {{ ($filters['scheme'] ?? '') == 'IL' ? 'selected' : '' }}>IL</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                         </div>
                         <div class="col-2 mt-3">
-                            <input type="text" class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ old('account_creation_date', $filters['account_creation_date'] ?? '') }}" name="account_creation_date">
+                            <input type="text" class="form-control datepicker" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                        </div>
+                        <div class="col-2 mt-3">
+                            <input type="text" class="form-control datepicker" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                         </div>
                         <div class="col-2 mt-3 d-none">
                             <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                         </div>
-                        <div class="col-2 mt-3">
+                        <div class="col-2 mt-3 d-none">
                             <select class="form-select" name="type">
                                 <option value="">Loan Disbursement/Account Opening</option>
-                                <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
-                                <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                                <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                                <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
                         </div>
                         <div class="col-2 mt-3 d-none">
@@ -81,14 +84,14 @@
                         <div class="col-2 mt-3">
                             <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
                                 <option value="">Select Status</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Dispatched">Dispatched</option>
-                                <option value="Completed">Completed</option>
+                                <option {{ ($filters['status'] ?? '') == 'Pending' ? 'selected' : '' }} value="Pending">Pending</option>
+                                <option {{ ($filters['status'] ?? '') == "Waiting Checker's Approval" ? 'selected' : '' }} value="Waiting Checker's Approval">Waiting Checker's Approval</option>
+                                <option {{ ($filters['status'] ?? '') == 'Dispatched' ? 'selected' : '' }} value="Dispatched">Dispatched</option>
                             </select>
                         </div>
                         <div class="col-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Filter</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
+                            <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
                         </div>
                     </div>
                 </form>
@@ -112,17 +115,24 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}
-                        </span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">
+                        MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
+                        Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
+                        Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">
+                        DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
+                    </button>
                 </li>
                 @hasanyrole('master|bo-maker|bo-checker')
                 <li class="ms-auto">
@@ -134,7 +144,7 @@
                 @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -196,7 +206,7 @@
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -237,9 +247,7 @@
                                         <td>{{ $row->account_creation_date }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>
-                                            {{ $row->status }}
-                                        </td>
+                                        <td>{{ $row->status }}</td>
                                         {{-- <td class="border-start">
                                             <div class="btn-actions">
                                                 <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -259,7 +267,7 @@
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -322,7 +330,7 @@
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>

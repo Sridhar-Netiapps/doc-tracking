@@ -18,7 +18,13 @@
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dispatched Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
+                    @hasanyrole('master|ro-user')
+                    @if ($dispatch->status =="Delivered")
+                    <button class="btn btn-primary vendor" type="button">Add Vendor Details</button>
+                    @elseif ($dispatch->status =="Dispatched")
                     <button class="btn btn-primary proceed" type="button">Add Dispatch Details</button>
+                    @endif
+                    @endhasanyrole
                     <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
                 </li>
             </ul>
@@ -46,6 +52,7 @@
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
+                                <th scope="col" class="border-start"> Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,6 +77,9 @@
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->status ?? '-' }}</td>
+                                    <td class="border-start">
+                                        <button class="btn btn-danger remove"><img src="/images/delete_icon_w.svg"/></button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -122,12 +132,58 @@
     </div>
 </div>
 
+<div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
+                @csrf
+                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
+                <div class="modal-header p-4 text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
+                </div>
+                <div class="modal-body p-4 row">
+                    <div class="col-6 pb-2">
+                        <label for="courier_received_date" class="form-label">Courier Received Date</label>
+                        <input type="text" name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
+                        {{-- <input type="date" name="courier_received_date" class="form-control courier_received_date" value="{{ request('courier_received_date') }}"> --}}
+                    </div>
+                    {{-- <div class="col-6 pb-2">
+                        <label for="tracked_by" class="form-label">Tracked By</label>
+                        <input type="text" name="tracked_by" class="form-control">
+                    </div> --}}
+                    <div class="col-6 pb-2">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <select id="remarks" name="remarks" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            <option value='Received'>Received</option>
+                            <option value='Rejected'>Rejected</option>
+                        </select>
+                        {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
+                    </div>
+                    <div class="col-12 pb-2 d-none ">
+                        <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
+                        <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         $(".select_all").click(function () {
             $(".select").prop('checked', $(this).prop('checked'));
         });
         let selectedDocuments = [];
+        $('.vendor').click(function () {
+            $('#add-vendor').modal('show');
+        });
 
         $('.proceed').click(function () {
             selectedDocuments = $('input.select:checked').map(function () {

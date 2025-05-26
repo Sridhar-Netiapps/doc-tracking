@@ -28,12 +28,12 @@ class DocumentController extends Controller
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
-        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-            LoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-            GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-            DtrfDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-            AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-        }
+        // if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+        //     LoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        //     GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        //     DtrfDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        //     AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        // }
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
             $query->where('status','pending');
@@ -70,18 +70,16 @@ class DocumentController extends Controller
         $filters = session('filters', []);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
+        // dd($filters);
+        unset($filters['start_date'], $filters['end_date']);
+
+        // $fromDate = isset($filters['start_date']) ? Carbon\Carbon::createFromFormat('d-m-Y', $filters['start_date'])->format('Y-m-d') : null;
+        // $toDate = isset($filters['end_date']) ? Carbon\Carbon::createFromFormat('d-m-Y', $filters['end_date'])->format('Y-m-d') : null;
 
         $docType = $filters['document_type'] ?? null;
-        // dd($filters);
-        $tables = [
-            'loan' => LoanDocument::getModel()->getTable(),
-            'gold_loan' => GoldLoanDocument::getModel()->getTable(),
-            'dtrf' => DtrfDocument::getModel()->getTable(),
-            'aof' => AccountOpeningDocument::getModel()->getTable()
-        ];
-
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters) {
-            $query->where('status', 'pending');
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate) {
 
             if ($user->hasRole('ro-user')) {
                 $query->where('region', $user->region);
@@ -89,6 +87,13 @@ class DocumentController extends Controller
         
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
+            }
+            if ($fromDate != null && $toDate != null) {
+                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+            } elseif ($fromDate != null) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            } elseif ($toDate != null) {
+                $query->whereDate('created_at', '<=', $toDate);
             }
         
             if ($hasFilters) {
@@ -126,7 +131,6 @@ class DocumentController extends Controller
             })->paginate(100);
 
         } else {
-            // exit('here');
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
             })->paginate(100);
