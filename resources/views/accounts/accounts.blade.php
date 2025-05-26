@@ -148,7 +148,9 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 <th scope="col"><input type="checkbox" class="loan_all" /> </th>
+                                @endhasanyrole
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -173,7 +175,9 @@
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
                                     <tr>
+                                        @hasanyrole('master|bo-maker|bo-checker')
                                         <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                        @endhasanyrole
                                         <td>{{ $row->unique_ref_no }}</td>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -210,7 +214,9 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
+                                @endhasanyrole
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -234,7 +240,9 @@
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
                                     <tr>
+                                        @hasanyrole('master|bo-maker|bo-checker')
                                         <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                        @endhasanyrole
                                         <td>{{ $row->unique_ref_no }}</td> 
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -271,7 +279,9 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 <th scope="col"><input type="checkbox" class="aof_all" /> </th>
+                                @endhasanyrole
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -296,7 +306,9 @@
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
                                     <tr>
+                                        @hasanyrole('master|bo-maker|bo-checker')
                                         <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                        @endhasanyrole
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
                                         <td>{{ $row->unique_ref_no }}</td>
@@ -334,7 +346,9 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
+                                @endhasanyrole
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -358,7 +372,9 @@
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
                                     <tr>
+                                        @hasanyrole('master|bo-maker|bo-checker')
                                         <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                        @endhasanyrole
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
                                         <td>{{ $row->unique_ref_no }}</td>
