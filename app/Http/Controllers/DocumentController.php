@@ -269,7 +269,7 @@ class DocumentController extends Controller
 
         $records = $filter(CourierDispatch::query())->paginate(100);
 
-        $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',"Waiting Checker's Approval")->count();
+        $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',"Awaiting Checker Approval")->count();
         $dispatched_count = $filter(CourierDispatch::query())->where('status','Dispatched')->count();
         $received_count = $filter(CourierDispatch::query())->where('status','Delivered')->count();
 

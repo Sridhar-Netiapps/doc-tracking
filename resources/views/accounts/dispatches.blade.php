@@ -270,13 +270,17 @@
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
+
         $('.proceed').click(function () {
             hasSelection = false;
             let ids = [];
+
             $('input.readytodispatch:checked').each(function () {
                 ids.push($(this).data('id'));
             });
+
             $('#proceed').find('input[name$="_ids[]"]').remove();
+
             if (ids.length > 0) {
                 hasSelection = true;
                 ids.forEach(function (id) {
@@ -285,14 +289,19 @@
                     );
                 });
             }
+
             if (hasSelection) {
                 Swal.fire({
                     title: "Alert!",
-                    text: "Are Sure You Want Dispatch.",
+                    text: "Are You Sure.",
                     icon: "warning",
-                    confirmButtonText: "YES"
-                }).then(() => {
-                    $('#proceed').submit();                     
+                    showCancelButton: true,
+                    confirmButtonText: "YES",
+                    cancelButtonText: "NO"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#proceed').submit();                     
+                    }
                 });
             } else {
                 Swal.fire({
@@ -305,4 +314,5 @@
         });
     });
 </script>
+
 @endsection
