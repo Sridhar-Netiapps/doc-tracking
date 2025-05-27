@@ -28,6 +28,10 @@ body{
     background: #f78f35;
 }
 
+.nav-tabs .nav-link{
+    border: none;
+}
+
 .btn-primary:focus{
     background: #fcb53e ;
 }
@@ -357,5 +361,33 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):fo
 
 input[type=checkbox]{
     transform: scale(1.2);
+}
+
+.userIcon img{
+    width: 20px;
+}
+
+.userIcon{
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    background: #e6fdf7;
+    border-radius: 40px;
+    margin-right: 10px;
+}
+
+.empId{
+    font-size: 11px;
+
+}
+
+.profileDrop .dropdown-toggle::after{
+    display: none;
+}
+
+.profileDrop a{
+    color: #000000 !important;
 }
 

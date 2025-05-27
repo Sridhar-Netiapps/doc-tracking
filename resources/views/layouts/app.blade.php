@@ -74,28 +74,40 @@
                                     <li><a class="dropdown-item">{{ __('Logout') }}</a></li>
                                 </ul>
                             </div> --}}
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->first_name }}
+                            <li class="nav-item dropdown profileDrop">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="userIcon">
+                                        <img src="/images/user-solid.svg" />
+                                    </div>
+
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                        {{ Auth::user()->first_name }}
                                         @if(Auth::user()->middle_name)
-                                        {{ Auth::user()->middle_name }}
+                                            {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId"><small><i> DUMSA001 - Superadmin</i></small></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('users.index') }}">
-                                        {{ __('Users') }}
+                                        <div class="empId">DUMSA001 - Superadmin</div>
                                     </a>
-                                    <a class="dropdown-item" href=""
-                                       onclick="event.preventDefault();
+
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                                            {{ __('Users') }}
+                                        </a>
+                                        <a class="dropdown-item" href=""
+                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
+                                            {{ __('Logout') }}
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
+                                    </div>
                                 </div>
+
+
+
+
+
                             </li>
                         @endguest
                     </ul>
