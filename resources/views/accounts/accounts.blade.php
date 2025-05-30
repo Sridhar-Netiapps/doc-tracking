@@ -85,7 +85,7 @@
                             <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
                                 <option value="">Select Status</option>
                                 <option {{ ($filters['status'] ?? '') == 'Pending' ? 'selected' : '' }} value="Pending">Pending</option>
-                                <option {{ ($filters['status'] ?? '') == "Waiting Checker's Approval" ? 'selected' : '' }} value="Waiting Checker's Approval">Waiting Checker's Approval</option>
+                                <option {{ ($filters['status'] ?? '') == "Awaiting Checker Approval" ? 'selected' : '' }} value="Awaiting Checker Approval">Awaiting Checker Approval</option>
                                 <option {{ ($filters['status'] ?? '') == 'Dispatched' ? 'selected' : '' }} value="Dispatched">Dispatched</option>
                             </select>
                         </div>
@@ -176,7 +176,11 @@
                                 @foreach ($loan_document as $row)
                                     <tr>
                                         @hasanyrole('master|bo-maker|bo-checker')
-                                        <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td>
+                                            @if ($row->status == 1)
+                                            <input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}">
+                                            @endif
+                                        </td>
                                         @endhasanyrole
                                         <td>{{ $row->unique_ref_no }}</td>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -199,7 +203,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
+                                        <td>{{ $row->statusName->name }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -241,7 +245,11 @@
                                 @foreach ($gold_loan_document as $row)
                                     <tr>
                                         @hasanyrole('master|bo-maker|bo-checker')
-                                        <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td>
+                                            @if ($row->status == 1)
+                                                <input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}">
+                                            @endif
+                                        </td>
                                         @endhasanyrole
                                         <td>{{ $row->unique_ref_no }}</td> 
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -255,7 +263,7 @@
                                         <td>{{ $row->account_creation_date }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->status }}</td>
+                                        <td>{{ $row->statusName->name }}</td>
                                         {{-- <td class="border-start">
                                             <div class="btn-actions">
                                                 <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -307,7 +315,11 @@
                                 @foreach ($account_opening_document as $row)
                                     <tr>
                                         @hasanyrole('master|bo-maker|bo-checker')
-                                        <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td>
+                                            @if ($row->status == 1)
+                                                <input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}">
+                                            @endif
+                                        </td>
                                         @endhasanyrole
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
@@ -331,7 +343,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
+                                        <td>{{ $row->statusName->name }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -373,7 +385,11 @@
                                 @foreach ($dtrf_document as $row)
                                     <tr>
                                         @hasanyrole('master|bo-maker|bo-checker')
-                                        <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td>
+                                            @if ($row->status == 1)
+                                                <input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}">
+                                            @endif
+                                        </td>
                                         @endhasanyrole
                                         {{-- <td>{{ $loop->iteration }}</td> --}}
                                         {{-- <td><input type="checkbox" /></td> --}}
@@ -397,7 +413,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
+                                        <td>{{ $row->statusName->name }}</td>
                                     </tr>
                                     @endforeach
                                 @endif

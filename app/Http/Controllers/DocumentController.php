@@ -29,14 +29,19 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
         // if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-        //     LoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-        //     GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-        //     DtrfDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
-        //     AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status','selected')->update(['status'=>'pending']);
+        //     LoanDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
+        //     GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
+        //     DtrfDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
+        //     AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
         // }
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
-            $query->where('status','pending');
+            if($type === 'rejected'){
+                $query->where('status','rejected');
+            }
+            elseif($type ==='received'){
+                $query->where('status','Received');
+            }
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
             }
@@ -159,13 +164,13 @@ class DocumentController extends Controller
     public function bulkReview(Request $request)
     {
         if(isset($request->loan_ids))
-            LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>'selected']);
+            LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>2]);
         if(isset($request->goldloan_ids))
-            GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>'selected']);
+            GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>2]);
         if(isset($request->dtrf_ids))
-            DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>'selected']);
+            DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>2]);
         if(isset($request->aof_ids))
-            AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>'selected']);
+            AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>2]);
 
         return redirect()->route('accounts.selected');
     }
@@ -173,30 +178,31 @@ class DocumentController extends Controller
     public function getBulkReview()
     {
         $allDocuments = collect();
-        $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+        $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
             ->map(function ($item) {
                 $item->doc_type = 'loan';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($loans);
-        $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+        $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
             ->map(function ($item) {
                 $item->doc_type = 'goldloan';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($goldloans);
-        $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
-            ->map(function ($item) {
-                $item->doc_type = 'dtrf';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($dtrfs);
-        $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 'selected')->get()
+        $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
             ->map(function ($item) {
                 $item->doc_type = 'aof';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($aofs);
+        $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+            ->map(function ($item) {
+                $item->doc_type = 'dtrf';
+                return $item;
+            });
+        $allDocuments = $allDocuments->merge($dtrfs);
+        
         $couriers = Courier::pluck('name','id');
         return view('accounts.index', compact('allDocuments','couriers'));
     }
@@ -228,17 +234,17 @@ class DocumentController extends Controller
             $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
             $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
             $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
-            $dispatch->status = "Waiting Checker's Approval";
+            $dispatch->status = "Awaiting Checker Approval";
             $dispatch->save();
 
             if(isset($request->loan_ids))
-                LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>"Waiting Checker's Approval"]);
+                LoanDocument::whereIn('id',$request->loan_ids)->update(['status'=>"Awaiting Checker Approval"]);
             if(isset($request->goldloan_ids))
-                GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>"Waiting Checker's Approval"]);
+                GoldLoanDocument::whereIn('id',$request->goldloan_ids)->update(['status'=>"Awaiting Checker Approval"]);
             if(isset($request->dtrf_ids))
-                DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>"Waiting Checker's Approval"]);
+                DtrfDocument::whereIn('id',$request->dtrf_ids)->update(['status'=>"Awaiting Checker Approval"]);
             if(isset($request->aof_ids))
-                AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>"Waiting Checker's Approval"]);
+                AccountOpeningDocument::whereIn('id',$request->aof_ids)->update(['status'=>"Awaiting Checker Approval"]);
             
             DB::commit();
             return response()->json(['success' => true]);
@@ -261,7 +267,7 @@ class DocumentController extends Controller
             }   
             return $query
                 ->when($type === 'ready', function ($q){
-                    $q->where('status', "Waiting Checker's Approval");
+                    $q->where('status', "Awaiting Checker Approval");
                 })
                 ->when($type === 'list', function ($q){
                     $q->where('status', 'Dispatched');
@@ -416,6 +422,57 @@ class DocumentController extends Controller
 
             DB::commit();
 
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function removeDocument(Request $request)
+    {
+        $table = [
+            'loan' => LoanDocument::class,
+            'goldloan' => GoldLoanDocument::class,
+            'dtrf' => DtrfDocument::class,
+            'aof' => AccountOpeningDocument::class,
+        ];
+
+        $column = [
+            'loan' => 'loan_ids',
+            'goldloan' => 'goldloan_ids',
+            'dtrf' => 'dtrf_ids',
+            'aof' => 'aof_ids',
+        ];
+
+        // dd($table[$request->type]);
+        try {
+            DB::beginTransaction();
+            
+            $dispatch = CourierDispatch::find($request->id);
+            $columnName = $column[$request->type];
+
+            $values = collect(explode(',', $dispatch->$columnName))
+                ->map(fn($v) => trim($v))
+                ->filter(fn($v) => $v !== $request->doc_id)
+                ->values()
+                ->implode(',');
+            
+            $dispatch->$columnName = $values;
+            $dispatch->updated_by = $this->user->id;
+            $dispatch->save();
+
+            $table[$request->type]::where('id', $request->doc_id)->update(['status'=>"selected"]);
+            
+            // if(isset($request->type) && $request->type == 'loan')
+            //     LoanDocument::where('id', $request->id)->update(['status'=>"selected"]);
+            // elseif(isset($request->type) && $request->type == 'goldloan')
+            //     GoldLoanDocument::where('id', $request->id)->update(['status'=>"selected"]);
+            // elseif(isset($request->type) && $request->type == 'dtrf')
+            //     DtrfDocument::where('id', $request->id)->update(['status'=>"selected"]);
+            // elseif(isset($request->type) && $request->type == 'aof')
+            //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>"selected"]);
+
+            DB::commit();
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             DB::rollBack();

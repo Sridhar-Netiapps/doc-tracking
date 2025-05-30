@@ -20,15 +20,6 @@
         <div><a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a></div>
     </div>
 
-
-
-
-    @if (session('success'))
-        <div class="alert alert-success mt-3">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="row">
         <div class="col-12">
             <div class="form-card">
@@ -36,30 +27,30 @@
                     <table class="table table-bordered align-middle">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>S.No</th>
                             <th>Name</th>
                             <th>Status</th>
-                            <!-- <th>Created By</th>
-                            <th>Updated By</th> -->
+                            <th>Created By</th>
+                            <!-- <th>Updated By</th> -->
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach ($statuses as $status)
                             <tr>
-                                <td>{{ $status->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $status->name }}</td>
                                 <td>
-                                <span class="badge {{ $status->status ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $status->status ? __('Active') : __('Inactive') }}
+                                    <span class="badge {{ $status->status ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $status->status ? __('Active') : __('Inactive') }}
+                                    </span>
+                                </td>
+                                <td>
+                                <span class="badge {{ $status->created_by ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $status->created_by }}
                                 </span>
                                 </td>
                                 <!-- <td>
-                                <span class="badge {{ $status->created_by ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $status->created_by == 1 ? __('Person 1') : __('Person 2') }}
-                                </span>
-                                </td>
-                                <td>
                                 <span class="badge {{ $status->updated_by ? 'bg-success' : 'bg-secondary' }}">
                                     {{ $status->updated_by == 1 ? __('Person 1') : __('Person 2') }}
                                 </span>

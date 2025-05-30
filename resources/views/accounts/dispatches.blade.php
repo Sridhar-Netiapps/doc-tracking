@@ -74,7 +74,7 @@
                 </li>
                 @hasanyrole('ro-user')
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Received Documents @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Delivered List @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
                 @endhasanyrole
                 @if ($type == 'ready')
@@ -132,7 +132,7 @@
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->status }}</td>
+                                    <td>{{ $row->statusName->name }}</td>
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                         <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
@@ -177,7 +177,7 @@
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->status }}</td>
+                                    <td>{{ $row->statusName->name }}</td>
                                     <td class="border-start">
                                         <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
                                     </td>

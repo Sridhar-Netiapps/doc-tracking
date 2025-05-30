@@ -11,16 +11,19 @@
                 <li class="nav-item px-4">
                     <a class="nav-link" href="{{ route('accounts.proceed') }}">Selected Documents</a>
                 </li>
-                @hasanyrole('master|bo-maker|bo-checker')
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('dispatches','ready') }}">Dispatches</a>
+                    <a class="nav-link" href="{{ route('accounts.index','rejected') }}">Rejected Documents</a>
                 </li>
-                @endhasanyrole
+                <li class="nav-item px-4">
+                    <a class="nav-link" href="{{ route('accounts.index','received') }}">Received Documents</a>
+                </li>
+                {{-- @hasanyrole('master|bo-maker|bo-checker') --}}
+                <li class="nav-item px-4">
+                    <a class="nav-link" @hasanyrole('master|ro-user') href="{{ route('dispatches','list') }}" @else href="{{ route('dispatches','ready') }}" @endhasanyrole>Dispatches</a>
+                </li>
+                {{-- @endhasanyrole
                 @hasanyrole('master|ro-user')
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('dispatches','received') }}">Received Documents</a>
-                </li>
-                @endhasanyrole
+                @endhasanyrole --}}
             </ul>
         </div>
     </div>

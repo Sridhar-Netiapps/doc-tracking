@@ -52,7 +52,9 @@
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
-                                <th scope="col" class="border-start"> Action</th>
+                                @if ($dispatch->status == 'Awaiting Checker Approval')
+                                    <th scope="col" class="border-start"> Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -77,9 +79,11 @@
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->status ?? '-' }}</td>
+                                    @if($doc->status == 'Awaiting Checker Approval')
                                     <td class="border-start">
-                                        <button class="btn btn-danger remove"><img src="/images/delete_icon_w.svg"/></button>
+                                        <button data-id="{{ $doc->id }}" data-type="{{ $doc->doc_type }}" class="btn btn-danger remove-doc"><img src="/images/delete_icon_w.svg"/></button>
                                     </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -142,21 +146,44 @@
                     <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
                 </div>
                 <div class="modal-body p-4 row">
-                    <div class="col-6 pb-2">
-                        <label for="courier_received_date" class="form-label">Courier Received Date</label>
-                        <input type="text" name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
-                        {{-- <input type="date" name="courier_received_date" class="form-control courier_received_date" value="{{ request('courier_received_date') }}"> --}}
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Lot No.</label>
+                        <input type="number" name="lot_no" class="form-control">
                     </div>
-                    {{-- <div class="col-6 pb-2">
-                        <label for="tracked_by" class="form-label">Tracked By</label>
-                        <input type="text" name="tracked_by" class="form-control">
-                    </div> --}}
-                    <div class="col-6 pb-2">
-                        <label for="remarks" class="form-label">Remarks</label>
-                        <select id="remarks" name="remarks" class="form-control select2" required>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Work Order No.</label>
+                        <input type="number" name="lot_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Vendor Name</label>
+                        <input type="text" name="vendor_name" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
+                        <input type="file" name="barcode_file" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Box Barcode.</label>
+                        <input type="text" name="vendor_name" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
+                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-control select2" required>
                             <option value=''>Select</option>
-                            <option value='Received'>Received</option>
-                            <option value='Rejected'>Rejected</option>
+                            <option value='In'>In</option>
+                            <option value='Out'>Out</option>
+                            <option value='Permout'>Permout</option>
+                            <option value='Destroyed'>Destroyed</option>
                         </select>
                         {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
                     </div>
@@ -210,6 +237,7 @@
             else
                 $('textarea[name="reason_for_rejection"]').parent('div').addClass('d-none');
         });
+
         $('#update-courier').submit(function (e) {
             e.preventDefault();
             let formData = {
@@ -260,6 +288,54 @@
                         confirmButtonText: "OK"
                     });
                 });
+        });
+        $('.remove-doc').click(function (e) {
+            let formData = {
+                _token: $('input[name="_token"]').val(),
+                id: $('input[name="dispatch_id"]').val(),
+                doc_id: $(this).data('id'),
+                type: $(this).data('type'),
+            };
+
+            if ($(this).data('id') != '') {
+                Swal.fire({
+                    title: "Alert!",
+                    text: "Are you sure to remove the Document?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "YES",
+                    cancelButtonText: "NO"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.post(`{{ route('document.remove')}}`, formData)
+                        .done(function () {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Dispatch details updated Successfully.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        })
+                        .fail(function () {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Something went wrong!",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            }
         });
     });
 </script>

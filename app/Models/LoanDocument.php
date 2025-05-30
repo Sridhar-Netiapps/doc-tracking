@@ -13,4 +13,13 @@ class LoanDocument extends Model
         'loan_cycle', 'customer_name', 'account_creation_date', 'channel', 'barcode',
         'loan_disbursement_type', 'business_category','status'
     ];
+
+    public function statusName()
+    {
+        return $this->belongsTo(ProcessStatus::class, 'status');
+    }
+    public function modifier()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }
