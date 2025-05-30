@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <h3>{{ ucfirst($type) }} Accounts</h3>
+            <h3>{{ ucfirst($type) }} Documents</h3>
         </div>
         <div class="col-1"></div>
     </div>
