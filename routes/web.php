@@ -11,6 +11,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourierController;
+use App\Http\Controllers\InsuranceHomeController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -101,6 +102,9 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
         // Route::post('/{user}/assign-role', [UserController::class, 'assignRole'])->name('assignRole');
         // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
+
+    //insurance
+    Route::get('insurance/dashboard',[InsuranceHomeController::class,'index'])->name('insurance_dashboard');
   
 
 });

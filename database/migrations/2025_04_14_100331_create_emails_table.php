@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
+    {
     Schema::create('emails', function (Blueprint $table) {
         $table->id();
         $table->string('sender');
@@ -23,6 +23,11 @@ return new class extends Migration
         $table->timestamp('sent_at')->nullable();
         $table->timestamps();
     });
-}
+   }
+
+    public function down(): void
+    {
+        //
+    }
 
 };

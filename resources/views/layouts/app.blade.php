@@ -93,6 +93,11 @@
                                         <a class="dropdown-item" href="{{ route('users.index') }}">
                                             {{ __('Users') }}
                                         </a>
+
+                                         <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                            {{ __('Insurance') }}
+                                        </a>
+
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
