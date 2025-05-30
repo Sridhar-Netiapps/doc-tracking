@@ -97,6 +97,15 @@
         <div class="col-1"></div>
     </div>
 </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <h3>Selected documents</h3>
+        </div>
+        <div class="col-1"></div>
+    </div>  
+</div>
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-1"></div>
@@ -107,7 +116,7 @@
                 </li>
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
-                    <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a>
+                    {{-- <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a> --}}
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">

@@ -57,7 +57,7 @@
             <h3>Dispatches</h3>
         </div>
         <div class="col-1"></div>
-    </div>
+    </div>  
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
@@ -293,7 +293,7 @@
             if (hasSelection) {
                 Swal.fire({
                     title: "Alert!",
-                    text: "Are You Sure.",
+                    text: "Are You Sure?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "YES",
