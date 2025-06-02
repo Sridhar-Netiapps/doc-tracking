@@ -50,6 +50,14 @@
                 </div>
 
                 <div class="form-group col-4 mb-4">
+                    <label for="branch_id">Branch Code</label>
+                    <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" required>
+                    @error('branch_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group col-4 mb-4">
                     <label for="email">Email Id</label>
                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" required>
                     @error('email')

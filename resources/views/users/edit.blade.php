@@ -70,6 +70,13 @@
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
+                    <label for="branch_id">Branch Code</label>
+                    <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" value="{{ old('branch_id', $user->branch_id) }}" required>
+                    @error('branch_id')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-4 mb-4 form-group">
                     <label for="email">Email Id</label>
                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
                     @error('email')
