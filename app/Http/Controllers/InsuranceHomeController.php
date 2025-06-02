@@ -18,9 +18,9 @@ class InsuranceHomeController extends Controller
                     'isPhpEnabled' => true
                 ]);
 
-        //return $pdf->download('birlagroup.pdf');
+        //return $pdf->download('maxlife.pdf');
 
-        return view('templates.birlagroup');
+        return view('templates.maxlife');
     }
 
     /**
