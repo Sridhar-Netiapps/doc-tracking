@@ -25,7 +25,7 @@
                     <table class="table table-bordered align-middle">
                         <thead>
                         <tr>
-                            <!-- <th>S.No</th> -->
+                            <th>S.No</th>
                             <th>Department Name</th>
                             <th>Short Name</th>
                             {{-- <th>Region Name</th>
@@ -43,7 +43,7 @@
                         <tbody>
                         @foreach ($departments as $department)
                             <tr>
-                                <!-- <td>{{ $loop->iteration }}</td> -->
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $department->name }}</td>
                                 <td>{{ $department->slug }}</td>
                                 {{-- <td>{{ $department->region_name }}</td>

@@ -30,7 +30,7 @@
                             <th>S.No</th>
                             <th>Name</th>
                             <th>Status</th>
-                            <th>Created By</th>
+                            {{-- <th>Created By</th> --}}
                             <!-- <th>Updated By</th> -->
                             <th>Actions</th>
                         </tr>
@@ -45,11 +45,11 @@
                                         {{ $status->status ? __('Active') : __('Inactive') }}
                                     </span>
                                 </td>
-                                <td>
+                                {{-- <td>
                                 <span class="badge {{ $status->created_by ? 'bg-success' : 'bg-secondary' }}">
                                     {{ $status->created_by }}
                                 </span>
-                                </td>
+                                </td> --}}
                                 <!-- <td>
                                 <span class="badge {{ $status->updated_by ? 'bg-success' : 'bg-secondary' }}">
                                     {{ $status->updated_by == 1 ? __('Person 1') : __('Person 2') }}
