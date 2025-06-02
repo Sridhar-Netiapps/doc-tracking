@@ -17,12 +17,8 @@
             </div>
 
         </div>
-        <div><a href="{{ route('branches.create') }}" class="btn btn-primary">Create New Branch</a></div>
+        {{-- <div><a href="{{ route('branches.create') }}" class="btn btn-primary">Create New Branch</a></div> --}}
     </div>
-
-
-
-
     @if (session('success'))
         <div class="alert alert-success mt-3">
             {{ session('success') }}

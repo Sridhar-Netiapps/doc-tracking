@@ -43,9 +43,8 @@
         <div class="mb-3">
             <label>Status</label>
             <select name="status" class="form-control">
-                <option value="Pending" {{ $courier->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                <option value="In Transit" {{ $courier->status == 'In Transit' ? 'selected' : '' }}>In Transit</option>
-                <option value="Delivered" {{ $courier->status == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                <option value="Active" {{ $courier->status == 'Active' ? 'selected' : '' }}>Active</option>
+                <option value="Inactive" {{ $courier->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
             </select>
         </div>
         <button class="btn btn-primary">Update</button>
