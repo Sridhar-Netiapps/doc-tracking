@@ -99,7 +99,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->statusName->name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -146,7 +146,7 @@
                                     <td>{{ $row->channel }}</td>
                                     <td>{{ $row->business_category }}</td> 
                                     <td>
-                                        {{ $row->statusName->name }}
+                                        {{ $row->statusName->name ?? '-' }}
                                     </td>
                                     </tr>
                                 @endforeach
@@ -204,7 +204,7 @@
                                     {{-- <td>{{ $row->branch_office_type }}</td>
                                     <td>{{ $row->pincode }}</td>
                                     <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->statusName->name }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </td>                                 
                                  </tr>
                                 @endforeach
@@ -260,7 +260,7 @@
                                     {{-- <td>{{ $row->branch_office_type }}</td>
                                     <td>{{ $row->pincode }}</td>
                                     <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->statusName->name }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif

@@ -132,7 +132,7 @@
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->statusName->name }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                         <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
@@ -177,7 +177,7 @@
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->statusName->name }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     <td class="border-start">
                                         <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
                                     </td>

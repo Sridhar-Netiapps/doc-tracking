@@ -203,7 +203,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->statusName->name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -263,7 +263,7 @@
                                         <td>{{ $row->account_creation_date }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                         {{-- <td class="border-start">
                                             <div class="btn-actions">
                                                 <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -343,7 +343,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->statusName->name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -413,7 +413,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->statusName->name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </tr>
                                     @endforeach
                                 @endif
