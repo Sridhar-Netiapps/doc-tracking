@@ -58,11 +58,11 @@
                                 <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('process_status.edit', $status->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                        <form action="{{ route('process_status.destroy', $status->id) }}" method="POST" class="d-inline">
+                                        {{-- <form action="{{ route('process_status.destroy', $status->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </td>
                             </tr>

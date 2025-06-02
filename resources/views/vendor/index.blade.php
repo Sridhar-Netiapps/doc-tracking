@@ -24,16 +24,19 @@
         </div>
     @endif
 
-    <div class="table-responsive mt-3">
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-card">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                        <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
                 @if(count($vendors) > 0)
                     @foreach ($vendors as $vendor)
                         <tr>

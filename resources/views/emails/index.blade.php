@@ -65,11 +65,11 @@
                 <td>{{ $email->sent_at ?? '—' }}</td>
                 <td>
                     <a href="{{ route('emails.edit', $email->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">
+                    {{-- <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button onclick="return confirm('Delete this email?')" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    </form> --}}
                 </td>
             </tr>
             @empty
