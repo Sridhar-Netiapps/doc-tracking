@@ -337,6 +337,26 @@
                 });
             }
         });
+        $('#applyFilter').click(function () {
+            let status = $('#status').val()?.trim();
+            let search = $('#search').val()?.trim();
+            let dateFrom = $('#date_from').val()?.trim();
+            let dateTo = $('#date_to').val()?.trim();
+
+            // Add more filter fields if needed
+
+            if (!status && !search && !dateFrom && !dateTo) {
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select any filter option.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                $('#filterForm').submit(); // or trigger AJAX filtering
+            }
+        });
+
     });
 </script>
 @endsection

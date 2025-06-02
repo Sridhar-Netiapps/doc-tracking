@@ -477,6 +477,7 @@
 </div>
 <script>
     $(document).ready(function () {
+        
         $(".loan_all").click(function () {
             $(".loan").prop('checked', $(this).prop('checked'));
         });
@@ -489,6 +490,8 @@
         $(".dtrf_all").click(function () {
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
+
+        
         $('.proceed').click(function () {
             let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
             let hasSelection = false;
@@ -524,7 +527,31 @@
                 });
             }
         });
+
+        // Filter Form Validation
+        $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {
+            let hasFilter = false;
+
+            
+            $(this).find('input:not([type=hidden]):visible, select:visible').each(function () {
+                if ($(this).val().trim() !== '') {
+                    hasFilter = true;
+                    return false; 
+                }
+            });
+
+            if (!hasFilter) {
+                e.preventDefault(); 
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one filter option.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
     });
 </script>
+
 
 @endsection

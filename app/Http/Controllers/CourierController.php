@@ -30,7 +30,9 @@ class CourierController extends Controller
             'number' => 'required',
             'address' => 'required',
             'status' => 'required|in:Active,Inactive'
+
         ]);
+
         Courier::create($request->all());
 
         return redirect()->route('couriers.index')->with('success', 'Courier added successfully.');
@@ -42,7 +44,7 @@ class CourierController extends Controller
         $courier = Courier::findOrFail($id);
         return view('couriers.show', compact('courier'));
     }
-
+    
     // Show the form for editing the specified courier
     public function edit($id)
     {
