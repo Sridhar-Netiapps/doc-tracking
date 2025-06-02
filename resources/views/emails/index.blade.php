@@ -39,7 +39,7 @@
             </div>
 
         </div>
-        <div><a href="{{ route('emails.create') }}" class="btn btn-primary">Create New Department</a></div>
+        <div><a href="{{ route('emails.create') }}" class="btn btn-primary">Create New Email</a></div>
     </div>
     <div class="row">
         <div class="col-12">

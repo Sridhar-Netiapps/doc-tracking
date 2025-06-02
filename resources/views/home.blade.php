@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         {{-- <div class="col-1"></div>
         <div class="col-10"> --}}
-        <div class="d-flex mb-3"><div class="ms-2"><a href="/accounts/accounts">Filters</a></div></div>
+        {{-- <div class="d-flex mb-3"><div class="ms-2"><a href="/accounts/accounts">Filters</a></div></div> --}}
             <div class="headerCards">
                 <div class="row">
                     <div class="col-2">
