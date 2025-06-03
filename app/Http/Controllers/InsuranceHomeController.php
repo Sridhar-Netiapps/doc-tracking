@@ -15,11 +15,11 @@ class InsuranceHomeController extends Controller
          $pdf = PDF::loadView('templates.birlagroup')->setPaper('A4', 'portrait')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
-                    'isPhpEnabled' => true
+                    'isPhpEnabled' => true,
                 ]);
-
-        //return $pdf->download('maxlife.pdf');
-
+          return $pdf->stream('document.pdf');
+       // return $pdf->download('maxlife.pdf');
+       
         return view('templates.maxlife');
     }
 
