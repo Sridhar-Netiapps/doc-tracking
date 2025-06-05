@@ -135,6 +135,7 @@
                                     <td>{{ $row->statusName->name ?? '-' }}</td>
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>
                                         <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
                                     </td>
                                 </tr>
@@ -191,7 +192,146 @@
         <div class="col-1"></div>
     </div>
 </div>
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>
 
+{{-- <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas bottom</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body small">
+    <div class="tab-content bg-white" id="myTabContent">
+        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <table class="table table-striped">
+                <thead>
+                    <tr> 
+                        <th scope="col"><input type="checkbox" class="select_all"/> </th>     
+                        <th scope="col"> Document Type</th>
+                        <th scope="col"> Unique Number</th>
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                        <th scope="col"> Region</th>
+                        <th scope="col"> Branch Name</th>
+                        @endunless
+                        <th scope="col"> Branch Code</th>
+                        <th scope="col"> CIF ID</th>
+                        <th scope="col"> Account Number</th>
+                        <th scope="col"> Loan Cycle</th>
+                        <th scope="col"> Scheme</th>
+                        <th scope="col"> Customer Name</th>
+                        <th scope="col"> Account Creation Date</th>
+                        <th scope="col"> Channel</th>
+                        <th scope="col"> Loan Disbursement Type / Account Opening</th>
+                        <th scope="col"> Business Category</th>
+                        <th scope="col"> Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            <td></td>  
+                            <td>doc_type </td>
+                            <td> unique_ref_no</td>
+                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <td> region</td>
+                            <td> branch_name</td>
+                            @endunless
+                            <td> branch_code</td>
+                            <td> cif_id</td>
+                            <td> account_number</td>
+                            <td> loan_cycle</td>
+                            <td> scheme</td>
+                            <td> customer_name</td>
+                            <td> account_creation_date</td>
+                            <td> channel</td>
+                            <td> loan_disbursement_type  type_of_account_opening</td>
+                            <td> business_category</td>
+                            <td> statusName->name</td>
+                        </tr>
+                        <tr>
+                            <td></td>  
+                            <td>doc_type </td>
+                            <td> unique_ref_no</td>
+                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <td> region</td>
+                            <td> branch_name</td>
+                            @endunless
+                            <td> branch_code</td>
+                            <td> cif_id</td>
+                            <td> account_number</td>
+                            <td> loan_cycle</td>
+                            <td> scheme</td>
+                            <td> customer_name</td>
+                            <td> account_creation_date</td>
+                            <td> channel</td>
+                            <td> loan_disbursement_type  type_of_account_opening</td>
+                            <td> business_category</td>
+                            <td> statusName->name</td>
+                        </tr>
+                        <tr>
+                            <td></td>  
+                            <td>doc_type </td>
+                            <td> unique_ref_no</td>
+                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <td> region</td>
+                            <td> branch_name</td>
+                            @endunless
+                            <td> branch_code</td>
+                            <td> cif_id</td>
+                            <td> account_number</td>
+                            <td> loan_cycle</td>
+                            <td> scheme</td>
+                            <td> customer_name</td>
+                            <td> account_creation_date</td>
+                            <td> channel</td>
+                            <td> loan_disbursement_type  type_of_account_opening</td>
+                            <td> business_category</td>
+                            <td> statusName->name</td>
+                        </tr>
+                        <tr>
+                            <td></td>  
+                            <td>doc_type </td>
+                            <td> unique_ref_no</td>
+                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <td> region</td>
+                            <td> branch_name</td>
+                            @endunless
+                            <td> branch_code</td>
+                            <td> cif_id</td>
+                            <td> account_number</td>
+                            <td> loan_cycle</td>
+                            <td> scheme</td>
+                            <td> customer_name</td>
+                            <td> account_creation_date</td>
+                            <td> channel</td>
+                            <td> loan_disbursement_type  type_of_account_opening</td>
+                            <td> business_category</td>
+                            <td> statusName->name</td>
+                        </tr>
+                        <tr>
+                            <td></td>  
+                            <td>doc_type </td>
+                            <td> unique_ref_no</td>
+                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <td> region</td>
+                            <td> branch_name</td>
+                            @endunless
+                            <td> branch_code</td>
+                            <td> cif_id</td>
+                            <td> account_number</td>
+                            <td> loan_cycle</td>
+                            <td> scheme</td>
+                            <td> customer_name</td>
+                            <td> account_creation_date</td>
+                            <td> channel</td>
+                            <td> loan_disbursement_type  type_of_account_opening</td>
+                            <td> business_category</td>
+                            <td> statusName->name</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+</div> --}}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">

@@ -21,7 +21,7 @@
                     @hasanyrole('master|ro-user')
                     @if ($dispatch->status =="Delivered")
                     <button class="btn btn-primary vendor" type="button">Add Vendor Details</button>
-                    @elseif ($dispatch->status =="Dispatched")
+                    @elseif ($dispatch->status == 4)
                     <button class="btn btn-primary proceed" type="button">Add Dispatch Details</button>
                     @endif
                     @endhasanyrole
@@ -52,7 +52,7 @@
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
-                                @if ($dispatch->status == 'Awaiting Checker Approval')
+                                @if ($dispatch->status == 3)
                                     <th scope="col" class="border-start"> Action</th>
                                 @endif
                             </tr>
@@ -78,8 +78,8 @@
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
-                                    <td>{{ $doc->status ?? '-' }}</td>
-                                    @if($doc->status == 'Awaiting Checker Approval')
+                                    <td>{{ $doc->statusName->name ?? '-' }}</td>
+                                    @if($doc->status == 3)
                                     <td class="border-start">
                                         <button data-id="{{ $doc->id }}" data-type="{{ $doc->doc_type }}" class="btn btn-danger remove-doc"><img src="/images/delete_icon_w.svg"/></button>
                                     </td>
@@ -116,8 +116,8 @@
                         <label for="remarks" class="form-label">Remarks</label>
                         <select id="remarks" name="remarks" class="form-control select2" required>
                             <option value=''>Select</option>
-                            <option value='Received'>Received</option>
-                            <option value='Rejected'>Rejected</option>
+                            <option value=5>Received</option>
+                            <option value=6>Rejected</option>
                         </select>
                         {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
                     </div>
