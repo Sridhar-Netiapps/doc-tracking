@@ -12,15 +12,20 @@ class InsuranceHomeController extends Controller
      */
     public function index()
     {
-         $pdf = PDF::loadView('templates.birlagroup')->setPaper('A4', 'portrait')
+        $path = public_path('insurance_images/hdfc.png');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        $pdf = PDF::loadView('templates.checklist', ['base64' => $base64])->setPaper('A4', 'portrait')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
                     'isPhpEnabled' => true,
                 ]);
-          return $pdf->stream('document.pdf');
+        return $pdf->stream('document.pdf');
        // return $pdf->download('maxlife.pdf');
        
-        return view('templates.maxlife');
+       // return view('templates.bajaj');
     }
 
     /**

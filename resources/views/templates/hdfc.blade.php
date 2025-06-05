@@ -102,7 +102,7 @@
       display: inline-block;
       border-bottom: 2px solid black;
       font-size: 14px;
-      width: 100px;  
+      width: 80px;  
       font-weight: bold;
       line-height: 1.5;
     }
@@ -114,22 +114,15 @@
       margin-bottom: 5px;
     }
 
-    .checkbox-group {
+    .checkboxblock{
       border: 1px solid black;
-      padding: 2px 5px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2px;
     }
 
-    .checkbox-group label {
-      display: inline-flex;
-      align-items: center;
-      font-size: 12px;
-    }
-
-    .checkbox-group input {
-      margin-right: 2px;
+    
+    .checkbox-table td {
+      font-size: 10px;
+      padding: 3px;
+      vertical-align: middle;
     }
 
     .rowfullwidth{
@@ -174,7 +167,7 @@
 
      .email {
       font-size: 14px;
-      width: 185px;  
+      width: 160px;  
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       display: inline-block;  
@@ -182,7 +175,7 @@
 
     .bankname {
       display: inline-block;
-      width: 350px;               /* Fixed width */
+      width: 300px;               /* Fixed width */
       font-size: 14px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -191,7 +184,7 @@
 
     .branchname {
       display: inline-block;
-      width: 250px;               /* Fixed width */
+      width: 280px;               /* Fixed width */
       font-size: 14px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -209,7 +202,7 @@
 
     .ifsc {
       display: inline-block;
-      width: 280px;               /* Fixed width */
+      width: 260px;               /* Fixed width */
       font-size: 14px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -288,29 +281,67 @@
   page-break-before: always;
 }
 
+.checkbox-group {
+  font-size: 10px; 
+}
+
+.checkbox-group label {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.checkbox-group input[type="checkbox"] {
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+ .twocol-table-noborder {
+    width: 100%;
+    border-collapse: collapse;
+   
+  }
+  .twocol-table-noborder td, .twocol-table-noborder th {
+  
+    vertical-align: top;
+    margin-top: 40px;
+    padding: 20px;
+  }
+  .rightalign{
+    text-align: right;
+  }
+  .logo{
+    width: 100px;
+  }
+  @page {
+    margin: 0cm; /* removes all default page margins */
+  }
 
 
-
-
-    @page {
-      margin: 0cm; /* removes all default page margins */
-    }
-
-
-    body {
-      background-color: #eee; /* Optional: to show boundary clearly */
-      font-family: Arial, sans-serif;
-      margin: 0cm;
-      padding: 0cm;
-    }
-  </style>
+  body {
+    background-color: #fff; /* Optional: to show boundary clearly */
+    font-family: Arial, sans-serif;
+    margin: 0cm;
+    padding: 0cm;
+  }
+</style>
 </head>
 <body>
 
 <div class="pagelayout">
 	<div class="innerborder">
 		<div class="container">
-			<h4>Group Claim Form – Non Employer Employee (MFI)</h4>
+			
+      <table class="twocol-table-noborder">
+         <tr>
+           <td class="col-50">
+             <div class="margintop">
+               <h4>Group Claim Form – Non Employer Employee (MFI)</h4>
+              </div>
+           </td>
+           <td class="col-50 rightalign"><img class="logo" src="{{ $base64 }}"> </td>
+         </tr>
+       </table>
 			<span class="lable-font">PSRF314630032211 | Comp/Mar/Int/5224</span>
 			<div class="contentborder">
 				<div class="heade-bg">
@@ -337,21 +368,22 @@
         <div class="rown">
           <span class="content-label">Date of commencement of Risk:  </span><strong class="risk">10/10/1992</strong>
           <span class="content-label">Date of Death:  </span><strong class="risk">10/10/1992</strong>
-          <span class="content-label">Place of Death:  </span><strong class="palce">RESIDENT</strong> 
+          <span class="content-label">Place of Death:  </span><strong class="palce">RESIDENT</strong>
         </div>
 
         <div class=" rowd">
-          <span class="content-label">Cause of Death (Please tick):</span>
-
+          
           <div class="checkbox-group">
-            <label><input type="checkbox" name="">Heart Disease</label>
-            <label><input type="checkbox" name="">Kidney Disease</label>
-            <label><input type="checkbox" name="">Liver Disease</label>
-            <label><input type="checkbox" name="">Cancer</label>
-            <label><input type="checkbox" name="">Accidental</label>
-            <label><input type="checkbox" name="">Suicide</label>
-            <label><input type="checkbox" name="">Natural</label>
+            <span class="content-label">Cause of Death (Please tick):</span>
+            <label><input type="checkbox"> Heart Disease</label>
+            <label><input type="checkbox"> Kidney Disease</label>
+            <label><input type="checkbox"> Liver Disease</label>
+            <label><input type="checkbox"> Cancer</label>
+            <label><input type="checkbox"> Accidental</label>
+            <label><input type="checkbox"> Suicide</label>
+            <label><input type="checkbox"> Natural</label>
           </div>
+
         </div>
 
 			</div>
@@ -611,7 +643,7 @@ Outstanding Loan Balance referred under (d) above) payable to the insured on the
     <div class="container">
 
          <div class="linespace heade-bg">
-            <label class="content-label">Please submit the documents mentioned below</label> 
+            <label class="content-label"><strong class="content-label">Please submit the documents mentioned below</strong> </label> 
         </div>
 
         <table class="twocol-table">

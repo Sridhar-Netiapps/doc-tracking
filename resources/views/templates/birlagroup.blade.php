@@ -40,10 +40,11 @@
     .companylogo{
       margin-top: 10px;
       padding: 10px ;
+      text-align: right;
 
     }
     .logo{
-       width: 170px;
+       height: 80px;
     }
 
     .contentmain{
@@ -107,6 +108,23 @@
       vertical-align: top;
     }
 
+
+     .twocol-table-noborder {
+      width: 100%;
+      border-collapse: collapse;
+     
+    }
+    .twocol-table-noborder td, .twocol-table-noborder th {
+    
+      vertical-align: top;
+      margin-top: 40px;
+      padding: 20px;
+    }
+    .rightalign{
+      text-align: right;
+    }
+
+
     .col-50 {
       width: 50%;
     }
@@ -152,19 +170,31 @@
     .col-12{
       width: 12.5%;
     }
-
+  
 </style>
 <body>
   
   <div class="pagelayout">
     <div class="pageheader">
       <div class="companyheader">
-        <div class="lhs">
+       <!--  <div class="lhs">
           <label class="companyname">LIFE INSURANCE</label>
           <div><label class="companydesc">Aditya Birla Sun Life Insurance</label></div>
           <div><label class="companydesc">Company Limited</label></div>
         </div>
-        <!-- <div class="companylogo"><img class="logo" src="/insurance_images/birlalogo.png"> </div> -->
+       <div class="companylogo"><img class="logo" src="{{ $base64 }}"> </div>  -->
+       <table class="twocol-table-noborder">
+         <tr>
+           <td class="col-50">
+             <div class="margintop">
+                <label class="companyname">LIFE INSURANCE</label>
+                <div><label class="companydesc">Aditya Birla Sun Life Insurance</label></div>
+                <div><label class="companydesc">Company Limited</label></div>
+              </div>
+           </td>
+           <td class="col-50 rightalign"><img class="logo" src="{{ $base64 }}"> </td>
+         </tr>
+       </table>
       </div>
     </div>
     

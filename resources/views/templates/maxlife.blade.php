@@ -39,6 +39,10 @@
       border: 2px solid black;*/
     }
 
+    .logo{
+      height: 90px;
+    }
+
     .companyheader {
       display: flex;
       justify-content: space-between;
@@ -220,7 +224,7 @@
       <table class="headertable">
         <tr>
           <td class="headercol-70">
-           <img src="{{ asset('insurance_images/maxlife.png') }}" >
+           <img class="logo" src="{{ $base64 }}" alt="logo">
          </td>
           <td class="headercol-30">
             
@@ -436,6 +440,7 @@
              </td>
           </tr>
         </table>  
+        
 
         <div class="header-bg">III. Declaration and Authorization</div>
         <div class="declarationtext">I/We, the above-named claimant(s), do solemnly declare that the foregoing answers and statements are true in all respects, and further agree that
