@@ -105,7 +105,7 @@
                 <div class="modal-body p-4 row">
                     <div class="col-6 pb-2">
                         <label for="courier_received_date" class="form-label">Courier Received Date</label>
-                        <input type="text" name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
+                        <input type="text" readonly name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
                         {{-- <input type="date" name="courier_received_date" class="form-control courier_received_date" value="{{ request('courier_received_date') }}"> --}}
                     </div>
                     {{-- <div class="col-6 pb-2">
@@ -117,6 +117,7 @@
                         <select id="remarks" name="remarks" class="form-control select2" required>
                             <option value=''>Select</option>
                             <option value=5>Received</option>
+                            <option value=7>Received with Query</option>
                             <option value=6>Rejected</option>
                         </select>
                         {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
@@ -160,7 +161,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
                         {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
                     <div class="col-4 pb-2">
@@ -173,7 +174,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
-                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
                         {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
                     <div class="col-4 pb-2">

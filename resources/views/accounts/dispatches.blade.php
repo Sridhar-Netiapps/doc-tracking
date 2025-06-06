@@ -64,7 +64,7 @@
         <div class="col-1"></div>
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                @hasanyrole('master|bo-maker|bo-checker')
+                @hasanyrole('master|bo-maker|bo-checker|ro-user')
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
@@ -87,6 +87,16 @@
                 </li>
                 @endhasanyrole
                 @endif
+                @if ($type == 'list')
+                @hasanyrole('ro-user')
+                <li class="ms-auto">
+                    <form method="POST" action="{{ route('dispatches.update') }}" id="proceed">
+                        @csrf
+                        <button class="btn btn-primary proceed" type="button">Update</button>
+                    </form>
+                </li>
+                @endhasanyrole
+                @endif
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
@@ -95,21 +105,26 @@
                             <tr>
                                 @if ($type == 'ready')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
-                                @elseif ($type == 'list')
-                                <th scope="col">Dispatch Number</th>
+                                @else
+                                <th scope="col">Dispatch No</th>
                                 @endif
-                                <th scope="col">AWB/POD Number</th>
+                                <th scope="col">AWB/POD No</th>
                                 <th scope="col">Courier Name</th>
-                                <th scope="col">MMRP Internal Barcode No.</th>
+                                <th scope="col">MMRP Code</th>
                                 <th scope="col">Branch code</th>
                                 {{-- <th scope="col">Region</th> --}}
-                                <th scope="col">No of Loan Documents</th>
-                                <th scope="col">No of Gold Loan Documents</th>
+                                <th scope="col">No of Documents</th>
+                                {{-- <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
-                                <th scope="col">No of AOF Documents</th>
+                                <th scope="col">No of AOF Documents</th> --}}
                                 <th scope="col">Dispatch Date</th>
                                 <th scope="col">Dispatch By</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'list')
+                                    @hasanyrole('ro-user')
+                                        <th scope="col">Update Status</th>
+                                    @endhasanyrole
+                                @endif
                                 <th scope="col" class="border-start">Action</th>
                             </tr>
                         </thead>
@@ -118,25 +133,47 @@
                                 <tr>
                                     @if ($type == 'ready')
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                    @elseif ($type == 'list')
+                                    @else
                                     <td>{{ $row->dispatch_no }}</td>
                                     @endif
                                     <td>{{ $row->awb_pod }}</td>
-                                    <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->courierName->name }}</td>
                                     <td>{{ $row->mmrp_barcode }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     {{-- <td>{{ $row->region }}</td> --}}
-                                    <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
-                                    <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
+                                    <td><p>MB Loan Doc - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
+                                        <p>Gold Loan Doc - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
+                                        <p>Liablities Doc - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
+                                        <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
+                                    </td>
+                                    {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
-                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
+                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
                                     <td>{{ $row->statusName->name ?? '-' }}</td>
+                                    @if ($type == 'list')
+                                        @hasanyrole('ro-user')
+                                        <td>
+                                            <select id="remarks" name="remarks" class="form-control select2" required>
+                                                <option value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea name="reason_for_rejection" class="form-control d-none" rows="2"></textarea>
+                                        </td>
+                                        @endhasanyrole
+                                    @endif
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
-                                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>
-                                        <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
+                                        <div class="">
+                                            <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                            @if ($type == 'list')
+                                                @hasanyrole('ro-user')
+                                                    <button class="border-0" type="button"><img src="/images/send_icon.svg"/></button>
+                                                @endhasanyrole
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -192,7 +229,7 @@
         <div class="col-1"></div>
     </div>
 </div>
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>
+{{-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button> --}}
 
 {{-- <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
   <div class="offcanvas-header">
@@ -366,12 +403,7 @@
                     </div>
                      <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Dispatch Date</label>
-                        <input type="text"
-                               class="form-control datepicker vendor_movement_date"
-                               value="{{ request('vendor_movement_date') }}"
-                               name="vendor_movement_date"
-                               id="vendor_movement_date"
-                               required>
+                        <input type="text" readonly class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}" name="vendor_movement_date" id="vendor_movement_date" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">File barcode againt Lot No.</label>
@@ -409,6 +441,13 @@
     $(document).ready(function () {
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
+        });
+
+        $('select[name="remarks"]').change(function (e) {
+            if($(this).val() == '6' || $(this).val() == '7')
+                $('textarea[name="reason_for_rejection"]').removeClass('d-none');
+            else
+                $('textarea[name="reason_for_rejection"]').addClass('d-none');
         });
 
         $('.proceed').click(function () {
