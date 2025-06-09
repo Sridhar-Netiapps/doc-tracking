@@ -355,11 +355,13 @@ class DocumentController extends Controller
 
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
+            // dd($sequence);
             $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
                 $dispatch->status = 4;
+                // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
                 $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $dispatch->courier_name, $sequence,now());
                 $dispatch->save();
                 if($dispatch->loan_ids != null)
@@ -385,14 +387,14 @@ class DocumentController extends Controller
 
     }
 
-    public function buildDispatchNumber($branchCode, $courierSlug, $sequence, $date)
+    public function buildDispatchNumber($branchCode, $sequence, $date)
     {
         $day = $date->format('d');
         $month = $date->format('m');
         $year = $date->format('y');
         $seqStr = str_pad($sequence, 3, '0', STR_PAD_LEFT);
 
-        return "{$branchCode}{$courierSlug}{$day}{$month}{$year}{$seqStr}";
+        return "{$branchCode}{$day}{$month}{$year}{$seqStr}";
     }
 
     public function dispatchDetails(Request $request)

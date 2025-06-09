@@ -9,13 +9,13 @@
                     <a class="nav-link" href="{{ route('accounts.index','all') }}">All Documents</a>
                 </li>
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.proceed') }}">Selected Documents</a>
+                    <a class="nav-link" href="{{ route('accounts.proceed') }}">In Draft</a>
                 </li>
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','rejected') }}">Rejected Documents</a>
+                    <a class="nav-link" href="{{ route('accounts.index','rejected') }}">Rejected</a>
                 </li>
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','received') }}">Received Documents</a>
+                    <a class="nav-link" href="{{ route('accounts.index','received') }}">Received</a>
                 </li>
                 {{-- @hasanyrole('master|bo-maker|bo-checker') --}}
                 <li class="nav-item px-4">

@@ -436,7 +436,14 @@
         </div>
     </div>
 </div>
-
+<div class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5>Filters</h5>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $(".readytodispatch_all").click(function () {
@@ -444,10 +451,13 @@
         });
 
         $('select[name="remarks"]').change(function (e) {
-            if($(this).val() == '6' || $(this).val() == '7')
+            if($(this).val() == '6' || $(this).val() == '7'){
                 $('textarea[name="reason_for_rejection"]').removeClass('d-none');
-            else
+                bootstrap.Offcanvas.getOrCreateInstance($('#offcanvasScrolling')[0]).show();
+            }
+            else{
                 $('textarea[name="reason_for_rejection"]').addClass('d-none');
+            }
         });
 
         $('.proceed').click(function () {
