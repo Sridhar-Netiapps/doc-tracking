@@ -18,9 +18,10 @@
   margin: 0px auto;      /* Center horizontally with some vertical spacing */
   background-color: #fff; /* Optional: for contrast */
   margin: 5px;
+
  }
 .contentmain{
-  margin: 10px 20px 10px 20px;
+  margin: 20px 20px 10px 20px;
   padding: 5px;
   border: 1px solid black;
 }
@@ -34,9 +35,15 @@
   border-collapse: collapse;
  
 }
+.td-noborder{
+	border-top: none !important;
+	border-bottom: none !important;
+
+}
+
 .twocol-table td, .twocol-table th {
   border: 1px solid black;
-  padding: 4px;
+  padding: 3px;
   vertical-align: top;
 }
 
@@ -48,6 +55,17 @@
 .twocol-table-nopadding td, .twocol-table-nopadding th {
   border: 1px solid black;
   padding: 4px;
+  vertical-align: top;
+}
+
+.twocol-table-boxes {
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+.twocol-table-boxes td, .twocol-table-boxes th {
+  border: 1px solid black;
+  padding: 12px;
   vertical-align: top;
 }
 
@@ -148,11 +166,22 @@
 	vertical-align: middle;
 }
 .td-bg{
-   background-color: #d2d3d2;
+   background-color: #E6E6E6;
+}
+.td-bg2{
+   background-color: #F2F2F2;
 }
 .margintop{
 	margin-top: 10px;
 }
+.mandate-text{
+  font-weight: bold;
+  font-size: 12px;
+}
+.text-rotate{
+	transform: rotate(-90deg);
+}
+
 </style>
 
 <body>
@@ -369,25 +398,127 @@
 	  	 	
           </tr>
 	  	 </table>
+
 	  	 <table class="twocol-table">
-	  	  <tr>
-          	<td class="col-8 lableslno"><label class="table-font"></label></td>
+	  	 	<tr class="td-bg2">
+	  	 		<td class="col-8">
+	  	 			<strong class="mandate-text text-rotate"><br><br>Y<br>R<br>O<br>T<br>A<br>D<br>N<br>A<br>M<br></strong>
+	  	 		</td>
+	  	 		<td class="col-92">
+	  	 			<table class="twocol-table-nopadding">
+	  	 				<tr class="td-bg2">
+	  	 				  <td class="col-40">
+	  	 				  	<span class="table-font "><strong>g) Nominee name as per a/c passbook</strong></span>
+	  	 				  </td>
+	  	 				  <td class="col-60"></td>
+	  	 				</tr>
+	  	 				<tr class="td-bg2">
+	  	 				  <td class="col-40">
+	  	 				  	<span class="table-font "><strong>h) Bank Account Number</strong></span>
+	  	 				  </td>
+	  	 				  <td class="col-60">
+	  	 				  	<table class="twocol-table-boxes">
+	  	 				  		<tr class="td-bg2">
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  		</tr>
+	  	 				  	</table>
+	  	 				  </td>
+	  	 				</tr>
+	  	 				<tr class="td-bg2">
+	  	 				  <td class="col-40">
+	  	 				  	<span class="table-font "><strong>i) Name of the Bank</strong></span>
+	  	 				  </td>
+	  	 				  <td class="col-60"></td>
+	  	 				</tr>
+	  	 				
+	  	 			</table>
+
+	  	 			 <table class="twocol-table">
+				  	 	<tr class="td-bg2">
+				  	 		<td >
+				  	 			<table class="twocol-table-boxes">
+	  	 				  		  <tr>
+	  	 				  		  	<label class="table-font">j)MICR Code </label>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			
+	  	 				  		  </tr>
+	  	 				  	   </table>
+				  	 		</td>
+				  	 			<td >
+				  	 			<table class="twocol-table-boxes">
+	  	 				  		  <tr >
+	  	 				  		  	<label class="table-font">k)IFSC Code </label>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			<td></td>
+	  	 				  			
+	  	 				  		  </tr>
+	  	 				  	   </table>
+				  	 		</td>
+				  	 	</tr>
+				  	 </table>
+
+				  	 <table class="twocol-table">
+				  	 	<tr class="td-bg2">
+	  	 				  <td class="col-40">
+	  	 				  	<span class="table-font "><strong>l) Bank Branch Name</strong></span>
+	  	 				  </td>
+	  	 				  <td class="col-60"></td>
+	  	 				</tr>
+				  	 </table>
+	  	 		</td>
+	  	 	</tr>
+	  	 	
+	  	 </table>
+	  	 <!-- <table class="twocol-table">
+	  	  <tr class="td-bg2">
+          	<td class="col-8 lableslno td-noborder"><label class="table-font"></label></td>
 	  	 	<td class="col-40">
 	  	 		<span class="table-font "><strong>g) Nominee name as per a/c passbook</strong></span>
 	  	 	</td>
 	  	 	<td class="col-52"></td> 	
           </tr>
 
-          <tr>
-          	<td class="col-8 lableslno"><label class="table-font"></label></td>
+          <tr class="td-bg2">
+          	<td class="col-8 lableslno td-noborder"><label class="table-font"></label></td>
 	  	 	<td class="col-40">
 	  	 		<span class="table-font "><strong>h) Bank Account Number</strong></span>
 	  	 	</td>
 	  	 	<td class="col-52"></td>
           </tr>
 
-          <tr>
-          	<td class="col-8 lableslno"><label class="table-font"></label></td>
+          <tr class="td-bg2">
+          	<td class="col-8 lableslno td-noborder"><label class="table-font"></label></td>
 	  	 	<td class="col-40">
 	  	 		<span class="table-font "><strong>i) Name of the Bank</strong></span>
 	  	 	</td>
@@ -396,8 +527,8 @@
   
 	  	 </table>
 	  	 <table class="twocol-table">
-	  	 	<tr>
-	  	 		<td class="col-8 lableslno"></td>
+	  	 	<tr class="td-bg2">
+	  	 		<td class="col-8 lableslno td-noborder"></td>
 	  	 		<td>j) MICR Code</td>
 	  	 		<td></td>
 	  	 		<td>k) IFSC Code</td>
@@ -405,14 +536,14 @@
 	  	 	</tr>
 	  	 </table>	
          <table class="twocol-table">
-	  	 	 <tr>
+	  	 	 <tr class="td-bg2 td-noborder">
 	          	<td class="col-8 lableslno"><label class="table-font"></label></td>
 		  	 	<td class="col-40">
 		  	 		<span class="table-font "><strong>i) Name of the Bank</strong></span>
 		  	 	</td>
 		  	 	<td class="col-52"></td>
 	          </tr>
-	  	 </table>
+	  	 </table> -->
 
 	  	 <table class="twocol-table">
 	  	 	<tr>
@@ -462,7 +593,7 @@
 	  	 	<tr>
 	  	 		<td>
 	  	 			<table class="twocol-table">
-		  	 			<tr>
+		  	 			<tr >
 		  	 				<td class="col-40"><label class="table-head-font">Insurance Maker</label></td>
 		  	 				<td class="col-60"></td>
 		  	 			</tr>

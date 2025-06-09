@@ -105,6 +105,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     //insurance
     Route::get('insurance/dashboard',[InsuranceHomeController::class,'index'])->name('insurance_dashboard');
-  
+    Route::get('insurance/list',[InsuranceHomeController::class,'list'])->name('list');
 
 });
