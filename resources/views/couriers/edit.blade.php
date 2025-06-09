@@ -34,8 +34,10 @@
         </div>
         <div class="mb-3">
             <label>Number</label>
-            <input type="text" name="number" class="form-control" value="{{ $courier->number }}" required>
-        </div>
+            <input type="text" name="number" class="form-control" required 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   maxlength="10" >
+        </div> 
         <div class="mb-3">
             <label>Address</label>
             <textarea name="address" class="form-control" required>{{ $courier->address }}</textarea>
