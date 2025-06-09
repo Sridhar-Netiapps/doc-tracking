@@ -103,6 +103,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 @if ($type == 'ready')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                 @else

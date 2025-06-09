@@ -301,7 +301,7 @@
             if ($(this).data('id') != '') {
                 Swal.fire({
                     title: "Alert!",
-                    text: "Are you sure to remove the Document?",
+                    text: "Are you sure you want to remove the Document?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "YES",
