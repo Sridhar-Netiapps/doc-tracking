@@ -160,10 +160,10 @@
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
                                     <td>{{ $doc->scheme ?? '-' }}</td>
                                     <td>{{ $doc->customer_name ?? '-' }}</td>
-                                    <td>{{ $doc->account_creation_date ?? '-' }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                    {{-- <td>{{ $doc->account_creation_date ?? '-' }}</td> --}}
+                                    {{-- <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td> --}}
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->statusName->name ?? '-' }}</td>
                                 </tr>
@@ -204,8 +204,6 @@
                         <label for="dispatch_date" class="form-label">Dispatch Date</label>
                         <input type="text" class="form-control datepicker dispatch_date" value="{{ request('dispatch_date') }}" name="dispatch_date" id="dispatch_date" required>
                     </div>
-                                        
-                    
                     <div class="col-6 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No. *</label>
                         <input type="text" name="mmrp_barcode" class="form-control" required>
@@ -262,6 +260,7 @@
                     sanitize: true
                 },
                 mmrp_barcode: {
+                    alphanumeric: true,
                     required: true,
                     sanitize: true
                 }
@@ -283,6 +282,7 @@
 
             },
             submitHandler: function (form) {
+                var doc_count = parseInt($('span.badge').text());
                 const formData = {
                     _token: $('input[name="_token"]').val(),
                     courier_name: $('select[name="courier_name"]').val(),
@@ -312,6 +312,7 @@
                         }).then(() => {
                             selectedDocuments.forEach(doc => {
                                 $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
+                                $('span.badge').text(doc_count - selectedDocuments.length);
                             });
                             if ($('input.select').length === 0) {
                                 window.location.href = `{{ route('dispatches','ready')}}`;
@@ -350,96 +351,6 @@
                 $('#filterForm').submit(); // or trigger AJAX filtering
             }
         });
-
     });
-
-        // $('#approval_type').change(function () {
-        //     var type = $(this).val();
-        //     $('#gl_account_no').val($(this).find(':selected').data('acc_no'));
-        //     if (type == '1' || type == '2') {
-        //         $('.CDI-group').removeClass('d-none');
-        //         $('.EPD-group').addClass('d-none');
-        //         $('.TPB-group').addClass('d-none');
-        //         $('.CRW-group').addClass('d-none');
-        //         $('.EPT-group').addClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('.FY-group').addClass('d-none');
-        //         $('.OLR-group').addClass('d-none');
-        //         $('option.7').addClass('d-none');
-        //         $('option.0').removeClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for');
-        //     }
-        //     else if (type == 3 || type == 4) {
-        //         $('.CDI-group').addClass('d-none');
-        //         $('.EPD-group').removeClass('d-none');
-        //         $('.TPB-group').addClass('d-none');
-        //         $('.CRW-group').addClass('d-none');
-        //         $('.EPT-group').addClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('.FY-group').addClass('d-none');
-        //         $('.OLR-group').addClass('d-none');
-        //         $('option.7').addClass('d-none');
-        //         $('option.0').removeClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for');
-        //     }
-        //     else if (type == 5 || type == 6) {
-        //         $('.CDI-group').addClass('d-none');
-        //         $('.EPD-group').addClass('d-none');
-        //         $('.TPB-group').removeClass('d-none');
-        //         $('.CRW-group').addClass('d-none');
-        //         $('.EPT-group').addClass('d-none');
-        //         $('option.7').addClass('d-none');
-        //         $('option.0').removeClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('.FY-group').addClass('d-none');
-        //         $('.OLR-group').addClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for');
-        //     }
-        //     else if (type == '7') {
-        //         $('.CDI-group').addClass('d-none');
-        //         $('.EPD-group').addClass('d-none');
-        //         $('.TPB-group').addClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('option.7').removeClass('d-none');
-        //         $('option.0').addClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for Approval');
-        //         $('.CRW-group').removeClass('d-none');
-        //         $('.EPT-group').addClass('d-none');
-        //         $('.FY-group').addClass('d-none');
-        //         $('.OLR-group').addClass('d-none');
-        //     }
-        //     else if (type == '8' || type == '9') {
-        //         $('.CDI-group').addClass('d-none');
-        //         $('.EPD-group').addClass('d-none');
-        //         $('.TPB-group').addClass('d-none');
-        //         $('.CRW-group').addClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('option.7').addClass('d-none');
-        //         $('option.0').removeClass('d-none');
-        //         $('.EPT-group').removeClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for');
-        //         $('.FY-group').addClass('d-none');
-        //         $('.OLR-group').addClass('d-none');
-        //     }
-        //     else if (type == '10') {
-        //         $('.CDI-group').addClass('d-none');
-        //         $('.EPD-group').removeClass('d-none');
-        //         $('.TPB-group').addClass('d-none');
-        //         $('.CRW-group').addClass('d-none');
-        //         $('.OE-group').addClass('d-none');
-        //         $('.OT-group').addClass('d-none');
-        //         $('option.7').addClass('d-none');
-        //         $('option.0').removeClass('d-none');
-        //         $('.EPT-group').removeClass('d-none');
-        //         $('.FY-group').removeClass('d-none');
-        //         $('.OLR-group').removeClass('d-none');
-        //         $('label[for="reversal_type"]').html('Request for');
-        //     }
-        // });
 </script>
 @endsection
