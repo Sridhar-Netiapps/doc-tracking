@@ -93,10 +93,12 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                @hasanyrole('master|bo-maker|bo-checker')
                                 @if ($type == 'ready')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                 @elseif ($type == 'list')
                                 <th scope="col">Dispatch Number</th>
+                                @endhasanyrole
                                 @endif
                                 <th scope="col">AWB/POD Number</th>
                                 <th scope="col">Courier Name</th>

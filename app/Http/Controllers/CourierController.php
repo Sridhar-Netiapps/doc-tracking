@@ -27,7 +27,7 @@ class CourierController extends Controller
         $request->validate([
             'courier_id' => 'required|unique:couriers',
             'name' => 'required',
-            'number' => 'required',
+            'number' => 'required|regex:/^[0-9]+$/',
             'address' => 'required',
             'status' => 'required|in:Active,Inactive'
 

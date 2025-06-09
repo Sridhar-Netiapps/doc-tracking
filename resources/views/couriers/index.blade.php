@@ -9,7 +9,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
@@ -38,7 +38,7 @@
                         <th>ID</th>
                         <th>Courier ID</th>
                         <th>Name</th>
-                        <th>Number</th>
+                        <th>Mobile Number</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
