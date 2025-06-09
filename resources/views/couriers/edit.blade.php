@@ -36,7 +36,7 @@
             <label>Number</label>
             <input type="text" name="number" class="form-control" required 
                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                   maxlength="10" >
+                   maxlength="10" value="{{ $courier->number }}">
         </div> 
         <div class="mb-3">
             <label>Address</label>
