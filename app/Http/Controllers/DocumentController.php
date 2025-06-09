@@ -77,13 +77,13 @@ class DocumentController extends Controller
         $filters = session('filters', []);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
-        $fromDate = $filters['from_date'] ?? null;
-        $toDate = $filters['to_date'] ?? null;
-        // dd($filters);
-        unset($filters['start_date'], $filters['end_date']);
+        // $fromDate = $filters['from_date'] ?? null;
+        // $toDate = $filters['to_date'] ?? null;
 
-        // $fromDate = isset($filters['start_date']) ? Carbon\Carbon::createFromFormat('d-m-Y', $filters['start_date'])->format('Y-m-d') : null;
-        // $toDate = isset($filters['end_date']) ? Carbon\Carbon::createFromFormat('d-m-Y', $filters['end_date'])->format('Y-m-d') : null;
+        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+
+        unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate) {
@@ -231,7 +231,7 @@ class DocumentController extends Controller
             $dispatch->branch_code = $this->user->branch_id; 
             $dispatch->region_id = $this->user->region_id; 
             $dispatch->dispatched_by = Auth::user()->id;
-            $dispatch->dispatch_date = $validated['dispatch_date'];
+            $dispatch->dispatch_date = !empty($validated['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $validated['dispatch_date'])->format('Y-m-d') : null;
             $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
             $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
             $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
@@ -365,7 +365,7 @@ class DocumentController extends Controller
                 $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $dispatch->courier_name, $sequence,now());
                 $dispatch->save();
                 if($dispatch->loan_ids != null)
-                LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->update(['status'=>4]);
+                    LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->update(['status'=>4]);
                 if($dispatch->goldloan_ids != null)
                     GoldLoanDocument::whereIn('id',explode(',', $dispatch->goldloan_ids))->update(['status'=>4]);
                 if($dispatch->dtrf_ids != null)

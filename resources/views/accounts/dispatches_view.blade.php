@@ -125,7 +125,7 @@
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->loan_cycle }}</td>
                                         <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
                                         {{-- <td>{{ $row->barcode }}</td> --}}
                                         {{-- <td>{{ $row->barcode }}</td> --}}
@@ -179,7 +179,7 @@
                                     <td>{{ $row->cif_id }}</td>
                                     <td>{{ $row->account_number }}</td>
                                     <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>
                                     <td>{{ $row->business_category }}</td> 
                                     <td>
@@ -231,7 +231,7 @@
                                     <td>{{ $row->account_number }}</td>
                                     {{-- <td>{{ $row->loan_cycle }}</td> --}}
                                     <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>        
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     <td>{{ $row->type_of_account_opening }}</td>
@@ -283,11 +283,11 @@
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->account_creation_date}}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     <td>{{ $row->business_category}}</td>
                                     {{-- <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     {{-- <td>{{ $row->loan_disbursement_type }}</td>

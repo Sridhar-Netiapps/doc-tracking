@@ -160,10 +160,10 @@
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
                                     <td>{{ $doc->scheme ?? '-' }}</td>
                                     <td>{{ $doc->customer_name ?? '-' }}</td>
-                                    <td>{{ $doc->account_creation_date ?? '-' }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                    {{-- <td>{{ $doc->account_creation_date ?? '-' }}</td> --}}
+                                    {{-- <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td> --}}
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->statusName->name ?? '-' }}</td>
                                 </tr>
