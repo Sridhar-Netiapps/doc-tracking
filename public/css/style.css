@@ -391,3 +391,13 @@ input[type=checkbox]{
     color: #000000 !important;
 }
 
+.page-heading h3{
+    padding-right: 20px;
+    font-size: 22px;
+}
+.page-heading .btn{
+    height: 30px;
+}
+table p{
+    margin-bottom: 0;
+}

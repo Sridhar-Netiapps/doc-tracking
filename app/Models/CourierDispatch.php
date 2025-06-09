@@ -32,8 +32,19 @@ class CourierDispatch extends Model
     {
         return $this->belongsTo(User::class, 'dispatched_by');
     }
+
     public function modifier()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function statusName()
+    {
+        return $this->belongsTo(ProcessStatus::class, 'status');
+    }
+
+    public function courierName()
+    {
+        return $this->belongsTo(Courier::class, 'courier_name');
     }
 }

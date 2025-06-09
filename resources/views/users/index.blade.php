@@ -33,6 +33,7 @@
                                 <th>S.No</th>
                                 <th>Name</th>
                                 <th>Employee ID</th>
+                                <th>Branch Code</th>
                                 <th>Email</th>
                                 <th>Gender</th>
                                 <th>Date of Birth</th>
@@ -41,10 +42,10 @@
                                 <th>Date of Joining</th>
                                 @role('master')
                                 <th>Roles</th>
-                                <th>Permissions</th>
+                                {{-- <th>Permissions</th> --}}
                                 @endrole
                                 @canany(['edit-user','delete-user'])
-                                <th>Actions</th>
+                                <th>Action</th>
                                 @endcanany
                             </tr>
                         </thead>
@@ -54,6 +55,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $user->employee_id }}</td>
+                                    <td>{{ $user->branch_id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ ucfirst($user->gender) }}</td>
                                     <td>{{ $user->dob }}</td>
@@ -66,11 +68,11 @@
                                             <span class="badge text-bg-primary">{{ $role->name }}</span>
                                         @endforeach
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         @foreach ($user->getAllPermissions() as $permission)
                                             <span class="badge text-bg-secondary">{{ $permission->name }}</span>
                                         @endforeach
-                                    </td>
+                                    </td> --}}
                                     @endrole
                                     @canany(['edit-user','delete-user'])
                                     <td>
@@ -78,13 +80,13 @@
                                             @can('edit-user')
                                             <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
                                             @endcan
-                                            @can('delete-user')
+                                            {{-- @can('delete-user')
                                             <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                                             </form>
-                                            @endcan
+                                            @endcan --}}
                                         </div>
                                     </td>
                                     @endcanany

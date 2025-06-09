@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('barcode')->nullable();
             $table->string('business_category');
             $table->string('status', 100)->default('Pending');
-            $table->string('created_by')->default('1');
+            $table->string('created_by')->default(1);
             $table->integer('updated_by')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();

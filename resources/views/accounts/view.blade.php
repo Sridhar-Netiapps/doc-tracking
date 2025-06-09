@@ -21,7 +21,7 @@
                     @hasanyrole('master|ro-user')
                     @if ($dispatch->status =="Delivered")
                     <button class="btn btn-primary vendor" type="button">Add Vendor Details</button>
-                    @elseif ($dispatch->status =="Dispatched")
+                    @elseif ($dispatch->status == 4)
                     <button class="btn btn-primary proceed" type="button">Add Dispatch Details</button>
                     @endif
                     @endhasanyrole
@@ -52,7 +52,7 @@
                                 <th scope="col"> DTR File Date</th>
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
-                                @if ($dispatch->status == 'Awaiting Checker Approval')
+                                @if ($dispatch->status == 3)
                                     <th scope="col" class="border-start"> Action</th>
                                 @endif
                             </tr>
@@ -78,8 +78,8 @@
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
                                     <td>{{ $doc->account_creation_date ?? '-' }}</td>
                                     <td>{{ $doc->business_category ?? '-' }}</td>
-                                    <td>{{ $doc->status ?? '-' }}</td>
-                                    @if($doc->status == 'Awaiting Checker Approval')
+                                    <td>{{ $doc->statusName->name ?? '-' }}</td>
+                                    @if($doc->status == 3)
                                     <td class="border-start">
                                         <button data-id="{{ $doc->id }}" data-type="{{ $doc->doc_type }}" class="btn btn-danger remove-doc"><img src="/images/delete_icon_w.svg"/></button>
                                     </td>
@@ -105,7 +105,7 @@
                 <div class="modal-body p-4 row">
                     <div class="col-6 pb-2">
                         <label for="courier_received_date" class="form-label">Courier Received Date</label>
-                        <input type="text" name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
+                        <input type="text" readonly name="courier_received_date" class="form-control datepicker courier_received_date" value="{{ request('courier_received_date') }}">
                         {{-- <input type="date" name="courier_received_date" class="form-control courier_received_date" value="{{ request('courier_received_date') }}"> --}}
                     </div>
                     {{-- <div class="col-6 pb-2">
@@ -116,8 +116,9 @@
                         <label for="remarks" class="form-label">Remarks</label>
                         <select id="remarks" name="remarks" class="form-control select2" required>
                             <option value=''>Select</option>
-                            <option value='Received'>Received</option>
-                            <option value='Rejected'>Rejected</option>
+                            <option value=5>Received</option>
+                            <option value=7>Received with Query</option>
+                            <option value=6>Rejected</option>
                         </select>
                         {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
                     </div>
@@ -160,7 +161,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
                         {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
                     <div class="col-4 pb-2">
@@ -173,7 +174,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
-                        <input type="text" name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
                         {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
                     <div class="col-4 pb-2">
