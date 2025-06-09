@@ -100,7 +100,7 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <h3>Selected Documents</h3>
+            <h3>In Draft Documents</h3>
         </div>
         <div class="col-1"></div>
     </div>  
@@ -111,7 +111,7 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Accounts <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Add Courier Details</button>

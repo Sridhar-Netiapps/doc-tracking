@@ -484,7 +484,7 @@
             if (hasSelection) {
                 Swal.fire({
                     title: "Alert!",
-                    text: "Are You Sure?",
+                    text: "Are You Sure ?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "YES",
