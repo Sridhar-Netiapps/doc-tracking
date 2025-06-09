@@ -103,9 +103,10 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @hasanyrole('master|bo-maker|bo-checker')
                                 @if ($type == 'ready')
+                                @hasanyrole('master|bo-checker')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
+                                @endhasanyrole
                                 @else
                                 <th scope="col">Dispatch No</th>
                                 @endif
