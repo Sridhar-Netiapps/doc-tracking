@@ -213,7 +213,7 @@ class DocumentController extends Controller
             'courier_name' => 'required|string',
             'awb_pod' => 'nullable|string',
             'mmrp_barcode' => 'required|string',
-            'dispatch_date' => 'required|date',
+            // 'dispatch_date' => 'required|date',
             'loan_ids'=> 'nullable|array',
             'goldloan_ids'=> 'nullable|array',
             'dtrf_ids'=> 'nullable|array',
@@ -230,8 +230,8 @@ class DocumentController extends Controller
             $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
             $dispatch->branch_code = $this->user->branch_id; 
             $dispatch->region_id = $this->user->region_id; 
-            $dispatch->dispatched_by = Auth::user()->id;
-            $dispatch->dispatch_date = !empty($validated['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $validated['dispatch_date'])->format('Y-m-d') : null;
+            // $dispatch->dispatched_by = Auth::user()->id;
+            // $dispatch->dispatch_date = !empty($validated['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $validated['dispatch_date'])->format('Y-m-d') : null;
             $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
             $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
             $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
@@ -356,13 +356,16 @@ class DocumentController extends Controller
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
             // dd($sequence);
+            // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
+            // ->whereDate('created_at', now()->format('Y-m-d'))->first();
+            // dd($sequence);
             $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
-                $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $dispatch->courier_name, $sequence,now());
+                $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $sequence,now());
                 $dispatch->save();
                 if($dispatch->loan_ids != null)
                     LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->update(['status'=>4]);
