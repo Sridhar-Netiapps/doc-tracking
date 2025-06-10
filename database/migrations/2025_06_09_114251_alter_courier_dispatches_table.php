@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('dispatch_no')->nullable()->after('dispatch_date')->change();
             $table->date('dispatch_date')->nullable()->change();
             $table->renameColumn('dispatched_by', 'created_by');
+            $table->text('comments')->nullable()->after('dispatch_no');
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->string('dispatch_no')->nullable(false)->change();
             $table->date('dispatch_date')->nullable(false)->change();
             $table->renameColumn('created_by', 'dispatched_by');
+            $table->dropColumn('comments');
         });
     }
 };
