@@ -134,7 +134,9 @@
                             @foreach ($records as $row)
                                 <tr>
                                     @if ($type == 'ready')
+                                    @hasanyrole('master|bo-checker')
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
+                                    @endhasanyrole
                                     @else
                                     <td>{{ $row->dispatch_no }}</td>
                                     @endif
