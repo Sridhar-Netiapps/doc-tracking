@@ -42,7 +42,7 @@ class InsuranceHomeController extends Controller
     }
     public function create()
     {
-        //
+        return view('insurance/create');
     }
 
     /**

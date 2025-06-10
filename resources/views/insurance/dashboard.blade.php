@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="atags form-btn" href="{{ route('list') }}"><button class="btn btn-success ">Insurance Form</button></a>
+         <a class="atags form-btn" href="{{ route('list') }}"><button class="btn btn-success ">Insurance Details</button></a>
          <div class="ms-auto">
             <select class="form-control form-select">
                <option>FY : 2025-2026</option>
@@ -155,7 +155,7 @@
      var options_line = {
           series: [{
           name: 'XYZ MOTORS',
-          data: [55,20,73,84,25,64,17]
+          data: [55,20,73,84,25,64,17,55,20,73,84,25]
         }],
           chart: {
           type: 'area',
@@ -202,6 +202,8 @@
         },
         xaxis: {
          // type: 'datetime',
+         categories: ['Apr','May','June','July','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'
+          ],
         },
         tooltip: {
           shared: false,
@@ -220,20 +222,20 @@
     var stackoptions = {
           series: [{
           name: 'West',
-          data: [44, 55, 41, 67, 22, 43]
+          data: [44, 55, 41, 67]
         }, {
           name: 'East',
-          data: [13, 23, 20, 8, 13, 27]
+          data: [13, 23, 20, 8]
         }, {
           name: 'North',
-          data: [11, 17, 15, 15, 21, 14]
+          data: [11, 17, 15, 15]
         }, {
           name: 'South',
-          data: [21, 7, 25, 13, 22, 8]
+          data: [21, 7, 25, 13]
         }],
           chart: {
           type: 'bar',
-          height: 200,
+          height: 250,
           stacked: true,
           toolbar: {
             show: true
@@ -270,9 +272,8 @@
           },
         },
         xaxis: {
-          type: 'datetime',
-          categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
-            '01/05/2011 GMT', '01/06/2011 GMT'
+          type: 'text',
+          categories: ['East','West','North','South'
           ],
         },
         legend: {

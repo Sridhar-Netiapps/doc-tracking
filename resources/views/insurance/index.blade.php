@@ -5,7 +5,7 @@
 		<label>Claim Forms</label>
 		<div class="ms-auto">
 			<div class="d-flex">
-				<a class="atags" href=""><button class="btn btn-secondary">Create New</button></a>
+				<a class="atags form-btn" href="{{route('create_insurance')}}"><button class="btn btn-secondary">Create New</button></a>
 				<div class="d-flex">
 					<form method="GET" action="">
 	                 <div class="input-group mb-3">
