@@ -21,7 +21,7 @@ class CourierDispatch extends Model
         'dtrf_ids',
         'aof_ids',
         'dispatch_date',
-        'dispatched_by',
+        'created_by',
         'status',
         'verified_by',
         'updated_by',
@@ -30,7 +30,7 @@ class CourierDispatch extends Model
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'dispatched_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function modifier()
