@@ -11,10 +11,6 @@
 	font-size: 14px;
 }
 
-.form-label{
-	font-size: 13px;
-}
-
 .label-font-bold{
 	font-weight: bold;
 	font-size: 14px;
@@ -29,9 +25,212 @@
   text-align: center;
   font-size: 16px;
   font-weight: bold;
+  border: 1px solid orange;
 }
 .tab-active{
 	background-color: #022fbf;
 	color: white;
 
 }
+
+.btn-toggle.active {
+  background-color: #022fbf;
+  color: white;
+}
+
+.form-label{
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.form-control{
+	border: 1px solid black !important;
+	padding: 7px;
+}
+
+/*cehcklist css*/
+
+.pagelayout {
+    margin: 5px;
+
+ }
+.contentmain{
+  margin: 20px 20px 10px 20px;
+  padding: 5px;
+  border: 1px solid black;
+}
+.headertext{
+	text-align: center;
+	font-size: 22px;
+}
+
+.twocol-table {
+  width: 100%;
+  border-collapse: collapse;
+ 
+}
+.td-noborder{
+	border-top: none !important;
+	border-bottom: none !important;
+
+}
+
+.twocol-table td, .twocol-table th {
+  border: 1px solid black;
+  padding: 3px;
+  vertical-align: top;
+}
+
+.twocol-table-nopadding {
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+.twocol-table-nopadding td, .twocol-table-nopadding th {
+  border: 1px solid black;
+  padding: 4px;
+  vertical-align: top;
+}
+
+.twocol-table-boxes {
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+.twocol-table-boxes td, .twocol-table-boxes th {
+  border: 1px solid black;
+  padding: 12px;
+  vertical-align: top;
+}
+
+ .twocol-table-noborder {
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+.twocol-table-noborder td, .twocol-table-noborder th {
+ 
+  padding: 4px;
+  vertical-align: top;
+}
+
+.col-50 {
+  width: 50%;
+}
+.col-30 {
+  width: 30%;
+}
+.col-70 {
+  width: 70%;
+}
+.col-20 {
+  width: 20%;
+}
+.col-10 {
+  width: 10%;
+}
+.col-40 {
+  width: 40%;
+}
+.col-60 {
+  width: 60%;
+}
+.col-7 {
+  width: 7%;
+}
+
+.col-65 {
+  width: 64%;
+}
+.col-52 {
+  width: 53%;
+}
+.col-92 {
+  width: 93%;
+}
+.col-32 {
+  width: 32%;
+}
+.label-font-bold{
+	font-size: 15px;
+	font-weight: bold;
+}
+.label-decoration{
+	display: inline-block;
+	font-size: 15px;
+	width: 280px;
+	border-bottom: 2px solid black; 
+}
+.date-decoration{
+	display: inline-block;
+	font-size: 15px;
+	width: 30px;
+	border: none;
+    border-bottom: 1px solid #000;
+}
+.year-decoration{
+	display: inline-block;
+	font-size: 15px;
+	width: 85px;
+	border: none;
+    border-bottom: 1px solid #000;
+}
+
+.custid-decoration{
+	display: inline-block;
+	font-size: 15px;
+	width: 250px;
+	border-bottom: 2px solid black; 
+}
+.desease-decoration{
+	display: inline-block;
+	font-size: 15px;
+	width: 200px;
+	border-bottom: 2px solid black; 
+}
+.table-head-font{
+	font-size: 14px;
+	font-weight: bold;
+}
+.table-font{
+	font-size: 12px;
+}
+.no-padding{
+	display: inline-block;
+	border-bottom: 1px solid black;
+}
+.lableslno{
+	text-align: center;
+	vertical-align: middle;
+}
+.td-bg{
+   background-color: #E6E6E6;
+}
+.td-bg2{
+   background-color: #F2F2F2;
+}
+.margintop{
+	margin-top: 10px;
+}
+.mandate-text{
+  font-weight: bold;
+  font-size: 12px;
+}
+.text-rotate{
+	transform: rotate(-90deg);
+}
+.checkboxbig{
+	margin-top: 5px;
+	width: 20px;
+	height: 20px;
+}
+.tdchecklist{
+	text-align: center;
+
+}
+.fullwidth{
+	width: 100%;
+}
+
+
+/*checklist css*/

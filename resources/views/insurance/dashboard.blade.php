@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="atags form-btn" href="{{ route('list') }}"><button class="btn btn-success ">Insurance Details</button></a>
+         <a class="nav-link form-btn" href="{{ route('list') }}"><button class="btn btn-success ">Insurance Details</button></a>
          <div class="ms-auto">
             <select class="form-control form-select">
                <option>FY : 2025-2026</option>
@@ -19,7 +19,7 @@
   </div>
   
  <div class="row py-4">
-  <div class="col-xl-3 col-sm-6 col-12">
+  <div class="col">
     <div class="card">
       <div class="card-content">
         <div class="card-body">
@@ -36,7 +36,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-3 col-sm-6 col-12">
+  <div class="col">
     <div class="card">
       <div class="card-content">
         <div class="card-body">
@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <div class="col-xl-3 col-sm-6 col-12">
+  <div class="col">
     <div class="card">
       <div class="card-content">
         <div class="card-body">
@@ -71,7 +71,8 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-3 col-sm-6 col-12">
+
+  <div class="col">
     <div class="card">
       <div class="card-content">
         <div class="card-body">
@@ -79,6 +80,24 @@
             <div class="media-body text-left">
               <h3 class="primary">423</h3>
               <span>Rejected</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-support primary font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="primary">43</h3>
+              <span>Progress</span>
             </div>
             <div class="align-self-center">
               <i class="icon-support primary font-large-2 float-right"></i>

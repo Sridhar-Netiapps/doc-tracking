@@ -4,6 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use PDF;
+use App\Models\InsuranceProduct;
+use App\Models\InsuranceCauseOfDeath;
+use App\Models\InsuranceClaimStatus;
+use App\Models\InsurancePlaceofDeath;
+use App\Models\InsurancePartner;
+use App\Models\InsuranceRelationship;
+use App\Models\InsuranceRequestLetterStatus;
 
 class InsuranceHomeController extends Controller
 {
@@ -42,7 +49,13 @@ class InsuranceHomeController extends Controller
     }
     public function create()
     {
-        return view('insurance/create');
+        $partners = InsurancePartner::get();
+        $products = InsuranceProduct::get();
+        $placeofdeath = InsurancePlaceofDeath::get();
+        $relationship = InsuranceRelationship::get();
+        $deathcause = InsuranceCauseOfDeath::get();
+        $claimstatus = InsuranceClaimStatus::get();
+        return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus'));
     }
 
     /**
