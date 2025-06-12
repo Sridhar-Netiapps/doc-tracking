@@ -5,9 +5,9 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="nav-link form-btn" href="{{ route('list') }}"><button class="btn btn-success ">Insurance Details</button></a>
+         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Claim Forms</button></a>
          <div class="ms-auto">
-            <select class="form-control form-select">
+            <select class="form-control">
                <option>FY : 2025-2026</option>
              </select>
          </div>
@@ -20,7 +20,7 @@
   
  <div class="row py-4">
   <div class="col">
-    <div class="card">
+    <div class="card card-row1-bg">
       <div class="card-content">
         <div class="card-body">
           <div class="media d-flex">
@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="col">
-    <div class="card">
+    <div class="card card-row1-bg">
       <div class="card-content">
         <div class="card-body">
           <div class="media d-flex">
@@ -55,7 +55,7 @@
   </div>
 
   <div class="col">
-    <div class="card">
+    <div class="card card-row1-bg">
       <div class="card-content">
         <div class="card-body">
           <div class="media d-flex">
@@ -73,7 +73,7 @@
   </div>
 
   <div class="col">
-    <div class="card">
+    <div class="card card-row1-bg">
       <div class="card-content">
         <div class="card-body">
           <div class="media d-flex">
@@ -91,7 +91,7 @@
   </div>
 
   <div class="col">
-    <div class="card">
+    <div class="card card-row1-bg">
       <div class="card-content">
         <div class="card-body">
           <div class="media d-flex">
@@ -112,13 +112,13 @@
 
 <div class="row py-4">
 	<div class="col">
-	  <div class="card">
+	  <div class="card shadow-lg p-3 mb-5 bg-white rounded">
 	  	<div id="piechart"></div>
 	  </div>	
 	</div>
 
 	<div class="col">
-		<div class="card">
+		<div class="card shadow-lg p-3 mb-5 bg-white rounded">
 		 <div id="linechart"></div>
 		</div>
 	</div>
@@ -126,34 +126,29 @@
 
 <div class="row py-4">
 	<div class="col">
-	  <div class="card">
+	  <div class="card shadow-lg p-3 mb-5 bg-white rounded">
 	  	<div id="regionwise"></div>
 	  </div>	
 	</div>
 
 	<div class="col">
-		<div class="card">
-		 <div ></div>
-		</div>
+		
 	</div>
 
 	<div class="col">
-		<div class="card">
-		 <div ></div>
-		</div>
-	</div>
+		
 </div>
 
 </div>
 
 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 	var options = {
-      series: [44, 55, 13, 43, 22],
+      series: [44, 55, 13, 43],
       chart: {
       width: 400,
       type: 'pie',
     },
-    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+    labels: ['Birla', 'Bajaj', 'HDFC', 'MAX Life'],
     responsive: [{
       breakpoint: 480,
       options: {
@@ -173,7 +168,7 @@
 
      var options_line = {
           series: [{
-          name: 'XYZ MOTORS',
+          name: 'Claimed',
           data: [55,20,73,84,25,64,17,55,20,73,84,25]
         }],
           chart: {
@@ -189,6 +184,7 @@
             autoSelected: 'zoom'
           }
         },
+        colors:['#3EC7A1'],
         dataLabels: {
           enabled: false
         },
@@ -240,18 +236,18 @@
 
     var stackoptions = {
           series: [{
-          name: 'West',
+          name: 'Claimed',
           data: [44, 55, 41, 67]
         }, {
-          name: 'East',
+          name: 'Rejected',
           data: [13, 23, 20, 8]
         }, {
-          name: 'North',
+          name: 'In Progress',
           data: [11, 17, 15, 15]
-        }, {
+        }, /*{
           name: 'South',
           data: [21, 7, 25, 13]
-        }],
+        }*/],
           chart: {
           type: 'bar',
           height: 250,
@@ -263,6 +259,7 @@
             enabled: true
           }
         },
+         colors: ['#3EC7A1','#FF0B55','#FFD63A'],
         responsive: [{
           breakpoint: 480,
           options: {

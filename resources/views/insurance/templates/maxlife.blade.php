@@ -145,6 +145,12 @@
     .col-100 {
       width: 100%;
     }
+    .col-60 {
+      width: 60%;
+    }
+    .col-100 {
+      width: 40%;
+    }
     .header-bg{
       background-color: #d3d3d3;
       padding: 2px;
@@ -268,7 +274,7 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50"> <label class="label-font">1A) *Name of the Group Policy Holder:</label> <strong></strong> </td>
-            <td class="col-50"><label class="label-font"> 1B) *Group Policy Number:</label><strong></strong></td>
+            <td class="col-50"><label class="label-font"> 1B) *Group Policy Number:</label><strong class="label-font">{{$data->policy_number}}</strong></td>
           </tr>
         </table>
 

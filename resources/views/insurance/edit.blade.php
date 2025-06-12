@@ -2,8 +2,14 @@
 @section('content')
 
 <div class="container">
-	<div class="py-4">
-		<label class="label-font-header">Insurance Form</label>
+	<div class="d-flex py-4">
+		<label class="label-font-header">Update Insurance Form</label>
+
+		<div class="ms-auto">
+			<a href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
+
+			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
+		</div>
 	</div>
 
 	<div class="py-2">
@@ -19,87 +25,61 @@
 			<div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
 			</div>
-		</div>   
-
-		@if(Session::has('success'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('success') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'success',  
-		        confirmButtonText: 'OK'
-		    });
-		 </script>
-		 
-		@endif
-
-		@if(Session::has('failure'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('failure') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'success',  
-		        confirmButtonText: 'OK'
-		    });
-		 </script>
-		 
-		@endif 
+		</div>
+        
         
 		<div class="py-3 d-block" id="head_off">
-	    <form method="POST" action="{{route('save_claim_details')}}">
-	    @csrf		
+	    <form method="POST" action="">		
 		<div class="row">
 			<div class="col-3 mb-3">
 			    <label class="form-label">Region</label>
-			    <select class="form-control form-select" name="region" required>
+			    <select class="form-control form-select">
 			    	<option value="">Select</option>
-			    	<option value="South" selected >South</option>
-			    	<option value="North">North</option>
-			    	<option value="East">East</option>
-			    	<option value="West">West</option>	
+			    	<option {{ ($data->region == 'South')?'selected':''}} value="South">South</option>
+			    	<option {{ ($data->region == 'North')?'selected':''}} value="North">North</option>
+			    	<option {{ ($data->region == 'East')?'selected':''}} value="East">East</option>
+			    	<option {{ ($data->region == 'West')?'selected':''}} value="West">West</option>	
 			    </select>
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Branch ID-Name</label>
-			    <input type="text" class="form-control" name="branch" value="1100-Koramangala" readonly>
+			    <input type="text" class="form-control" name="branch" value="{{$data->branch}}" readonly>
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Partner</label>
-			    <select class="form-control form-select" name="partner" required="required" >
-			    	<option value="">Select</option>
+			    <select class="form-control form-select" name="partner">
+			    	<option>Select</option>
 			    	@foreach($partners as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->partner}}</option>
+			    	   <option {{ ($data->partner == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->partner}}</option>
 			    	@endforeach
 			    </select>
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Product</label>
-			    <select class="form-control form-select" name="product" required >
-			    	<option value="">Select</option>
+			    <select class="form-control form-select" name="product">
+			    	<option>Select</option>
 			    	@foreach($products as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->product}}</option>
+			    	   <option {{ ($data->product == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->product}}</option>
 			    	@endforeach
 			    </select>
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Policy Number</label>
-			    <input type="text" class="form-control numberonly" name="policy_number" required>
+			    <input type="text" class="form-control numberonly" name="policy_number">
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Customer ID</label>
-			    <input type="text" class="form-control numberonly" name="cust_id" required>
+			    <input type="text" class="form-control numberonly" name="cust_id">
 			</div>
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">ACTUAL ID</label>
-			    <input type="text" class="form-control numberonly" name="actual_id" required>
+			    <input type="text" class="form-control numberonly" name="actual_id">
 			</div>
 
 			<div class="col-3 mb-3">
@@ -144,11 +124,11 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Deceased</label>
-			    <select class="form-control form-select" name="deceased" required>
+			    <select class="form-control form-select" name="deceased">
 			    	<option value="">Select</option>
-			    	<option value="CO-APPLICANT">CO-APPLICANT</option>
-			    	<option value="SPOUSE">SPOUSE</option>
-			    	<option value="CUSTOMER">CUSTOMER</option>
+			    	<option {{ ($data->deceased == 'CO-APPLICANT')?'selected':''}} value="CO-APPLICANT">CO-APPLICANT</option>
+			    	<option {{ ($data->deceased == 'SPOUSE')?'selected':''}} value="SPOUSE">SPOUSE</option>
+			    	<option {{ ($data->deceased == 'CUSTOMER')?'selected':''}} value="CUSTOMER">CUSTOMER</option>
 			    </select>
 			</div>
 
@@ -174,10 +154,10 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Cause of Death</label>
-			    <select class="form-control form-select" name="cause_of_death" required="">
+			    <select class="form-control form-select" name="cause_of_death">
 			    	<option>Select</option>
 			    	@foreach($deathcause as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->cause}}</option>
+			    	   <option {{ ($data->cause_of_death == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->cause}}</option>
 			    	@endforeach
 			    </select>
 			</div>
@@ -199,10 +179,10 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Claim Status</label>
-			    <select class="form-control form-select" name="cliam_status" required>
-			    	<option value="">Select</option>
+			    <select class="form-control form-select" name="cliam_status">
+			    	<option>Select</option>
 			    	@foreach($claimstatus as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->claim_status}}</option>
+			    	   <option {{ ($data->cliam_status == $value->id)?'selected':''}}  value="{{$value->id}}">{{$value->claim_status}}</option>
 			    	@endforeach
 			    </select>
 			</div>
@@ -223,8 +203,8 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Relationship</label>
-			    <select class="form-control form-select" name="relationship" >
-			    	<option value="">Select</option>
+			    <select class="form-control form-select" name="relationship">
+			    	<option>Select</option>
 			    	@foreach($relationship as $key=>$value)
 			    	   <option value="{{$value->id}}">{{$value->relationship}}</option>
 			    	@endforeach
@@ -261,12 +241,12 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">SPDC/RL Status</label>
-			    <select class="form-control form-select" name="rl_status" required>
+			    <select class="form-control form-select" name="rl_status">
 			    	<option value="">Select</option>
-			    	<option value="NA">NA</option>
-			    	<option value="PDC">PDC</option>
-			    	<option value="PDC Process">PDC Process</option>
-			    	<option value="RL Process">RL Process</option>
+			    	<option {{ ($data->rl_status == 'NA')?'selected':''}}  value="NA">NA</option>
+			    	<option {{ ($data->rl_status == 'PDC')?'selected':''}} value="PDC">PDC</option>
+			    	<option {{ ($data->rl_status == 'PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
+			    	<option {{ ($data->rl_status == 'RL Process')?'selected':''}} value="RL Process">RL Process</option>
 
 			    </select>
 			</div>
@@ -818,8 +798,6 @@
     
 	</div>
 </div>
-
-
 
 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 

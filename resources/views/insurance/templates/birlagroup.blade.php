@@ -203,44 +203,44 @@
       <span>(To be completed by the Group Policyholder)</span>
       
       <div class="contentrows">
-        <label class="label-font"> Group Policy No.:<strong class="policy">600082</strong></label>
-        <label class="label-font"> Member Id:<strong class="policy">2121212121212</strong></label>
-        <label class="label-font"> Client ID:<strong class="policy">2333202697</strong></label>
-        <label class="label-font"> Claim Amount:<strong class="policy">63000</strong></label>
+        <label class="label-font"> Group Policy No.:<strong class="policy">{{$data->policy_number}}</strong></label>
+        <label class="label-font"> Member Id:<strong class="policy"></strong></label>
+        <label class="label-font"> Client ID:<strong class="policy">{{$data->cust_id}}</strong></label>
+        <label class="label-font"> Claim Amount:<strong class="policy"></strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Name of Group Policyholder:<strong class="policy">RASID Khan</strong></label>
+        <label class="label-font"> Name of Group Policyholder:<strong class="policy"></strong></label>
         <label class="label-font"> Gender:<strong class="policy">Male</strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Full Name of deceased Member:<strong class="policy">RASID Khan</strong></label>
+        <label class="label-font"> Full Name of deceased Member:<strong class="policy"></strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Birth:<strong class="policy">12/17/1971</strong></label>
-        <label class="label-font"> Date of Joining Policy:<strong class="policy">12/24/2021</strong></label>
-        <label class="label-font"> Date of last attended duties:<strong class="policy">212121</strong></label>
+        <label class="label-font"> Date of Birth:<strong class="policy"></strong></label>
+        <label class="label-font"> Date of Joining Policy:<strong class="policy"></strong></label>
+        <label class="label-font"> Date of last attended duties:<strong class="policy"></strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Death:<strong class="policy">6/6/2022</strong></label>
-        <label class="label-font"> Time of Death:<strong class="policy">12/24/2021</strong></label>
+        <label class="label-font"> Date of Death:<strong class="policy"></strong></label>
+        <label class="label-font"> Time of Death:<strong class="policy"></strong></label>
         <label class="label-font"> A.M/P.M</label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Cause of Death:<strong class="policy">ILLNESS</strong></label>
-        <label class="label-font"> Age as on Date of Death:<strong class="smallpad">51</strong></label>
+        <label class="label-font"> Cause of Death:<strong class="policy">{{$data->cause_od_death}}</strong></label>
+        <label class="label-font"> Age as on Date of Death:<strong class="smallpad"></strong></label>
         <label>Years</label>
-        <strong class="smallpad policyunderine" >09</strong>
+        <strong class="smallpad policyunderine" ></strong>
         <label>Month(s)</label>
       </div>
 
       <div class="contentrows">
         <strong>In case of accidental death:</strong>
-        <label class="label-font"> Date of Accident:<strong class="policy">ILLNESS</strong> </label>
+        <label class="label-font"> Date of Accident:<strong class="policy"></strong> </label>
         <label class="label-font"> Nature of Accident: (Road/Rail/Air/Other (specify) </label><span class="smallpad policyunderline"></span> 
       </div>
 
@@ -250,7 +250,7 @@
       </div>
 
       <div class="contentrows">
-         <label class="label-font"> Upon admissibility of Claim, the Payment is to be made in favour of - <strong class="policy">JAYADA BANU</strong></label>
+         <label class="label-font"> Upon admissibility of Claim, the Payment is to be made in favour of - <strong class="policy"></strong></label>
         
       </div>
 

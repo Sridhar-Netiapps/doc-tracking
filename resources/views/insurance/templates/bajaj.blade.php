@@ -170,7 +170,7 @@
 	      <table class="twocol-table">
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Master Policy No: <strong class="label-font"></strong></label>
+	      			<label class="label-font">Master Policy No: <strong class="label-font">{{$data->policy_number}}</strong></label>
 	      		</td>
 	      		<td class="col-50">
 	      			<label class="label-font">Master Policyholders Name: <strong class="label-font">UJJIVAN SMALL FINANCE BANK</strong></label>

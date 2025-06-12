@@ -348,7 +348,7 @@
 				  <label class="header-label">Master Policyholder Details</label> 
 			   </div>
 			   <div class="linespace">
-			  	 <span class="content-label">Policy No.:  <strong>I4000188-0VWW000</strong>  Lending Institution/Master Policyholder Name: <strong>RAGHUNATH BARMAN</strong> </span>
+			  	 <span class="content-label">Policy No.:  <strong class="content-label">{{$data->policy_number}}</strong>  Lending Institution/Master Policyholder Name: <strong></strong> </span>
 			  </div>
 
 			  <div class="heade-bg">
@@ -356,19 +356,19 @@
 			  </div>
 
 			  <div class="rown">
-			  	<span class="content-label">Member Name :  </span><strong class="memname">RAGHUNATH BARMAN</strong>
-          <span class="content-label"> Member No.: <strong>3510009009</strong> 
+			  	<span class="content-label">Member Name :  </span><strong class="memname"></strong>
+          <span class="content-label"> Member No.: <strong></strong> 
 			  </div>
 
         <div class="rown">
-          <span class="content-label">Date Of Birth :  </span><strong class="dob">10/10/1992</strong>
-          <span class="content-label"> Certificate/Loan Id: <strong>3510009009</strong> 
+          <span class="content-label">Date Of Birth :  </span><strong class="dob"></strong>
+          <span class="content-label"> Certificate/Loan Id: <strong></strong> 
         </div>
 
         <div class="rown">
-          <span class="content-label">Date of commencement of Risk:  </span><strong class="risk">10/10/1992</strong>
-          <span class="content-label">Date of Death:  </span><strong class="risk">10/10/1992</strong>
-          <span class="content-label">Place of Death:  </span><strong class="palce">RESIDENT</strong>
+          <span class="content-label">Date of commencement of Risk:  </span><strong class="risk"></strong>
+          <span class="content-label">Date of Death:  </span><strong class="risk"></strong>
+          <span class="content-label">Place of Death:  </span><strong class="palce"></strong>
         </div>
 
         <div class=" rowd">

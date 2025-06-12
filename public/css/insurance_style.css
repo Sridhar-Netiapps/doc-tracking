@@ -21,11 +21,16 @@
 	font-size: 16px;
 }
 
+.btn-text{
+	font-weight: bold;
+	font-size: 14px;
+}
+
 .card-design{
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  border: 1px solid orange;
+  border: 2px solid orange;
 }
 .tab-active{
 	background-color: #022fbf;
@@ -34,7 +39,7 @@
 }
 
 .btn-toggle.active {
-  background-color: #022fbf;
+  background-color: #076E5D;
   color: white;
 }
 
@@ -48,10 +53,37 @@
 	padding: 7px;
 }
 
+.card2{
+	border-radius: 10px;
+	border-top: 1px solid green; 
+	border-bottom: 5px solid green; 
+	border-left: 1px solid green; 
+	border-right: 1px solid green; 
+
+}
+
+.card-row1-bg{
+	background-color: #088672;
+	color: #fff;
+	border-radius: 10px;
+	border-top: 1px solid green; 
+	border-bottom: 5px solid #055C4E; 
+	border-left: 1px solid green; 
+	border-right: 1px solid green;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
+}
+
+.card-row2-bg{
+	background-color: #fff;
+    border-radius: 10px;
+	shape-outside: border-box;
+}
+
 /*cehcklist css*/
 
 .pagelayout {
     margin: 5px;
+    background-color: #fff;
 
  }
 .contentmain{

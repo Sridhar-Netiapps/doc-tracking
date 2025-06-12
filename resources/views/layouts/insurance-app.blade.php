@@ -12,8 +12,8 @@
     <!-- Fonts -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <!-- <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -23,6 +23,7 @@
    
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
