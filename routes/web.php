@@ -110,5 +110,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
     Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
     Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
+    Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
 
 });

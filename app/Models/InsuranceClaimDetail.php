@@ -77,4 +77,8 @@ class InsuranceClaimDetail extends Model
     public function deathCause(){
         return $this->belongsTo(InsuranceCauseOfDeath::class,'cause_of_death','id');
     }
+
+    public function rlStatus(){
+        return $this->belongsTo(InsuranceRequestLetterStatus::class,'rl_status','id');
+    }
 }

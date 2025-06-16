@@ -14,7 +14,9 @@ use App\Models\InsuranceRequestLetterStatus;
 use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
+use App\Imports\ImportClaimDetails;
 use Auth;
+use Excel;
 
 class InsuranceHomeController extends Controller
 {
@@ -172,5 +174,18 @@ class InsuranceHomeController extends Controller
        // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
 
 
+    }
+
+    public function import_claim_data(Request $request){
+       $import = new ImportClaimDetails ;
+
+       Excel::import($import, $request->file('file'));
+
+       if($import->getRowCount() == 0){
+            return redirect()->back();
+        }
+        else {
+             return redirect()->back();
+        }
     }
 }

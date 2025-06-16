@@ -218,7 +218,7 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Nominee Name</label>
-			    <input type="date" class="form-control" name="nominee_name">
+			    <input type="text" class="form-control" name="nominee_name">
 			</div>
 
 			<div class="col-3 mb-3">
