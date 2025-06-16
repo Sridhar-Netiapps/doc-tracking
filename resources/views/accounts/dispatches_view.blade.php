@@ -7,7 +7,7 @@
         <div class="col-10">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
-                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
+                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
         <div class="col-1"></div>
@@ -79,46 +79,38 @@
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
-                {{-- <li class="ms-auto">
-                    <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
-                        @csrf
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-courier" type="button">Add Courier Details</button>
-                        <a class="btn btn-secondary" href="{{ route('accounts.index',$type)}}">Go Back</a>
-                    </form>
-                </li> --}}
+                @hasanyrole('ro-user')
+                <li class="ms-auto">
+                    <button id="update-all" class="btn btn-primary d-none">Update All</button>
+                </li>
+                @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" class="loan_all" /> </th>
                                 <th scope="col">Unique Number</th>
-                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
+                                <th scope="col">A/C No</th>
                                 <th scope="col">Loan Cycle</th>
                                 <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
+                                <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Barcode</th> --}}
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
-                            
+                                <th class="d-none loan" scope="col">Update Status</th>
+                                <th class="d-none loan" scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
-                                    <tr>
-                                        <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan">
                                         <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->region }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
                                         <td>{{ $row->cif_id }}</td>
@@ -127,17 +119,24 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @if ($row->status == 4)
+                                        <td class="loan">
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
+                                        <td class="border-start">
+                                            @hasanyrole('ro-user')
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            @endhasanyrole
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -148,43 +147,49 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                 <th scope="col">Unique Number</th>
-                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
-                                {{-- <th scope="col">Loan Cycle</th> --}}
+                                <th scope="col">A/C No</th>
                                 <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
+                                <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
-                                {{-- <th scope="col">Barcode</th> --}}
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
+                                <th class="d-none goldloan" scope="col">Update Status</th>
+                                <th class="d-none goldloan" scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
-                                    <tr>
-                                        <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                        
-                                    <td>{{ $row->unique_ref_no }}</td> 
-                                    <td>{{ $row->region }}</td> 
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->cif_id }}</td>
-                                    <td>{{ $row->account_number }}</td>
-                                    <td>{{ $row->customer_name }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                    <td>{{ $row->channel }}</td>
-                                    <td>{{ $row->business_category }}</td> 
-                                    <td>
-                                        {{ $row->statusName->name ?? '-' }}
-                                    </td>
+                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan">
+                                        <td>{{ $row->unique_ref_no }}</td>  
+                                        <td>{{ $row->branch_code }}</td>
+                                        <td>{{ $row->branch_name }}</td>
+                                        <td>{{ $row->cif_id }}</td>
+                                        <td>{{ $row->account_number }}</td>
+                                        <td>{{ $row->customer_name }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                        <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->business_category }}</td> 
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @if ($row->status == 4)
+                                        <td class="goldloan">
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                        </td>
+                                        <td class="border-start">
+                                            @hasanyrole('ro-user')
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            @endhasanyrole
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -195,55 +200,52 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                 <th scope="col">Unique Number</th>
-                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
-                                {{-- <th scope="col">Loan Cycle</th> --}}
+                                <th scope="col">A/C No</th>
                                 <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
+                                <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Barcode</th> --}}
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
-                            
+                                <th class="d-none aof" scope="col">Update Status</th>
+                                <th class="d-none aof" scope="col">Actions</th>                            
                             </tr>
                         </thead>
                         <tbody>
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
-                                    <tr>
-                                        <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
-                                        
-                                    {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    {{-- <td><input type="checkbox" /></td> --}}
-                                    <td>{{ $row->unique_ref_no }}</td>
-                                    <td>{{ $row->region }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->cif_id }}</td>
-                                    <td>{{ $row->account_number }}</td>
-                                    {{-- <td>{{ $row->loan_cycle }}</td> --}}
-                                    <td>{{ $row->customer_name }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                    <td>{{ $row->channel }}</td>        
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    <td>{{ $row->type_of_account_opening }}</td>
-                                    <td>{{ $row->business_category }}</td>
-                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                    {{-- <td>{{ $row->branch_office_type }}</td>
-                                    <td>{{ $row->pincode }}</td>
-                                    <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->statusName->name ?? '-' }}</td>
-                                    </td>                                 
-                                 </tr>
+                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof">
+                                        <td>{{ $row->unique_ref_no }}</td>
+                                        <td>{{ $row->branch_code }}</td>
+                                        <td>{{ $row->branch_name }}</td>
+                                        <td>{{ $row->cif_id }}</td>
+                                        <td>{{ $row->account_number }}</td>
+                                        <td>{{ $row->customer_name }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                        <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->type_of_account_opening }}</td>
+                                        <td>{{ $row->business_category }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @if ($row->status == 4)
+                                        <td class="aof">
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                        </td>
+                                        <td class="border-start">
+                                            @hasanyrole('ro-user')
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            @endhasanyrole
+                                        </td>
+                                        @endif
+                                    </tr>
                                 @endforeach
                             @endif
                         </tbody>
@@ -253,51 +255,41 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                 <th scope="col">Unique Number</th>
-                                <th scope="col">Region</th>
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">DTR File Date</th>
-                                {{-- <th scope="col">barcode</th> --}}
-                                {{-- <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
-                                <th scope="col">Channel</th>
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
-                                {{-- <th scope="col">Type of Loan<br>Disbursement</th>  --}}
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                               
+                                <th class="d-none dtrf" scope="col">Update Status</th>
+                                <th class="d-none dtrf" scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
-                                    <tr>
-                                        <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
-                                        
-                                    {{-- <td>{{ $loop->iteration }}</td> --}}
-                                    {{-- <td><input type="checkbox" /></td> --}}
-                                    <td>{{ $row->unique_ref_no }}</td>
-                                    <td>{{ $row->region }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->branch_name }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    <td>{{ $row->business_category}}</td>
-                                    {{-- <td>{{ $row->customer_name }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                    <td>{{ $row->channel }}</td>
-                                    {{-- <td>{{ $row->barcode }}</td> --}}
-                                    {{-- <td>{{ $row->loan_disbursement_type }}</td>
-                                    <td>{{ $row->business_category }}</td> --}} 
-                                    {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                    <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                    {{-- <td>{{ $row->branch_office_type }}</td>
-                                    <td>{{ $row->pincode }}</td>
-                                    <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->statusName->name ?? '-' }}</td>
+                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf">
+                                        <td>{{ $row->unique_ref_no }}</td>
+                                        <td>{{ $row->branch_code }}</td>
+                                        <td>{{ $row->branch_name }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                        <td>{{ $row->business_category}}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @if ($row->status == 4)
+                                        <td class="dtrf">
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                        </td>
+                                        <td class="border-start">
+                                            @hasanyrole('ro-user')
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            @endhasanyrole
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -354,7 +346,7 @@
                     <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="text" class="form-control account_number" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
@@ -451,59 +443,103 @@
 </div>
 <script>
     $(document).ready(function () {
-        $(".loan_all").click(function () {
-            $(".loan").prop('checked', $(this).prop('checked'));
-        });
-        $(".goldloan_all").click(function () {
-            $(".goldloan").prop('checked', $(this).prop('checked'));
-        });
-        $(".aof_all").click(function () {
-            $(".aof").prop('checked', $(this).prop('checked'));
-        });
-        $(".dtrf_all").click(function () {
-            $(".dtrf").prop('checked', $(this).prop('checked'));
-        });
-        $('.proceed').click(function () {
-            let loan_ids = [];
-            let goldloan_ids = [];
-            let aof_ids = [];
-            let dtrf_ids = [];
+        var count = $('select[name="remarks"]').length;
+        var loancount = $('td.loan').length;
+        var goldloancount = $('td.goldloan').length;
+        var aofcount = $('td.aof').length;
+        var dtrfcount = $('td.dtrf').length;
+        
+        if(count > 0){
+            $('#update-all').removeClass('d-none');
+        }
+        if(loancount > 0){
+            $('th.loan').removeClass('d-none');
+        }
+        if(goldloancount > 0){
+            $('th.goldloan').removeClass('d-none');
+        }
+        if(aofcount > 0){
+            $('th.aof').removeClass('d-none');
+        }
+        if(dtrfcount > 0){
+            $('th.dtrf').removeClass('d-none');
+        }
+        $('select[name="remarks"]').change(function () {
+            const row = $(this).closest('tr');
+            const reasonField = row.find('textarea[name="reason_for_rejection"]');
 
-            $('input.loan:checked').each(function () {
-                loan_ids.push($(this).data('id'));
-            });
-            $('input.goldloan:checked').each(function () {
-                goldloan_ids.push($(this).data('id'));
-            });
-            $('input.aof:checked').each(function () {
-                aof_ids.push($(this).data('id'));
-            });
-            $('input.dtrf:checked').each(function () {
-                dtrf_ids.push($(this).data('id'));
-            });
-
-            if (loan_ids.length > 0 || goldloan_ids.length > 0 || aof_ids.length > 0 || dtrf_ids.length > 0) {
-                console.log(loan_ids);
-                console.log(goldloan_ids);
-                console.log(aof_ids);
-                console.log(dtrf_ids);
-
-                $('input[name="loan_ids[]"]').val(loan_ids);
-                $('input[name="goldloan_ids[]"]').val(goldloan_ids);
-                $('input[name="aof_ids[]"]').val(aof_ids);
-                $('input[name="dtrf_ids[]"]').val(dtrf_ids);
-                return false;
-                // $('#proceed').submit();
+            if ($(this).val() === '6' || $(this).val() === '7') {
+                reasonField.removeClass('d-none');
             } else {
-                Swal.fire({
-                    title: "Warning!",
-                    text: "Please select at least one Document.",
-                    icon: "warning",
-                    confirmButtonText: "OK"
-                });
-                return false;
+                reasonField.addClass('d-none').val('');
             }
         });
+        function collectRowData(row) {
+            const id = row.data('id');
+            const uid = row.data('uid');
+            const type = row.data('type');
+            const remarks = row.find('.remarks').val();
+            const reason = row.find('.reason').val();
+
+            if (remarks !== '5' && !reason.trim()) {
+                throw `Reason is required for this Document: #${uid}`;
+            }
+
+            return { id, type, remarks, reason_for_rejection: reason };
+        }
+
+        // Handle individual update
+        $('.update-row').on('click', function () {
+            const row = $(this).closest('tr');
+            let data;
+
+            try {
+                data = [collectRowData(row)];
+            } catch (err) {
+                Swal.fire("Alert", err, "warning");
+                return;
+            }
+
+            sendUpdateRequest(data);
+        });
+
+        // Handle bulk update
+        $('#update-all').on('click', function () {
+            const data = [];
+            let hasError = false;
+
+            $('tr[data-id]').each(function () {
+                try {
+                    data.push(collectRowData($(this)));
+                } catch (err) {
+                    Swal.fire("Alert", err, "warning");
+                    hasError = true;
+                    return false; // stop loop
+                }
+            });
+
+            if (!hasError && data.length) {
+                sendUpdateRequest(data);
+            }
+        });
+
+        // Common AJAX function
+        function sendUpdateRequest(payload) {
+            $.ajax({
+                url: '{{ route("document.update") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    updates: payload
+                },
+                success: function () {
+                    Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                },
+                error: function () {
+                    Swal.fire("Error", "Update failed", "error");
+                }
+            });
+        }
     });
 </script>
 

@@ -64,19 +64,18 @@
         <div class="col-1"></div>
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                @hasanyrole('master|bo-maker|bo-checker|ro-user')
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
-                @endhasanyrole
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Dispatched List @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
-                @hasanyrole('ro-user')
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Delivered List @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
-                @endhasanyrole
+                <li class="nav-item" role="presentation">
+                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="false">Rejected List @if ($rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
+                </li>
                 @if ($type == 'ready')
                 @hasanyrole('bo-checker')
                 <li class="ms-auto">
@@ -84,16 +83,13 @@
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
-                </li>
+                </li> 
                 @endhasanyrole
                 @endif
                 @if ($type == 'list')
                 @hasanyrole('ro-user')
                 <li class="ms-auto">
-                    <form method="POST" action="{{ route('dispatches.update') }}" id="proceed">
-                        @csrf
-                        <button class="btn btn-primary proceed" type="button">Update</button>
-                    </form>
+                    <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endhasanyrole
                 @endif
@@ -132,7 +128,7 @@
                         </thead>
                         <tbody>
                             @foreach ($records as $row)
-                                <tr>
+                                <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                     @if ($type == 'ready')
                                     @hasanyrole('master|bo-checker')
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
@@ -145,9 +141,9 @@
                                     <td>{{ $row->mmrp_barcode }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     {{-- <td>{{ $row->region }}</td> --}}
-                                    <td><p>MB Loan Doc - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
-                                        <p>Gold Loan Doc - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
-                                        <p>Liablities Doc - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
+                                    <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
+                                        <p>Gold Loan - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
+                                        <p>Liablities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
                                         <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
                                     </td>
                                     {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
@@ -155,16 +151,21 @@
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->statusName->name ?? '-' }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}
+                                        @if ($row->status == 6 || $row->status == 7 )
+                                            <small><p>Reason : </p></small>
+                                            <i>{{ $row->comments }}</i>
+                                        @endif
+                                    </td>
                                     @if ($type == 'list')
                                         @hasanyrole('ro-user')
                                         <td>
-                                            <select id="remarks" name="remarks" class="form-control select2" required>
-                                                <option value=5>Received</option>
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
                                                 <option value=7>Received with Query</option>
                                                 <option value=6>Rejected</option>
                                             </select>
-                                            <textarea name="reason_for_rejection" class="form-control d-none" rows="2"></textarea>
+                                            <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
                                         @endhasanyrole
                                     @endif
@@ -174,7 +175,7 @@
                                             <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                             @if ($type == 'list')
                                                 @hasanyrole('ro-user')
-                                                    <button class="border-0" type="button"><img src="/images/send_icon.svg"/></button>
+                                                    <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
                                                 @endhasanyrole
                                             @endif
                                         </div>
@@ -184,195 +185,11 @@
                         </tbody>
                     </table>
                 </div>
-                {{-- <div class="tab-pane fade {{$type == 'list' ? 'active show':''}}" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col"><input type="checkbox" class="select_all"/></th>
-                                <th scope="col">AWB/POD Number</th>
-                                <th scope="col">Courier Name</th>
-                                <th scope="col">MMRP Internal Barcode No.</th>
-                                <th scope="col">Branch code</th>
-                                <th scope="col">Region</th>
-                                <th scope="col">No of Loan Documents</th>
-                                <th scope="col">No of Gold Loan Documents</th>
-                                <th scope="col">No of DTRF Documents</th>
-                                <th scope="col">No of AOF Documents</th>
-                                <th scope="col">Dispatch Date</th>
-                                <th scope="col">Dispatch By</th>
-                                <th scope="col">Status</th>
-                                <th scope="col" class="border-start">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dispatched as $row)
-                                <tr>
-                                    <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                    <td>{{ $row->awb_pod }}</td>
-                                    <td>{{ $row->courier_name }}</td>
-                                    <td>{{ $row->mmrp_barcode }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->region }}</td>
-                                    <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
-                                    <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
-                                    <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
-                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
-                                    <td>{{ $row->dispatch_date }}</td>
-                                    <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->statusName->name ?? '-' }}</td>
-                                    <td class="border-start">
-                                        <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div> --}}
             </div>
         </div>
         <div class="col-1"></div>
     </div>
 </div>
-{{-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button> --}}
-
-{{-- <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas bottom</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body small">
-    <div class="tab-content bg-white" id="myTabContent">
-        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-            <table class="table table-striped">
-                <thead>
-                    <tr> 
-                        <th scope="col"><input type="checkbox" class="select_all"/> </th>     
-                        <th scope="col"> Document Type</th>
-                        <th scope="col"> Unique Number</th>
-                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                        <th scope="col"> Region</th>
-                        <th scope="col"> Branch Name</th>
-                        @endunless
-                        <th scope="col"> Branch Code</th>
-                        <th scope="col"> CIF ID</th>
-                        <th scope="col"> Account Number</th>
-                        <th scope="col"> Loan Cycle</th>
-                        <th scope="col"> Scheme</th>
-                        <th scope="col"> Customer Name</th>
-                        <th scope="col"> Account Creation Date</th>
-                        <th scope="col"> Channel</th>
-                        <th scope="col"> Loan Disbursement Type / Account Opening</th>
-                        <th scope="col"> Business Category</th>
-                        <th scope="col"> Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                            <td></td>  
-                            <td>doc_type </td>
-                            <td> unique_ref_no</td>
-                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <td> region</td>
-                            <td> branch_name</td>
-                            @endunless
-                            <td> branch_code</td>
-                            <td> cif_id</td>
-                            <td> account_number</td>
-                            <td> loan_cycle</td>
-                            <td> scheme</td>
-                            <td> customer_name</td>
-                            <td> account_creation_date</td>
-                            <td> channel</td>
-                            <td> loan_disbursement_type  type_of_account_opening</td>
-                            <td> business_category</td>
-                            <td> statusName->name</td>
-                        </tr>
-                        <tr>
-                            <td></td>  
-                            <td>doc_type </td>
-                            <td> unique_ref_no</td>
-                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <td> region</td>
-                            <td> branch_name</td>
-                            @endunless
-                            <td> branch_code</td>
-                            <td> cif_id</td>
-                            <td> account_number</td>
-                            <td> loan_cycle</td>
-                            <td> scheme</td>
-                            <td> customer_name</td>
-                            <td> account_creation_date</td>
-                            <td> channel</td>
-                            <td> loan_disbursement_type  type_of_account_opening</td>
-                            <td> business_category</td>
-                            <td> statusName->name</td>
-                        </tr>
-                        <tr>
-                            <td></td>  
-                            <td>doc_type </td>
-                            <td> unique_ref_no</td>
-                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <td> region</td>
-                            <td> branch_name</td>
-                            @endunless
-                            <td> branch_code</td>
-                            <td> cif_id</td>
-                            <td> account_number</td>
-                            <td> loan_cycle</td>
-                            <td> scheme</td>
-                            <td> customer_name</td>
-                            <td> account_creation_date</td>
-                            <td> channel</td>
-                            <td> loan_disbursement_type  type_of_account_opening</td>
-                            <td> business_category</td>
-                            <td> statusName->name</td>
-                        </tr>
-                        <tr>
-                            <td></td>  
-                            <td>doc_type </td>
-                            <td> unique_ref_no</td>
-                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <td> region</td>
-                            <td> branch_name</td>
-                            @endunless
-                            <td> branch_code</td>
-                            <td> cif_id</td>
-                            <td> account_number</td>
-                            <td> loan_cycle</td>
-                            <td> scheme</td>
-                            <td> customer_name</td>
-                            <td> account_creation_date</td>
-                            <td> channel</td>
-                            <td> loan_disbursement_type  type_of_account_opening</td>
-                            <td> business_category</td>
-                            <td> statusName->name</td>
-                        </tr>
-                        <tr>
-                            <td></td>  
-                            <td>doc_type </td>
-                            <td> unique_ref_no</td>
-                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <td> region</td>
-                            <td> branch_name</td>
-                            @endunless
-                            <td> branch_code</td>
-                            <td> cif_id</td>
-                            <td> account_number</td>
-                            <td> loan_cycle</td>
-                            <td> scheme</td>
-                            <td> customer_name</td>
-                            <td> account_creation_date</td>
-                            <td> channel</td>
-                            <td> loan_disbursement_type  type_of_account_opening</td>
-                            <td> business_category</td>
-                            <td> statusName->name</td>
-                        </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-  </div>
-</div> --}}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
@@ -450,17 +267,22 @@
 </div>
 <script>
     $(document).ready(function () {
+        var count = $('select[name="remarks"]').length;
+        if(count > 0){
+            $('#update-all').removeClass('d-none');
+        }
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
 
-        $('select[name="remarks"]').change(function (e) {
-            if($(this).val() == '6' || $(this).val() == '7'){
-                $('textarea[name="reason_for_rejection"]').removeClass('d-none');
-                bootstrap.Offcanvas.getOrCreateInstance($('#offcanvasScrolling')[0]).show();
-            }
-            else{
-                $('textarea[name="reason_for_rejection"]').addClass('d-none');
+        $('select[name="remarks"]').change(function () {
+            const row = $(this).closest('tr');
+            const reasonField = row.find('textarea[name="reason_for_rejection"]');
+
+            if ($(this).val() === '6' || $(this).val() === '7') {
+                reasonField.removeClass('d-none');
+            } else {
+                reasonField.addClass('d-none').val('');
             }
         });
 
@@ -525,8 +347,73 @@
                 $('#filterForm').submit(); // or trigger AJAX filtering
             }
         });
-
     });
+
+    function collectRowData(row) {
+        const id = row.data('id');
+        const dispatch = row.data('dispatch');
+        const remarks = row.find('.remarks').val();
+        const reason = row.find('.reason').val();
+
+        if (remarks !== '5' && !reason.trim()) {
+            throw `Reason is required for this Dispatch No: #${dispatch}`;
+        }
+
+        return { id, remarks, reason_for_rejection: reason };
+    }
+
+    // Handle individual update
+    $('.update-row').on('click', function () {
+        const row = $(this).closest('tr');
+        let data;
+
+        try {
+            data = [collectRowData(row)];
+        } catch (err) {
+            Swal.fire("Alert", err, "warning");
+            return;
+        }
+
+        sendUpdateRequest(data);
+    });
+
+    // Handle bulk update
+    $('#update-all').on('click', function () {
+        const data = [];
+        let hasError = false;
+
+        $('tr[data-id]').each(function () {
+            try {
+                data.push(collectRowData($(this)));
+            } catch (err) {
+                Swal.fire("Alert", err, "warning");
+                hasError = true;
+                return false; // stop loop
+            }
+        });
+
+        if (!hasError && data.length) {
+            sendUpdateRequest(data);
+        }
+    });
+
+    // Common AJAX function
+    function sendUpdateRequest(payload) {
+        $.ajax({
+            url: '{{ route("dispatches.update") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                updates: payload
+            },
+            success: function () {
+                Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+            },
+            error: function () {
+                Swal.fire("Error", "Update failed", "error");
+            }
+        });
+    }
 </script>
 
 @endsection

@@ -29,20 +29,12 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
-        // dd($type);
-        // if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-        //     LoanDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
-        //     GoldLoanDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
-        //     DtrfDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
-        //     AccountOpeningDocument::where('branch_code',$this->user->branch_id)->where('status',2)->update(['status'=>'pending']);
-        // }
-
         $filter = function ($query) use ($type, $start_date, $end_date) {
             if($type === 'received'){
                 $query->where('status',5);
             }
             elseif($type ==='rejected'){
-                $query->where('status',6);
+                $query->whereIn('status',[6,7]);
             }
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
@@ -230,8 +222,6 @@ class DocumentController extends Controller
             $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
             $dispatch->branch_code = $this->user->branch_id; 
             $dispatch->region_id = $this->user->region_id; 
-            // $dispatch->dispatched_by = Auth::user()->id;
-            // $dispatch->dispatch_date = !empty($validated['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $validated['dispatch_date'])->format('Y-m-d') : null;
             $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
             $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
             $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
@@ -276,6 +266,9 @@ class DocumentController extends Controller
                 })
                 ->when($type === 'received', function ($q){
                     $q->where('status',5);
+                })
+                ->when($type === 'rejected', function ($q){
+                    $q->whereIn('status',[6,7]);
                 });
         };
 
@@ -284,8 +277,9 @@ class DocumentController extends Controller
         $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',3)->count();
         $dispatched_count = $filter(CourierDispatch::query())->where('status',4)->count();
         $received_count = $filter(CourierDispatch::query())->where('status',5)->count();
+        $rejected_count = $filter(CourierDispatch::query())->whereIn('status',[6,7])->count();
 
-        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count'));
+        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count','rejected_count'));
     }
 
     public function viewDispatches($id)
@@ -363,6 +357,8 @@ class DocumentController extends Controller
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
+                $dispatch->verified_by = Auth::user()->id;
+                $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
                 $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $sequence,now());
@@ -402,46 +398,21 @@ class DocumentController extends Controller
 
     public function dispatchDetails(Request $request)
     {
-        $validated = $request->validate([
-            'courier_received_date' => 'required|date',
-            // 'tracked_by' => 'required|string',
-            'remarks' => 'required|string',
-            'reason_for_rejection' => 'nullable|string',
-            'loan_ids' => 'nullable|array',
-            'goldloan_ids' => 'nullable|array',
-            'dtrf_ids' => 'nullable|array',
-            'aof_ids' => 'nullable|array',
-        ]);
         // dd($request->all());
-
         try {
             DB::beginTransaction();
 
-            $updateData = [
-                // 'courier_received_date' => $validated['courier_received_date'],
-                // 'tracked_by' => $this->user->id,
-                'updated_by' => $this->user->id,
-                'status' => $validated['remarks'],
-                'reason' => $validated['reason_for_rejection'] ?? null
-            ];
+            $updates = $request->input('updates', []);
+            // dd($updates);
 
-            if (!empty($validated['loan_ids'])) {
-                LoanDocument::whereIn('id', $validated['loan_ids'])->update($updateData);
-            }
-            if (!empty($validated['goldloan_ids'])) {
-                GoldLoanDocument::whereIn('id', $validated['goldloan_ids'])->update($updateData);
-            }
-            if (!empty($validated['dtrf_ids'])) {
-                DtrfDocument::whereIn('id', $validated['dtrf_ids'])->update($updateData);
-            }
-            if (!empty($validated['aof_ids'])) {
-                AccountOpeningDocument::whereIn('id', $validated['aof_ids'])->update($updateData);
-            }
+            foreach ($updates as $update) {
 
-            $dispatch = CourierDispatch::find($request->dispatch_id);
-            $dispatch->status = "Delivered";
-            $dispatch->updated_by = $this->user->id;
-            $dispatch->save();
+                CourierDispatch::where('id', $update['id'])->update([
+                    'status' => $update['remarks'],
+                    'comments' => $update['reason_for_rejection'],
+                    'updated_by' => $this->user->id,
+                ]);
+            }
 
             DB::commit();
 
@@ -466,8 +437,7 @@ class DocumentController extends Controller
             'dtrf' => 'dtrf_ids',
             'aof' => 'aof_ids',
         ];
-
-        // dd($table[$request->type]);
+        
         try {
             DB::beginTransaction();
             
@@ -496,6 +466,36 @@ class DocumentController extends Controller
             //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
 
             DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function statusUpdate(Request $request)
+    {
+        $table = [
+            'loan' => LoanDocument::class,
+            'goldloan' => GoldLoanDocument::class,
+            'dtrf' => DtrfDocument::class,
+            'aof' => AccountOpeningDocument::class,
+        ];
+        try {
+            DB::beginTransaction();
+
+            $updates = $request->input('updates', []);
+            
+            foreach ($updates as $update) {
+                
+                $table[$update['type']]::where('id', $update['id'])->update([
+                    'status' => $update['remarks'],
+                    'reason' => $update['reason_for_rejection'],
+                    'updated_by' => $this->user->id,
+                ]);
+            }
+
+            DB::commit();
+
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             DB::rollBack();
