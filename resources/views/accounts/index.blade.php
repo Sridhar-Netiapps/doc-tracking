@@ -184,7 +184,7 @@
                     <h5 class="mb-0 text-primary">Update Details</h5>
                 </div>
                 <div class="modal-body p-4 row">
-                    <div class="col-6 pb-2">
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">Courier Name *</label>
                         <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
@@ -193,18 +193,17 @@
                             @endforeach
                         </select>
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
-                        {{-- <input type="text" name="courier_name" class="form-control" required> --}}
                     </div>
-                    <div class="col-6 pb-2">
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
                         <input type="text" name="awb_pod" class="form-control">
                     </div>
-                    <div class="w-100"></div> 
-                    <div class="col-6 pb-2">
+                    {{-- <div class="w-100"></div> 
+                    <div class="col-4 pb-2">
                         <label for="dispatch_date" class="form-label">Dispatch Date</label>
                         <input type="text" class="form-control datepicker dispatch_date" value="{{ request('dispatch_date') }}" name="dispatch_date" id="dispatch_date" required>
-                    </div>
-                    <div class="col-6 pb-2">
+                    </div> --}}
+                    <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No. *</label>
                         <input type="text" name="mmrp_barcode" class="form-control" required>
                     </div>
@@ -254,10 +253,10 @@
                 courier_name: {
                     required: true,
                     sanitize: true
-                },
-                dispatch_date: {
-                    required: true,
-                    sanitize: true
+                // },
+                // dispatch_date: {
+                //     required: true,
+                //     sanitize: true
                 },
                 mmrp_barcode: {
                     alphanumeric: true,
