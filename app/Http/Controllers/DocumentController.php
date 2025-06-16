@@ -227,6 +227,7 @@ class DocumentController extends Controller
             $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
             $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
             $dispatch->status = 3;
+            $dispatch->created_by = $this->user->id;
             $dispatch->save();
 
             if(isset($request->loan_ids))
