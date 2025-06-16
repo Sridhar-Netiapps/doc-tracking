@@ -6,7 +6,7 @@
         <div class="col-1"></div>
         <div class="col-10">
             <div class="d-flex page-heading">
-                <h3 >{{ ucfirst($type) }} Documents</h3>
+                <h3 >{{ ucfirst($type) }} Docs</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
         </div>
@@ -20,17 +20,17 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">
-                        MB Loan Documents <span class="badge text-bg-warning">{{ $loan_total }}</span>
+                        MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
-                        Gold Loan Documents <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
+                        Gold Loan Docs <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
-                        Liablities Documents <span class="badge text-bg-warning">{{ $aof_total }}</span>
+                        Liablities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -450,9 +450,9 @@
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
-                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
+                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div>
