@@ -1,110 +1,117 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
-            <div class="filter-bg">
-                <form method="POST" action="{{ route('document.filter') }}">
-                    @csrf
-                    <div class="row">
-                        <div class="col-2 mt-3">
-                            <select class="form-select document_type" name="document_type">
-                                <option value="">Select Document Type</option>
-                                <option value="loan" {{ request('document_type') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                                <option value="gold_loan" {{ request('document_type') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                                <option value="aof" {{ request('document_type') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
-                                <option value="dtrf" {{ request('document_type') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
-                            </select>
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
-                        </div>
-                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                        <div class="col-2 mt-3">
-                            <select class="form-select region" name="region">
-                                <option value="">Select Region</option>
-                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                            </select>
-                        </div>
-                        @endunless
-                        <div class="col-2 mt-3">
-                            <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
-                        </div>
-                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                        <div class="col-2 mt-3">
-                            <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
-                        </div>
-                        @endunless
-                        <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <select class="form-select scheme" name="scheme">
-                                <option value="">Select Scheme</option>
-                                <option value="GL" {{ request('scheme') == 'GL' ? 'selected' : '' }}>GL</option>
-                                <option value="IL" {{ request('scheme') == 'IL' ? 'selected' : '' }}>IL</option>
-                            </select>
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input type="text" readonly class="form-control datepicker account_creation_date" placeholder="Account Creation Date" value="{{ old('account_creation_date', $filters['account_creation_date'] ?? '') }}" name="account_creation_date">
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <input type="text" readonly class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <select class="form-select" name="type">
-                                <option value="">Loan Disbursement/Account Opening</option>
-                                <option value="Esign" {{ request('type') == 'Esign' ? 'selected' : '' }}>Esign</option>
-                                <option value="Manual" {{ request('type') == 'Manual' ? 'selected' : '' }}>Manual</option>
-                            </select>
-                        </div>
-                        <div class="col-2 mt-3 d-none">
-                            <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
-                                <option value="">Select Status</option>
-                                <option value=1>Pending</option>
-                                <option value=4>Dispatched</option>
-                            </select>
-                        </div>
-                        <div class="col-12 d-flex justify-content-end gap-2">
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
-                        </div>
+
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5>Filters</h5>
+        <form method="POST" action="{{ route('document.filter') }}">
+            @csrf
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <select class="form-select document_type" name="document_type">
+                        <option value="">Select Document Type</option>
+                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
+                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                        <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                </div>
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                <div class="col-12 mt-3">
+                    <select class="form-select region" name="region">
+                        <option value="">Select Region</option>
+                        <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
+                        <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
+                        <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
+                        <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
+                    </select>
+                </div>
+                @endunless
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                </div>
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
+                </div>
+                @endunless
+                <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <select class="form-select scheme" name="scheme">
+                        <option value="">Select Scheme</option>
+                        <option value="GL" {{ ($filters['scheme'] ?? '') == 'GL' ? 'selected' : '' }}>GL</option>
+                        <option value="IL" {{ ($filters['scheme'] ?? '') == 'IL' ? 'selected' : '' }}>IL</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                </div>
+                    <div class="col-12 mt-3">
+                        <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                     </div>
-                </form>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <select class="form-select" name="type">
+                        <option value="">Loan Disbursement/Account Opening</option>
+                        <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                        <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                </div>
+                <div class="col-12 mt-3">
+                    <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
+                        <option value="">Select Status</option>
+                        <option {{ ($filters['status'] ?? '') == 1 ? 'selected' : '' }} value=1>Pending</option>
+                        <option {{ ($filters['status'] ?? '') == 3 ? 'selected' : '' }} value=3>Awaiting Checker Approval</option>
+                        <option {{ ($filters['status'] ?? '') == 4 ? 'selected' : '' }} value="4">Dispatched</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
+                </div>
             </div>
-        </div>
-        <div class="col-1"></div>
+        </form>
     </div>
 </div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
+            <div class="d-flex page-heading">
             <h3>In Draft Docs</h3>
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
+        
         </div>
         <div class="col-1"></div>
     </div>  
 </div>
+
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-1"></div>
