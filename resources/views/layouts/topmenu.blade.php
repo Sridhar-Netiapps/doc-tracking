@@ -3,10 +3,10 @@
         <div class="row justify-content-start align-items-center">
             <ul class="d-flex justify-content-center align-items-center list-unstyled m-0">
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','new') }}">New Documents</a>
+                    <a class="nav-link" href="{{ route('accounts.index','new') }}">New </a>
                 </li>
                 <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','all') }}">All Documents</a>
+                    <a class="nav-link" href="{{ route('accounts.index','all') }}">All </a>
                 </li>
                 <li class="nav-item px-4">
                     <a class="nav-link" href="{{ route('accounts.proceed') }}">In Draft</a>
