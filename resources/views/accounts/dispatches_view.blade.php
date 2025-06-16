@@ -102,8 +102,10 @@
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @hasanyrole('ro-user')
                                 <th class="d-none loan" scope="col">Update Status</th>
                                 <th class="d-none loan" scope="col">Actions</th>
+                                @endhasanyrole
                             </tr>
                         </thead>
                         <tbody>
@@ -122,6 +124,7 @@
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="loan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -132,11 +135,10 @@
                                             <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
                                         <td class="border-start">
-                                            @hasanyrole('ro-user')
                                                 <button type="button" class="btn btn-primary update-row">Update</button>
-                                            @endhasanyrole
                                         </td>
                                         @endif
+                                        @endhasanyrole
                                     </tr>
                                 @endforeach
                             @endif
@@ -157,8 +159,10 @@
                                 <th scope="col">Channel</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @hasanyrole('ro-user')
                                 <th class="d-none goldloan" scope="col">Update Status</th>
                                 <th class="d-none goldloan" scope="col">Actions</th>
+                                @endhasanyrole
                             </tr>
                         </thead>
                         <tbody>
@@ -175,6 +179,7 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="goldloan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -185,11 +190,10 @@
                                             <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
                                         <td class="border-start">
-                                            @hasanyrole('ro-user')
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            @endhasanyrole
+                                            <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
                                         @endif
+                                        @endhasanyrole
                                     </tr>
                                 @endforeach
                             @endif
@@ -211,8 +215,10 @@
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @hasanyrole('ro-user')
                                 <th class="d-none aof" scope="col">Update Status</th>
                                 <th class="d-none aof" scope="col">Actions</th>                            
+                                @endhasanyrole
                             </tr>
                         </thead>
                         <tbody>
@@ -230,6 +236,7 @@
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="aof">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -240,11 +247,10 @@
                                             <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
                                         <td class="border-start">
-                                            @hasanyrole('ro-user')
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            @endhasanyrole
+                                            <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
                                         @endif
+                                        @endhasanyrole
                                     </tr>
                                 @endforeach
                             @endif
@@ -261,8 +267,10 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @hasanyrole('ro-user')
                                 <th class="d-none dtrf" scope="col">Update Status</th>
                                 <th class="d-none dtrf" scope="col">Actions</th>
+                                @endhasanyrole
                             </tr>
                         </thead>
                         <tbody>
@@ -275,6 +283,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="dtrf">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -285,11 +294,10 @@
                                             <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                         </td>
                                         <td class="border-start">
-                                            @hasanyrole('ro-user')
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            @endhasanyrole
+                                            <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
                                         @endif
+                                        @endhasanyrole
                                     </tr>
                                 @endforeach
                             @endif
