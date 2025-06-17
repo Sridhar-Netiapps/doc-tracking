@@ -402,12 +402,10 @@ class DocumentController extends Controller
 
     public function dispatchDetails(Request $request)
     {
-        // dd($request->all());
         try {
             DB::beginTransaction();
 
             $updates = $request->input('updates', []);
-            // dd($updates);
 
             foreach ($updates as $update) {
 
@@ -505,5 +503,33 @@ class DocumentController extends Controller
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function addRmaDetails(Request $request)
+    {
+        dd($request->all());
+        $validated = $request->validate([
+            'lot_no' => 'nullable|string|max:255',
+            'category_of_document' => 'nullable|string|max:255',
+            'work_order_no' => 'nullable|string|max:255',
+            'vendor_name' => 'nullable|string|max:255',
+            'vendor_movement_date' => 'nullable|date_format:Y-m-d',
+            'file_barcode' => 'nullable|string|max:255',
+            'box_barcode' => 'nullable|string|max:255',
+            'date_added_to_vendor' => 'nullable|date_format:Y-m-d',
+            'status' => 'nullable|in:In,Out,Permout,Destroyed',
+            'document_id' => 'nullable|integer',
+            'document_type' => 'nullable|string|max:255',
+            'document_unique_no' => 'nullable|string|max:255',
+            'dispatch_no' => 'nullable|string|max:255',
+        ]);
+
+        $vendorDocument = VendorDocument::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Vendor document saved successfully.',
+            'data' => $vendorDocument
+        ]);
     }
 }

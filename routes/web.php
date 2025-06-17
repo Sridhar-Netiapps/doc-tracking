@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
+        Route::post('/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     

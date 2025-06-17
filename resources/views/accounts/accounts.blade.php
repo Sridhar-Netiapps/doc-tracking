@@ -51,11 +51,12 @@
 
                 @role('ro-user')
                     @if ($type === 'received')
-                        <li class="ms-auto">
-                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                    <li class="ms-auto">
+                            <button class="btn btn-primary vendor" type="button">Add RMA Details</button>
+                            {{-- <form method="POST" action="{{ route('accounts.moved') }}" id="proceed">
                                 @csrf
                                 <button class="btn btn-primary proceed" type="button">Proceed</button>
-                            </form>
+                            </form> --}}
                         </li>
                     @endif
                 @endrole
@@ -557,48 +558,66 @@
         </form>
     </div>
 </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            {{-- <form id="update-courier" action="/accounts-update" method="POST"> --}}
+            <form id="update-courier" action="{{ route('accounts.moved')}}" method="POST">
+                @csrf
                 <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Update Details</h5>
+                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
                 </div>
                 <div class="modal-body p-4 row">
-                    <div class="col-4 pb-4">
-                        <label>Unique Number</label>
-                        <h5 class="unique_ref_no">UJJ029921</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Customer Name</label>
-                        <h5 class="customer_name">Cali</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Channel</label>
-                        <h5 class="channel">GL</h5>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Lot No.</label>
+                        <input type="number" name="lot_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name</label>
-                        <input type="text" name="courier_name" class="form-control" required>
+                        <label for="tracked_by" class="form-label">Work Order No.</label>
+                        <input type="number" name="work_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
+                        <label for="tracked_by" class="form-label">Vendor Name</label>
+                        <input type="text" name="vendor_name" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="dispatch_date" class="form-label">Dispatch Date</label>
-                        <input type="text" readonly class="form-control datepicker dispatch_date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date" id="dispatch_date" required>
+                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
+                        <input type="text" name="barcode_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Box Barcode.</label>
+                        <input type="text" name="vendor_name" class="form-control">
+                    </div>
+                    {{-- <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            <option value='In'>In</option>
+                            <option value='Out'>Out</option>
+                            <option value='Permout'>Permout</option>
+                            <option value='Destroyed'>Destroyed</option>
+                        </select>
+                    </div> --}}
                 </div>
                 <div class="modal-footer border-0">
-                    <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
-                    {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                 </div>
-            {{-- </form> --}}
+            </form>
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         
@@ -615,6 +634,9 @@
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
 
+        $('.vendor').click(function () {
+            $('#add-vendor').modal('show');
+        });
         
         $('.proceed').click(function () {
             let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
