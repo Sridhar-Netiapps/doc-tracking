@@ -2,12 +2,16 @@
 @section('content')
 <div class="container-fluid p-4">
 	<div class="d-flex">
-		<strong>Insurance Claim Forms</strong>
+		<strong>Insurance Leads</strong>
 		<div class="ms-auto">
 			<div class="d-flex">
+
+			@if(auth::user()->branch_id == '1100')
 				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn" ><button class="btn btn-secondary btn-text p-2">Import</button></a>
 
-				<a class="nav-link form-btn" href="{{route('create_insurance')}}"><button class="btn btn-success btn-text p-2">Create New</button></a>
+				<a class="nav-link form-btn" href="{{route('create_insurance')}}"><button class="btn btn-success btn-text p-2">Create Lead</button></a>
+
+			@endif
 
 				<div class="d-flex">
 					<form method="GET" action="">
@@ -26,7 +30,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Import Cliam details from Excel sheet</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Import Insurance Lead details from Excel sheet</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">

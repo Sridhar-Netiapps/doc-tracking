@@ -34,7 +34,12 @@ class InsuranceHomeController extends Controller
 
     public function list()
     {
-        $data = InsuranceClaimDetail::orderBy('id','DESC')->paginate(25);
+        if(Auth::user()->branch_id == '1100'){
+          $data = InsuranceClaimDetail::orderBy('id','DESC')->paginate(25);
+        
+        }else{
+           $data = InsuranceClaimDetail::where('branch','LIKE',Auth::user()->branch_id.'%')->orderBy('id','DESC')->paginate(25); 
+        }
         return view('insurance.index',compact('data'));
     }
 

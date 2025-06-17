@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Claim Forms</button></a>
+         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Insurance Leads</button></a>
          <div class="ms-auto">
             <select class="form-control">
                <option>FY : 2025-2026</option>

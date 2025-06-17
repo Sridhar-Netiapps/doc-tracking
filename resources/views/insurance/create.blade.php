@@ -3,22 +3,22 @@
 
 <div class="container">
 	<div class="py-4">
-		<label class="label-font-header">Insurance Form</label>
+		<label class="label-font-header">Create New Lead</label>
 	</div>
 
 	<div class="py-2">
 		<div class="row">
-			<div class="col-3">
+			<!-- <div class="col-3">
 				<button class="form-control btn btn-sm btn-secondary btn-toggle p-2 active card-design"  value="ho">Head Office </button>
-			</div>
+			</div> -->
 
-			<div class="col-3">
+			<!-- <div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="bo">Branch Office </button>
-			</div>
+			</div> -->
 
-			<div class="col-3">
+			<!-- <div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
-			</div>
+			</div> -->
 		</div>   
 
 		@if(Session::has('success'))

@@ -97,7 +97,7 @@
                                             {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId">{{ Auth::user()->employee_id }} SuperAdmin</div>
+                                        <div class="empId">{{ Auth::user()->employee_id }} {{ (Auth::user()->branch_id == '1100')?'- HO User':'- BO User'}}</div>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -118,6 +118,7 @@
                                             @csrf
                                         </form>
                                     </div>
+                                    
                                 </div>
 
 

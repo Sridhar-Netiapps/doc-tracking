@@ -3,10 +3,13 @@
 
 <div class="container">
 	<div class="d-flex py-4">
-		<label class="label-font-header">Update Insurance Form</label>
+		<label class="label-font-header">Update Insurance Form - {{$data->utrn}}</label>
 
+        
 		<div class="ms-auto">
+			@if(auth::user()->branch_id != '1100')
 			<a href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
+			@endif
 
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
 		</div>
@@ -14,12 +17,13 @@
 
 	<div class="py-2">
 		<div class="row">
+			
 			<div class="col-3">
-				<button class="form-control btn btn-sm btn-secondary btn-toggle p-2 active card-design"  value="ho">Head Office </button>
+				<button class="form-control btn btn-sm btn-secondary btn-toggle p-2 card-design" id="ho"  value="ho">Head Office </button>
 			</div>
-
+           
 			<div class="col-3">
-				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="bo">Branch Office </button>
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design" id="bo"  value="bo">Branch Office </button>
 			</div>
 
 			<div class="col-3">
@@ -29,7 +33,8 @@
         
         
 		<div class="py-3 d-block" id="head_off">
-	    <form method="POST" action="">		
+	    <form method="POST" action="" disabled>		
+	    	<fieldset {{ (auth::user()->branch_id == '1100')?'':'disabled'}}>
 		<div class="row">
 			<div class="col-3 mb-3">
 			    <label class="form-label">Region</label>
@@ -351,12 +356,15 @@
 			    <input type="text" class="form-control" name="handed_to_credit">
 			</div>
 		</div>
+        </fieldset>
 
+        @if(auth::user()->branch_id == '1100')
 		<div class="d-flex">
 			<div class="ms-auto">
-				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
+				<button type="submit" class="btn btn-sm btn-danger btn-text p-2">Update</button>
 			</div>
 	    </div>
+	    @endif
 
         </form>
         
@@ -369,6 +377,7 @@
        
 		<div class="py-3 d-none" id="branch_off">
 			<form method="POST" action="">
+			<fieldset {{ (auth::user()->branch_id == '1100')?'disabled':''}}>
 			<div class="row">
 				<div class="col-3 mb-3">
 				    <label class="form-label">Nominee Name as per Bank Records</label>
@@ -436,12 +445,15 @@
 				</div>
 
 			</div>
-
+            
+            </fieldset>
+            @if(auth::user()->branch_id != '1100')
 			<div class="d-flex">
 				<div class="ms-auto">
-					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
+					<button type="submit" class="btn btn-sm btn-danger btn-text p-2">Update</button>
 				</div>
 		    </div>
+		    @endif
         </form>
 		</div>
 
@@ -795,7 +807,7 @@
 		  </div>
 		</div>		
        </form>
-    
+       <input type="hidden" id="usertype" value="{{ auth::user()->branch_id}}">
 	</div>
 </div>
 
@@ -856,6 +868,36 @@
      
 	    }
     
-   }		
+   }	
+
+   $(document).ready(function() {
+      const userbranch = $('#usertype').val();
+     
+      if(userbranch == '1100'){
+      	$('#head_off').removeClass('d-none');
+	      $('#head_off').addClass('d-block');
+          $('#ho').addClass('active');
+
+	      $('#branch_off').removeClass('d-block');
+	      $('#branch_off').addClass('d-none');
+
+	      $('#checklist').removeClass('d-block');
+	      $('#checklist').addClass('d-none');
+     
+      }
+      else{
+      	  $('#head_off').removeClass('d-block');
+	      $('#head_off').addClass('d-none');
+
+	      $('#branch_off').removeClass('d-none');
+	      $('#branch_off').addClass('d-block');
+	      $('#bo').addClass('active');
+
+	      $('#checklist').removeClass('d-block');
+	      $('#checklist').addClass('d-none');
+          
+
+      }
+   	});
 </script>
 @endsection
