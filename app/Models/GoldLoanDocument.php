@@ -13,4 +13,13 @@ class GoldLoanDocument extends Model
         'account_number', 'customer_name', 'account_creation_date',
         'channel', 'barcode', 'business_category'
     ];
+
+    public function statusName()
+    {
+        return $this->belongsTo(ProcessStatus::class, 'status');
+    }
+    public function modifier()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

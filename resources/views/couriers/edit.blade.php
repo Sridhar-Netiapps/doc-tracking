@@ -34,8 +34,10 @@
         </div>
         <div class="mb-3">
             <label>Number</label>
-            <input type="text" name="number" class="form-control" value="{{ $courier->number }}" required>
-        </div>
+            <input type="text" name="number" class="form-control" required 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   maxlength="10" value="{{ $courier->number }}">
+        </div> 
         <div class="mb-3">
             <label>Address</label>
             <textarea name="address" class="form-control" required>{{ $courier->address }}</textarea>
@@ -43,9 +45,8 @@
         <div class="mb-3">
             <label>Status</label>
             <select name="status" class="form-control">
-                <option value="Pending" {{ $courier->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                <option value="In Transit" {{ $courier->status == 'In Transit' ? 'selected' : '' }}>In Transit</option>
-                <option value="Delivered" {{ $courier->status == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                <option value="Active" {{ $courier->status == 'Active' ? 'selected' : '' }}>Active</option>
+                <option value="Inactive" {{ $courier->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
             </select>
         </div>
         <button class="btn btn-primary">Update</button>

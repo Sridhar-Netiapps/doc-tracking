@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <h3>{{ ucfirst($type) }} Accounts</h3>
+            <h3>{{ ucfirst($type) }} Documents</h3>
         </div>
         <div class="col-1"></div>
     </div>
@@ -88,7 +88,7 @@
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->loan_cycle }}</td>
                                         <td>{{ $row->customer_name }}</td>
-                                        <td>{{ $row->account_creation_date }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
                                         {{-- <td>{{ $row->barcode }}</td> --}}
                                         {{-- <td>{{ $row->barcode }}</td> --}}
@@ -99,7 +99,7 @@
                                         {{-- <td>{{ $row->branch_office_type }}</td>
                                         <td>{{ $row->pincode }}</td>
                                         <td>{{ $row->city }}</td> --}}
-                                        <td>{{ $row->status }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -142,11 +142,11 @@
                                     <td>{{ $row->cif_id }}</td>
                                     <td>{{ $row->account_number }}</td>
                                     <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>
                                     <td>{{ $row->business_category }}</td> 
                                     <td>
-                                        {{ $row->status }}
+                                        {{ $row->statusName->name ?? '-' }}
                                     </td>
                                     </tr>
                                 @endforeach
@@ -194,7 +194,7 @@
                                     <td>{{ $row->account_number }}</td>
                                     {{-- <td>{{ $row->loan_cycle }}</td> --}}
                                     <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>        
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     <td>{{ $row->type_of_account_opening }}</td>
@@ -204,7 +204,7 @@
                                     {{-- <td>{{ $row->branch_office_type }}</td>
                                     <td>{{ $row->pincode }}</td>
                                     <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->status }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </td>                                 
                                  </tr>
                                 @endforeach
@@ -246,11 +246,11 @@
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->account_creation_date}}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     <td>{{ $row->business_category}}</td>
                                     {{-- <td>{{ $row->customer_name }}</td>
-                                    <td>{{ $row->account_creation_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>
                                     {{-- <td>{{ $row->barcode }}</td> --}}
                                     {{-- <td>{{ $row->loan_disbursement_type }}</td>
@@ -260,7 +260,7 @@
                                     {{-- <td>{{ $row->branch_office_type }}</td>
                                     <td>{{ $row->pincode }}</td>
                                     <td>{{ $row->city }}</td> --}}
-                                    <td>{{ $row->status }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif

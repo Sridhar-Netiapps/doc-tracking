@@ -9,7 +9,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
@@ -28,15 +28,20 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
-        <tr>
-            <th>ID</th>
-            <th>Courier ID</th>
-            <th>Name</th>
-            <th>Number</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-card">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                        <tr>
+                        <th>ID</th>
+                        <th>Courier ID</th>
+                        <th>Name</th>
+                        <th>Mobile Number</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
         @foreach($couriers as $courier)
         <tr>
             <td>{{ $courier->id }}</td>
@@ -46,10 +51,10 @@
             <td>{{ $courier->status }}</td>
             <td>
                 <a href="{{ route('couriers.edit', $courier->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                <form action="{{ route('couriers.destroy', $courier->id) }}" method="POST" style="display:inline">
+                {{-- <form action="{{ route('couriers.destroy', $courier->id) }}" method="POST" style="display:inline">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this courier?')">Delete</button>
-                </form>
+                </form> --}}
             </td>
         </tr>
         @endforeach

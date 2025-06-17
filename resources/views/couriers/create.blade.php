@@ -9,7 +9,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
+                        <li class="breadcrumb-item"><a href="#">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav>
@@ -34,8 +34,11 @@
         </div>
         <div class="mb-3">
             <label>Number</label>
-            <input type="text" name="number" class="form-control" required>
-        </div>
+            <input type="text" name="number" class="form-control" required 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   maxlength="10" >
+        </div>               
+        
         <div class="mb-3">
             <label>Address</label>
             <textarea name="address" class="form-control" required></textarea>

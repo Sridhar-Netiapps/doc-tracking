@@ -78,6 +78,7 @@
                                 <div class="d-flex justify-content-center align-items-center">
                                     <div class="userIcon">
                                         <img src="/images/user-solid.svg" />
+                                        {{-- <img src="/images/logoIcon.svg" /> --}}
                                     </div>
 
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
@@ -86,7 +87,7 @@
                                             {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId">DUMSA001 - Superadmin</div>
+                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ Auth::user()->roles->value('name') }}</div>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -98,6 +99,7 @@
                                             {{ __('Insurance') }}
                                         </a>
 
+                                        <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -108,11 +110,6 @@
                                         </form>
                                     </div>
                                 </div>
-
-
-
-
-
                             </li>
                         @endguest
                     </ul>

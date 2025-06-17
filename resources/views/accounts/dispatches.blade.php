@@ -49,34 +49,34 @@
         <div class="col-1"></div>
     </div>
 </div>
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <h3>Dispatches</h3>
+            <div class="d-flex page-heading">
+                <h3>Dispatches</h3>
+            </div>
         </div>
         <div class="col-1"></div>
-    </div>
+    </div>  
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                @hasanyrole('master|bo-maker|bo-checker')
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
-                @endhasanyrole
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Dispatched List @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Courier Dispatched @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
-                @hasanyrole('ro-user')
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Received Documents @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Courier Delivered @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
-                @endhasanyrole
+                <li class="nav-item" role="presentation">
+                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="false">Courier Rejected @if ($rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
+                </li>
                 @if ($type == 'ready')
                 @hasanyrole('bo-checker')
                 <li class="ms-auto">
@@ -84,6 +84,13 @@
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
+                </li> 
+                @endhasanyrole
+                @endif
+                @if ($type == 'list')
+                @hasanyrole('ro-user')
+                <li class="ms-auto">
+                    <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endhasanyrole
                 @endif
@@ -94,104 +101,96 @@
                         <thead>
                             <tr>
                                 @if ($type == 'ready')
+                                @hasanyrole('master|bo-checker')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
-                                @elseif ($type == 'list')
-                                <th scope="col">Dispatch Number</th>
+                                @endhasanyrole
+                                @else
+                                <th scope="col">Dispatch No</th>
                                 @endif
-                                <th scope="col">AWB/POD Number</th>
+                                <th scope="col">AWB/POD No</th>
                                 <th scope="col">Courier Name</th>
-                                <th scope="col">MMRP Internal Barcode No.</th>
+                                <th scope="col">MMRP Code</th>
                                 <th scope="col">Branch code</th>
                                 {{-- <th scope="col">Region</th> --}}
-                                <th scope="col">No of Loan Documents</th>
-                                <th scope="col">No of Gold Loan Documents</th>
+                                <th scope="col">No of Documents</th>
+                                {{-- <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
-                                <th scope="col">No of AOF Documents</th>
+                                <th scope="col">No of AOF Documents</th> --}}
                                 <th scope="col">Dispatch Date</th>
                                 <th scope="col">Dispatch By</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'list')
+                                    @hasanyrole('ro-user')
+                                        <th scope="col">Update Status</th>
+                                    @endhasanyrole
+                                @endif
                                 <th scope="col" class="border-start">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($records as $row)
-                                <tr>
+                                <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                     @if ($type == 'ready')
+                                    @hasanyrole('master|bo-checker')
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                    @elseif ($type == 'list')
+                                    @endhasanyrole
+                                    @else
                                     <td>{{ $row->dispatch_no }}</td>
                                     @endif
                                     <td>{{ $row->awb_pod }}</td>
-                                    <td>{{ $row->courier_name }}</td>
+                                    <td>{{ $row->courierName->name }}</td>
                                     <td>{{ $row->mmrp_barcode }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     {{-- <td>{{ $row->region }}</td> --}}
-                                    <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
-                                    <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
+                                    <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
+                                        <p>Gold Loan - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
+                                        <p>Liablities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
+                                        <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
+                                    </td>
+                                    {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
-                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
+                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
                                     <td>{{ $row->dispatch_date }}</td>
                                     <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->status }}</td>
+                                    <td>{{ $row->statusName->name ?? '-' }}
+                                        @if ($row->status == 6 || $row->status == 7 )
+                                            <small><p>Reason : </p></small>
+                                            <i>{{ $row->comments }}</i>
+                                        @endif
+                                    </td>
+                                    @if ($type == 'list')
+                                        @hasanyrole('ro-user')
+                                        <td>
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=5>Received</option>
+                                                <option value=7>Received with Query</option>
+                                                <option value=6>Rejected</option>
+                                            </select>
+                                            <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                        </td>
+                                        @endhasanyrole
+                                    @endif
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
-                                        <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
+                                        <div class="">
+                                            <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                            @if ($type == 'list')
+                                                @hasanyrole('ro-user')
+                                                    <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
+                                                @endhasanyrole
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-                {{-- <div class="tab-pane fade {{$type == 'list' ? 'active show':''}}" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col"><input type="checkbox" class="select_all"/></th>
-                                <th scope="col">AWB/POD Number</th>
-                                <th scope="col">Courier Name</th>
-                                <th scope="col">MMRP Internal Barcode No.</th>
-                                <th scope="col">Branch code</th>
-                                <th scope="col">Region</th>
-                                <th scope="col">No of Loan Documents</th>
-                                <th scope="col">No of Gold Loan Documents</th>
-                                <th scope="col">No of DTRF Documents</th>
-                                <th scope="col">No of AOF Documents</th>
-                                <th scope="col">Dispatch Date</th>
-                                <th scope="col">Dispatch By</th>
-                                <th scope="col">Status</th>
-                                <th scope="col" class="border-start">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dispatched as $row)
-                                <tr>
-                                    <td><input type="checkbox" class="select" name="dispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                    <td>{{ $row->awb_pod }}</td>
-                                    <td>{{ $row->courier_name }}</td>
-                                    <td>{{ $row->mmrp_barcode }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    <td>{{ $row->region }}</td>
-                                    <td>{{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</td>
-                                    <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
-                                    <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
-                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td>
-                                    <td>{{ $row->dispatch_date }}</td>
-                                    <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->status }}</td>
-                                    <td class="border-start">
-                                        <a href="{{ route('dispatches.view', $row->id) }}" class="btn btn-secondary btn-sm">View</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div> --}}
             </div>
         </div>
         <div class="col-1"></div>
     </div>
 </div>
-
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
@@ -226,12 +225,7 @@
                     </div>
                      <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Dispatch Date</label>
-                        <input type="text"
-                               class="form-control datepicker vendor_movement_date"
-                               value="{{ request('vendor_movement_date') }}"
-                               name="vendor_movement_date"
-                               id="vendor_movement_date"
-                               required>
+                        <input type="text" readonly class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}" name="vendor_movement_date" id="vendor_movement_date" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">File barcode againt Lot No.</label>
@@ -264,11 +258,33 @@
         </div>
     </div>
 </div>
-
+<div class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5>Filters</h5>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
+        var count = $('select[name="remarks"]').length;
+        if(count > 0){
+            $('#update-all').removeClass('d-none');
+        }
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
+        });
+
+        $('select[name="remarks"]').change(function () {
+            const row = $(this).closest('tr');
+            const reasonField = row.find('textarea[name="reason_for_rejection"]');
+
+            if ($(this).val() === '6' || $(this).val() === '7') {
+                reasonField.removeClass('d-none');
+            } else {
+                reasonField.addClass('d-none').val('');
+            }
         });
 
         $('.proceed').click(function () {
@@ -293,7 +309,7 @@
             if (hasSelection) {
                 Swal.fire({
                     title: "Alert!",
-                    text: "Are You Sure.",
+                    text: "Are You Sure ?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "YES",
@@ -312,7 +328,93 @@
                 });
             }
         });
+   
+    $('#applyFilter').click(function () {
+            let status = $('#status').val()?.trim();
+            let search = $('#search').val()?.trim();
+            let dateFrom = $('#date_from').val()?.trim();
+            let dateTo = $('#date_to').val()?.trim();
+
+            // Add more filter fields if needed
+
+            if (!status && !search && !dateFrom && !dateTo) {
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select any filter option.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                $('#filterForm').submit(); // or trigger AJAX filtering
+            }
+        });
     });
+
+    function collectRowData(row) {
+        const id = row.data('id');
+        const dispatch = row.data('dispatch');
+        const remarks = row.find('.remarks').val();
+        const reason = row.find('.reason').val();
+
+        if (remarks !== '5' && !reason.trim()) {
+            throw `Reason is required for this Dispatch No: #${dispatch}`;
+        }
+
+        return { id, remarks, reason_for_rejection: reason };
+    }
+
+    // Handle individual update
+    $('.update-row').on('click', function () {
+        const row = $(this).closest('tr');
+        let data;
+
+        try {
+            data = [collectRowData(row)];
+        } catch (err) {
+            Swal.fire("Alert", err, "warning");
+            return;
+        }
+
+        sendUpdateRequest(data);
+    });
+
+    // Handle bulk update
+    $('#update-all').on('click', function () {
+        const data = [];
+        let hasError = false;
+
+        $('tr[data-id]').each(function () {
+            try {
+                data.push(collectRowData($(this)));
+            } catch (err) {
+                Swal.fire("Alert", err, "warning");
+                hasError = true;
+                return false; // stop loop
+            }
+        });
+
+        if (!hasError && data.length) {
+            sendUpdateRequest(data);
+        }
+    });
+
+    // Common AJAX function
+    function sendUpdateRequest(payload) {
+        $.ajax({
+            url: '{{ route("dispatches.update") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                updates: payload
+            },
+            success: function () {
+                Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+            },
+            error: function () {
+                Swal.fire("Error", "Update failed", "error");
+            }
+        });
+    }
 </script>
 
 @endsection

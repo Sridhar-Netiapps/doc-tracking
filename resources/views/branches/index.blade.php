@@ -17,12 +17,8 @@
             </div>
 
         </div>
-        <div><a href="{{ route('branches.create') }}" class="btn btn-primary">Create New Branch</a></div>
+        {{-- <div><a href="{{ route('branches.create') }}" class="btn btn-primary">Create New Branch</a></div> --}}
     </div>
-
-
-
-
     @if (session('success'))
         <div class="alert alert-success mt-3">
             {{ session('success') }}
@@ -48,7 +44,7 @@
                             <th>Status</th>
                             {{-- <th>Created By</th> --}}
                             {{-- <th>Updated By</th> --}}
-                            <th>Actions</th>
+                            {{-- <th>Actions</th> --}}
                         </tr>
                         </thead>
                         <tbody>
@@ -66,7 +62,7 @@
                                 <td>
                                     <span class="badge {{ $branch->status ? 'bg-success' : 'bg-secondary' }}">{{ $branch->status ? __('Active') : __('Inactive') }}</span>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('branches.edit', $branch->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                         <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="d-inline">
@@ -75,7 +71,7 @@
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
                                         </form>
                                     </div>
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                         </tbody>

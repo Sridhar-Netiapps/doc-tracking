@@ -13,4 +13,13 @@ class AccountOpeningDocument extends Model
         'account_number', 'customer_name', 'account_creation_date', 'scheme',
         'channel', 'barcode', 'type_of_account_opening', 'business_category'
     ];
+
+    public function statusName()
+    {
+        return $this->belongsTo(ProcessStatus::class, 'status');
+    }
+    public function modifier()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

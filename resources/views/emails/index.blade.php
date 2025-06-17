@@ -39,7 +39,7 @@
             </div>
 
         </div>
-        <div><a href="{{ route('emails.create') }}" class="btn btn-primary">Create New Department</a></div>
+        <div><a href="{{ route('emails.create') }}" class="btn btn-primary">Create New Email</a></div>
     </div>
     <div class="row">
         <div class="col-12">
@@ -65,11 +65,11 @@
                 <td>{{ $email->sent_at ?? '—' }}</td>
                 <td>
                     <a href="{{ route('emails.edit', $email->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">
+                    {{-- <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button onclick="return confirm('Delete this email?')" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    </form> --}}
                 </td>
             </tr>
             @empty

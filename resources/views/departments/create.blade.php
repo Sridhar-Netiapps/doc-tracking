@@ -86,13 +86,13 @@
                 //     $('#myModal').modal('hide');
                 // });
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to submit this form?",
+                    title: 'Alert!',
+                    text: "Are you sure you want to submit this form?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#f78f35',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, submit it!'
+                    confirmButtonText: 'Yes!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         form.submit();

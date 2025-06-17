@@ -1,7 +1,8 @@
 <script>
     $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip();
         $(".datepicker").flatpickr({
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",
             allowInput: true
         });
         @if(session('success'))

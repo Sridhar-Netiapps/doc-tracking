@@ -41,9 +41,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
+        Route::post('/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
+    Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
+    Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');

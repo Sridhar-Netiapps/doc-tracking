@@ -25,7 +25,7 @@
                     <table class="table table-bordered align-middle">
                         <thead>
                         <tr>
-                            <!-- <th>S.No</th> -->
+                            <th>S.No</th>
                             <th>Department Name</th>
                             <th>Short Name</th>
                             {{-- <th>Region Name</th>
@@ -37,13 +37,13 @@
                             <th>Status</th>
                             {{-- <th>Created By</th> --}}
                             {{-- <th>Updated By</th> --}}
-                            <th>Actions</th>
+                            {{-- <th>Actions</th> --}}
                         </tr>
                         </thead>
                         <tbody>
                         @foreach ($departments as $department)
                             <tr>
-                                <!-- <td>{{ $loop->iteration }}</td> -->
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $department->name }}</td>
                                 <td>{{ $department->slug }}</td>
                                 {{-- <td>{{ $department->region_name }}</td>
@@ -55,7 +55,7 @@
                                 <td>
                                     <span class="badge {{ $department->status ? 'bg-success' : 'bg-secondary' }}">{{ $department->status ? __('Active') : __('Inactive') }}</span>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('departments.edit', $department->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                         <form action="{{ route('departments.destroy', $department->id) }}" method="POST" class="d-inline">
@@ -64,7 +64,7 @@
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
                                         </form>
                                     </div>
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                         </tbody>
