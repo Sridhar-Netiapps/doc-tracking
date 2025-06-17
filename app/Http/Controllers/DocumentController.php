@@ -30,7 +30,10 @@ class DocumentController extends Controller
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
-            if($type === 'received'){
+            if($type === 'pending'){
+                $query->where('status',1);
+            }
+            elseif($type === 'received'){
                 $query->where('status',5);
             }
             elseif($type ==='rejected'){

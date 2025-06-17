@@ -123,7 +123,13 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="loan">
@@ -178,7 +184,13 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="goldloan">
@@ -235,7 +247,13 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="aof">
@@ -282,7 +300,13 @@
                                         <td>{{ $row->branch_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="dtrf">
@@ -405,6 +429,71 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+<div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
+                @csrf
+                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
+                <div class="modal-header p-4 text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
+                </div>
+                <div class="modal-body p-4 row">
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Lot No.</label>
+                        <input type="number" name="lot_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Work Order No.</label>
+                        <input type="number" name="lot_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Vendor Name</label>
+                        <input type="text" name="vendor_name" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
+                        <input type="file" name="barcode_file" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="tracked_by" class="form-label">Box Barcode.</label>
+                        <input type="text" name="vendor_name" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
+                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            <option value='In'>In</option>
+                            <option value='Out'>Out</option>
+                            <option value='Permout'>Permout</option>
+                            <option value='Destroyed'>Destroyed</option>
+                        </select>
+                        {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
+                    </div>
+                    <div class="col-12 pb-2 d-none ">
+                        <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
+                        <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

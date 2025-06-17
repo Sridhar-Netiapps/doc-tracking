@@ -148,7 +148,12 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -242,7 +247,13 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -337,7 +348,12 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -423,7 +439,13 @@
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endforeach
                                 @endif

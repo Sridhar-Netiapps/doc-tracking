@@ -68,13 +68,13 @@
                     <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Dispatched List @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Courier Dispatched @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Delivered List @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Courier Delivered @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="false">Rejected List @if ($rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="false">Courier Rejected @if ($rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
                 @hasanyrole('bo-checker')

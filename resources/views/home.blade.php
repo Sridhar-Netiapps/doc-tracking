@@ -8,7 +8,7 @@
         {{-- <div class="d-flex mb-3"><div class="ms-2"><a href="/accounts/accounts">Filters</a></div></div> --}}
             <div class="headerCards">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
@@ -17,7 +17,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    {{-- <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-2.svg" /></div>
@@ -25,8 +25,8 @@
                                 <h3>{{$total_selected}}/{{$total_doc}}</h3>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-2">
+                    </div> --}}
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-2.svg" /></div>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-3.svg" /></div>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -72,11 +72,11 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($loan_total[1] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[1] ?? 0 + $loan_total[2] ?? 0)}}/{{array_sum($loan_total)}}</h3>
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    {{-- <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -84,11 +84,11 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
-                                <h3>{{($loan_total[2] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[1] ?? 0 + $loan_total[2] ?? 0)}}/{{array_sum($loan_total)}}</h3>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-2">
+                    </div> --}}
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -150,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -162,7 +162,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -174,7 +174,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -198,7 +198,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -212,7 +212,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -224,7 +224,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -236,7 +236,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -248,7 +248,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -260,7 +260,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -272,7 +272,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -286,7 +286,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -298,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -310,7 +310,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -322,7 +322,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -334,7 +334,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -346,7 +346,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
