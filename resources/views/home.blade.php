@@ -72,7 +72,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($loan_total[1] ?? 0 + $loan_total[2] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[1] ?? 0)}}/{{array_sum($loan_total)}}</h3>
                             </div>
                         </div>
                     </div>
