@@ -112,15 +112,15 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -213,15 +213,15 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -313,15 +313,15 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -409,15 +409,15 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
