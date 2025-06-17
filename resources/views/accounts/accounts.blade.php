@@ -39,43 +39,55 @@
                     </button>
                 </li>
                 @hasanyrole('master|bo-maker|bo-checker')
-                                    @if (!in_array($type, ['received', 'rejected']))
-                                        <li class="ms-auto">
-                                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
-                                                @csrf
-                                                <button class="btn btn-primary proceed" type="button">Proceed</button>
-                                            </form>
-                                        </li>
-                                    @endif
-                                @endhasanyrole
+                    @if (!in_array($type, ['received', 'rejected']))
+                        <li class="ms-auto">
+                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                                @csrf
+                                <button class="btn btn-primary proceed" type="button">Proceed</button>
+                            </form>
+                        </li>
+                    @endif
+                @endhasanyrole
 
-                                @role('ro-user')
-                                    @if ($type === 'received')
-                                        <li class="ms-auto">
-                                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
-                                                @csrf
-                                                <button class="btn btn-primary proceed" type="button">Proceed</button>
-                                            </form>
-                                        </li>
-                                    @endif
-                                @endrole
-
+                @role('ro-user')
+                    @if ($type === 'received')
+                        <li class="ms-auto">
+                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                                @csrf
+                                <button class="btn btn-primary proceed" type="button">Proceed</button>
+                            </form>
+                        </li>
+                    @endif
+                @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @hasanyrole('master|bo-maker|bo-checker')
-                                @if (!in_array($type, ['received', 'rejected']))
-                                <th scope="col"><input type="checkbox" class="loan_all" /> </th>
-                                @endif
+                                @hasrole('master')
+                                    @if ($type !== 'rejected')
+                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                    @endif
+                                @elsehasanyrole('bo-maker|bo-checker')
+                                    @if (in_array($type, ['new', 'all']))
+                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                    @endif
+                                @elsehasrole('ro-user')
+                                    @if ($type === 'received')
+                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                    @endif
+                                @endhasrole
+                                {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
+                                    @if (!in_array($type, ['received', 'rejected']))
+                                        <th scope="col"><input type="checkbox" class="loan_all" /> </th>
+                                    @endif
                                 @endhasanyrole
                                 @role('ro-user')
                                     @if ($type === 'received')
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
-                                @endrole
+                                @endrole --}}
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -88,19 +100,29 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Barcode</th> --}}
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
                                     <tr>
-                                        @hasanyrole('master|bo-maker|bo-checker')
+                                        @hasrole('master')
+                                            @if ($type !== 'rejected')
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasanyrole('bo-maker|bo-checker')
+                                            @if (in_array($type, ['new', 'all']))
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasrole('ro-user')
+                                            @if ($type === 'received')
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @endhasrole
+                                        {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
                                             @if ($row->status == 1 && !in_array($type, ['received', 'rejected']))
                                                 <input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}">
@@ -111,7 +133,7 @@
                                         @if ($type === 'received' && $row->status == 1)
                                             <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                         @endif
-                                        @endrole
+                                        @endrole --}}
                                         <td>{{ $row->unique_ref_no }}</td>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -124,15 +146,8 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
@@ -148,7 +163,20 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @hasanyrole('master|bo-maker|bo-checker')
+                                @hasrole('master')
+                                    @if ($type !== 'rejected')
+                                        <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
+                                    @endif
+                                @elsehasanyrole('bo-maker|bo-checker')
+                                    @if (in_array($type, ['new', 'all']))
+                                        <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
+                                    @endif
+                                @elsehasrole('ro-user')
+                                    @if ($type === 'received')
+                                        <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
+                                    @endif
+                                @endhasrole
+                                {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
                                 <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                 @endif
@@ -157,7 +185,7 @@
                                     @if ($type === 'received')
                                     <th scope="col"><input type="checkbox" class="goldloan_all"/> </th>
                                     @endif
-                                @endrole
+                                @endrole --}}
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -166,22 +194,31 @@
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
-                                {{-- <th scope="col">Loan Cycle</th> --}}
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
-                                {{-- <th scope="col">Barcode</th> --}}
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
                                     <tr>
-                                        @hasanyrole('master|bo-maker|bo-checker')
+                                        @hasrole('master')
+                                            @if ($type !== 'rejected')
+                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasanyrole('bo-maker|bo-checker')
+                                            @if (in_array($type, ['new', 'all']))
+                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasrole('ro-user')
+                                            @if ($type === 'received')
+                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @endhasrole
+                                        {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
                                             @if ($row->status == 1 && !in_array($type, ['received', 'rejected']))
                                             <input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}">
@@ -192,7 +229,7 @@
                                         @if ($type === 'received' && $row->status == 1)
                                             <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                         @endif
-                                        @endrole
+                                        @endrole --}}
                                         <td>{{ $row->unique_ref_no }}</td> 
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -206,16 +243,6 @@
                                         <td>{{ $row->channel }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
-                                        {{-- <td class="border-start">
-                                            <div class="btn-actions">
-                                                <a href="{{ route('accounts.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                {{-- <form action="{{ route('accounts.destroy', $row->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
-                                                </form> --}}
-                                            {{-- </div>
-                                        </td> --}} 
                                     </tr>
                                 @endforeach
                             @endif
@@ -229,7 +256,20 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @hasanyrole('master|bo-maker|bo-checker')
+                                @hasrole('master')
+                                    @if ($type !== 'rejected')
+                                        <th scope="col"><input type="checkbox" class="aof_all" /></th>
+                                    @endif
+                                @elsehasanyrole('bo-maker|bo-checker')
+                                    @if (in_array($type, ['new', 'all']))
+                                        <th scope="col"><input type="checkbox" class="aof_all" /></th>
+                                    @endif
+                                @elsehasrole('ro-user')
+                                    @if ($type === 'received')
+                                        <th scope="col"><input type="checkbox" class="aof_all" /></th>
+                                    @endif
+                                @endhasrole
+                                {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
                                 <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                 @endif
@@ -238,7 +278,7 @@
                                     @if ($type === 'received')
                                     <th scope="col"><input type="checkbox" class="aof_all" /> </th>
                                     @endif
-                                @endrole
+                                @endrole --}}
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -247,23 +287,32 @@
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">Account Number</th>
-                                {{-- <th scope="col">Loan Cycle</th> --}}
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
-                                {{-- <th scope="col">Barcode</th> --}}
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
                                     <tr>
-                                        @hasanyrole('master|bo-maker|bo-checker')
+                                        @hasrole('master')
+                                            @if ($type !== 'rejected')
+                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasanyrole('bo-maker|bo-checker')
+                                            @if (in_array($type, ['new', 'all']))
+                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasrole('ro-user')
+                                            @if ($type === 'received')
+                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @endhasrole
+                                        {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
                                             @if ($row->status == 1 && !in_array($type, ['received', 'rejected']))
                                             <input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}">
@@ -274,9 +323,7 @@
                                         @if ($type === 'received' && $row->status == 1)
                                             <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                         @endif
-                                        @endrole
-                                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                                        {{-- <td><input type="checkbox" /></td> --}}
+                                        @endrole --}}
                                         <td>{{ $row->unique_ref_no }}</td>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -285,18 +332,11 @@
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
-                                        {{-- <td>{{ $row->loan_cycle }}</td> --}}
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>        
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
+                                        <td>{{ $row->channel }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         </td>
                                     </tr>
@@ -312,7 +352,20 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @hasanyrole('master|bo-maker|bo-checker')
+                                @hasrole('master')
+                                    @if ($type !== 'rejected')
+                                        <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
+                                    @endif
+                                @elsehasanyrole('bo-maker|bo-checker')
+                                    @if (in_array($type, ['new', 'all']))
+                                        <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
+                                    @endif
+                                @elsehasrole('ro-user')
+                                    @if ($type === 'received')
+                                        <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
+                                    @endif
+                                @endhasrole
+                                {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
                                 <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                 @endif
@@ -321,7 +374,7 @@
                                     @if ($type === 'received')
                                     <th scope="col"><input type="checkbox" class="dtrf_all"/> </th>
                                     @endif
-                                @endrole
+                                @endrole --}}
                                 <th scope="col">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                 <th scope="col">Region</th>
@@ -329,23 +382,28 @@
                                 @endunless
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">DTR File Date</th>
-                                {{-- <th scope="col">barcode</th> --}}
-                                {{-- <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
-                                <th scope="col">Channel</th>
-                                {{-- <th scope="col">Glow application ID<br>/Barcode</th> --}}
-                                {{-- <th scope="col">Type of Loan<br>Disbursement</th>  --}}
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                {{-- <th scope="col" class="border-start">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
                                     <tr>
-                                        @hasanyrole('master|bo-maker|bo-checker')
+                                        @hasrole('master')
+                                            @if ($type !== 'rejected')
+                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasanyrole('bo-maker|bo-checker')
+                                            @if (in_array($type, ['new', 'all']))
+                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @elsehasrole('ro-user')
+                                            @if ($type === 'received')
+                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                            @endif
+                                        @endhasrole
+                                        {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
                                             @if ($row->status == 1 && !in_array($type, ['received', 'rejected']))
                                             <input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}">
@@ -356,9 +414,7 @@
                                         @if ($type === 'received' && $row->status == 1)
                                             <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                         @endif
-                                        @endrole
-                                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                                        {{-- <td><input type="checkbox" /></td> --}}
+                                        @endrole --}}
                                         <td>{{ $row->unique_ref_no }}</td>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <td>{{ $row->region }}</td>
@@ -366,19 +422,7 @@
                                         @endunless
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
                                         <td>{{ $row->business_category}}</td>
-                                        {{-- <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        {{-- <td>{{ $row->barcode }}</td> --}}
-                                        {{-- <td>{{ $row->loan_disbursement_type }}</td>
-                                        <td>{{ $row->business_category }}</td> --}} 
-                                        {{-- <td>{{ ucwords(str_replace("_"," ",$row->business_type)) }}</td>
-                                        <td>{{ ucwords(str_replace("-"," ",$row->rbi_classification)) }}</td> --}}
-                                        {{-- <td>{{ $row->branch_office_type }}</td>
-                                        <td>{{ $row->pincode }}</td>
-                                        <td>{{ $row->city }}</td> --}}
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                     </tr>
                                     @endforeach
@@ -406,9 +450,9 @@
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
-                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
+                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div>
@@ -453,9 +497,9 @@
                 <div class="col-12 mt-3 d-none">
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
-                    <div class="col-12 mt-3">
-                        <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
-                    </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                </div>
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
