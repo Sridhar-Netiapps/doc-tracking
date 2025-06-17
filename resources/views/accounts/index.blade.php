@@ -104,7 +104,7 @@
         <div class="col-1"></div>
         <div class="col-10">
             <div class="d-flex page-heading">
-            <h3>In Draft Docs</h3>
+            <h3>  Drafts</h3>
             <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
         
         </div>
