@@ -14,9 +14,9 @@
 			@endif
 
 				<div class="d-flex">
-					<form method="GET" action="">
+					<form method="GET" action="{{ route('insurance_list')}}">
 	                 <div class="input-group mb-3">
-	                  <input class="form-control" type="text" name="search" placeholder="Search" >	                 
+	                  <input class="form-control" type="text" name="search" placeholder="Search" value="{{$search}}">	                 
 	                 </div>
 	               </form>
 				</div>
@@ -65,6 +65,7 @@
 				<th>Partner</th>
 				<th>Product</th>
 				<th>Policy Number</th>
+				<th>Loan Acc ID</th>
 				<th>Customer ID</th>
 				<th>Deceased</th>
 				<th>Cause of Death</th>
@@ -83,6 +84,7 @@
 					<td>{{ $value->partners->partner}}</td>
 					<td>{{ $value->products->product}}</td>
 					<td>{{ $value->policy_number}}</td>
+					<td>{{ $value->load_acc_id}}</td>
 					<td>{{ $value->cust_id}}</td>
 					<td>{{ $value->deceased}}</td>
 					<td>{{ $value->deathCause->cause}}</td>
