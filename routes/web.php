@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
+    Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
     Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
@@ -52,7 +53,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
-    
     Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', function () { return view('home'); })->name('home');

@@ -17,6 +17,9 @@
                 <li class="nav-item px-4">
                     <a class="nav-link" href="{{ route('accounts.index','received') }}">Received</a>
                 </li>
+                <li class="nav-item px-4">
+                    <a class="nav-link" href="{{ route('accounts.index','moved') }}">Moved</a>
+                </li>
                 {{-- @hasanyrole('master|bo-maker|bo-checker') --}}
                 <li class="nav-item px-4">
                     <a class="nav-link" @hasanyrole('master|ro-user') href="{{ route('dispatches','list') }}" @else href="{{ route('dispatches','ready') }}" @endhasanyrole>Dispatches</a>

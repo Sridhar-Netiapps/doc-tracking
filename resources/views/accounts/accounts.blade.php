@@ -52,7 +52,7 @@
                 @role('ro-user')
                     @if ($type === 'received')
                     <li class="ms-auto">
-                            <button class="btn btn-primary vendor" type="button">Add RMA Details</button>
+                        <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
                             {{-- <form method="POST" action="{{ route('accounts.moved') }}" id="proceed">
                                 @csrf
                                 <button class="btn btn-primary proceed" type="button">Proceed</button>
@@ -104,6 +104,7 @@
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,7 +121,7 @@
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -155,7 +156,8 @@
                                                 <img src="/images/info_icon.svg"/>
                                               </span>
                                             @endif
-                                        </td>
+                                        </td> 
+                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -205,6 +207,7 @@
                                 <th scope="col">Channel</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -221,7 +224,7 @@
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -255,6 +258,7 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -305,6 +309,7 @@
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -321,7 +326,7 @@
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -356,6 +361,7 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -401,6 +407,7 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -417,7 +424,7 @@
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
-                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -447,6 +454,7 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                     @endforeach
                                 @endif
@@ -562,52 +570,57 @@
 <div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('accounts.moved')}}" method="POST">
+            <form  action="{{ route('accounts.moved')}}" method="POST"> 
                 @csrf
                 <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
+                    <h5 class="mb-0 text-primary" id="modal-title">Update Vendor Movement Information</h5>
                 </div>
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Lot No.</label>
+                        <label for="lot_no" class="form-label">Lot No.</label>
                         <input type="number" name="lot_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Work Order No.</label>
-                        <input type="number" name="work_no" class="form-control">
+                        <label for="work_order_no" class="form-label">Work Order No.</label>
+                        <input type="number" name="work_order_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Vendor Name</label>
+                        <label for="vendor_name" class="form-label">Vendor Name</label>
                         <input type="text" name="vendor_name" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
                         <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
-                        <input type="text" name="barcode_no" class="form-control">
+                        <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
+                        <input type="text" name="file_barcode" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Box Barcode.</label>
-                        <input type="text" name="vendor_name" class="form-control">
+                        <label for="box_barcode" class="form-label">Box Barcode.</label>
+                        <input type="text" name="box_barcode" class="form-control">
                     </div>
-                    {{-- <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Status</label>
-                        <select id="status" name="status" class="form-control select2" required>
-                            <option value=''>Select</option>
-                            <option value='In'>In</option>
-                            <option value='Out'>Out</option>
-                            <option value='Permout'>Permout</option>
-                            <option value='Destroyed'>Destroyed</option>
-                        </select>
-                    </div> --}}
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="upload-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="rma-movement" action="{{ route('vendor.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="excel_file" class="form-label">Upload File</label>
+                    <input type="file" name="excel_file" class="form-control" required>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
@@ -634,9 +647,7 @@
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
 
-        $('.vendor').click(function () {
-            $('#add-vendor').modal('show');
-        });
+        let selectedDocuments = [];
         
         $('.proceed').click(function () {
             let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
@@ -694,6 +705,75 @@
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
+            }
+        });
+
+        $('.vendor-upload').click(function () {
+            $('#upload-vendor').modal('show');
+            // $('#add-vendor').modal('show');
+        });
+
+        $('.add-vendor').click(function () {
+            $('#add-vendor').modal('show');
+        });
+
+        $('#rma-movement').validate({
+            rules: {
+                lot_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                work_order_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_name: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_movement_date: {
+                    required: true,
+                    sanitize: true
+                },
+                file_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                box_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                }
+            },
+            submitHandler: function (form) {
+
+                let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+                let hasSelection = false;
+
+                $('#rma-movement').find('input[name$="_ids[]"]').remove();
+
+                documentTypes.forEach(function (type) {
+                    let ids = [];
+
+                    $('input.' + type + ':checked').each(function () {
+                        ids.push($(this).data('id'));
+                    });
+
+                    if (ids.length > 0) {
+                        hasSelection = true;
+
+                        ids.forEach(function (id) {
+                            $('#rma-movement').append(
+                                '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+                            );
+                        });
+                    }
+                });
+                $('#rma-movement').submit();
             }
         });
     });

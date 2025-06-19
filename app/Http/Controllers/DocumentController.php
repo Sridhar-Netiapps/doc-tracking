@@ -12,6 +12,8 @@ use App\Models\LoanDocument;
 use App\Models\CourierDispatch;
 use App\Models\Courier;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\VendorDocumentImport;
 use Auth;
 use DB;
 
@@ -30,14 +32,14 @@ class DocumentController extends Controller
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
-            if($type === 'pending'){
-                $query->where('status',1);
+            if($type === 'moved'){
+                $query->where('status',8);
             }
             elseif($type === 'received'){
-                $query->where('status',5);
+                $query->whereIn('status',[5,7]);
             }
             elseif($type ==='rejected'){
-                $query->whereIn('status',[6,7]);
+                $query->where('status',6);
             }
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
@@ -58,8 +60,10 @@ class DocumentController extends Controller
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
-
-        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+        if($type != 'moved')
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+        else
+            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
     public function filter(Request $request)
     {
@@ -269,10 +273,10 @@ class DocumentController extends Controller
                     $q->where('status', 4);
                 })
                 ->when($type === 'received', function ($q){
-                    $q->where('status',5);
+                    $q->whereIn('status',[5,7]);
                 })
                 ->when($type === 'rejected', function ($q){
-                    $q->whereIn('status',[6,7]);
+                    $q->where('status',6);
                 });
         };
 
@@ -280,8 +284,8 @@ class DocumentController extends Controller
 
         $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',3)->count();
         $dispatched_count = $filter(CourierDispatch::query())->where('status',4)->count();
-        $received_count = $filter(CourierDispatch::query())->where('status',5)->count();
-        $rejected_count = $filter(CourierDispatch::query())->whereIn('status',[6,7])->count();
+        $received_count = $filter(CourierDispatch::query())->whereIn('status',[5,7])->count();
+        $rejected_count = $filter(CourierDispatch::query())->where('status',6)->count();
 
         return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count','rejected_count'));
     }
@@ -531,5 +535,16 @@ class DocumentController extends Controller
             'message' => 'Vendor document saved successfully.',
             'data' => $vendorDocument
         ]);
+    }
+
+    public function uploadVendorData(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        Excel::import(new VendorDocumentImport, $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Excel uploaded successfully!');
     }
 }
