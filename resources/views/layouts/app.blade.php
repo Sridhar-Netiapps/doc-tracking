@@ -95,7 +95,7 @@
                                             {{ __('Users') }}
                                         </a>
 
-                                         <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
                                         </a>
 

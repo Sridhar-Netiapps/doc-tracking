@@ -210,7 +210,7 @@
 
 			<div class="col-3 mb-3">
 			    <label class="form-label">Cause of Death</label>
-			    <select class="form-control form-select" name="cause_of_death" >
+			    <select class="form-control form-select" name="cause_of_death">
 			    	<option>Select</option>
 			    	@foreach($deathcause as $key=>$value)
 			    	   <option {{ ( old('cause_of_death')==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->cause}}</option>

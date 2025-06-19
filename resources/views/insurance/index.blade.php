@@ -78,7 +78,7 @@
 				@foreach($data as $key=>$value)
 				<tr>
 					<td>{{ $value->utrn}}</td>
-					<td>{{ date('d M,Y',strtotime($value->created_at))}}</td>
+					<td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
 					<td>{{ $value->region}}</td>
 					<td>{{ $value->branch}}</td>
 					<td>{{ $value->partners->partner}}</td>
@@ -87,9 +87,9 @@
 					<td>{{ $value->load_acc_id}}</td>
 					<td>{{ $value->cust_id}}</td>
 					<td>{{ $value->deceased}}</td>
-					<td>{{ $value->deathCause->cause}}</td>
-					<td>{{ $value->claim_stat->claim_status}}</td>
-					<td>{{ $value->rlStatus->rl_status}}</td>
+					<td>{{ $value->deathCause->cause ?? ''}}</td>
+					<td>{{ $value->claim_stat->claim_status ?? ''}}</td>
+					<td>{{ $value->rlStatus->rl_status ?? ''}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach

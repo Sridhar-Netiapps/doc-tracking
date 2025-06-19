@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
+use App\Models\InsuranceChecklist;
 use Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -118,6 +119,17 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			if(!empty($row['63'])){ $nomineeDetails->bo_checker = $row['63']; } 
             
             $nomineeDetails->save();
+
+            $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',$claimDetail->id)->first();
+              if($checklistDetails){
+		         $chlistDetails = InsuranceChecklist::find($checklistDetails->id);
+			    }else{
+			         $chlistDetails = new InsuranceChecklist;
+			         $chlistDetails->insurance_claim_details_id = $claimID;			        
+			    }
+			    $chlistDetails->save();
+
+           
        
        
       

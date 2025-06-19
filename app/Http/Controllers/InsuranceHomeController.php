@@ -15,8 +15,8 @@ use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
 use App\Imports\ImportClaimDetails;
-use Auth;
 use Excel;
+use Auth;
 
 class InsuranceHomeController extends Controller
 {
@@ -174,6 +174,8 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
+             InsuranceNomineeDetail::create(['insurance_claim_details_id' => $claimdata->id]);
+            InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
             return redirect()->back()->with('success','Saved Succesfully');
         }
         else{
@@ -198,8 +200,11 @@ class InsuranceHomeController extends Controller
         $procesedby=['NA','Vindhya','Ujjivan','HO'];
         
         $deceased=['CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
+        $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
+       // print_r($checklistdata);die();
 
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased'));
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata'));
     }
 
     /**
@@ -287,6 +292,9 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
+            InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
+            InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
+
             return redirect()->back()->with('success','Updated Succesfully');
         }
         else{
@@ -356,5 +364,87 @@ class InsuranceHomeController extends Controller
     public function search(Request $request){
         $search=$request->search;
 
+    }
+
+    public function save_nominee_details(Request $request){
+       $nomineedetail = new InsuranceNomineeDetail;
+       $nomineedetail->insurance_claim_details_id = decrypt($request->lead_id);
+       $nomineedetail->nominee_name_bank =$request->nominee_name_bank;
+       $nomineedetail->bank_name =$request->bank_name;
+       $nomineedetail->acc_number =$request->acc_number;
+       $nomineedetail->ifsc =$request->ifsc;
+       $nomineedetail->branch_name =$request->branch_name;
+       $nomineedetail->spdc_bank_name =$request->spdc_bank_name;
+       $nomineedetail->spdc_chk_no =$request->spdc_chk_no;
+       $nomineedetail->courier_name =$request->courier_name;
+       $nomineedetail->pod_no =$request->pod_no;
+       $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
+       $nomineedetail->bo_remarks =$request->bo_remarks;
+       $nomineedetail->bo_maker =$request->bo_maker;
+       $nomineedetail->bo_checker =$request->bo_checker;
+
+       $nomineedetail->save();
+
+        if($nomineedetail->id !='' || $nomineedetail->id != 0){
+            return redirect()->back()->with('success','Saved Succesfully');
+        }
+        else{
+            return redirect()->back()->with('failure','Error while Saving data');
+        }
+    }
+
+    public function save_claim_checklist(Request $request){
+        // print_r(json_encode($request->input()));die();
+
+        $checklist = new InsuranceChecklist;
+        $checklist->insurance_claim_details_id = decrypt($request->claim_id) ;
+        $checklist->cust_id = $request->cust_id ;
+        $checklist->branch_id = $request->branch_id ;
+        $checklist->sent_date = $request->date.'-'.$request->month.'-'.$request->year ;
+        $checklist->deceased_name = $request->deceased_name ;
+        $checklist->name = json_encode($request->name) ;
+        $checklist->name_mismatch = json_encode($request->name_mismatch) ;
+        $checklist->age = json_encode($request->age) ;
+        $checklist->age_mismatch = json_encode($request->age_mismatch) ;
+        $checklist->customer_id = json_encode($request->customer_id) ;
+        $checklist->dod = json_encode($request->dod) ;
+        $checklist->is_mlc = json_encode($request->is_mlc) ;
+        $checklist->fir_attached = json_encode($request->fir_attached) ;
+        $checklist->death_certificate = json_encode($request->death_certificate) ;
+        $checklist->valid_certificate = json_encode($request->valid_certificate) ;
+        $checklist->doc_bajaj = json_encode($request->doc_bajaj) ;
+        $checklist->doc_death = json_encode($request->doc_death) ;
+        $checklist->doc_fir = json_encode($request->doc_fir) ;
+        $checklist->doc_proof = json_encode($request->doc_proof) ;
+        $checklist->doc_closure_request = json_encode($request->doc_closure_request) ;
+        $checklist->doc_ecs = json_encode($request->doc_ecs) ;
+        $checklist->docs_readable =json_encode($request->docs_readable) ;
+        $checklist->nominee_name = $request->nominee_name ;
+        $checklist->acc_no = $request->acc_no ;
+        $checklist->bank_name = $request->bank_name ;
+        $checklist->micr = $request->micr ;
+        $checklist->ifsc = $request->ifsc ;
+        $checklist->branch = $request->branch ;
+        $checklist->bo_maker_emp = $request->bo_maker_emp ;
+        $checklist->bo_maker_name = $request->bo_maker_name ;
+        $checklist->bo_maker_sign = $request->bo_maker_sign ;
+        $checklist->bo_maker_date = $request->bo_maker_date ;
+        $checklist->bo_checker_emp = $request->bo_checker_emp ;
+        $checklist->bo_checker_name = $request->bo_checker_name ;
+        $checklist->bo_checker_sign = $request->bo_checker_sign ;
+        $checklist->bo_checker_date = $request->bo_checker_date ;
+        $checklist->ho_maker_emp = $request->ho_maker_emp ;
+        $checklist->ho_maker_name = $request->ho_maker_emp ;
+        $checklist->ho_checker_emp = $request->ho_checker_emp ;
+        $checklist->ho_checker_name = $request->ho_checker_emp ; 
+
+        $checklist->save();
+
+        if($checklist->id !='' || $checklist->id != 0){
+            return redirect()->back()->with('success','Saved Succesfully');
+        }
+        else{
+            return redirect()->back()->with('failure','Error while Saving data');
+        }
     }
 }
