@@ -29,7 +29,7 @@ class VendorDocumentImport implements OnEachRow, WithHeadingRow
 
             $update = $row->toArray();
 
-            $table[$update['document_type']]::where('unique_ref_no', $update['document_unique_no'])->update([
+            $table[$update['document_type']]::where('unique_ref_no', $update['document_unique_no'])->where('status',5)->update([
                 'lot_no' => $update['lot_no'],
                 'category_of_document' => $update['category_of_the_document'],
                 'work_order_no' => $update['work_order_no'],
