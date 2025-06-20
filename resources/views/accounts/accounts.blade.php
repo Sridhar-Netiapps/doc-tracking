@@ -274,7 +274,9 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -379,7 +381,9 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -474,7 +478,9 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endif
                                     </tr>
                                     @endforeach
                                 @endif

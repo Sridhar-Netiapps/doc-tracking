@@ -178,25 +178,36 @@ class DocumentController extends Controller
     public function getBulkReview()
     {
         $allDocuments = collect();
-        $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        $filter = function ($query) {
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                $query->where('branch_code', $this->user->branch_id);
+            }
+            return $query->where('status',2);
+        };
+        // $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        $loans = $filter(LoanDocument::query())->get()
             ->map(function ($item) {
                 $item->doc_type = 'loan';
                 return $item;
             });
+            // dd($loans);
         $allDocuments = $allDocuments->merge($loans);
-        $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        // $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        $goldloans = $filter(GoldLoanDocument::query())->get()
             ->map(function ($item) {
                 $item->doc_type = 'goldloan';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($goldloans);
-        $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        // $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        $aofs = $filter(AccountOpeningDocument::query())->get()
             ->map(function ($item) {
                 $item->doc_type = 'aof';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($aofs);
-        $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        // $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
+        $dtrfs = $filter(DtrfDocument::query())->get()
             ->map(function ($item) {
                 $item->doc_type = 'dtrf';
                 return $item;
