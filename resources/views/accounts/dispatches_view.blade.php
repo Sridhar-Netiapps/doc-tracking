@@ -111,7 +111,7 @@
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan">
+                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -174,7 +174,7 @@
                         <tbody>
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan">
+                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
                                         <td>{{ $row->unique_ref_no }}</td>  
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -236,7 +236,7 @@
                         <tbody>
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof">
+                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -294,7 +294,7 @@
                         <tbody>
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf">
+                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -579,7 +579,7 @@
             const reason = row.find('.reason').val();
 
             if (remarks !== '5' && !reason.trim()) {
-                throw `Reason is required for this Document: #${uid}`;
+                throw `Reason is required for Document #${uid} under ${type.toUpperCase()}`;
             }
 
             return { id, type, remarks, reason_for_rejection: reason };
