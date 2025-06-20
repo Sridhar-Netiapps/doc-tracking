@@ -25,7 +25,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="danger">278</h3>
+              <h3 class="danger">{{ $total}}</h3>
               <span>Total</span>
             </div>
             <div class="align-self-center">
@@ -42,7 +42,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="success">156</h3>
+              <h3 class="success">{{ $claimed}}</h3>
               <span>Claimed</span>
             </div>
             <div class="align-self-center">
@@ -60,8 +60,8 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="warning">64.89 %</h3>
-              <span>Conversion Rate</span>
+              <h3 class="warning">{{ $noneligible }}</h3>
+              <span>Non Eligible</span>
             </div>
             <div class="align-self-center">
               <i class="icon-pie-chart warning font-large-2 float-right"></i>
@@ -78,7 +78,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="primary">423</h3>
+              <h3 class="primary">{{ $rejected}}</h3>
               <span>Rejected</span>
             </div>
             <div class="align-self-center">
@@ -96,7 +96,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="primary">43</h3>
+              <h3 class="primary">{{ $inprogress}}</h3>
               <span>Progress</span>
             </div>
             <div class="align-self-center">
@@ -132,7 +132,9 @@
 	</div>
 
 	<div class="col">
-		
+		<div class="card shadow-lg p-3 mb-5 bg-white rounded">
+      <div id="causeofdeath"></div>
+    </div>
 	</div>
 
 	<div class="col">
@@ -143,12 +145,13 @@
 
 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 	var options = {
-      series: [44, 55, 13, 43],
+      series: @json($partnerChart['counts']),
       chart: {
       width: 400,
       type: 'pie',
+
     },
-    labels: ['Birla', 'Bajaj', 'HDFC', 'MAX Life'],
+    labels: @json($partnerChart['names']),
     responsive: [{
       breakpoint: 480,
       options: {
@@ -168,9 +171,9 @@
 
      var options_line = {
           series: [{
-          name: 'Claimed',
-          data: [55,20,73,84,25,64,17,55,20,73,84,25]
-        }],
+            name: 'Claimed',
+            data: @json($claimedAmount),
+          }],
           chart: {
           type: 'area',
           stacked: false,
@@ -182,7 +185,7 @@
           },
           toolbar: {
             autoSelected: 'zoom'
-          }
+          },
         },
         colors:['#3EC7A1'],
         dataLabels: {
@@ -192,7 +195,7 @@
           size: 0,
         },
         title: {
-          text: 'Claim Movement',
+          text: 'Claimed Amount',
           align: 'left'
         },
         fill: {
@@ -206,9 +209,10 @@
           },
         },
         yaxis: {
+          tickAmount: 5,
           labels: {
             formatter: function (val) {
-              return (val / 1000000).toFixed(0);
+              return (val ).toFixed(0);
             },
           },
           title: {
@@ -224,11 +228,13 @@
           shared: false,
           y: {
             formatter: function (val) {
-              return (val / 1000000).toFixed(0)
+              return (val ).toFixed(0);
             }
           }
         }
         };
+
+        
 
         var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
         linechart.render();
@@ -237,29 +243,31 @@
     var stackoptions = {
           series: [{
           name: 'Claimed',
-          data: [44, 55, 41, 67]
+          data: @json($regionChart['0']),
+        },{
+          name: 'Non-Eligible',
+          data: @json($regionChart['1']),
         }, {
           name: 'Rejected',
-          data: [13, 23, 20, 8]
+          data: @json($regionChart['2']),
         }, {
           name: 'In Progress',
-          data: [11, 17, 15, 15]
-        }, /*{
-          name: 'South',
-          data: [21, 7, 25, 13]
-        }*/],
+          data: @json($regionChart['3']),
+        },],
           chart: {
           type: 'bar',
           height: 250,
           stacked: true,
+
           toolbar: {
             show: true
           },
           zoom: {
             enabled: true
-          }
+          },
+
         },
-         colors: ['#3EC7A1','#FF0B55','#FFD63A'],
+         colors: ['#3EC7A1','#a9a39f','#FF0B55','#0000FF'],
         responsive: [{
           breakpoint: 480,
           options: {
@@ -289,8 +297,7 @@
         },
         xaxis: {
           type: 'text',
-          categories: ['East','West','North','South'
-          ],
+          categories: ['North','South','East','West'],
         },
         legend: {
           position: 'right',
@@ -302,6 +309,75 @@
         };
 
         var stackchart = new ApexCharts(document.querySelector("#regionwise"), stackoptions);
-        stackchart.render();    
+        stackchart.render();  
+
+
+        var options_death = {
+          series: [{
+          name: 'Claimed',
+          data: @json($claimedAmount),
+        }],
+          chart: {
+          type: 'area',
+          stacked: false,
+          height: 250,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
+          toolbar: {
+            autoSelected: 'zoom'
+          },
+        },
+        colors:['#3EC7A1'],
+        dataLabels: {
+          enabled: false
+        },
+        markers: {
+          size: 0,
+        },
+        title: {
+          text: 'Claimed Amount',
+          align: 'left'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0,
+            stops: [0, 90, 100]
+          },
+        },
+        yaxis: {
+          tickAmount: 5,
+          labels: {
+            formatter: function (val) {
+              return (val ).toFixed(0);
+            },
+          },
+          title: {
+            text: 'Price'
+          },
+        },
+        xaxis: {
+         // type: 'datetime',
+         categories: ['Apr','May','June','July','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'
+          ],
+        },
+        tooltip: {
+          shared: false,
+          y: {
+            formatter: function (val) {
+              return (val ).toFixed(0);
+            }
+          }
+        }
+        };
+
+        var death_linechart = new ApexCharts(document.querySelector("#causeofdeath"), options_death);
+        death_linechart.render();  
 </script>
 @endsection	

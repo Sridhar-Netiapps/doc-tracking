@@ -25,7 +25,82 @@ class InsuranceHomeController extends Controller
      */
     public function index()
     {
-        return view('insurance.dashboard');
+        
+        $partners = InsurancePartner::get();
+        $partnerNameArray=array();
+        $partnerCountArray=array();
+        $region = ['North','South','East','West'];
+        $regionNameArray=array();
+        $regionCountArray=array();
+        $claimedArray = array();
+        $noneligibleArray = array();
+        $rejectedArray = array();
+        $inprogressArray = array();
+        $claimedAmount = array();
+
+        if(Auth::user()->branch_id == '1100'){
+          $total = InsuranceClaimDetail::count();
+          $claimed = InsuranceClaimDetail::where('cliam_status','7')->count();
+          $noneligible = InsuranceClaimDetail::whereIn('cliam_status',[8,9])->count();
+          $rejected = InsuranceClaimDetail::where('cliam_status','11')->count();
+          $inprogress = InsuranceClaimDetail::whereNotIn('cliam_status',[7,8,9,11,])->count();
+          
+          foreach ($partners as $key => $value) {
+              $partnerArray[]=$value->partner;
+              $partnerCountArray[]=InsuranceClaimDetail::where('partner',$value->id)->count();
+          }
+
+          $partnerChart = ['names' => $partnerArray , 'counts' => $partnerCountArray];
+
+          
+          foreach ($region as $val) {
+              $claimedArray[] = InsuranceClaimDetail::where('region',$val)->where('cliam_status','7')->count();
+              $noneligibleArray[] = InsuranceClaimDetail::where('region',$val)->whereIn('cliam_status',[8,9])->count();
+              $rejectedArray[] = InsuranceClaimDetail::where('region',$val)->where('cliam_status','11')->count();
+              $inprogressArray[] = InsuranceClaimDetail::where('region',$val)->whereNotIn('cliam_status',[7,8,9,11,])->count();
+          } 
+
+          $regionChart = [$claimedArray ,$noneligibleArray , $rejectedArray , $inprogressArray]; 
+
+          $monthArray=$this->getFinancialYearMonths();
+          
+          foreach ($monthArray as $vals) {
+              $claimedAmount[]=InsuranceClaimDetail::where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->sum('claim_amount');
+              $settledAmount[]=InsuranceClaimDetail::where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->sum('payable_to_nominee');
+              $claimcount[]=InsuranceClaimDetail::where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->count();
+          }
+          
+          $claimchart=[$claimcount , $settledAmount , $claimedAmount];
+
+        } 
+        else{
+          $total = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->count();
+          $claimed = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('cliam_status','7')->count();
+          $noneligible = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereIn('cliam_status',[8,9])->count();
+          $rejected = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('cliam_status','11')->count();
+          $inprogress = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereNotIn('cliam_status',[7,8,9,11,])->count();
+
+           foreach ($partners as $key => $value) {
+              $partnerArray[]=$value->partner;
+              $partnerCountArray[]=InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('partner',$value->id)->count();
+          }
+
+          $partnerChart = ['names' => $partnerArray , 'counts' => $partnerCountArray];
+
+          
+          foreach ($region as $val) {
+              $claimedArray[] = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','7')->count();
+              $noneligibleArray[] = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('region',$val)->whereIn('cliam_status',[8,9])->count();
+              $rejectedArray[] = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','11')->count();
+              $inprogressArray[] = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('region',$val)->whereNotIn('cliam_status',[7,8,9,11,])->count();
+           } 
+
+           $regionChart = [$claimedArray ,$noneligibleArray , $rejectedArray , $inprogressArray];  
+
+         }
+
+       // print_r(json_encode($regionChart));die();
+        return view('insurance.dashboard',compact('total','claimed','noneligible','rejected','inprogress','partnerChart','regionChart','claimchart','claimedAmount'));
     }
 
     /**
@@ -454,5 +529,31 @@ class InsuranceHomeController extends Controller
         else{
             return redirect()->back()->with('failure','Error while Saving data');
         }
+    }
+
+    function getFinancialYearMonths($year = null) {
+        $months = [];
+        
+        // If no year is passed, determine based on current date
+        if (!$year) {
+            $currentMonth = date('n'); // Numeric month without leading zeros
+            $currentYear = date('Y');
+            
+            if ($currentMonth >= 4) {
+                $startYear = $currentYear;
+            } else {
+                $startYear = $currentYear - 1;
+            }
+        } else {
+            $startYear = $year;
+        }
+
+        // Start from April of startYear to March of next year
+        for ($i = 0; $i < 12; $i++) {
+            $month = date('Y-m', strtotime("+$i months", strtotime("$startYear-04-01")));
+            $months[] = $month;
+        }
+
+        return $months;
     }
 }
