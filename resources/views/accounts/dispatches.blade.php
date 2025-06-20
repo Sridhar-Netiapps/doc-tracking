@@ -119,6 +119,7 @@
                                 <th scope="col">Dispatch Date</th>
                                 <th scope="col">Dispatch By</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Activity Date</th>
                                 @if ($type == 'list')
                                     @hasanyrole('ro-user')
                                         <th scope="col">Update Status</th>
@@ -155,9 +156,12 @@
                                     <td>{{ $row->statusName->name ?? '-' }}
                                         @if ($row->status == 6 || $row->status == 7 )
                                             <small><p>Reason : </p></small>
-                                            <i>{{ $row->comments }}</i>
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->comments }}">
+                                            <i>{{ \Illuminate\Support\Str::words($row->comments, 2, '...') }}</i>
+                                            </span>
                                         @endif
                                     </td>
+                                    <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     @if ($type == 'list')
                                         @hasanyrole('ro-user')
                                         <td>

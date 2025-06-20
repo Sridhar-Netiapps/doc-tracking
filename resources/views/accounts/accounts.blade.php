@@ -114,6 +114,7 @@
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
                                 <th scope="col">Actions</th>
                                 @endif
@@ -125,11 +126,11 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -172,6 +173,7 @@
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -221,6 +223,7 @@
                                 <th scope="col">Channel</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
                                 <th scope="col">Actions</th>
                                 @endif
@@ -232,11 +235,11 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -277,6 +280,7 @@
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -327,6 +331,7 @@
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
                                 <th scope="col">Actions</th>
                                 @endif
@@ -338,11 +343,11 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -384,6 +389,7 @@
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -429,6 +435,7 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
                                 <th scope="col">Actions</th>
                                 @endif
@@ -440,11 +447,11 @@
                                     <tr>
                                         @hasrole('master')
                                             @if ($type !== 'rejected')
-                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')

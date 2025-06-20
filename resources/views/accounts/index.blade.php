@@ -52,9 +52,9 @@
                                 <th scope="col"> Account Creation Date</th>
                                 <th scope="col"> Channel</th>
                                 <th scope="col"> Loan Disbursement Type / Account Opening</th>
-                                {{-- <th scope="col"> DTR File Date</th> --}}
                                 <th scope="col"> Business Category</th>
                                 <th scope="col"> Status</th>
+                                <th scope="col"> Activity Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,6 +81,7 @@
                                     {{-- <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td> --}}
                                     <td>{{ $doc->business_category ?? '-' }}</td>
                                     <td>{{ $doc->statusName->name ?? '-' }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($doc->updated_at)) ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -268,7 +269,7 @@
                     sanitize: true
                 // },
                 // dispatch_date: {
-                //     required: true,
+                //     required: true,account_creation_date
                 //     sanitize: true
                 },
                 mmrp_barcode: {

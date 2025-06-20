@@ -50,7 +50,7 @@ class DocumentController extends Controller
             return $query
                 ->when($type === 'new', function ($q) use ($start_date, $end_date) {
                     $q->whereBetween('account_creation_date', [$start_date, $end_date]);
-                });
+                })->orderBy('updated_at', 'desc');
         };
         $loan_document = $filter(LoanDocument::query())->paginate(100);
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100);
@@ -182,7 +182,7 @@ class DocumentController extends Controller
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
-            return $query->where('status',2);
+            return $query->where('status',2)->orderBy('updated_at', 'desc');
         };
         // $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
         $loans = $filter(LoanDocument::query())->get()
@@ -288,7 +288,7 @@ class DocumentController extends Controller
                 })
                 ->when($type === 'rejected', function ($q){
                     $q->where('status',6);
-                });
+                })->orderBy('updated_at', 'desc');
         };
 
         $records = $filter(CourierDispatch::query())->paginate(100);
