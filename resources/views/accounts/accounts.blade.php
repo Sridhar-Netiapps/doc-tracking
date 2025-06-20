@@ -9,6 +9,16 @@
                 <h3 >{{ ucfirst($type) }} Docs</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
+            @if(session('failures'))
+                <div class="alert alert-danger">
+                    <strong>Import Failed for some rows:</strong>
+                    <ul>
+                        @foreach(session('failures') as $failure)
+                            <li>Row {{ $failure->row() }}: {{ implode(', ', $failure->errors()) }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
         <div class="col-1"></div>
     </div>
@@ -74,10 +84,10 @@
                                     @if (in_array($type, ['new', 'all']))
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
-                                @elsehasrole('ro-user')
+                                {{-- @elsehasrole('ro-user')
                                     @if ($type === 'received')
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
-                                    @endif
+                                    @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
                                     @if (!in_array($type, ['received', 'rejected']))
@@ -104,7 +114,9 @@
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'received')
                                 <th scope="col">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -119,10 +131,10 @@
                                             @if (in_array($type, ['new', 'all']))
                                                 <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        @elsehasrole('ro-user')
+                                        {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif
+                                            @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -157,7 +169,9 @@
                                               </span>
                                             @endif
                                         </td> 
-                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @if ($type == 'received')
+                                        <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -179,10 +193,10 @@
                                     @if (in_array($type, ['new', 'all']))
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
-                                @elsehasrole('ro-user')
+                                {{-- @elsehasrole('ro-user')
                                     @if ($type === 'received')
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
-                                    @endif
+                                    @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -207,7 +221,9 @@
                                 <th scope="col">Channel</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'received')
                                 <th scope="col">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -222,10 +238,10 @@
                                             @if (in_array($type, ['new', 'all']))
                                                 <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6,7])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        @elsehasrole('ro-user')
+                                        {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif
+                                            @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -258,7 +274,7 @@
                                               </span>
                                             @endif
                                         </td>
-                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -280,10 +296,10 @@
                                     @if (in_array($type, ['new', 'all']))
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
-                                @elsehasrole('ro-user')
+                                {{-- @elsehasrole('ro-user')
                                     @if ($type === 'received')
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
-                                    @endif
+                                    @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -309,7 +325,9 @@
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'received')
                                 <th scope="col">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -324,10 +342,10 @@
                                             @if (in_array($type, ['new', 'all']))
                                                 <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6,7])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        @elsehasrole('ro-user')
+                                        {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif
+                                            @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -361,7 +379,7 @@
                                               </span>
                                             @endif
                                         </td>
-                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -383,10 +401,10 @@
                                     @if (in_array($type, ['new', 'all']))
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
-                                @elsehasrole('ro-user')
+                                {{-- @elsehasrole('ro-user')
                                     @if ($type === 'received')
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
-                                    @endif
+                                    @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -407,7 +425,9 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
+                                @if ($type == 'received')
                                 <th scope="col">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -422,10 +442,10 @@
                                             @if (in_array($type, ['new', 'all']))
                                                 <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6,7])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        @elsehasrole('ro-user')
+                                        {{-- @elsehasrole('ro-user')
                                             @if ($type === 'received')
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif
+                                            @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -454,7 +474,7 @@
                                               </span>
                                             @endif
                                         </td>
-                                        <td><button class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                     </tr>
                                     @endforeach
                                 @endif
@@ -570,15 +590,21 @@
 <div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form  action="{{ route('accounts.moved')}}" method="POST"> 
+            <form id="rma-movement" action="{{ route('accounts.moved')}}" method="POST"> 
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Update Vendor Movement Information</h5>
                 </div>
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="type">
                         <label for="lot_no" class="form-label">Lot No.</label>
                         <input type="number" name="lot_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="category_of_document" class="form-label">Category of the Document.</label>
+                        <input type="text" name="category_of_document" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
@@ -600,6 +626,10 @@
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
                         <input type="text" name="box_barcode" class="form-control">
                     </div>
+                    <div class="col-4 pb-2">
+                        <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
+                        <input type="text" readonly name="date_added_to_vendor" class="form-control datepicker date_added_to_vendor" value="{{ request('vendor_movement_date') }}">
+                    </div>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
@@ -613,7 +643,7 @@
 <div class="modal fade" id="upload-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="rma-movement" action="{{ route('vendor.upload') }}" method="POST" enctype="multipart/form-data">
+            <form id="rma-upload" action="{{ route('vendor.upload') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
@@ -714,6 +744,8 @@
         });
 
         $('.add-vendor').click(function () {
+            $('input[name="id"]').val($(this).data('id'));
+            $('input[name="type"]').val($(this).data('type'));
             $('#add-vendor').modal('show');
         });
 

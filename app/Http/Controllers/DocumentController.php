@@ -511,30 +511,46 @@ class DocumentController extends Controller
 
     public function addRmaDetails(Request $request)
     {
-        dd($request->all());
+        $table = [
+            'loan' => LoanDocument::class,
+            'goldloan' => GoldLoanDocument::class,
+            'dtrf' => DtrfDocument::class,
+            'aof' => AccountOpeningDocument::class,
+        ];
         $validated = $request->validate([
             'lot_no' => 'nullable|string|max:255',
             'category_of_document' => 'nullable|string|max:255',
             'work_order_no' => 'nullable|string|max:255',
             'vendor_name' => 'nullable|string|max:255',
-            'vendor_movement_date' => 'nullable|date_format:Y-m-d',
+            'vendor_movement_date' => 'nullable',
             'file_barcode' => 'nullable|string|max:255',
             'box_barcode' => 'nullable|string|max:255',
-            'date_added_to_vendor' => 'nullable|date_format:Y-m-d',
-            'status' => 'nullable|in:In,Out,Permout,Destroyed',
-            'document_id' => 'nullable|integer',
-            'document_type' => 'nullable|string|max:255',
-            'document_unique_no' => 'nullable|string|max:255',
-            'dispatch_no' => 'nullable|string|max:255',
+            'date_added_to_vendor' => 'nullable',
         ]);
 
-        $vendorDocument = VendorDocument::create($validated);
+        try {
+            DB::beginTransaction();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Vendor document saved successfully.',
-            'data' => $vendorDocument
-        ]);
+            $table[$request->type]::where('id', $request->id)->whereIn('status',[5,7])->update([
+                'lot_no' => $validated['lot_no'],
+                'category_of_document' => $validated['category_of_document'],
+                'work_order_no' => $validated['work_order_no'],
+                'vendor_name' => $validated['vendor_name'],
+                'vendor_movement_date' => Carbon::parse($validated['vendor_movement_date'])->format('Y-m-d'),
+                'file_barcode' => $validated['file_barcode'],
+                'box_barcode' => $validated['box_barcode'],
+                'date_added_to_vendor' => Carbon::parse($validated['date_added_to_vendor'])->format('Y-m-d'), 
+                'status' => 8,
+                'updated_by' => auth()->user()->id,
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'File Moved to RMA successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function uploadVendorData(Request $request)
@@ -543,8 +559,16 @@ class DocumentController extends Controller
             'excel_file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        Excel::import(new VendorDocumentImport, $request->file('excel_file'));
+        $import = new VendorDocumentImport();
+        Excel::import($import, $request->file('excel_file'));
 
+        if (!empty($import->failures())) {
+            return redirect()->back()->with([
+                'error' => 'Some rows failed to import.',
+                'failures' => $import->failures(),
+            ]);
+        }
+        
         return redirect()->back()->with('success', 'Excel uploaded successfully!');
     }
 }

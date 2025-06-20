@@ -6,7 +6,7 @@
         <div class="col-1"></div>
         <div class="col-10">
             <div class="d-flex page-heading">
-                <h3 > Moved Docs</h3>
+                <h3 > Moved to RMA</h3>
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
