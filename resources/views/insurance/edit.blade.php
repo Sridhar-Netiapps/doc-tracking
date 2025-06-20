@@ -607,22 +607,30 @@
 				    <span class="table-font">Deceased Name in Bajaj Claim form match with Death Certificate, Age / ID Proof, FIR/Post Mortem Report</span>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist tdchecklist">
-				 	 	<input type="hidden" name="name[bm]" value="0">
+				 	 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="name[bm]" value="{{ (!empty($name) && ($name['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name[bm]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name[bm]" value="1" 
 				 	 	{{ !empty($name)? ($name['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist td-bg">
-				 	 	<input type="hidden" name="name[bc]" value="0">
+				 	 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="name[bc]" value="{{ (!empty($name) && ($name['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name[bc]" value="0">@endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name[bc]" value="1" 
 				 	 	{{ !empty($name)? ($name['bc'] == '1')?'checked':'': ''}}  {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist">
-				 	 	<input type="hidden" name="name[hm]" value="0">
+				 	 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="name[hm]" value="{{ (!empty($name) && ($name['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name[hm]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name[hm]" value="1" 
 				 	 	{{ !empty($name)? ($name['hm'] == '1')?'checked':'': ''}}  {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist td-bg">
-				 	 	<input type="hidden" name="name[hc]" value="0">
+				 	 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="name[hc]" value="{{ (!empty($name) && ($name['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name[hc]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name[hc]" value="1" 
 				 	 	{{ !empty($name)? ($name['hc'] == '1')?'checked':'': ''}}  {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 				 	 </td>
@@ -633,19 +641,27 @@
 					   <span class="table-font"><strong>If name is not matching,</strong> Need Court Affidavit (mentioning all the names)</span>
 					 </td>
 					 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="name_mismatch[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="name_mismatch[bm]" value="{{ (!empty($name_mismatch) && ($name_mismatch['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name_mismatch[bm]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name_mismatch[bm]" value="1" {{ !empty($name_mismatch)? ($name_mismatch['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="name_mismatch[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="name_mismatch[bc]" value="{{ (!empty($name_mismatch) && ($name_mismatch['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name_mismatch[bc]" value="0">@endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name_mismatch[bc]" value="1" {{ !empty($name_mismatch)? ($name_mismatch['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="name_mismatch[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="name_mismatch[hm]" value="{{ (!empty($name_mismatch) && ($name_mismatch['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name_mismatch[hm]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="name_mismatch[hm]" value="1" {{ !empty($name_mismatch)? ($name_mismatch['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="name_mismatch[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="name_mismatch[hc]" value="{{ (!empty($name_mismatch) && ($name_mismatch['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="name_mismatch[hc]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox"name="name_mismatch[hc]" value="1" {{ !empty($name_mismatch)? ($name_mismatch['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 					 </td>
 				   </tr>
@@ -657,19 +673,27 @@
 		                 or Post Mortem Report</span>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="age[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="age[bm]" value="{{ (!empty($age) && ($age['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age[bm]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age[bm]" value="1" {{ !empty($age)? ($age['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="age[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="age[bc]" value="{{ (!empty($age) && ($age['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age[bc]" value="0">@endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox"name="age[bc]" value="1" {{ !empty($age)? ($age['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="age[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="age[hm]" value="{{ (!empty($age) && ($age['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age[hm]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age[hm]" value="1" {{ !empty($age)? ($age['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 				 	 </td>
 				 	 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="age[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="age[hc]" value="{{ (!empty($age) && ($age['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age[hc]" value="0"> @endif
 				 	 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age[hc]" value="1" {{ !empty($age)? ($age['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 				 	 </td>
 				   </tr>
@@ -679,19 +703,27 @@
 					   <span class="table-font"><strong>If Age difference is 5 years (+ or -)</strong> Need Court Affidavit </span>
 					 </td>
 					 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="age_mismatch[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="age_mismatch[bm]" value="{{ (!empty($age_mismatch) && ($age_mismatch['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age_mismatch[bm]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age_mismatch[bm]" value="1" {{ !empty($age_mismatch)? ($age_mismatch['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="age_mismatch[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="age_mismatch[bc]" value="{{ (!empty($age_mismatch) && ($age_mismatch['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age_mismatch[bc]" value="0">@endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age_mismatch[bc]" value="1" {{ !empty($age_mismatch)? ($age_mismatch['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist">
-					 	<input type="hidden" name="age_mismatch[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="age_mismatch[hm]" value="{{ (!empty($age_mismatch) && ($age_mismatch['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age_mismatch[hm]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age_mismatch[hm]" value="1" {{ !empty($age_mismatch)? ($age_mismatch['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 					 </td>
 					 <td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="age_mismatch[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="age_mismatch[hc]" value="{{ (!empty($age_mismatch) && ($age_mismatch['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="age_mismatch[hc]" value="0"> @endif
 					 	<input class="checkboxbig" type="checkbox" class="full-checkbox" name="age_mismatch[hc]" value="1" {{ !empty($age_mismatch)? ($age_mismatch['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 					 </td>
 				   </tr>
@@ -704,19 +736,27 @@
 			  	 		<span class="table-font">Correct Customer ID is reflecting in Bajaj Claim form?</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="customer_id[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="customer_id[bm]" value="{{ (!empty($customer_id) && ($customer_id['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="customer_id[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="customer_id[bm]" value="1" {{ !empty($customer_id)? ($customer_id['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="customer_id[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="customer_id[bc]" value="{{ (!empty($customer_id) && ($customer_id['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="customer_id[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="customer_id[bc]" value="1" {{ !empty($customer_id)? ($customer_id['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="customer_id[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="customer_id[hm]" value="{{ (!empty($customer_id) && ($customer_id['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="customer_id[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="customer_id[hm]" value="1" {{ !empty($customer_id)? ($customer_id['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="customer_id[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="customer_id[hc]" value="{{ (!empty($customer_id) && ($customer_id['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="customer_id[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="customer_id[hc]" value="1" {{ !empty($customer_id)? ($customer_id['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -728,19 +768,27 @@
 		                Bajaj Claim form, Death Certificate and FIR or Post Mortem Report</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="dod[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="dod[bm]" value="{{ (!empty($dod) && ($dod['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="dod[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="dod[bm]" value="1" {{ !empty($dod)? ($dod['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="dod[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="dod[bc]" value="{{ (!empty($dod) && ($dod['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="dod[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="dod[bc]" value="1" {{ !empty($dod)? ($dod['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="dod[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="dod[hm]" value="{{ (!empty($dod) && ($dod['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="dod[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="dod[hm]" value="1" {{ !empty($dod)? ($dod['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="dod[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="dod[hc]" value="{{ (!empty($dod) && ($dod['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="dod[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="dod[hc]" value="1" {{ !empty($dod)? ($dod['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -750,19 +798,27 @@
 			  	 		<span class="table-font">Is this Accidental / Murder Death?</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="is_mlc[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="is_mlc[bm]" value="{{ (!empty($is_mlc) && ($is_mlc['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="is_mlc[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="is_mlc[bm]" value="1" {{ !empty($is_mlc)? ($is_mlc['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="is_mlc[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="is_mlc[bc]" value="{{ (!empty($is_mlc) && ($is_mlc['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="is_mlc[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="is_mlc[bc]" value="1" {{ !empty($is_mlc)? ($is_mlc['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="is_mlc[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="is_mlc[hm]" value="{{ (!empty($is_mlc) && ($is_mlc['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="is_mlc[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="is_mlc[hm]" value="1" {{ !empty($is_mlc)? ($is_mlc['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="is_mlc[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="is_mlc[hc]" value="{{ (!empty($is_mlc) && ($is_mlc['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="is_mlc[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="is_mlc[hc]" value="1" {{ !empty($is_mlc)? ($is_mlc['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -772,19 +828,27 @@
 			  	 		<span class="table-font">If above is Yes, is Post Mortem or FIR Report attached?</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="fir_attached[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="fir_attached[bm]" value="{{ (!empty($fir_attached) && ($fir_attached['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="fir_attached[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="fir_attached[bm]" value="1" {{ !empty($fir_attached)? ($fir_attached['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="fir_attached[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="fir_attached[bc]" value="{{ (!empty($fir_attached) && ($fir_attached['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="fir_attached[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="fir_attached[bc]" value="1" {{ !empty($fir_attached)? ($fir_attached['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="fir_attached[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="fir_attached[hm]" value="{{ (!empty($fir_attached) && ($fir_attached['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="fir_attached[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="fir_attached[hm]" value="1" {{ !empty($fir_attached)? ($fir_attached['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="fir_attached[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="fir_attached[hc]" value="{{ (!empty($fir_attached) && ($fir_attached['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="fir_attached[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="fir_attached[hc]" value="1" {{ !empty($fir_attached)? ($fir_attached['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -795,19 +859,27 @@
 			  	 			<strong>(Proceed If Death Certificate is Computer generated with barcode)</strong></span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="death_certificate[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="death_certificate[bm]" value="{{ (!empty($death_certificate) && ($death_certificate['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="death_certificate[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="death_certificate[bm]" value="1" {{ !empty($death_certificate)? ($death_certificate['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="death_certificate[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="death_certificate[bc]" value="{{ (!empty($death_certificate) && ($death_certificate['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="death_certificate[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="death_certificate[bc]" value="1" {{ !empty($death_certificate)? ($death_certificate['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="death_certificate[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="death_certificate[hm]" value="{{ (!empty($death_certificate) && ($death_certificate['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="death_certificate[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="death_certificate[hm]" value="1" {{ !empty($death_certificate)? ($death_certificate['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="death_certificate[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="death_certificate[hc]" value="{{ (!empty($death_certificate) && ($death_certificate['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="death_certificate[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="death_certificate[hc]" value="1" {{ !empty($death_certificate)? ($death_certificate['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -817,19 +889,27 @@
 			  	 		<span class="table-font">In death certificate, is date of registration and date of issuance are equal or greater than date of death? If no, get revised death certificate</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="valid_certificate[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="valid_certificate[bm]" value="{{ (!empty($valid_certificate) && ($valid_certificate['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="valid_certificate[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="valid_certificate[bm]" value="1" {{ !empty($valid_certificate)? ($valid_certificate['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="valid_certificate[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="valid_certificate[bc]" value="{{ (!empty($valid_certificate) && ($valid_certificate['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="valid_certificate[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="valid_certificate[bc]" value="1" {{ !empty($valid_certificate)? ($valid_certificate['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="valid_certificate[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="valid_certificate[hm]" value="{{ (!empty($valid_certificate) && ($valid_certificate['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="valid_certificate[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="valid_certificate[hm]" value="1" {{ !empty($valid_certificate)? ($valid_certificate['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="valid_certificate[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="valid_certificate[hc]" value="{{ (!empty($valid_certificate) && ($valid_certificate['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="valid_certificate[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="valid_certificate[hc]" value="1" {{ !empty($valid_certificate)? ($valid_certificate['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -840,19 +920,27 @@
 			  	 			<label class="table-font">a) Bajaj Claimant Statement (Claim Form) with only nominee signature</label></span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_bajaj[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_bajaj[bm]" value="{{ (!empty($doc_bajaj) && ($doc_bajaj['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_bajaj[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_bajaj[bm]" value="1" {{ !empty($doc_bajaj)? ($doc_bajaj['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_bajaj[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_bajaj[bc]" value="{{ (!empty($doc_bajaj) && ($doc_bajaj['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_bajaj[bc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_bajaj[bc]" value="1" {{ !empty($doc_bajaj)? ($doc_bajaj['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_bajaj[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_bajaj[hm]" value="{{ (!empty($doc_bajaj) && ($doc_bajaj['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_bajaj[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_bajaj[hm]" value="1" {{ !empty($doc_bajaj)? ($doc_bajaj['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_bajaj[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_bajaj[hc]" value="{{ (!empty($doc_bajaj) && ($doc_bajaj['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_bajaj[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_bajaj[hc]" value="1" {{ !empty($doc_bajaj)? ($doc_bajaj['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -862,19 +950,27 @@
 			  	 		<span class="table-font">b) Death certificate issued by registrar of birth & death (Form No. 6)</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_death[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_death[bm]" value="{{ (!empty($doc_death) && ($doc_death['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_death[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_death[bm]" value="1" {{ !empty($doc_death)? ($doc_death['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_death[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_death[bc]" value="{{ (!empty($doc_death) && ($doc_death['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_death[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_death[bc]" value="1" {{ !empty($doc_death)? ($doc_death['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_death[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_death[hm]" value="{{ (!empty($doc_death) && ($doc_death['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_death[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_death[hm]" value="1" {{ !empty($doc_death)? ($doc_death['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_death[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_death[hc]" value="{{ (!empty($doc_death) && ($doc_death['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_death[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_death[hc]" value="1" {{ !empty($doc_death)? ($doc_death['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -884,19 +980,27 @@
 			  	 		<span class="table-font">c) Post Mortem  / FIR Report  (For accident / murder Case)</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_fir[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_fir[bm]" value="{{ (!empty($doc_fir) && ($doc_fir['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_fir[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_fir[bm]" value="1" {{ !empty($doc_fir)? ($doc_fir['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_fir[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_fir[bc]" value="{{ (!empty($doc_fir) && ($doc_fir['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_fir[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_fir[bc]" value="1" {{ !empty($doc_fir)? ($doc_fir['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_fir[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_fir[hm]" value="{{ (!empty($doc_fir) && ($doc_fir['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_fir[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_fir[hm]" value="1" {{ !empty($doc_fir)? ($doc_fir['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_fir[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_fir[hc]" value="{{ (!empty($doc_fir) && ($doc_fir['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_fir[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_fir[hc]" value="1" {{ !empty($doc_fir)? ($doc_fir['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -906,19 +1010,27 @@
 			  	 		<span class="table-font">d) ID and Age Proof of the deceased</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_proof[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_proof[bm]" value="{{ (!empty($doc_proof) && ($doc_proof['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_proof[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_proof[bm]" value="1" {{ !empty($doc_proof)? ($doc_proof['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_proof[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_proof[bc]" value="{{ (!empty($doc_proof) && ($doc_proof['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_proof[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_proof[bc]" value="1" {{ !empty($doc_proof)? ($doc_proof['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_proof[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_proof[hm]" value="{{ (!empty($doc_proof) && ($doc_proof['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_proof[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_proof[hm]" value="1" {{ !empty($doc_proof)? ($doc_proof['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_proof[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_proof[hc]" value="{{ (!empty($doc_proof) && ($doc_proof['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_proof[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_proof[hc]" value="1" {{ !empty($doc_proof)? ($doc_proof['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -928,19 +1040,27 @@
 			  	 		<span class="table-font">e) Original Loan Closure Request from Nominee</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_closure_request[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_closure_request[bm]" value="{{ (!empty($doc_closure_request) && ($doc_closure_request['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_closure_request[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_closure_request[bm]" value="1" {{ !empty($doc_closure_request)? ($doc_closure_request['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_closure_request[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_closure_request[bc]" value="{{ (!empty($doc_closure_request) && ($doc_closure_request['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_closure_request[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_closure_request[bc]" value="1" {{ !empty($doc_closure_request)? ($doc_closure_request['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_closure_request[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_closure_request[hm]" value="{{ (!empty($doc_closure_request) && ($doc_closure_request['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_closure_request[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_closure_request[hm]" value="1" {{ !empty($doc_closure_request)? ($doc_closure_request['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_closure_request[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_closure_request[hc]" value="{{ (!empty($doc_closure_request) && ($doc_closure_request['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_closure_request[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_closure_request[hc]" value="1" {{ !empty($doc_closure_request)? ($doc_closure_request['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -950,19 +1070,27 @@
 			  	 		<span class="table-font ">f) ECS/ACH Mandate</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_ecs[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_ecs[bm]" value="{{ (!empty($doc_ecs) && ($doc_ecs['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_ecs[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_ecs[bm]" value="1" {{ !empty($doc_ecs)? ($doc_ecs['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_ecs[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="doc_ecs[bc]" value="{{ (!empty($doc_ecs) && ($doc_ecs['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_ecs[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_ecs[bc]" value="1" {{ !empty($doc_ecs)? ($doc_ecs['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="doc_ecs[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_ecs[hm]" value="{{ (!empty($doc_ecs) && ($doc_ecs['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_ecs[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_ecs[hm]" value="1" {{ !empty($doc_ecs)? ($doc_ecs['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="doc_ecs[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="doc_ecs[hc]" value="{{ (!empty($doc_ecs) && ($doc_ecs['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="doc_ecs[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="doc_ecs[hc]" value="1" {{ !empty($doc_ecs)? ($doc_ecs['hc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 		          </tr>
@@ -1038,19 +1166,27 @@
 			  	 		<span class="table-font ">Are all Documents are clear and readable?</span>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="docs_readable[bm]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="docs_readable[bm]" value="{{ (!empty($docs_readable) && ($docs_readable['bm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="docs_readable[bm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="docs_readable[bm]" value="1" {{ !empty($docs_readable)? ($docs_readable['bm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="docs_readable[bc]" value="0">
+					 	@if(Auth::user()->branch_id == '1100')
+				 	 	<input type="hidden" name="docs_readable[bc]" value="{{ (!empty($docs_readable) && ($docs_readable['bc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="docs_readable[bc]" value="0">@endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="docs_readable[bc]" value="1" {{ !empty($docs_readable)? ($docs_readable['bc'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id == '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist">
-					 	<input type="hidden" name="docs_readable[hm]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="docs_readable[hm]" value="{{ (!empty($docs_readable) && ($docs_readable['hm'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="docs_readable[hm]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="docs_readable[hm]" value="1" {{ !empty($docs_readable)? ($docs_readable['hm'] == '1')?'checked':'': ''}} {{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>
 			  	 	<td class="col-7 tdchecklist td-bg">
-					 	<input type="hidden" name="docs_readable[hc]" value="0">
+					 	@if(Auth::user()->branch_id != '1100')
+				 	 	<input type="hidden" name="docs_readable[hc]" value="{{ (!empty($docs_readable) && ($docs_readable['hc'] == '1')) ?'1':'0'}}">
+				 	 	@else <input type="hidden" name="docs_readable[hc]" value="0"> @endif
 			  	 		<input class="checkboxbig" type="checkbox" class="full-checkbox" name="docs_readable[hc]" value="1" {{ !empty($docs_readable)? ($docs_readable['hc'] == '1')?'checked':'': ''}}
 			  	 		{{(Auth::user()->branch_id != '1100')?'disabled':''}}>
 			  	 	</td>

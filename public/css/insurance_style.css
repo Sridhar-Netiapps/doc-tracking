@@ -271,3 +271,9 @@
 
 
 /*checklist css*/
+
+.checkbox-readonly {
+    pointer-events: none;
+    opacity: 0.6; /* Make it look disabled */
+    cursor: not-allowed;
+}
