@@ -22,17 +22,21 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
+                @hasanyrole('master|bo-maker|bo-checker')
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
                     {{-- <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a> --}}
                 </li>
+                @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr> 
-                                <th scope="col"><input type="checkbox" class="select_all"/> </th>     
+                                @hasanyrole('master|bo-maker|bo-checker')
+                                <th scope="col"><input type="checkbox" class="select_all"/> </th>
+                                @endhasanyrole  
                                 <th scope="col"> Document Type</th>
                                 <th scope="col"> Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -56,7 +60,9 @@
                         <tbody>
                             @foreach ($allDocuments as $doc)
                                 <tr>
+                                    @hasanyrole('master|bo-maker|bo-checker')
                                     <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                    @endhasanyrole
                                     <td>{{ ucfirst($doc->doc_type) }}</td>
                                     <td>{{ $doc->unique_ref_no ?? '-' }}</td>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
