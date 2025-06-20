@@ -41,9 +41,9 @@ class DocumentController extends Controller
             elseif($type ==='rejected'){
                 $query->where('status',6);
             }
-            if ($this->user->hasRole('ro-user')) {
-                $query->where('region', $this->user->region);
-            }
+            // if ($this->user->hasRole('ro-user')) {
+            //     $query->where('region', $this->user->region);
+            // }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
