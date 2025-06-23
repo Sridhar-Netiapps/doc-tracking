@@ -69,6 +69,7 @@
                                 <th scope="col">Box Barcode</th>
                                 <th scope="col">Date of addition to Vendor Data</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,6 +97,7 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->actionName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -124,6 +126,7 @@
                                 <th scope="col">Box Barcode</th>
                                 <th scope="col">Date of addition to Vendor Data</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -148,6 +151,7 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->actionName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -177,6 +181,7 @@
                                 <th scope="col">Box Barcode</th>
                                 <th scope="col">Date of addition to Vendor Data</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -202,6 +207,7 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->actionName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -226,6 +232,7 @@
                                 <th scope="col">Box Barcode</th>
                                 <th scope="col">Date of addition to Vendor Data</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -246,6 +253,7 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->actionName->name ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
