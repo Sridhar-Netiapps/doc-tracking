@@ -70,7 +70,7 @@
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
@@ -115,7 +115,7 @@
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -168,7 +168,7 @@
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
@@ -211,7 +211,7 @@
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -261,7 +261,7 @@
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
@@ -305,7 +305,7 @@
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -357,7 +357,7 @@
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
@@ -396,7 +396,7 @@
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
                                             @if (in_array($type, ['new', 'all']))
-                                                <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasrole('ro-user')
                                             @if ($type === 'received')
@@ -423,7 +423,16 @@
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                              </span>
+                                            @endif
+                                        </td>
+                                        @if ($type == 'received')
+                                        <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endif
                                     </tr>
                                     @endforeach
                                 @endif
@@ -657,6 +666,77 @@
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
+            }
+        });
+
+        $('.vendor-upload').click(function () {
+            $('#upload-vendor').modal('show');
+            // $('#add-vendor').modal('show');
+        });
+
+        $('.add-vendor').click(function () {
+            $('input[name="id"]').val($(this).data('id'));
+            $('input[name="type"]').val($(this).data('type'));
+            $('#add-vendor').modal('show');
+        });
+
+        $('#rma-movement').validate({
+            rules: {
+                lot_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                work_order_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_name: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_movement_date: {
+                    required: true,
+                    sanitize: true
+                },
+                file_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                box_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                }
+            },
+            submitHandler: function (form) {
+
+                let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+                let hasSelection = false;
+
+                $('#rma-movement').find('input[name$="_ids[]"]').remove();
+
+                documentTypes.forEach(function (type) {
+                    let ids = [];
+
+                    $('input.' + type + ':checked').each(function () {
+                        ids.push($(this).data('id'));
+                    });
+
+                    if (ids.length > 0) {
+                        hasSelection = true;
+
+                        ids.forEach(function (id) {
+                            $('#rma-movement').append(
+                                '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+                            );
+                        });
+                    }
+                });
+                $('#rma-movement').submit();
             }
         });
     });

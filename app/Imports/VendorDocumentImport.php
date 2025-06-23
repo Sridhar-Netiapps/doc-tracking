@@ -33,6 +33,12 @@ class VendorDocumentImport implements OnEachRow, WithHeadingRow, WithValidation,
             'DTRF' => DtrfDocument::class,
             'AOF' => AccountOpeningDocument::class,
         ];
+        $status = [
+            'In' => 8,
+            'Out' => 9,
+            'Permount' => 10,
+            'Destroyed' => 11,
+        ];
         try {
             DB::beginTransaction();
 
@@ -47,7 +53,7 @@ class VendorDocumentImport implements OnEachRow, WithHeadingRow, WithValidation,
                 'file_barcode' => $update['file_barcode_against_lot_no'],
                 'box_barcode' => $update['box_barcode_no'],
                 'date_added_to_vendor' => Carbon::parse($update['date_of_addition_to_vendor_data'])->format('Y-m-d'), 
-                'status' => 8,
+                'status' => $status[$update['status']],
                 'updated_by' => auth()->user()->id,
             ]);
 
