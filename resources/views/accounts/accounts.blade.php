@@ -81,7 +81,7 @@
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 {{-- @elsehasrole('ro-user')
@@ -129,7 +129,7 @@
                                                 <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
-                                            @if (in_array($type, ['new', 'all']))
+                                            @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
@@ -192,7 +192,7 @@
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
                                 {{-- @elsehasrole('ro-user')
@@ -238,7 +238,7 @@
                                                 <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
-                                            @if (in_array($type, ['new', 'all']))
+                                            @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
@@ -299,7 +299,7 @@
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
                                 {{-- @elsehasrole('ro-user')
@@ -346,7 +346,7 @@
                                                 <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
-                                            @if (in_array($type, ['new', 'all']))
+                                            @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
@@ -408,7 +408,7 @@
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
-                                    @if (in_array($type, ['new', 'all']))
+                                    @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
                                 {{-- @elsehasrole('ro-user')
@@ -450,7 +450,7 @@
                                                 <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         @elsehasanyrole('bo-maker|bo-checker')
-                                            @if (in_array($type, ['new', 'all']))
+                                            @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                         {{-- @elsehasrole('ro-user')
@@ -488,6 +488,7 @@
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                     @endforeach
                                 @endif
@@ -818,6 +819,7 @@
                         });
                     }
                 });
+
                 $('#rma-movement').submit();
             }
         });
