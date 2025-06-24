@@ -9,6 +9,16 @@
                 <h3 > Moved to RMA</h3>
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
+            @if(session('upload_failures'))
+                <div class="alert alert-danger">
+                    <strong>Import Failed for some rows:</strong>
+                    <ul>
+                        @foreach(session('upload_failures') as $failure)
+                            <li>Row {{ $failure->row() }}: {{ implode(', ', $failure->errors()) }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
         <div class="col-1"></div>
     </div>

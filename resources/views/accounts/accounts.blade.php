@@ -9,16 +9,6 @@
                 <h3 >{{ ucfirst($type) }} Docs</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
-            @if(session('failures'))
-                <div class="alert alert-danger">
-                    <strong>Import Failed for some rows:</strong>
-                    <ul>
-                        @foreach(session('failures') as $failure)
-                            <li>Row {{ $failure->row() }}: {{ implode(', ', $failure->errors()) }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
         </div>
         <div class="col-1"></div>
     </div>
@@ -657,7 +647,7 @@
 <div class="modal fade" id="upload-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="rma-upload" action="{{ route('vendor.upload') }}" method="POST" enctype="multipart/form-data">
+            <form id="rma-upload" action="{{ route('uploads.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>

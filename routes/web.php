@@ -10,6 +10,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
 
@@ -91,6 +92,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', UserController::class);
     // Route::resource('branches', BranchController::class);
     Route::resource('emails', EmailController::class);
+    Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);
+    Route::get('uploads/{upload}/download', [UploadController::class, 'download'])->name('uploads.download');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
