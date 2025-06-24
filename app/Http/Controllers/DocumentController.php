@@ -74,6 +74,7 @@ class DocumentController extends Controller
     public function filteredList()
     {
         $filters = session('filters', []);
+        
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         // $fromDate = $filters['from_date'] ?? null;
@@ -81,6 +82,9 @@ class DocumentController extends Controller
 
         $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
         $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        $cifId = $filters['cif_id'] ?? null;
+        $accountNumber = $filters['account_number'] ?? null;
+
 
         unset($filters['from_date'], $filters['to_date']);
 
@@ -100,14 +104,20 @@ class DocumentController extends Controller
             } elseif ($toDate != null) {
                 $query->whereDate('created_at', '<=', $toDate);
             }
+            
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                        $query->where($field, $value);
+                        if (in_array($field, ['cif_id', 'account_number'])) {
+                            $query->where($field, 'like', '%' . $value . '%');
+                        } else {
+                            $query->where($field, $value);
+                        }
                     }
                 }
             }
+            
         };
 
         $loan_document = null;

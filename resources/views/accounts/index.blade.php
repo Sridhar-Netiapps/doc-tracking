@@ -132,11 +132,18 @@
                     <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
-                <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                <div class="col-12 mt-3">
+                    <input type="search" class="form-control cif_id" 
+                           placeholder="CIF ID" 
+                           value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" 
+                           name="cif_id">
                 </div>
-                <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                
+                <div class="col-12 mt-3">
+                    <input type="search" class="form-control account_number" 
+                           placeholder=" Account Number" 
+                           value="{{ old('account_number', $filters['account_number'] ?? '') }}" 
+                           name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
