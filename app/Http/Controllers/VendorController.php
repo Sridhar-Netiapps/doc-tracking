@@ -52,6 +52,15 @@ class VendorController extends Controller
 
         return redirect()->route('vendor.index')->with('success', 'Vendor updated successfully.');
     }
+    public function moveToRMA($id)
+        {
+            $request = RequestModel::findOrFail($id);
+            $request->status = 'Moved to RMA';
+            $request->save();
+
+            return redirect()->back()->with('success', 'Request moved to RMA successfully.');
+        }
+
 
     public function destroy(Vendor $vendor)
     {

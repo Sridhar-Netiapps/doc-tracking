@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
     //  Route::post('/ProcessStatus/store', function ()
     //  {
     // Route::post('process_status',RoleController::class);
+    Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
     Route::resource('vendor', VendorController::class);
     Route::resource('couriers', CourierController::class);

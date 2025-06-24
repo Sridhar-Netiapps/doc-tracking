@@ -141,6 +141,7 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->lot_no }}</td>
                                         <td>{{ $row->category_of_document }}</td>
@@ -151,7 +152,18 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
-                                        <td>{{ $row->actionName->name ?? '-' }}</td>
+                                        <td>
+                                            @if ($row->status != 'Moved to RMA')
+                                                <form action="{{ route('requests.moveToRMA', $row->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to move this request to RMA?');">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-sm btn-warning">Move to RMA</button>
+                                                </form>
+                                            @else
+                                                <span class="badge bg-success">Moved to RMA</span>
+                                            @endif
+                                        </td>
+                                        
                                     </tr>
                                 @endforeach
                             @endif
