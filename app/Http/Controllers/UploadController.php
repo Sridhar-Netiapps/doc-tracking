@@ -44,7 +44,7 @@ class UploadController extends Controller
         ]);
         // dd($import);
         // Store failures in session for user to view
-        session(['upload_failures' => $import->failures()]);
+        session()->flash('upload_failures', $import->failures());
 
         return redirect()->route('accounts.index','moved')->with('success', 'Upload completed Successfully.');
     }

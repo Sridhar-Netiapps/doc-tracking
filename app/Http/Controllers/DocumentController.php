@@ -33,7 +33,7 @@ class DocumentController extends Controller
 
         $filter = function ($query) use ($type, $start_date, $end_date) {
             if($type === 'moved'){
-                $query->where('status',8);
+                $query->where('status','>=',8);
             }
             elseif($type === 'received'){
                 $query->whereIn('status',[5,7]);
