@@ -58,19 +58,18 @@
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
-				<th>Unique Reference</th>
-				<th>Creation Date</th>
+				<th>Lead ID</th>
+				<!-- <th>Creation Date</th>
 				<th>Region</th>
-				<th>Branch</th>
+				<th>Branch</th> -->
 				<th>Partner</th>
 				<th>Product</th>
-				<th>Policy Number</th>
-				<th>Loan Acc ID</th>
-				<th>Customer ID</th>
-				<th>Deceased</th>
+				<th>Deceased Name</th>
+				<th>Deceased Type</th>
+				<th>Loan Acc No</th>
 				<th>Cause of Death</th>
 				<th>Claim Status</th>
-				<th>PDC/RL Status</th>
+				<th>Amount</th>
 				<th>Action</th>
 			</thead>
 
@@ -78,18 +77,18 @@
 				@foreach($data as $key=>$value)
 				<tr>
 					<td>{{ $value->utrn}}</td>
-					<td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
+					<!-- <td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
 					<td>{{ $value->region}}</td>
-					<td>{{ $value->branch}}</td>
+					<td>{{ $value->branch}}</td> -->
 					<td>{{ $value->partners->partner}}</td>
 					<td>{{ $value->products->product}}</td>
-					<td>{{ $value->policy_number}}</td>
-					<td>{{ $value->load_acc_id}}</td>
-					<td>{{ $value->cust_id}}</td>
+					<td>{{ $value->deceased_name}}</td>
 					<td>{{ $value->deceased}}</td>
+					<td>{{ $value->load_acc_id}}</td>
+					
 					<td>{{ $value->deathCause->cause ?? ''}}</td>
 					<td>{{ $value->claim_stat->claim_status ?? ''}}</td>
-					<td>{{ $value->rlStatus->rl_status ?? ''}}</td>
+					<td>{{ $value->claim_amount}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach
