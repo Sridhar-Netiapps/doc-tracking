@@ -593,6 +593,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="upload-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="rma-upload" action="{{ route('uploads.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="excel_file" class="form-label">Upload File</label>
+                    <input type="file" name="excel_file" class="form-control" required>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         
