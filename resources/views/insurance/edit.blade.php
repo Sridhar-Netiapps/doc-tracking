@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div class="d-flex py-4">
-		<label class="label-font-header">Update Insurance Form - {{$data->utrn}}</label>
+		<label class="label-font-header">Update Insurance Form </label>
 
         
 		<div class="ms-auto">
@@ -67,379 +67,447 @@
 	    <form method="POST" action="{{route('update_claim_details',encrypt($data->id))}}" disabled>	
 	    @csrf	
 	    <fieldset {{ (auth::user()->branch_id == '1100')?'':'disabled'}}>
-		<div class="row">
-			<div class="col-3 mb-3">
-			    <label class="form-label">Region</label>
-			    <select class="form-control form-select" name="region"  >
-			    	<option value="">Select</option>
-			    	<option {{($data->region == 'South')?'selected':''}} value="South" >South</option>
-			    	<option {{($data->region == 'North')?'selected':''}} value="North">North</option>
-			    	<option {{($data->region == 'East')?'selected':''}} value="East">East</option>
-			    	<option {{($data->region == 'West')?'selected':''}} value="West">West</option>	
-			    </select>
-			    @error('region')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Branch ID-Name</label>
-			    <input type="text" class="form-control" name="branch" value="{{ $data->branch }}" >
-			    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+	    <div class="card mt-3">
+        	<div class="card-header label-font-header border-dark">Lead Information</div>
+        	<div class="card-body">
+        		<div class="row">
+        			
+        			<div class="col">
+        				<div class="row">
+        					<div class="col text-end">
+		        				<label>First Name </label><br>
+		        				<label>Last Name</label><br>
+		        				<label>Creation Date</label><br>
+		        				<label>Modified Date</label>
+		        			</div>
+		        			<div class="col">
+		        				<strong>{{ $data->hocreator->first_name}}</strong><br>
+		        				<strong>{{ $data->hocreator->last_name}}</strong><br>
+		        				<strong>{{ date('d M Y H:i:s',strtotime($data->created_at)) }}</strong><br>
+		        				<strong>{{ date('d M Y H:i:s',strtotime($data->updated_at)) }}</strong>
+		        			</div>
+		        			<div class="col text-end">
+		        				<label>Lead Number</label><br>
+		        				<label>Assigned To </label><br>
+		        				<label>POD Number</label>
+		        			</div>
+		        			<div class="col">
+		        				<strong>{{ $data->utrn}}</strong><br>
+		        				<strong></strong><br>
+		        				<strong>{{ $nomineedata->pod_no}}</strong>
+		        			</div>
+        				</div>
+        			</div>
+        			
+        	    </div>
+        	</div>    		
+        </div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Partner</label>
-			    <select class="form-control form-select" name="partner"  >
-			    	<option value="">Select</option>
-			    	@foreach($partners as $key=>$value)
-			    	   <option {{($data->partner == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->partner}}</option>
-			    	@endforeach
-			    </select>
-			    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+		<div class="card mt-3">
+        	<div class="card-header label-font-header">Policy Imformation</div>
+        	<div class="card-body">
+        		<div class="row">
+        		  <div class="row">
+					<div class="col-3 mb-3">
+					    <label class="form-label">Region</label>
+					    <select class="form-control form-select" name="region"  >
+					    	<option value="">Select</option>
+					    	<option {{($data->region == 'South')?'selected':''}} value="South" >South</option>
+					    	<option {{($data->region == 'North')?'selected':''}} value="North">North</option>
+					    	<option {{($data->region == 'East')?'selected':''}} value="East">East</option>
+					    	<option {{($data->region == 'West')?'selected':''}} value="West">West</option>	
+					    </select>
+					    @error('region')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Product</label>
-			    <select class="form-control form-select" name="product"  >
-			    	<option value="">Select</option>
-			    	@foreach($products as $key=>$value)
-			    	   <option {{($data->product== $value->id)?'selected':''}} value="{{$value->id}}">{{$value->product}}</option>
-			    	@endforeach
-			    </select>
-			    @error('product')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Branch ID-Name</label>
+					    <input type="text" class="form-control" name="branch" value="{{ $data->branch }}" >
+					    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Number</label>
-			    <input type="text" class="form-control numberonly" name="policy_number" value="{{ $data->policy_number}}">
-			    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Partner</label>
+					    <select class="form-control form-select" name="partner"  >
+					    	<option value="">Select</option>
+					    	@foreach($partners as $key=>$value)
+					    	   <option {{($data->partner == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->partner}}</option>
+					    	@endforeach
+					    </select>
+					    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Customer ID</label>
-			    <input type="text" class="form-control numberonly" name="cust_id" value="{{ $data->cust_id}}">
-			    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Product</label>
+					    <select class="form-control form-select" name="product"  >
+					    	<option value="">Select</option>
+					    	@foreach($products as $key=>$value)
+					    	   <option {{($data->product== $value->id)?'selected':''}} value="{{$value->id}}">{{$value->product}}</option>
+					    	@endforeach
+					    </select>
+					    @error('product')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">ACTUAL ID</label>
-			    <input type="text" class="form-control numberonly" name="actual_id" value="{{ $data->actual_id}}">
-			    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Policy Number</label>
+					    <input type="text" class="form-control numberonly" name="policy_number" value="{{ $data->policy_number}}">
+					    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Deceased Name</label>
-			    <input type="text" class="form-control numberonly" name="deceased_name" value="{{ $data->deceased_name}}">
-			    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Customer ID</label>
+					    <input type="text" class="form-control numberonly" name="cust_id" value="{{ $data->cust_id}}">
+					    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">MP NO</label>
-			    <input type="text" class="form-control numberonly" name="mp_no" value="{{ $data->mp_no}}">
-			    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">ACTUAL ID</label>
+					    <input type="text" class="form-control numberonly" name="actual_id" value="{{ $data->actual_id}}">
+					    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Covered</label>
-			    <input type="date" class="form-control" name="policy_covered_date" value="{{ $data->policy_covered_date}}">
-			    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Deceased Name</label>
+					    <input type="text" class="form-control numberonly" name="deceased_name" value="{{ $data->deceased_name}}">
+					    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Tenure</label>
-			    <input type="text" class="form-control numberonly" name="loan_tenure" value="{{ $data->loan_tenure}}">
-			    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">MP NO</label>
+					    <input type="text" class="form-control numberonly" name="mp_no" value="{{ $data->mp_no}}">
+					    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Expired Date</label>
-			    <input type="date" class="form-control" name="policy_expiry_date" value="{{ $data->policy_expiry_date}}">
-			    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Policy Covered</label>
+					    <input type="date" class="form-control" name="policy_covered_date" value="{{ $data->policy_covered_date}}">
+					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of Death</label>
-			    <input type="date" class="form-control" name="date_of_death" value="{{ $data->date_of_death}}">
-			    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Loan Tenure</label>
+					    <input type="text" class="form-control numberonly" name="loan_tenure" value="{{ $data->loan_tenure}}">
+					    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Policy Expired Date</label>
+					    <input type="date" class="form-control" name="policy_expiry_date" value="{{ $data->policy_expiry_date}}">
+					    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of Death</label>
+					    <input type="date" class="form-control" name="date_of_death" value="{{ $data->date_of_death}}">
+					    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Gender</label>
-			    <select class="form-control form-select" name="gender">
-			    	<option value="">Select</option>
-			    	<option {{ ( $data->gender=='Male')?'selected':''}}  value="Male">Male</option>
-			    	<option {{ ( $data->gender=='Female')?'selected':''}}  value="Female">Female</option>
-			    </select>
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Gender</label>
+					    <select class="form-control form-select" name="gender">
+					    	<option value="">Select</option>
+					    	<option {{ ( $data->gender=='Male')?'selected':''}}  value="Male">Male</option>
+					    	<option {{ ( $data->gender=='Female')?'selected':''}}  value="Female">Female</option>
+					    </select>
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Deceased</label>
-			    <select class="form-control form-select" name="deceased" >
-			    	<option value="">Select</option>
-			    	@foreach($deceased as $key=>$value)
-			    	   <option {{ ( $data->deceased==$value)?'selected':''}} 
-			    	    value="{{$value}}">{{$value}}</option>
-			    	@endforeach
-			    </select>
-			    @error('deceased')<div class="text-error">{{ $message }}</div>@enderror
+					<div class="col-3 mb-3">
+					    <label class="form-label">Deceased</label>
+					    <select class="form-control form-select" name="deceased" >
+					    	<option value="">Select</option>
+					    	@foreach($deceased as $key=>$value)
+					    	   <option {{ ( $data->deceased==$value)?'selected':''}} 
+					    	    value="{{$value}}">{{$value}}</option>
+					    	@endforeach
+					    </select>
+					    @error('deceased')<div class="text-error">{{ $message }}</div>@enderror
 
-			</div>
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date Of Death Intimation</label>
-			    <input type="date" class="form-control" name="intimation_date" value="{{ $data->intimation_date}}">
-			    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date Of Death Intimation</label>
+					    <input type="date" class="form-control" name="intimation_date" value="{{ $data->intimation_date}}">
+					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Age</label>
-			    <input type="text" class="form-control numberonly" name="age" value="{{ $data->age}}">
-			    @error('age')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Age</label>
+					    <input type="text" class="form-control numberonly" name="age" value="{{ $data->age}}">
+					    @error('age')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Place of Death</label>
-			    <select class="form-control form-select" name="place_of_death">
-			    	<option>Select</option>
-			    	@foreach($placeofdeath as $key=>$value)
-			    	   <option {{ ( $data->place_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->place}}</option>
-			    	@endforeach
-			    </select>
-			    @error('place_of_death')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Place of Death</label>
+					    <select class="form-control form-select" name="place_of_death">
+					    	<option>Select</option>
+					    	@foreach($placeofdeath as $key=>$value)
+					    	   <option {{ ( $data->place_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->place}}</option>
+					    	@endforeach
+					    </select>
+					    @error('place_of_death')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Cause of Death</label>
-			    <select class="form-control form-select" name="cause_of_death" >
-			    	<option>Select</option>
-			    	@foreach($deathcause as $key=>$value)
-			    	   <option  {{ ( $data->cause_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->cause}}</option>
-			    	@endforeach
-			    </select>
-			    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Cause of Death</label>
+					    <select class="form-control form-select" name="cause_of_death" >
+					    	<option>Select</option>
+					    	@foreach($deathcause as $key=>$value)
+					    	   <option  {{ ( $data->cause_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->cause}}</option>
+					    	@endforeach
+					    </select>
+					    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Account ID</label>
-			    <input type="text" class="form-control numberonly" name="load_acc_id" value="{{ $data->load_acc_id}}">
-			    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Loan Account ID</label>
+					    <input type="text" class="form-control numberonly" name="load_acc_id" value="{{ $data->load_acc_id}}">
+					    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Claim Amount</label>
-			    <input type="text" class="form-control numberonly" name="claim_amount" value="{{ $data->claim_amount}}">
-			    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Claim Amount</label>
+					    <input type="text" class="form-control numberonly" name="claim_amount" value="{{ $data->claim_amount}}">
+					    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of Birth</label>
-			    <input type="date" class="form-control" name="dob" value="{{ $data->dob}}">
-			    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of Birth</label>
+					    <input type="date" class="form-control" name="dob" value="{{ $data->dob}}">
+					    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Claim Status</label>
-			    <select class="form-control form-select" name="cliam_status" >
-			    	<option value="">Select</option>
-			    	@foreach($claimstatus as $key=>$value)
-			    	   <option {{ ( $data->cliam_status==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->claim_status}}</option>
-			    	@endforeach
-			    </select>
-			    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Claim Status</label>
+					    <select class="form-control form-select" name="cliam_status" >
+					    	<option value="">Select</option>
+					    	@foreach($claimstatus as $key=>$value)
+					    	   <option {{ ( $data->cliam_status==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->claim_status}}</option>
+					    	@endforeach
+					    </select>
+					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CAS Status</label>
-			    <select class="form-control form-select" name="cas_status">
-			    	<option value="">Select</option>
-			    	<option {{ ( $data->cas_status=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
-			    	<option {{ ( $data->cas_status=='PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
-			    </select>
-			    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">CAS Status</label>
+					    <select class="form-control form-select" name="cas_status">
+					    	<option value="">Select</option>
+					    	<option {{ ( $data->cas_status=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
+					    	<option {{ ( $data->cas_status=='PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
+					    </select>
+					    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>	
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Nominee Name</label>
-			    <input type="text" class="form-control" name="nominee_name" value="{{ $data->nominee_name}}">
-			    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC/RL Status</label>
+					    <select class="form-control form-select" name="rl_status" >
+					    	<option value="">Select</option>
+					    	@foreach($rlStat as $key=>$stat)
+					    	  <option {{ ($data->rl_status==$stat->id)?'selected':'' }} value="{{$stat->id}}">{{$stat->rl_status}}</option>
+		                    @endforeach
+		                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Relationship</label>
-			    <select class="form-control form-select" name="relationship" >
-			    	<option value="">Select</option>
-			    	@foreach($relationship as $key=>$value)
-			    	   <option {{ ( $data->relationship==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->relationship}}</option>
-			    	@endforeach
-			    </select>
-			    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Processed By</label>
+					    <select class="form-control form-select" name="processed_by">
+					    	<option value="">Select</option>
+					    	@foreach($procesedby as $proc)
+					    	  <option {{ ($data->processed_by==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
+		                    @endforeach
+		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Nominee Contact No</label>
-			    <input type="date" class="form-control numberonly" name="nominee_number" value="{{ $data->nominee_number}}">
-			    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Packet Number</label>
+					    <input type="text" class="form-control numberonly" name="pkt_no" value="{{ $data->pkt_no}}">
+					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
+       </div>
 
-		</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Claim Status</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-6 mb-3">
+					    <label class="form-label">HO Remarks</label>
+					    <textarea class="form-control" name="ho_remark">{{ $data->ho_remark}}</textarea>
+					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+					<div class="col-6 mb-3"></div>
 
-		<div class="row">
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Outstanding Amt</label>
-			    <input type="text" class="form-control numberonly" name="loan_outstanding" value="{{ $data->loan_outstanding}}">
-			    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of document received</label>
+					    <input type="date" class="form-control" name="doc_rec_date" value="{{ $data->doc_rec_date}}">
+					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Payable to Nominee</label>
-			    <input type="text" class="form-control numberonly" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}">
-			    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of submision to partner</label>
+					    <input type="date" class="form-control" name="submit_to_partner_date" value="{{ $data->submit_to_partner_date}}">
+					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Acknowledgement Received Date</label>
-			    <input type="date" class="form-control numberonly" name="ack_rec_date" value="{{ $data->ack_rec_date}}">
-			    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-6 mb-3">
+					    <label class="form-label">Remarks</label>
+					    <input type="text" class="form-control numberonly" name="ho_remark2" value="{{ $data->ho_remark2}}">
+					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Packet Number</label>
-			    <input type="text" class="form-control numberonly" name="pkt_no" value="{{ $data->pkt_no}}">
-			    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of re-submision to partner</label>
+					    <input type="date" class="form-control" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
+					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">SPDC/RL Status</label>
-			    <select class="form-control form-select" name="rl_status" >
-			    	<option value="">Select</option>
-			    	@foreach($rlStat as $key=>$stat)
-			    	  <option {{ ($data->rl_status==$stat->id)?'selected':'' }} value="{{$stat->id}}">{{$stat->rl_status}}</option>
-                    @endforeach
-                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
-			    </select>
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Settlement Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Loan Outstanding Amt</label>
+					    <input type="text" class="form-control numberonly" name="loan_outstanding" value="{{ $data->loan_outstanding}}">
+					    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Processed By</label>
-			    <select class="form-control form-select" name="processed_by">
-			    	<option value="">Select</option>
-			    	@foreach($procesedby as $proc)
-			    	  <option {{ ($data->processed_by==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
-                    @endforeach
-                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
-			    </select>
-			</div>
-			<div class="col-3 mb-3"></div>
-			<div class="col-3 mb-3"></div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Payable to Nominee</label>
+					    <input type="text" class="form-control numberonly" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}">
+					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-6 mb-3">
-			    <label class="form-label">HO Remarks</label>
-			    <textarea class="form-control" name="ho_remark">{{ $data->ho_remark}}</textarea>
-			    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
-			<div class="col-6 mb-3"></div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Nominee Name</label>
+					    <input type="text" class="form-control" name="nominee_name" value="{{ $data->nominee_name}}">
+					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of document received</label>
-			    <input type="date" class="form-control" name="doc_rec_date" value="{{ $data->doc_rec_date}}">
-			    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Nominee Contact No</label>
+					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ $data->nominee_number}}">
+					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of submision to partner</label>
-			    <input type="date" class="form-control" name="submit_to_partner_date" value="{{ $data->submit_to_partner_date}}">
-			    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Relationship</label>
+					    <select class="form-control form-select" name="relationship" >
+					    	<option value="">Select</option>
+					    	@foreach($relationship as $key=>$value)
+					    	   <option {{ ( $data->relationship==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->relationship}}</option>
+					    	@endforeach
+					    </select>
+					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-6 mb-3">
-			    <label class="form-label">Remarks</label>
-			    <input type="text" class="form-control numberonly" name="ho_remark2" value="{{ $data->ho_remark2}}">
-			    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control numberonly" name="ack_rec_date" value="{{ $data->ack_rec_date}}">
+					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of re-submision to partner</label>
-			    <input type="date" class="form-control" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
-			    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of settlement</label>
+					    <input type="date" class="form-control" name="settlement_date" value="{{ $data->settlement_date}}">
+					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of settlement</label>
-			    <input type="date" class="form-control" name="settlement_date" value="{{ $data->settlement_date}}">
-			    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">NEFT Rejection Date</label>
+					    <input type="date" class="form-control" name="neft_rejection_date" value="{{ $data->neft_rejection_date}}">
+					    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">NEFT Rejection Date</label>
-			    <input type="date" class="form-control" name="neft_rejection_date" value="{{ $data->neft_rejection_date}}">
-			    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">NEFT Reason For Rejection</label>
+					    <input type="text" class="form-control" name="neft_rejection_reason" value="{{ $data->neft_rejection_reason}}">
+					    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">NEFT Reason For Rejection</label>
-			    <input type="text" class="form-control" name="neft_rejection_reason" value="{{ $data->neft_rejection_reason}}">
-			    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Final Settlement Date</label>
+					    <input type="date" class="form-control" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
+					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Final Settlement Date</label>
-			    <input type="date" class="form-control" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
-			    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+        	    </div>
+        	</div>    		
+        </div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Recovery Status</label>
-			    <input type="date" class="form-control numberonly" name="recovery_status" value="{{ $data->recovery_status}}">
-			    @error('recovery_status')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Recovery Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Recovery Status</label>
+					    <input type="text" class="form-control numberonly" name="recovery_status" value="{{ $data->recovery_status}}">
+					    @error('recovery_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Bounced CHQ No</label>
-			    <input type="text" class="form-control" name="bounced_chq_no" value="{{ $data->bounced_chq_no}}">
-			    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Bounced CHQ No</label>
+					    <input type="text" class="form-control" name="bounced_chq_no" value="{{ $data->bounced_chq_no}}">
+					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CHQ Bounced Date</label>
-			    <input type="date" class="form-control" name="bounced_chq_date" value="{{ $data->bounced_chq_date}}">
-			    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">CHQ Bounced Date</label>
+					    <input type="date" class="form-control" name="bounced_chq_date" value="{{ $data->bounced_chq_date}}">
+					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CHQ Bounced reason</label>
-			    <input type="text" class="form-control" name="bounced_chq_reason" value="{{ $data->bounced_chq_reason}}">
-			    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">CHQ Bounced reason</label>
+					    <input type="text" class="form-control" name="bounced_chq_reason" value="{{ $data->bounced_chq_reason}}">
+					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Write off received</label>
-			    <input type="text" class="form-control" name="write_off_rec" value="{{ $data->write_off_rec}}">
-			    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Write-Off Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Write off received</label>
+					    <input type="text" class="form-control" name="write_off_rec" value="{{ $data->write_off_rec}}">
+					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Write off status</label>
-			    <input type="text" class="form-control" name="write_off_status" value="{{ $data->write_off_status}}">
-			    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Write off status</label>
+					    <input type="text" class="form-control" name="write_off_status" value="{{ $data->write_off_status}}">
+					    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Handed over to Business Head</label>
-			    <input type="text" class="form-control" name="handed_to_bh" value="{{ $data->handed_to_bh}}">
-			    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Handed over to Business Head</label>
+					    <input type="text" class="form-control" name="handed_to_bh" value="{{ $data->handed_to_bh}}">
+					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Handed over to credit</label>
-			    <input type="text" class="form-control" name="handed_to_credit" value="{{ $data->handed_to_credit}}">
-			    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
-			</div>
-		</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Handed over to credit</label>
+					    <input type="text" class="form-control" name="handed_to_credit" value="{{ $data->handed_to_credit}}">
+					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
         
         </fieldset>
 
         @if(auth::user()->branch_id == '1100')
-		<div class="d-flex">
+		<div class="d-flex mt-3">
 			<div class="ms-auto">
 				<button type="submit" class="btn btn-sm btn-danger btn-text p-2">Update</button>
 			</div>

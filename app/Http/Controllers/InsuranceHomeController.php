@@ -37,6 +37,7 @@ class InsuranceHomeController extends Controller
         $rejectedArray = array();
         $inprogressArray = array();
         $claimedAmount = array();
+        $claimchart=array();
 
         if(Auth::user()->branch_id == '1100'){
           $total = InsuranceClaimDetail::count();
@@ -96,6 +97,16 @@ class InsuranceHomeController extends Controller
            } 
 
            $regionChart = [$claimedArray ,$noneligibleArray , $rejectedArray , $inprogressArray];  
+
+           $monthArray=$this->getFinancialYearMonths();
+          
+          foreach ($monthArray as $vals) {
+              $claimedAmount[]=InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->sum('claim_amount');
+              $settledAmount[]=InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->sum('payable_to_nominee');
+              $claimcount[]=InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','7')->count();
+          }
+          
+          $claimchart=[$claimcount , $settledAmount , $claimedAmount];
 
          }
 

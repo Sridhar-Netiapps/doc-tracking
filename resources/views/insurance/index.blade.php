@@ -64,6 +64,7 @@
 				<th>Branch</th> -->
 				<th>Partner</th>
 				<th>Product</th>
+				<th>CIF ID</th>
 				<th>Deceased Name</th>
 				<th>Deceased Type</th>
 				<th>Loan Acc No</th>
@@ -82,6 +83,7 @@
 					<td>{{ $value->branch}}</td> -->
 					<td>{{ $value->partners->partner}}</td>
 					<td>{{ $value->products->product}}</td>
+					<td>{{ $value->cust_id}}</td>
 					<td>{{ $value->deceased_name}}</td>
 					<td>{{ $value->deceased}}</td>
 					<td>{{ $value->load_acc_id}}</td>

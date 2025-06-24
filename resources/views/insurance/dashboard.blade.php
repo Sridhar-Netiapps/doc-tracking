@@ -26,7 +26,7 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="danger">{{ $total}}</h3>
-              <span>Total</span>
+              <span>Intimation Received</span>
             </div>
             <div class="align-self-center">
               <i class="icon-rocket danger font-large-2 float-right"></i>
@@ -125,13 +125,14 @@
 </div>
 
 <div class="row py-4">
-	<div class="col">
+  @if(Auth::user()->branch_id == '1100')
+	<div class="col-4">
 	  <div class="card shadow-lg p-3 mb-5 bg-white rounded">
 	  	<div id="regionwise"></div>
 	  </div>	
 	</div>
-
-	<div class="col">
+  @endif
+	<div class="col-4">
 		<div class="card shadow-lg p-3 mb-5 bg-white rounded">
       <div id="causeofdeath"></div>
     </div>
@@ -169,7 +170,7 @@
     chart.render();
 
 
-     var options_line = {
+    /* var options_line = {
           series: [{
             name: 'Claimed',
             data: @json($claimedAmount),
@@ -237,7 +238,82 @@
         
 
         var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
+        linechart.render();*/
+
+        var options_line = {
+        series: [{
+          name: 'Leads count',
+          type: 'column',
+          data: @json($claimchart['0'])
+        }, {
+          name: 'Settled Amount',
+          type: 'area',
+          data: @json($claimchart['1'])
+        }, {
+          name: 'Claimed Amount',
+          type: 'line',
+          data: @json($claimchart['2'])
+        }],
+        chart: {
+          height: 250,
+          type: 'line',
+          stacked: false,
+        },
+        stroke: {
+          width: [0, 2, 5],
+          curve: 'smooth'
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '50%'
+          }
+        },
+        fill: {
+          opacity: [0.85, 0.25, 1],
+          gradient: {
+            inverseColors: false,
+            shade: 'light',
+            type: "vertical",
+            opacityFrom: 0.85,
+            opacityTo: 0.55,
+            stops: [0, 100, 100, 100]
+          }
+        },
+        labels: ['Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+        markers: {
+          size: 0
+        },
+        xaxis: {
+          type: 'category' // changed from 'datetime' to 'category'
+        },
+        yaxis: {
+          title: {
+            text: 'Points',
+          }
+        },
+        tooltip: {
+        shared: true,
+        intersect: false,
+        y: {
+          formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+            if (typeof value !== "undefined") {
+              if (seriesIndex === 0) {
+                // TEAM A – plain number with "points"
+                return value.toFixed(0) + " Lead(s)";
+              } else {
+                // TEAM B and TEAM C – formatted as rupees
+                return "₹" + value.toFixed(2);
+              }
+            }
+            return value;
+          }
+        }
+      }
+      };
+
+      var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
         linechart.render();
+
 
 
     var stackoptions = {
