@@ -85,8 +85,7 @@
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
-                                {{-- {{ dd($row) }} --}}
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan">
+                                    <tr>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -107,7 +106,11 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
-                                        <td>{{ $row->actionName->name ?? '-' }}</td>
+                                        <td>
+                                            @if ($row->status == 8)
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive">Update</button>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -142,7 +145,7 @@
                         <tbody>
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan">
+                                    <tr>
                                         <td>{{ $row->unique_ref_no }}</td>  
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -163,17 +166,10 @@
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
-                                            @if ($row->status != 'Moved to RMA')
-                                                <form action="{{ route('requests.moveToRMA', $row->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to move this request to RMA?');">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="btn btn-sm btn-warning">Move to RMA</button>
-                                                </form>
-                                            @else
-                                                <span class="badge bg-success">Moved to RMA</span>
+                                            @if ($row->status == 8)
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive">Update</button>
                                             @endif
                                         </td>
-                                        
                                     </tr>
                                 @endforeach
                             @endif
@@ -209,7 +205,7 @@
                         <tbody>
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof">
+                                    <tr>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -229,7 +225,11 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
-                                        <td>{{ $row->actionName->name ?? '-' }}</td>
+                                        <td>
+                                            @if ($row->status == 8)
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive">Update</button>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -260,7 +260,7 @@
                         <tbody>
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf">
+                                    <tr>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -275,7 +275,11 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
-                                        <td>{{ $row->actionName->name ?? '-' }}</td>
+                                        <td>
+                                            @if ($row->status == 8)
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive">Update</button>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -385,63 +389,27 @@
         </form>
     </div>
 </div>
-<div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal fade" id="retrive" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
+            <form id="doc-retrive" action="{{ route('document.update') }}" method="POST">
                 @csrf
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
+                <div class="modal-header text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Retrive Document from RMA</h5>
                 </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Lot No.</label>
-                        <input type="number" name="lot_no" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Work Order No.</label>
-                        <input type="number" name="lot_no" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Vendor Name</label>
-                        <input type="text" name="vendor_name" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
-                        <input type="file" name="barcode_file" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Box Barcode.</label>
-                        <input type="text" name="vendor_name" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Status</label>
-                        <select id="status" name="status" class="form-control select2" required>
-                            <option value=''>Select</option>
-                            <option value='In'>In</option>
-                            <option value='Out'>Out</option>
-                            <option value='Permout'>Permout</option>
-                            <option value='Destroyed'>Destroyed</option>
-                        </select>
-                        {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
-                    </div>
-                    <div class="col-12 pb-2 d-none ">
-                        <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
-                        <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
-                    </div>
+                <div class="modal-body">
+                    <label for="status" class="form-label">Status</label>
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="type">
+                    <select name="remarks" class="form-control select2" required>
+                        <option value=''>Select</option>
+                        <option value='8'>In</option>
+                        <option value='9'>Out</option>
+                        <option value='10'>Permout</option>
+                        <option value='11'>Destroyed</option>
+                    </select>
                 </div>
                 <div class="modal-footer border-0">
-                    {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                 </div>
@@ -449,147 +417,21 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow">
-            {{-- <form id="update-courier" action="/accounts-update" method="POST"> --}}
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Update Details</h5>
-                </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-4">
-                        <label>Unique Number</label>
-                        <h5 class="unique_number">UJJ029921</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Customer Name</label>
-                        <h5 class="customer_name">Cali</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Channel</label>
-                        <h5 class="channel">GL</h5>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name</label>
-                        <input type="text" name="courier_name" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Dispatch Date</label>
-                        <input type="Date" name="dispatch_date" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
-                    {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            {{-- </form> --}}
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function () {
-        var count = $('select[name="remarks"]').length;
-        var loancount = $('td.loan').length;
-        var goldloancount = $('td.goldloan').length;
-        var aofcount = $('td.aof').length;
-        var dtrfcount = $('td.dtrf').length;
-        
-        if(count > 0){
-            $('#update-all').removeClass('d-none');
-        }
-        if(loancount > 0){
-            $('th.loan').removeClass('d-none');
-        }
-        if(goldloancount > 0){
-            $('th.goldloan').removeClass('d-none');
-        }
-        if(aofcount > 0){
-            $('th.aof').removeClass('d-none');
-        }
-        if(dtrfcount > 0){
-            $('th.dtrf').removeClass('d-none');
-        }
-        $('select[name="remarks"]').change(function () {
-            const row = $(this).closest('tr');
-            const reasonField = row.find('textarea[name="reason_for_rejection"]');
-
-            if ($(this).val() === '6' || $(this).val() === '7') {
-                reasonField.removeClass('d-none');
-            } else {
-                reasonField.addClass('d-none').val('');
-            }
+        $('.retrive').click(function () {
+            $('input[name="id"]').val($(this).data('id'));
+            $('input[name="type"]').val($(this).data('type'));
+            $('#retrive').modal('show');
         });
-        function collectRowData(row) {
-            const id = row.data('id');
-            const uid = row.data('uid');
-            const type = row.data('type');
-            const remarks = row.find('.remarks').val();
-            const reason = row.find('.reason').val();
-
-            if (remarks !== '5' && !reason.trim()) {
-                throw `Reason is required for this Document: #${uid}`;
-            }
-
-            return { id, type, remarks, reason_for_rejection: reason };
-        }
-
-        // Handle individual update
-        $('.update-row').on('click', function () {
-            const row = $(this).closest('tr');
-            let data;
-
-            try {
-                data = [collectRowData(row)];
-            } catch (err) {
-                Swal.fire("Alert", err, "warning");
-                return;
-            }
-
-            sendUpdateRequest(data);
-        });
-
-        // Handle bulk update
-        $('#update-all').on('click', function () {
-            const data = [];
-            let hasError = false;
-
-            $('tr[data-id]').each(function () {
-                try {
-                    data.push(collectRowData($(this)));
-                } catch (err) {
-                    Swal.fire("Alert", err, "warning");
-                    hasError = true;
-                    return false; // stop loop
+        $('#doc-retrive').validate({
+            rules: {
+                status: {
+                    required: true,
+                    sanitize: true
                 }
-            });
-
-            if (!hasError && data.length) {
-                sendUpdateRequest(data);
             }
         });
-
-        // Common AJAX function
-        function sendUpdateRequest(payload) {
-            $.ajax({
-                url: '{{ route("document.update") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    updates: payload
-                },
-                success: function () {
-                    Swal.fire("Success", "Update successful", "success").then(() => location.reload());
-                },
-                error: function () {
-                    Swal.fire("Error", "Update failed", "error");
-                }
-            });
-        }
     });
 </script>
 

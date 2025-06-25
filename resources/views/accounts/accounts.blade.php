@@ -160,10 +160,10 @@
                                               </span>
                                             @endif
                                         </td> 
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
-                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -267,10 +267,10 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
-                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -376,10 +376,10 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
-                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -475,10 +475,10 @@
                                               </span>
                                             @endif
                                         </td>
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                         @endif
-                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     </tr>
                                     @endforeach
                                 @endif

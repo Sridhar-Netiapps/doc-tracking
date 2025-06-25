@@ -510,23 +510,32 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
 
-            $updates = $request->input('updates', []);
+            if($request->input('updates', []))
+                $updates = $request->input('updates', []);
+            else
+                $updates[] = $request->all();
             
             foreach ($updates as $update) {
-                
-                $table[$update['type']]::where('id', $update['id'])->update([
-                    'status' => $update['remarks'],
-                    'reason' => $update['reason_for_rejection'],
-                    'updated_by' => $this->user->id,
-                ]);
+                $doc = $table[$update['type']]::find($update['id']);
+                $doc->status = $update['remarks'];
+                if(isset($update['reason_for_rejection']))
+                    $doc->reason = $update['reason_for_rejection'];
+                $doc->updated_by = $this->user->id;
+                $doc->save();
             }
 
             DB::commit();
 
-            return response()->json(['success' => true]);
+            if($request->input('updates', []))
+                return response()->json(['success' => true]);
+            else
+                return redirect()->route('accounts.index','moved')->with('success', 'Status Updated Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 500);
+            if($request->input('updates', []))
+                return response()->json(['error' => $e->getMessage()], 500);
+            else
+                return redirect()->route('accounts.index','moved')->with('error', 'Status Updation Failed.');
         }
     }
 
