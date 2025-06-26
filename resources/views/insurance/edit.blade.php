@@ -82,8 +82,8 @@
 		        				<label>Modified Date</label>
 		        			</div>
 		        			<div class="col">
-		        				<strong>{{ $data->hocreator->first_name}}</strong><br>
-		        				<strong>{{ $data->hocreator->last_name}}</strong><br>
+		        				<strong>{{ $data->hocreator->first_name ?? ''}}</strong><br>
+		        				<strong>{{ $data->hocreator->last_name ?? ''}}</strong><br>
 		        				<strong>{{ date('d M Y H:i:s',strtotime($data->created_at)) }}</strong><br>
 		        				<strong>{{ date('d M Y H:i:s',strtotime($data->updated_at)) }}</strong>
 		        			</div>
@@ -95,7 +95,7 @@
 		        			<div class="col">
 		        				<strong>{{ $data->utrn}}</strong><br>
 		        				<strong></strong><br>
-		        				<strong>{{ $nomineedata->pod_no}}</strong>
+		        				<strong>{{ $nomineedata->pod_no ?? ''}}</strong>
 		        			</div>
         				</div>
         			</div>
@@ -132,7 +132,7 @@
 					    <select class="form-control form-select" name="partner"  >
 					    	<option value="">Select</option>
 					    	@foreach($partners as $key=>$value)
-					    	   <option {{($data->partner == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->partner}}</option>
+					    	   <option {{($data->partner == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
 					    	@endforeach
 					    </select>
 					    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
@@ -143,7 +143,7 @@
 					    <select class="form-control form-select" name="product"  >
 					    	<option value="">Select</option>
 					    	@foreach($products as $key=>$value)
-					    	   <option {{($data->product== $value->id)?'selected':''}} value="{{$value->id}}">{{$value->product}}</option>
+					    	   <option {{($data->product== $value->product)?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
 					    	@endforeach
 					    </select>
 					    @error('product')<div class="text-error">{{ $message }}</div>@enderror
@@ -243,7 +243,7 @@
 					    <select class="form-control form-select" name="place_of_death">
 					    	<option>Select</option>
 					    	@foreach($placeofdeath as $key=>$value)
-					    	   <option {{ ( $data->place_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->place}}</option>
+					    	   <option {{ ( $data->place_of_death==$value->place)?'selected':''}}  value="{{$value->place}}">{{$value->place}}</option>
 					    	@endforeach
 					    </select>
 					    @error('place_of_death')<div class="text-error">{{ $message }}</div>@enderror
@@ -254,7 +254,7 @@
 					    <select class="form-control form-select" name="cause_of_death" >
 					    	<option>Select</option>
 					    	@foreach($deathcause as $key=>$value)
-					    	   <option  {{ ( $data->cause_of_death==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->cause}}</option>
+					    	   <option  {{ ( $data->cause_of_death==$value->cause)?'selected':''}}  value="{{$value->cause}}">{{$value->cause}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
@@ -283,7 +283,7 @@
 					    <select class="form-control form-select" name="cliam_status" >
 					    	<option value="">Select</option>
 					    	@foreach($claimstatus as $key=>$value)
-					    	   <option {{ ( $data->cliam_status==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->claim_status}}</option>
+					    	   <option {{ ( $data->cliam_status==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
@@ -304,22 +304,12 @@
 					    <select class="form-control form-select" name="rl_status" >
 					    	<option value="">Select</option>
 					    	@foreach($rlStat as $key=>$stat)
-					    	  <option {{ ($data->rl_status==$stat->id)?'selected':'' }} value="{{$stat->id}}">{{$stat->rl_status}}</option>
+					    	  <option {{ ($data->rl_status==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
 		                    @endforeach
 		                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
 					    </select>
 					</div>
 
-					<div class="col-3 mb-3">
-					    <label class="form-label">Processed By</label>
-					    <select class="form-control form-select" name="processed_by">
-					    	<option value="">Select</option>
-					    	@foreach($procesedby as $proc)
-					    	  <option {{ ($data->processed_by==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
-		                    @endforeach
-		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
-					    </select>
-					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Packet Number</label>
@@ -346,6 +336,17 @@
 					    <label class="form-label">Date of document received</label>
 					    <input type="date" class="form-control" name="doc_rec_date" value="{{ $data->doc_rec_date}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Processed By</label>
+					    <select class="form-control form-select" name="processed_by">
+					    	<option value="">Select</option>
+					    	@foreach($procesedby as $proc)
+					    	  <option {{ ($data->processed_by==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
+		                    @endforeach
+		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
 					</div>
 
 					<div class="col-3 mb-3">
@@ -402,7 +403,7 @@
 					    <select class="form-control form-select" name="relationship" >
 					    	<option value="">Select</option>
 					    	@foreach($relationship as $key=>$value)
-					    	   <option {{ ( $data->relationship==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->relationship}}</option>
+					    	   <option {{ ( $data->relationship==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
 					    	@endforeach
 					    </select>
 					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
@@ -530,67 +531,67 @@
 			<div class="row">
 				<div class="col-3 mb-3">
 				    <label class="form-label">Nominee Name as per Bank Records</label>
-				    <input type="text" class="form-control" name="nominee_name_bank" value="{{$nomineedata->nominee_name_bank}}">
+				    <input type="text" class="form-control" name="nominee_name_bank" value="{{$nomineedata->nominee_name_bank ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Name of the Bank</label>
-				    <input type="text" class="form-control" name="bank_name"  value="{{$nomineedata->bank_name}}">
+				    <input type="text" class="form-control" name="bank_name"  value="{{$nomineedata->bank_name ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Bank A/c Number</label>
-				    <input type="text" class="form-control numberonly" name="acc_number"  value="{{$nomineedata->acc_number}}">
+				    <input type="text" class="form-control numberonly" name="acc_number"  value="{{$nomineedata->acc_number ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">IFSC Code</label>
-				    <input type="text" class="form-control" name="ifsc"  value="{{$nomineedata->ifsc}}">
+				    <input type="text" class="form-control" name="ifsc"  value="{{$nomineedata->ifsc ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Bank Branch Name</label>
-				    <input type="text" class="form-control" name="branch_name"  value="{{$nomineedata->branch_name}}">
+				    <input type="text" class="form-control" name="branch_name"  value="{{$nomineedata->branch_name ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">SPDC-Bank Name</label>
-				    <input type="text" class="form-control" name="spdc_bank_name"  value="{{$nomineedata->spdc_bank_name}}">
+				    <input type="text" class="form-control" name="spdc_bank_name"  value="{{$nomineedata->spdc_bank_name ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">SPDC-Chq Number</label>
-				    <input type="text" class="form-control" name="spdc_chk_no"  value="{{$nomineedata->spdc_chk_no}}">
+				    <input type="text" class="form-control" name="spdc_chk_no"  value="{{$nomineedata->spdc_chk_no ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Courier Name</label>
-				    <input type="text" class="form-control" name="courier_name"  value="{{$nomineedata->courier_name}}">
+				    <input type="text" class="form-control" name="courier_name"  value="{{$nomineedata->courier_name ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">POD Number</label>
-				    <input type="text" class="form-control" name="pod_no"  value="{{$nomineedata->pod_no}}">
+				    <input type="text" class="form-control" name="pod_no"  value="{{$nomineedata->pod_no ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Cheque Sent Date</label>
-				    <input type="date" class="form-control" name="cheq_sent_date"  value="{{$nomineedata->cheq_sent_date}}">
+				    <input type="date" class="form-control" name="cheq_sent_date"  value="{{$nomineedata->cheq_sent_date ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Remarks</label>
-				    <input type="text" class="form-control" name="bo_remarks"  value="{{$nomineedata->bo_remarks}}">
+				    <input type="text" class="form-control" name="bo_remarks"  value="{{$nomineedata->bo_remarks ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Maker at Branch</label>
-				    <input type="text" class="form-control" name="bo_maker"  value="{{$nomineedata->bo_maker}}">
+				    <input type="text" class="form-control" name="bo_maker"  value="{{$nomineedata->bo_maker ?? ''}}">
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Checker at Branch</label>
-				    <input type="text" class="form-control" name="bo_checker"  value="{{$nomineedata->bo_checker}}">
+				    <input type="text" class="form-control" name="bo_checker"  value="{{$nomineedata->bo_checker ?? ''}}">
 				</div>
 
 			</div>

@@ -7,13 +7,19 @@
       <div class="d-flex">
          <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Insurance Leads</button></a>
          <div class="ms-auto">
-            <select class="form-control">
-               <option>FY : 2025-2026</option>
+          <form method="GET" action="{{ route('insurance_dashboard')}}">
+            <select class="form-control" name="fy" id="finaceyear">
+              @foreach($financialYears as $fyear)
+                <option {{ ($fyear==$slectedyear)?'selected':''}} value="{{$fyear}}">{{ $fyear }}</option>
+              @endforeach
              </select>
+
+             <button type="submit" class="d-none" id="filter_data"></button>
+          </form>   
          </div>
       </div>
       
-      
+   
        
      </div>
   </div>
@@ -43,7 +49,7 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="success">{{ $claimed}}</h3>
-              <span>Claimed</span>
+              <span>Claim Settled</span>
             </div>
             <div class="align-self-center">
               <i class="icon-user success font-large-2 float-right"></i>
@@ -97,7 +103,7 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="primary">{{ $inprogress}}</h3>
-              <span>Progress</span>
+              <span>Processed to Partner</span>
             </div>
             <div class="align-self-center">
               <i class="icon-support primary font-large-2 float-right"></i>
@@ -122,6 +128,8 @@
 		 <div id="linechart"></div>
 		</div>
 	</div>
+
+ 
 </div>
 
 <div class="row py-4">
@@ -138,9 +146,11 @@
     </div>
 	</div>
 
-	<div class="col">
-		
-</div>
+	 <div class="col">
+    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+      <div id="death_chart"></div>
+    </div>  
+  </div>
 
 </div>
 
@@ -170,149 +180,162 @@
     chart.render();
 
 
-    /* var options_line = {
-          series: [{
-            name: 'Claimed',
-            data: @json($claimedAmount),
-          }],
-          chart: {
-          type: 'area',
-          stacked: false,
-          height: 250,
-          zoom: {
-            type: 'x',
-            enabled: true,
-            autoScaleYaxis: true
-          },
-          toolbar: {
-            autoSelected: 'zoom'
-          },
+      var options_line = {
+      series: [{
+        name: 'Leads count',
+        type: 'column',
+        data: @json($claimchart['0'])
+      }, {
+        name: 'Settled Amount',
+        type: 'area',
+        data: @json($claimchart['1'])
+      }, {
+        name: 'Claimed Amount',
+        type: 'line',
+        data: @json($claimchart['2'])
+      }],
+      chart: {
+        height: 250,
+        type: 'line',
+        stacked: false,
+      },
+      stroke: {
+        width: [0, 2, 5],
+        curve: 'smooth'
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: '50%'
+        }
+      },
+      fill: {
+        opacity: [0.85, 0.25, 1],
+        gradient: {
+          inverseColors: false,
+          shade: 'light',
+          type: "vertical",
+          opacityFrom: 0.85,
+          opacityTo: 0.55,
+          stops: [0, 100, 100, 100]
+        }
+      },
+      labels: ['Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+      markers: {
+        size: 0
+      },
+      xaxis: {
+        type: 'category' // changed from 'datetime' to 'category'
+      },
+      yaxis: {
+        title: {
+          text: 'Points',
+        }
+      },
+      tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+          if (typeof value !== "undefined") {
+            if (seriesIndex === 0) {
+              // TEAM A – plain number with "points"
+              return value.toFixed(0) + " Lead(s)";
+            } else {
+              // TEAM B and TEAM C – formatted as rupees
+              return "₹" + value.toFixed(2);
+            }
+          }
+          return value;
+        }
+      }
+    }
+    };
+
+    var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
+      linechart.render();
+
+    var death_options = {
+         series: [{
+          name: 'Death count ',
+          data: @json($deathcausehart[1])
+        }],
+          annotations: {
+          points: [{
+            x: 'Bananas',
+            seriesIndex: 0,
+            label: {
+              borderColor: '#775DD0',
+              offsetY: 0,
+              style: {
+                color: '#fff',
+                background: '#775DD0',
+              },
+              text: 'Bananas are good',
+            }
+          }]
         },
-        colors:['#3EC7A1'],
+        chart: {
+          height: 250,
+          type: 'bar',
+        },
+        title: {
+          text: 'Cause of Death',
+          align: 'left'
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 0,
+            columnWidth: '50%',
+          }
+        },
         dataLabels: {
           enabled: false
         },
-        markers: {
-          size: 0,
+        stroke: {
+          width: 0
         },
-        title: {
-          text: 'Claimed Amount',
-          align: 'left'
+        grid: {
+          row: {
+            colors: ['#fff', '#f2f2f2']
+          }
+        },
+        xaxis: {
+          labels: {
+            rotate: -45,
+             style: {
+                fontSize: '8px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                colors: '#333' // optional
+              }
+          },
+          categories: @json($deathcausehart[0]),
+          tickPlacement: 'on'
+        },
+        yaxis: {
+          title: {
+            text: 'Servings',
+          },
+          tickAmount:'5',
+          stepsize:'1',
         },
         fill: {
           type: 'gradient',
           gradient: {
-            shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0.5,
-            opacityTo: 0,
-            stops: [0, 90, 100]
+            shade: 'light',
+            type: "horizontal",
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 0.85,
+            opacityTo: 0.85,
+            stops: [50, 0, 100]
           },
-        },
-        yaxis: {
-          tickAmount: 5,
-          labels: {
-            formatter: function (val) {
-              return (val ).toFixed(0);
-            },
-          },
-          title: {
-            text: 'Price'
-          },
-        },
-        xaxis: {
-         // type: 'datetime',
-         categories: ['Apr','May','June','July','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'
-          ],
-        },
-        tooltip: {
-          shared: false,
-          y: {
-            formatter: function (val) {
-              return (val ).toFixed(0);
-            }
-          }
         }
         };
 
-        
-
-        var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
-        linechart.render();*/
-
-        var options_line = {
-        series: [{
-          name: 'Leads count',
-          type: 'column',
-          data: @json($claimchart['0'])
-        }, {
-          name: 'Settled Amount',
-          type: 'area',
-          data: @json($claimchart['1'])
-        }, {
-          name: 'Claimed Amount',
-          type: 'line',
-          data: @json($claimchart['2'])
-        }],
-        chart: {
-          height: 250,
-          type: 'line',
-          stacked: false,
-        },
-        stroke: {
-          width: [0, 2, 5],
-          curve: 'smooth'
-        },
-        plotOptions: {
-          bar: {
-            columnWidth: '50%'
-          }
-        },
-        fill: {
-          opacity: [0.85, 0.25, 1],
-          gradient: {
-            inverseColors: false,
-            shade: 'light',
-            type: "vertical",
-            opacityFrom: 0.85,
-            opacityTo: 0.55,
-            stops: [0, 100, 100, 100]
-          }
-        },
-        labels: ['Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
-        markers: {
-          size: 0
-        },
-        xaxis: {
-          type: 'category' // changed from 'datetime' to 'category'
-        },
-        yaxis: {
-          title: {
-            text: 'Points',
-          }
-        },
-        tooltip: {
-        shared: true,
-        intersect: false,
-        y: {
-          formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
-            if (typeof value !== "undefined") {
-              if (seriesIndex === 0) {
-                // TEAM A – plain number with "points"
-                return value.toFixed(0) + " Lead(s)";
-              } else {
-                // TEAM B and TEAM C – formatted as rupees
-                return "₹" + value.toFixed(2);
-              }
-            }
-            return value;
-          }
-        }
-      }
-      };
-
-      var linechart = new ApexCharts(document.querySelector("#linechart"), options_line);
-        linechart.render();
+        var Deathchart = new ApexCharts(document.querySelector("#death_chart"), death_options);
+        Deathchart.render();   
 
 
 
@@ -371,6 +394,10 @@
             }
           },
         },
+        title: {
+          text: 'Regionwise',
+          align: 'left'
+        },
         xaxis: {
           type: 'text',
           categories: ['North','South','East','West'],
@@ -390,7 +417,7 @@
 
         var options_death = {
           series: [{
-          name: 'Claimed',
+          name: 'Claim Amount',
           data: @json($claimedAmount),
         }],
           chart: {
@@ -455,5 +482,12 @@
 
         var death_linechart = new ApexCharts(document.querySelector("#causeofdeath"), options_death);
         death_linechart.render();  
+       
+
+       $('#finaceyear').on('change',function(){
+          $('#filter_data').click();
+
+        });
+
 </script>
 @endsection	

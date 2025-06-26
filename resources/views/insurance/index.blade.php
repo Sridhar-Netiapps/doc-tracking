@@ -38,11 +38,15 @@
                     @csrf
                     <div class="form-group mb-4">
                         <div class="custom-file text-left">
-                            <input type="file" name="file" class="custom-file-input" id="customFile">
+                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile">
                            
                         </div>
                     </div>
+                    <div class="d-flex">
                     <button class="btn btn-danger">Import</button>
+                    
+                    <a class="ms-auto" href=""><button class="btn btn-outline-secondary">Download Template</button></a>
+                    </div>
                     
                 </form>
 
@@ -60,8 +64,8 @@
 			<thead class="table-dark">
 				<th>Lead ID</th>
 				<!-- <th>Creation Date</th>
-				<th>Region</th>
-				<th>Branch</th> -->
+				<th>Region</th>-->
+				<th>Branch</th> 
 				<th>Partner</th>
 				<th>Product</th>
 				<th>CIF ID</th>
@@ -79,17 +83,17 @@
 				<tr>
 					<td>{{ $value->utrn}}</td>
 					<!-- <td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
-					<td>{{ $value->region}}</td>
-					<td>{{ $value->branch}}</td> -->
-					<td>{{ $value->partners->partner}}</td>
-					<td>{{ $value->products->product}}</td>
+					<td>{{ $value->region}}</td>-->
+					<td>{{ $value->branch}}</td> 
+					<td>{{ $value->partner}}</td>
+					<td>{{ $value->product}}</td>
 					<td>{{ $value->cust_id}}</td>
 					<td>{{ $value->deceased_name}}</td>
 					<td>{{ $value->deceased}}</td>
 					<td>{{ $value->load_acc_id}}</td>
 					
-					<td>{{ $value->deathCause->cause ?? ''}}</td>
-					<td>{{ $value->claim_stat->claim_status ?? ''}}</td>
+					<td>{{ $value->cause_of_death}}</td>
+					<td>{{ $value->cliam_status}}</td>
 					<td>{{ $value->claim_amount}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>

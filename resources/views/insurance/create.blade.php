@@ -95,7 +95,7 @@
 				    <select class="form-control form-select" name="partner"  >
 				    	<option value="">Select</option>
 				    	@foreach($partners as $key=>$value)
-				    	   <option {{(old('partner') == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->partner}}</option>
+				    	   <option {{(old('partner') == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
 				    	@endforeach
 				    </select>
 				    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
@@ -106,7 +106,7 @@
 				    <select class="form-control form-select" name="product"  >
 				    	<option value="">Select</option>
 				    	@foreach($products as $key=>$value)
-				    	   <option {{(old('product') == $value->id)?'selected':''}} value="{{$value->id}}">{{$value->product}}</option>
+				    	   <option {{(old('product') == $value->product)?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
 				    	@endforeach
 				    </select>
 				    @error('product')<div class="text-error">{{ $message }}</div>@enderror
@@ -217,7 +217,7 @@
 				    <select class="form-control form-select" name="cause_of_death">
 				    	<option>Select</option>
 				    	@foreach($deathcause as $key=>$value)
-				    	   <option {{ ( old('cause_of_death')==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->cause}}</option>
+				    	   <option {{ ( old('cause_of_death')==$value->cause)?'selected':''}} value="{{$value->cause}}">{{$value->cause}}</option>
 				    	@endforeach
 				    </select>
 				    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
@@ -247,7 +247,7 @@
 				    <select class="form-control form-select" name="cliam_status" >
 				    	<option value="">Select</option>
 				    	@foreach($claimstatus as $key=>$value)
-				    	   <option {{ ( old('cliam_status')==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->claim_status}}</option>
+				    	   <option {{ ( old('cliam_status')==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
 				    	@endforeach
 				    </select>
 				    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
@@ -268,23 +268,13 @@
 				    <select class="form-control form-select" name="rl_status" >
 				    	<option value="">Select</option>
 				    	@foreach($rlStat as $stat)
-				    	  <option {{ (old('rl_status')==$stat->id)?'selected':'' }} value="{{$stat->id}}">{{$stat->rl_status}}</option>
+				    	  <option {{ (old('rl_status')==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
 	                    @endforeach
 	                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
 				    </select>
 				</div>
 
-				<div class="col-3 mb-3">
-				    <label class="form-label">Processed By</label>
-				    <select class="form-control form-select" name="processed_by">
-				    	<option value="">Select</option>
-				    	@foreach($procesedby as $proc)
-				    	  <option {{ (old('processed_by')==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
-	                    @endforeach
-	                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
-				    </select>
-				</div>
-
+				
 				<div class="col-3 mb-3">
 				    <label class="form-label">Packet Number</label>
 				    <input type="text" class="form-control numberonly" name="pkt_no" value="{{ old('pkt_no')}}">
@@ -310,6 +300,17 @@
 					    <label class="form-label">Date of document received</label>
 					    <input type="date" class="form-control" name="doc_rec_date" value="{{ old('doc_rec_date')}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Processed By</label>
+					    <select class="form-control form-select" name="processed_by">
+					    	<option value="">Select</option>
+					    	@foreach($procesedby as $proc)
+					    	  <option {{ (old('processed_by')==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
+		                    @endforeach
+		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
 					</div>
 
 					<div class="col-3 mb-3">
@@ -370,7 +371,7 @@
 					    <select class="form-control form-select" name="relationship" >
 					    	<option value="">Select</option>
 					    	@foreach($relationship as $key=>$value)
-					    	   <option {{ ( old('relationship')==$value->id)?'selected':''}} value="{{$value->id}}">{{$value->relationship}}</option>
+					    	   <option {{ ( old('relationship')==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
 					    	@endforeach
 					    </select>
 					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
