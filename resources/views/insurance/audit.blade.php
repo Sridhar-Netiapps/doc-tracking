@@ -6,7 +6,7 @@
     	 <div class="d-flex align-items-center m-2">
             <div class="d-flex align-items-center">
                 <img src="/images/note.svg">
-                <strong>Security Logs</strong> 
+                <strong>Audit Logs</strong> 
             </div>
 
             <div class="ms-auto">

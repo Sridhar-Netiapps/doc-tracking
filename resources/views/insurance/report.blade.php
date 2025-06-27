@@ -8,14 +8,25 @@
                 <img src="/images/note.svg">
                 <strong>Report</strong> 
 
-                <div class="ms-auto card">
-                     <div id="reportrange" class="pull-right datepiker p-2" >
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
-                        <span name="daterange"></span> <b class="caret"></b>
-                       
-                     </div>  
+                <div class="ms-auto ">
+                    <div class="d-flex">
+                       <a class="nav-link" href="{{route('leads_report')}}"><i class="fa fa-sync m-3"></i></a>
+                       <div class="ms-auto ">
+                            <div class="card">
+                             <div id="reportrange" class="pull-right datepiker p-2" >
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
+                                <span name="daterange"></span> <b class="caret"></b>
+                               
+                             </div> 
+                           </div>
+                       </div>
+                     
+                     </div> 
+
               
                 </div>
+
+
 
             </div>
 
@@ -25,57 +36,55 @@
                <input type="hidden" id="end" name="end" value="{{ $end}}">
                
                <div class="input-group mb-3">
-                <input class="form-control " type="text" name="search" placeholder="Search" >
+                <input class="form-control " type="text" name="search" placeholder="Search" value="{{ $search}}">
 
-                <select class="form-control border-0 p-2 ms-3">
-                    <option value=""> Region</option>
-                    <option value="South">South</option>
-                    <option value="North">North</option>
-                    <option value="East">East</option>
-                    <option value="West">West</option>
+                <select class="form-control form-select border-0 p-2 ms-3" name="region">
+                    <option value=""> Select Region</option>
+                    <option {{($region == 'South')?'selected':''}} value="South">South</option>
+                    <option {{($region == 'North')?'selected':''}} value="North">North</option>
+                    <option {{($region == 'East')?'selected':''}} value="East">East</option>
+                    <option {{($region == 'West')?'selected':''}} value="West">West</option>
                 </select>
 
-                <select class="form-control border-0 ms-3">
-                    <option value="">Branch</option>
+                <select class="form-control form-select border-0 ms-3" name="branch">
+                    <option value="">Select Branch</option>
+                    
+                </select>
+
+                <select class="form-control form-select border-0 ms-3" name="partner">
+                    <option value="">Select Partner</option>
                     @foreach($partners as $key=>$val)
-                     <option value="{{$val->partner}}">{{$val->partner}}</option>
+                     <option {{ ($val->partner == $partner)?'selected':''}} value="{{$val->partner}}">{{$val->partner}}</option>
                     @endforeach
                 </select>
 
-                <select class="form-control border-0 ms-3">
-                    <option value="">Partner</option>
-                    @foreach($partners as $key=>$val)
-                     <option value="{{$val->partner}}">{{$val->partner}}</option>
-                    @endforeach
-                </select>
-
-                <select class="form-control border-0 p-2 ms-3">
-                    <option value="">Product</option>
+                <select class="form-control form-select border-0 p-2 ms-3" name="product">
+                    <option value="">Select Product</option>
                     @foreach($products as $key=>$val)
-                     <option value="{{$val->product}}">{{$val->product}}</option>
+                     <option {{ ($val->product == $product)?'selected':''}} value="{{$val->product}}">{{$val->product}}</option>
                     @endforeach
                 </select>
 
-                <select class="form-control border-0 p-2 ms-3">
-                    <option value="">Claim Status</option>
+                <select class="form-control form-select border-0 p-2 ms-3" name="status">
+                    <option value="">Select Claim Status</option>
                     @foreach($claimstatus as $key=>$val)
-                     <option value="{{$val->cliam_status}}">{{$val->claim_status}}</option>
+                     <option {{ ($val->claim_status == $claim_status)?'selected':''}} value="{{$val->claim_status}}">{{$val->claim_status}}</option>
                     @endforeach
                 </select>
 
-                <select class="form-control border-0 p-2 ms-3">
+                <select class="form-control form-select border-0 p-2 ms-3" name="proccesed">
                     <option value="">Processed By</option>
                     @foreach($procesedby as $val)
-                     <option value="{{$val}}">{{$val}}</option>
+                     <option {{ ($val == $proccesed)?'selected':''}} value="{{$val}}">{{$val}}</option>
                     @endforeach
                 </select>
 
+               
 
+                <div class="input-group-prepend ms-3">
+                   <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
 
-                <button class="btn btn-dark ms-3" type="submit" >Export</button> 
-
-                <div class="input-group-prepend">
-                   <button class="btn btn-dark rounded-0 d-none" id="getdata" type="submit" ></button>
+                    <button class="btn btn-warning rounded-2 ms-3"  name="action" value="export" value="export">Export</button> 
                 </div>
                </div>
              </form>
@@ -93,6 +102,7 @@
             <thead class="table-dark">
                 <th class="text-nowrap">Lead ID</th>
                 <th class="text-nowrap">Creation Date</th>
+                <th class="text-nowrap">Intimation Date</th>
                 <th class="text-nowrap">Region</th>
                 <th class="text-nowrap">Branch</th> 
                 <th class="text-nowrap">Partner</th>
@@ -116,7 +126,8 @@
                 @foreach($data as $key=>$value)
                 <tr>
                     <td>{{ $value->utrn}}</td>
-                     <td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
+                     <td>{{ date('d M,Y',strtotime($value->created_at))}}</td>
+                     <td>{{ date('d M,Y',strtotime($value->intimation_date))}}</td>
                     <td>{{ $value->region}}</td>
                     <td>{{ $value->branch}}</td> 
                     <td>{{ $value->partner}}</td>
@@ -172,7 +183,7 @@ $(function() {
 
         $('#start').val(formattedStart);
         $('#end').val(formattedEnd);
-
+        
         
     }
 
@@ -194,7 +205,7 @@ $(function() {
 
     $('select').on('change', function() {
       cb(start, end);
-
+     
     });
     
 });

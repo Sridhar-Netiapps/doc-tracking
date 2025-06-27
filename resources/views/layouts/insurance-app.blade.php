@@ -15,8 +15,13 @@
     <!-- <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/fonts.css"/>
+
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/fontawesome/css/all.min.css"/>
+   
+   
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/insurance_style.css') }}" rel="stylesheet">

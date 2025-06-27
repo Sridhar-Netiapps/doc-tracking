@@ -15,6 +15,7 @@ use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
 use App\Imports\ImportClaimDetails;
+use App\Exports\ExportInsuranceLeads;
 use App\Models\AuditLog;
 use App\AuditLogTrait;
 
@@ -131,7 +132,7 @@ class InsuranceHomeController extends Controller
 
            foreach ($partners as $key => $value) {
               $partnerArray[]=$value->partner;
-              $partnerCountArray[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('partner',$value->id)->count();
+              $partnerCountArray[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('partner',$value->partner)->count();
           }
 
           $partnerChart = ['names' => $partnerArray , 'counts' => $partnerCountArray];
@@ -482,25 +483,25 @@ class InsuranceHomeController extends Controller
     {
         $claimdata = InsuranceClaimDetail::where('id',decrypt($id))->first();
         
-        if($claimdata->partner == '1'){
+        if($claimdata->partner == 'Bajaj'){
             $path = public_path('insurance_images/bajaj_logo.png');
             $partner = 'BAJAJ';
             $formname='bajaj';
         }
 
-        if($claimdata->partner == '2'){
+        if($claimdata->partner == 'Birla'){
             $path = public_path('insurance_images/birlalogo.png');
             $partner = 'BIRLA';
             $formname='birlagroup';
         }
 
-        if($claimdata->partner == '3'){
+        if($claimdata->partner == 'HDFC'){
             $path = public_path('insurance_images/hdfc.png');
             $partner = 'HDFC';
             $formname='hdfc';
         }
 
-        if($claimdata->partner == '4'){
+        if($claimdata->partner == 'Max Life'){
             $path = public_path('insurance_images/maxlife.png');
             $partner = 'MAXLIFE';
             $formname='maxlife';
@@ -713,9 +714,60 @@ class InsuranceHomeController extends Controller
     }
 
     public function report(Request $request){
-    //print_r($request->input());
-      $data = InsuranceClaimDetail::where('intimation_date','LIKE',date('Y-m').'%')->get();
+    //print_r($request->input());die();
 
+      $currentYear = date('Y');
+      $currentMonth = date('m');
+
+      if ($currentMonth >= 4) {
+          $startYear = $currentYear;
+      } else {
+          $startYear = $currentYear - 1;
+      }
+      
+      if($request->start == ''){
+        $start = $startYear.'-04-01';
+        $end=date('Y-m-d');
+      }else{
+        $start = $request->start;
+        $end= $request->end;
+      }
+    //  print_r($start);die();
+      $search= $request->search;
+      $region= $request->region;
+      $partner= $request->partner;
+      $product= $request->product;
+      $claim_status= $request->status;
+      $proccesed= $request->proccesed;
+      $branch= $request->branch;
+
+      $data = InsuranceClaimDetail::whereBetween('intimation_date',[$start , $end])
+              ->when($region,function($q)use($region){
+                 $q->where('region',$region);
+              })
+              ->when($partner,function($q)use($partner){
+                 $q->where('partner',$partner);
+              })
+              ->when($search,function($q)use($search){
+                 $q->where('utrn','LIKE','%'.$search.'%');
+              })
+              ->when($product,function($q)use($product){
+                 $q->where('product',$product);
+              })
+              ->when($claim_status,function($q)use($claim_status){
+                 $q->where('cliam_status',$claim_status);
+              })
+              ->when($proccesed,function($q)use($proccesed){
+                 $q->where('processed_by',$proccesed);
+              })
+              ->when($branch,function($q)use($branch){
+                 $q->where('branch',$branch);
+              })  
+              ->orderBy('id','DESC')->get();
+
+     
+     if(!isset($request->action) || $request->action == 'filter'){
+      
         $partners = InsurancePartner::get();
         $products = InsuranceProduct::get();
         $claimstatus = InsuranceClaimStatus::get();
@@ -725,6 +777,12 @@ class InsuranceHomeController extends Controller
         $start = $request->start;
         $end = $request->end;
 
-      return view('insurance.report',compact('data','partners','products','claimstatus','rlStat','procesedby','start','end'));
+      return view('insurance.report',compact('data','partners','products','claimstatus','rlStat','procesedby','start','end','region','branch','partner','product','claim_status','proccesed','search'));
+     }
+     else{
+       
+        return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads'.date('Y-m-d').'.csv');
+     }
+
     }
 }

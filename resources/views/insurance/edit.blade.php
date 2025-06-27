@@ -7,10 +7,8 @@
 
         
 		<div class="ms-auto">
-			@if(auth::user()->branch_id != '1100')
 			<a href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
-			@endif
-
+			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
 		</div>
 	</div>
@@ -527,7 +525,7 @@
 		<div class="py-3 d-none" id="branch_off">
 			<form method="POST" action="{{route('save_nominee_details')}}">
 			@csrf
-			<fieldset {{ (auth::user()->branch_id == '1100')?'disabled':''}}>
+			<fieldset >
 			<div class="row">
 				<div class="col-3 mb-3">
 				    <label class="form-label">Nominee Name as per Bank Records</label>
@@ -598,13 +596,13 @@
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 		
             </fieldset>
-            @if(auth::user()->branch_id != '1100')
+           
 			<div class="d-flex">
 				<div class="ms-auto">
 					<button type="submit" class="btn btn-sm btn-danger btn-text p-2">Update</button>
 				</div>
 		    </div>
-		    @endif
+		    
         </form>
 		</div>
 
