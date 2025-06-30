@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div class="d-flex py-4">
-		<label class="label-font-header">Update Insurance Form </label>
+		<label class="label-font-header">Update Insurance Form - {{ $data->utrn }}</label>
 
         
 		<div class="ms-auto">
@@ -53,7 +53,7 @@
 		  Swal.fire({
 		        title: 'Message',
 		        text: mesage,
-		        icon: 'success',  
+		        icon: 'failure',  
 		        confirmButtonText: 'OK'
 		    });
 		 </script>
@@ -88,11 +88,13 @@
 		        			<div class="col text-end">
 		        				<label>Lead Number</label><br>
 		        				<label>Assigned To </label><br>
+		        				<label>Latest Editor</label><br>
 		        				<label>POD Number</label>
 		        			</div>
 		        			<div class="col">
 		        				<strong>{{ $data->utrn}}</strong><br>
 		        				<strong></strong><br>
+		        				<strong>{{ $data->lastEditor->employee_id }}-{{ $data->lastEditor->first_name}}</strong><br>
 		        				<strong>{{ $nomineedata->pod_no ?? ''}}</strong>
 		        			</div>
         				</div>

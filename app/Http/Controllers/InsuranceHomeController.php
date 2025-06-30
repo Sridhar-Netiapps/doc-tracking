@@ -18,7 +18,7 @@ use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
 use App\Models\AuditLog;
 use App\AuditLogTrait;
-
+use File;
 use Excel;
 use Auth;
 
@@ -530,6 +530,7 @@ class InsuranceHomeController extends Controller
     }
 
     public function import_claim_data(Request $request){
+
        $import = new ImportClaimDetails ;
 
        Excel::import($import, $request->file('file'));
@@ -542,17 +543,20 @@ class InsuranceHomeController extends Controller
              $link = url('/').'/insurance/claim_forms';
 
             $this->auditlogs($module , $operation ,$note , $link);
-            return redirect()->back();
+            return redirect()->back()->with('message','0 rows imported');
         }
         else {
-            
+
+            $inserted = $import->getInsertedCount();
+            $updated = $import->getUpdatedCount();
+
              $module = 'Insurance'; 
              $operation = 'Import';
-             $note = 'Imported Lead Details - '.$import->getRowCount();
+             $note = 'Imported Lead Details - '.$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated;
              $link = url('/').'/insurance/claim_forms';
 
             $this->auditlogs($module , $operation ,$note , $link);
-             return redirect()->back();
+             return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
         }
     }
 
@@ -781,7 +785,7 @@ class InsuranceHomeController extends Controller
      }
      else{
        
-        return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads'.date('Y-m-d').'.csv');
+        return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads'.date('Ymdhis').'.csv');
      }
 
     }

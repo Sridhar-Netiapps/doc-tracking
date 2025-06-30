@@ -90,4 +90,8 @@ class InsuranceClaimDetail extends Model
         return $this->hasOne(InsuranceNomineeDetail::class , 'id','insurance_claim_details_id');
     }
 
+    public function lastEditor(){
+        return $this->belongsTo(User::class , 'latest_editor','employee_id');
+    }
+
 }

@@ -19,6 +19,9 @@ class ImportClaimDetails implements ToModel, WithStartRow
     */
 
     public $rowCount = 0;
+    public $insertedCount = 0;
+    public $updatedCount = 0;
+
 
      public function startRow(): int
     {
@@ -34,10 +37,14 @@ class ImportClaimDetails implements ToModel, WithStartRow
 
 	    if($insurancedetaisl){
 	         $claimDetail = InsuranceClaimDetail::find($insurancedetaisl->id);
-	           }else{
+             $claimDetail->latest_editor = Auth::user()->employee_id; 
+	         $this->updatedCount++;
+	    }else{
 	         $claimDetail = new InsuranceClaimDetail;
 	          $utrn = 'INS_CLM'.rand('000000','999999');
 	          $claimDetail->utrn = $utrn;
+	          $claimDetail->ho_employee_id = Auth::user()->employee_id; 
+	          $this->insertedCount++;
 	    }
            
             if(!empty($row['1'])){ $claimDetail->region = $row['1']; } 
@@ -114,12 +121,12 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			if(!empty($row['58'])){ $claimDetail->write_off_status = $row['58']; } 
 			if(!empty($row['59'])){ $claimDetail->handed_to_bh = $row['59']; } 
 			if(!empty($row['60'])){ $claimDetail->handed_to_credit = $row['60']; } 
-            $claimDetail->ho =
+            
             $claimDetail->save();
 
             $claimID = $claimDetail->id;
             
-            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$claimDetail->id)->first();
+            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$insurancedetaisl->id)->first();
               if($insurednomineeDetails){
 		         $nomineeDetails = InsuranceNomineeDetail::find($insurednomineeDetails->id);
 			    }else{
@@ -127,7 +134,7 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			         $nomineeDetails->insurance_claim_details_id = $claimID;
 			        
 			    }
-
+          //  print_r($nomineeDetails);die();
             if(!empty($row['28'])){ $nomineeDetails->nominee_name_bank = $row['28']; } 
             if(!empty($row['29'])){ $nomineeDetails->bank_name = $row['29']; } 
             if(!empty($row['30'])){ $nomineeDetails->acc_number = $row['30']; } 
@@ -155,12 +162,6 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			    }
 			    $chlistDetails->save();
 
-           
-       
-       
-      
-	    
-
         return ;
 
     }
@@ -168,5 +169,15 @@ class ImportClaimDetails implements ToModel, WithStartRow
     public function getRowCount(): int
     {
         return $this->rowCount;
+    }
+
+    public function getInsertedCount()
+    {
+        return $this->insertedCount;
+    }
+
+    public function getUpdatedCount()
+    {
+        return $this->updatedCount;
     }
 }

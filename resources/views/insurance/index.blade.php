@@ -58,6 +58,24 @@
         </div>
 <!-- Modal -->
 
+       @if(Session::has('message'))
+		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+		  var mesage = '{{ session('message') }}';
+		  Swal.fire({
+		        title: 'Import Result',
+		        text: mesage,
+		        icon: 'success',  
+		        confirmButtonText: 'OK'
+		        }).then((result) => {
+	            if (result.isConfirmed) {
+	                // 👇 Redirect to another URL
+	                window.location.href = "{{ url('/insurance/claim_forms') }}";
+	            }
+		    });
+		 </script>
+		 
+		@endif
+
 
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">

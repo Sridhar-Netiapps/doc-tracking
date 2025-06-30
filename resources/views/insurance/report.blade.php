@@ -144,7 +144,7 @@
                     <td>{{ $value->cliam_status}}</td>
                     <td>{{ $value->cas_status}}</td>
                     <td>{{ $value->rl_status}}</td>
-                    <td>{{ $value->recovery_status}}</td>
+                    <td>{{ $value->recovery_status }}</td>
                     <td>{{ $value->write_off_status}}</td>
                 </tr>
                 @endforeach
