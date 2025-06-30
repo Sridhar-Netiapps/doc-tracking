@@ -228,7 +228,7 @@
       },
       yaxis: {
         title: {
-          text: 'Points',
+          text: 'In Rupees',
         }
       },
       tooltip: {
@@ -314,7 +314,7 @@
         },
         yaxis: {
           title: {
-            text: 'Servings',
+            text: 'Count',
           },
           tickAmount:'5',
           stepsize:'1',
@@ -418,7 +418,7 @@
         var options_death = {
           series: [{
           name: 'Claim Amount',
-          data: @json($claimedAmount),
+          data: @json($deathagegroup),
         }],
           chart: {
           type: 'area',
@@ -441,7 +441,7 @@
           size: 0,
         },
         title: {
-          text: 'Claimed Amount',
+          text: 'Age Group Death',
           align: 'left'
         },
         fill: {
@@ -462,13 +462,12 @@
             },
           },
           title: {
-            text: 'Price'
+            text: 'Death Count'
           },
         },
         xaxis: {
          // type: 'datetime',
-         categories: ['Apr','May','June','July','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'
-          ],
+         categories: ['0-10','11-20','21-30','31-40','41-50','51-60','61-70','72-80','81-90','91-100'],
         },
         tooltip: {
           shared: false,

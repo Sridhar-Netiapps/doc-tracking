@@ -48,4 +48,8 @@ class InsuranceChecklist extends Model
             'ho_checker_emp',
             'ho_checker_name',
         ];
+
+     public function leadDetails(){
+      return $this->belongsTo(InsuranceClaimDetail::class,'insurance_claim_details_id','id');
+     }   
 }

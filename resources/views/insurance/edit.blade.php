@@ -7,7 +7,9 @@
 
         
 		<div class="ms-auto">
-			<a href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
+			<a target="_blank" href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
+
+			<a target="_blank" href="{{ route('download_checklist',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2">Download Checklist</button> </a>
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
 		</div>
@@ -94,7 +96,7 @@
 		        			<div class="col">
 		        				<strong>{{ $data->utrn}}</strong><br>
 		        				<strong></strong><br>
-		        				<strong>{{ $data->lastEditor->employee_id }}-{{ $data->lastEditor->first_name}}</strong><br>
+		        				<strong>{{ $data->lastEditor->employee_id ?? ''}}-{{ $data->lastEditor->first_name ?? ''}}</strong><br>
 		        				<strong>{{ $nomineedata->pod_no ?? ''}}</strong>
 		        			</div>
         				</div>
