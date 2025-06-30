@@ -98,9 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
-    
 
-    
         // Route::get('/', [UserController::class, 'index'])->name('index');
         // Route::get('/create', [UserController::class, 'create'])->name('create');
         // Route::post('/', [UserController::class, 'store'])->name('store');
@@ -109,14 +107,5 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
         // Route::post('/{user}/assign-role', [UserController::class, 'assignRole'])->name('assignRole');
         // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
-
-    //insurance
-    Route::get('insurance/dashboard',[InsuranceHomeController::class,'index'])->name('insurance_dashboard');
-    Route::get('insurance/claim_forms',[InsuranceHomeController::class,'list'])->name('insurance_list');
-    Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
-    Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
-    Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
-    Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
-    Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
 
 });
