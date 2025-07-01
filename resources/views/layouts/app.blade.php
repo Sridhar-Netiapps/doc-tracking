@@ -95,9 +95,9 @@
                                             {{ __('Users') }}
                                         </a>
 
-                                         <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                        {{-- <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
-                                        </a>
+                                        </a> --}}
 
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         <a class="dropdown-item" href=""
