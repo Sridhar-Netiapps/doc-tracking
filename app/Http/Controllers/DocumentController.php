@@ -16,6 +16,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\VendorDocumentImport;
 use Auth;
 use DB;
+use App\Models\ProcessStatus;
+
 
 class DocumentController extends Controller
 {
@@ -60,8 +62,10 @@ class DocumentController extends Controller
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
+        $process_statuses = ProcessStatus::where('status', 1)->get();
+
         if($type != 'moved')
-            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses'));
         else
             return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
@@ -74,7 +78,8 @@ class DocumentController extends Controller
     public function filteredList()
     {
         $filters = session('filters', []);
-        
+        // $process_statuses = ProcessStatus::where('status', 1)->get();
+
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         // $fromDate = $filters['from_date'] ?? null;
@@ -166,9 +171,10 @@ class DocumentController extends Controller
         $gold_loan_total = $gold_loan_document != null ? $gold_loan_document->total():0;
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
+        $process_statuses = ProcessStatus::where('status', 1)->get(); 
 
         $type = 'all';
-        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters'));
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
     }
     
     public function bulkReview(Request $request)
@@ -223,9 +229,10 @@ class DocumentController extends Controller
                 return $item;
             });
         $allDocuments = $allDocuments->merge($dtrfs);
-        
+        $process_statuses = ProcessStatus::where('status', 1)->get(); 
+
         $couriers = Courier::pluck('name','id');
-        return view('accounts.index', compact('allDocuments','couriers'));
+        return view('accounts.index', compact('allDocuments','couriers', 'process_statuses'));
     }
     public function addCourierDetails(Request $request)
     {
