@@ -29,7 +29,13 @@
 		        text: mesage,
 		        icon: 'success',  
 		        confirmButtonText: 'OK'
-		    });
+		        }).then((result) => {
+	            if (result.isConfirmed) {
+	                // 👇 Redirect to another URL
+	                window.location.href = "{{ url('/insurance/claim_forms') }}";
+	            }
+	        });
+		    
 		 </script>
 		 
 		@endif
@@ -46,333 +52,431 @@
 		 </script>
 		 
 		@endif 
+
+		<!-- @if ($errors->any())
+		    <div class="alert alert-danger">
+		        <strong>Errors:</strong>
+		        <ul>
+		            @foreach ($errors->all() as $err)
+		                <li>{{ $err }}</li>
+		            @endforeach
+		        </ul>
+		    </div>
+		@endif -->
         
 		<div class="py-3 d-block" id="head_off">
-	    <form method="POST" action="{{route('save_claim_details')}}">
-	    @csrf		
-		<div class="row">
-			<div class="col-3 mb-3">
-			    <label class="form-label">Region</label>
-			    <select class="form-control form-select" name="region" required>
-			    	<option value="">Select</option>
-			    	<option value="South" selected >South</option>
-			    	<option value="North">North</option>
-			    	<option value="East">East</option>
-			    	<option value="West">West</option>	
-			    </select>
-			</div>
+	    <form id="myForm" method="POST" action="{{route('save_claim_details')}}" >
+	    @csrf	
+        
+        <div class="card">
+        	<div class="card-header label-font-header">Policy Imformation</div>
+        	<div class="card-body">
+    		 <div class="row">
+	    		 <div class="col-3 mb-3">
+				    <label class="form-label">Region</label>
+				    <select class="form-control form-select" name="region"  >
+				    	<option value="">Select</option>
+				    	<option {{(old('region') == 'South')?'selected':''}} value="South" >South</option>
+				    	<option {{(old('region') == 'North')?'selected':''}} value="North">North</option>
+				    	<option {{(old('region') == 'East')?'selected':''}} value="East">East</option>
+				    	<option {{(old('region') == 'West')?'selected':''}} value="West">West</option>	
+				    </select>
+				    @error('region')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Branch ID-Name</label>
-			    <input type="text" class="form-control" name="branch" value="1100-Koramangala" readonly>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Branch ID-Name</label>
+				    <input type="text" class="form-control" name="branch" value="1100-Koramangala" >
+				    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Partner</label>
-			    <select class="form-control form-select" name="partner" required="required" >
-			    	<option value="">Select</option>
-			    	@foreach($partners as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->partner}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Partner</label>
+				    <select class="form-control form-select" name="partner"  >
+				    	<option value="">Select</option>
+				    	@foreach($partners as $key=>$value)
+				    	   <option {{(old('partner') == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
+				    	@endforeach
+				    </select>
+				    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Product</label>
-			    <select class="form-control form-select" name="product" required >
-			    	<option value="">Select</option>
-			    	@foreach($products as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->product}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Product</label>
+				    <select class="form-control form-select" name="product"  >
+				    	<option value="">Select</option>
+				    	@foreach($products as $key=>$value)
+				    	   <option {{(old('product') == $value->product)?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
+				    	@endforeach
+				    </select>
+				    @error('product')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Number</label>
-			    <input type="text" class="form-control numberonly" name="policy_number" required>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Policy Number</label>
+				    <input type="text" class="form-control numberonly" name="policy_number" value="{{ old('policy_number')}}">
+				    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Customer ID</label>
-			    <input type="text" class="form-control numberonly" name="cust_id" required>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Customer ID</label>
+				    <input type="text" class="form-control numberonly" name="cust_id" value="{{ old('cust_id')}}">
+				    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">ACTUAL ID</label>
-			    <input type="text" class="form-control numberonly" name="actual_id" required>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">ACTUAL ID</label>
+				    <input type="text" class="form-control numberonly" name="actual_id" value="{{ old('actual_id')}}">
+				    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Deceased Name</label>
-			    <input type="text" class="form-control numberonly" name="deceased_name">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Deceased Name</label>
+				    <input type="text" class="form-control numberonly" name="deceased_name" value="{{ old('deceased_name')}}">
+				    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">MP NO</label>
-			    <input type="text" class="form-control numberonly" name="mp_no">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">MP NO</label>
+				    <input type="text" class="form-control numberonly" name="mp_no" value="{{ old('mp_no')}}">
+				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Covered</label>
-			    <input type="date" class="form-control" name="policy_covered_date">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Policy Covered</label>
+				    <input type="date" class="form-control" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
+				    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Tenure</label>
-			    <input type="text" class="form-control numberonly" name="loan_tenure">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Loan Tenure</label>
+				    <input type="text" class="form-control numberonly" name="loan_tenure" value="{{ old('loan_tenure')}}">
+				    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Policy Expired Date</label>
-			    <input type="date" class="form-control" name="policy_expiry_date">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Policy Expired Date</label>
+				    <input type="date" class="form-control" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}">
+				    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of Death</label>
-			    <input type="date" class="form-control" name="date_of_death">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Date of Death</label>
+				    <input type="date" class="form-control" name="date_of_death" value="{{ old('date_of_death')}}">
+				    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Gender</label>
-			    <select class="form-control form-select" name="gender">
-			    	<option value="">Select</option>
-			    	<option value="Male">Male</option>
-			    	<option value="Female">Female</option>
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Gender</label>
+				    <select class="form-control form-select" name="gender">
+				    	<option value="">Select</option>
+				    	<option {{ ( old('gender')=='Male')?'selected':''}}  value="Male">Male</option>
+				    	<option {{ ( old('gender')=='Female')?'selected':''}}  value="Female">Female</option>
+				    </select>
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Deceased</label>
-			    <select class="form-control form-select" name="deceased" required>
-			    	<option value="">Select</option>
-			    	<option value="CO-APPLICANT">CO-APPLICANT</option>
-			    	<option value="SPOUSE">SPOUSE</option>
-			    	<option value="CUSTOMER">CUSTOMER</option>
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Deceased</label>
+				    <select class="form-control form-select" name="deceased" >
+				    	<option value="">Select</option>
+				    	@foreach($deceased as $key=>$value)
+				    	   <option {{ ( old('deceased')==$value)?'selected':''}} 
+				    	    value="{{$value}}">{{$value}}</option>
+				    	@endforeach
+				    </select>
+				    @error('deceased')<div class="text-error">{{ $message }}</div>@enderror
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date Of Death Intimation</label>
-			    <input type="date" class="form-control" name="intimation_date">
-			</div>
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Age</label>
-			    <input type="text" class="form-control numberonly" name="age">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Date Of Death Intimation</label>
+				    <input type="date" class="form-control" name="intimation_date" value="{{ old('intimation_date')}}">
+				    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Place of Death</label>
-			    <select class="form-control form-select" name="place_of_death">
-			    	<option>Select</option>
-			    	@foreach($placeofdeath as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->place}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Age</label>
+				    <input type="text" class="form-control numberonly" name="age" value="{{ old('age')}}">
+				    @error('age')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Cause of Death</label>
-			    <select class="form-control form-select" name="cause_of_death" required="">
-			    	<option>Select</option>
-			    	@foreach($deathcause as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->cause}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Place of Death</label>
+				    <select class="form-control form-select" name="place_of_death">
+				    	<option>Select</option>
+				    	@foreach($placeofdeath as $key=>$value)
+				    	   <option {{ ( old('place_of_death')==$value->id)?'selected':''}}  value="{{$value->id}}">{{$value->place}}</option>
+				    	@endforeach
+				    </select>
+				    @error('place_of_death')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Account ID</label>
-			    <input type="text" class="form-control numberonly" name="load_acc_id">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Cause of Death</label>
+				    <select class="form-control form-select" name="cause_of_death">
+				    	<option>Select</option>
+				    	@foreach($deathcause as $key=>$value)
+				    	   <option {{ ( old('cause_of_death')==$value->cause)?'selected':''}} value="{{$value->cause}}">{{$value->cause}}</option>
+				    	@endforeach
+				    </select>
+				    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Claim Amount</label>
-			    <input type="text" class="form-control numberonly" name="claim_amount">
-			</div>
+				
+				<div class="col-3 mb-3">
+				    <label class="form-label">Loan Account ID</label>
+				    <input type="text" class="form-control numberonly" name="load_acc_id" value="{{ old('load_acc_id')}}">
+				    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of Birth</label>
-			    <input type="date" class="form-control" name="dob">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Claim Amount</label>
+				    <input type="text" class="form-control numberonly" name="claim_amount" value="{{ old('claim_amount')}}">
+				    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Claim Status</label>
-			    <select class="form-control form-select" name="cliam_status" required>
-			    	<option value="">Select</option>
-			    	@foreach($claimstatus as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->claim_status}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Date of Birth</label>
+				    <input type="date" class="form-control" name="dob" value="{{ old('dob')}}">
+				    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CAS Status</label>
-			    <select class="form-control form-select" name="cas_status">
-			    	<option value="">Select</option>
-			    	<option value="CAS Process">CAS Process</option>
-			    	<option value="PDC Process">PDC Process</option>
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">Claim Status</label>
+				    <select class="form-control form-select" name="cliam_status" >
+				    	<option value="">Select</option>
+				    	@foreach($claimstatus as $key=>$value)
+				    	   <option {{ ( old('cliam_status')==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+				    	@endforeach
+				    </select>
+				    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Nominee Name</label>
-			    <input type="text" class="form-control" name="nominee_name">
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">CAS Status</label>
+				    <select class="form-control form-select" name="cas_status">
+				    	<option value="">Select</option>
+				    	<option {{ ( old('cas_status')=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
+				    	<option {{ ( old('cas_status')=='PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
+				    </select>
+				    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Relationship</label>
-			    <select class="form-control form-select" name="relationship" >
-			    	<option value="">Select</option>
-			    	@foreach($relationship as $key=>$value)
-			    	   <option value="{{$value->id}}">{{$value->relationship}}</option>
-			    	@endforeach
-			    </select>
-			</div>
+				<div class="col-3 mb-3">
+				    <label class="form-label">SPDC/RL Status</label>
+				    <select class="form-control form-select" name="rl_status" >
+				    	<option value="">Select</option>
+				    	@foreach($rlStat as $stat)
+				    	  <option {{ (old('rl_status')==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
+	                    @endforeach
+	                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
+				    </select>
+				</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Nominee Contact No</label>
-			    <input type="date" class="form-control numberonly" name="nominee_number">
-			</div>
+				
+				<div class="col-3 mb-3">
+				    <label class="form-label">Packet Number</label>
+				    <input type="text" class="form-control numberonly" name="pkt_no" value="{{ old('pkt_no')}}">
+				    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
 
-		</div>
+    		 </div>
+        	</div>
+        </div>
 
-		<div class="row">
-			<div class="col-3 mb-3">
-			    <label class="form-label">Loan Outstanding Amt</label>
-			    <input type="text" class="form-control numberonly" name="loan_outstanding">
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Claim Status</div>
+        	<div class="card-body">
+        		<div class="row">
+        		    <div class="col-6 mb-3">
+					    <label class="form-label">HO Remarks</label>
+					    <textarea class="form-control" name="ho_remark">{{ old('ho_remarks')}}</textarea>
+					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+					<div class="col-6 mb-3"></div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Payable to Nominee</label>
-			    <input type="text" class="form-control numberonly" name="payable_to_nominee">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of document received</label>
+					    <input type="date" class="form-control" name="doc_rec_date" value="{{ old('doc_rec_date')}}">
+					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Acknowledgement Received Date</label>
-			    <input type="date" class="form-control numberonly" name="ack_rec_date">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Processed By</label>
+					    <select class="form-control form-select" name="processed_by">
+					    	<option value="">Select</option>
+					    	@foreach($procesedby as $proc)
+					    	  <option {{ (old('processed_by')==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
+		                    @endforeach
+		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Packet Number</label>
-			    <input type="text" class="form-control numberonly" name="pkt_no">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of submision to partner</label>
+					    <input type="date" class="form-control" name="submit_to_partner_date" value="{{ old('submit_to_partner_date')}}">
+					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">SPDC/RL Status</label>
-			    <select class="form-control form-select" name="rl_status" required>
-			    	<option value="">Select</option>
-			    	<option value="NA">NA</option>
-			    	<option value="PDC">PDC</option>
-			    	<option value="PDC Process">PDC Process</option>
-			    	<option value="RL Process">RL Process</option>
+					<div class="col-6 mb-3">
+					    <label class="form-label">Remarks</label>
+					    <input type="text" class="form-control numberonly" name="ho_remark2" value="{{ old('ho_remark2')}}">
+					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			    </select>
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of re-submision to partner</label>
+					    <input type="date" class="form-control" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date')}}">
+					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>	
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Processed By</label>
-			    <select class="form-control form-select" name="processed_by">
-			    	<option value="">Select</option>
-			    	<option value="NA">NA</option>
-			    	<option value="Vindhya">Vindhya</option>
-			    	<option value="Ujjivan">Ujjivan</option>
-			    	<option value="HO">HO</option>
 
-			    </select>
-			</div>
-			<div class="col-3 mb-3"></div>
-			<div class="col-3 mb-3"></div>
+        		</div>
+        	</div>
+        </div>
 
-			<div class="col-6 mb-3">
-			    <label class="form-label">HO Remarks</label>
-			    <textarea class="form-control" name="ho_remark"></textarea>
-			</div>
-			<div class="col-6 mb-3"></div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of document received</label>
-			    <input type="date" class="form-control" name="doc_rec_date">
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Settlement Details</div>
+        	<div class="card-body">
+        		<div class="row">
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of submision to partner</label>
-			    <input type="date" class="form-control" name="submit_to_partner_date">
-			</div>
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Loan Outstanding Amt</label>
+					    <input type="text" class="form-control numberonly" name="loan_outstanding" value="{{ old('loan_outstanding')}}">
+					    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-6 mb-3">
-			    <label class="form-label">Remarks</label>
-			    <input type="text" class="form-control numberonly" name="ho_remark2">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Payable to Nominee</label>
+					    <input type="text" class="form-control numberonly" name="payable_to_nominee" value="{{ old('payable_to_nominee')}}">
+					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of re-submision to partner</label>
-			    <input type="date" class="form-control" name="re_submit_to_partner_date">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Nominee Name</label>
+					    <input type="text" class="form-control" name="nominee_name" value="{{ old('nominee_name')}}">
+					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Date of settlement</label>
-			    <input type="date" class="form-control" name="settlement_date">
-			</div>
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Nominee Contact No</label>
+					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ old('nominee_number')}}">
+					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">NEFT Rejection Date</label>
-			    <input type="date" class="form-control" name="neft_rejection_date">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Relationship</label>
+					    <select class="form-control form-select" name="relationship" >
+					    	<option value="">Select</option>
+					    	@foreach($relationship as $key=>$value)
+					    	   <option {{ ( old('relationship')==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
+					    	@endforeach
+					    </select>
+					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">NEFT Reason For Rejection</label>
-			    <input type="text" class="form-control" name="neft_rejection_reason">
-			</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Final Settlement Date</label>
-			    <input type="date" class="form-control" name="final_settlement_date">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control numberonly" name="ack_rec_date" value="{{ old('ack_rec_date')}}">
+					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Recovery Status</label>
-			    <input type="date" class="form-control numberonly" name="recovery_status">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Date of settlement</label>
+					    <input type="date" class="form-control" name="settlement_date" value="{{ old('settlement_date')}}">
+					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Bounced CHQ No</label>
-			    <input type="text" class="form-control" name="bounced_chq_no">
-			</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CHQ Bounced Date</label>
-			    <input type="date" class="form-control" name="bounced_chq_date">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">NEFT Rejection Date</label>
+					    <input type="date" class="form-control" name="neft_rejection_date" value="{{ old('neft_rejection_date')}}">
+					    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">CHQ Bounced reason</label>
-			    <input type="text" class="form-control" name="bounced_chq_reason">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">NEFT Reason For Rejection</label>
+					    <input type="text" class="form-control" name="neft_rejection_reason" value="{{ old('neft_rejection_reason')}}">
+					    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Write off received</label>
-			    <input type="text" class="form-control" name="write_off_rec">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Final Settlement Date</label>
+					    <input type="date" class="form-control" name="final_settlement_date" value="{{ old('final_settlement_date')}}">
+					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Write off status</label>
-			    <input type="text" class="form-control" name="write_off_status">
-			</div>
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Recovery Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Recovery Status</label>
+					    <input type="text" class="form-control numberonly" name="recovery_status" value="{{ old('recovery_status')}}">
+					    @error('recovery_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Handed over to Business Head</label>
-			    <input type="text" class="form-control" name="handed_to_bh">
-			</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">Bounced CHQ No</label>
+					    <input type="text" class="form-control" name="bounced_chq_no" value="{{ old('bounced_chq_no')}}">
+					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-			<div class="col-3 mb-3">
-			    <label class="form-label">Handed over to credit</label>
-			    <input type="text" class="form-control" name="handed_to_credit">
-			</div>
-		</div>
+					<div class="col-3 mb-3">
+					    <label class="form-label">CHQ Bounced Date</label>
+					    <input type="date" class="form-control" name="bounced_chq_date" value="{{ old('bounced_chq_date')}}">
+					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
-		<div class="d-flex">
+					<div class="col-3 mb-3">
+					    <label class="form-label">CHQ Bounced reason</label>
+					    <input type="text" class="form-control" name="bounced_chq_reason" value="{{ old('bounced_chq_reason')}}">
+					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
+
+        <div class="card mt-3">
+        	<div class="card-header label-font-header">Write-Off Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Write off received</label>
+					    <input type="text" class="form-control" name="write_off_rec" value="{{ old('write_off_rec')}}">
+					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Write off status</label>
+					    <input type="text" class="form-control" name="write_off_status" value="{{ old('write_off_status')}}">
+					    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Handed over to Business Head</label>
+					    <input type="text" class="form-control" name="handed_to_bh" value="{{ old('handed_to_bh')}}">
+					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Handed over to credit</label>
+					    <input type="text" class="form-control" name="handed_to_credit" value="{{ old('handed_to_credit')}}">
+					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+        	    </div>
+        	</div>    		
+        </div>
+
+		
+
+		<div class="d-flex mt-3">
 			<div class="ms-auto">
 				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
 			</div>
@@ -381,445 +485,7 @@
         </form>
         
 		</div>
-        
-
-       
-     <!-- BO -->
-
-       
-		<div class="py-3 d-none" id="branch_off">
-			<form method="POST" action="">
-			<div class="row">
-				<div class="col-3 mb-3">
-				    <label class="form-label">Nominee Name as per Bank Records</label>
-				    <input type="text" class="form-control numberonly" name="nominee_name_bank">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Name of the Bank</label>
-				    <input type="text" class="form-control" name="bank_name">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Bank A/c Number</label>
-				    <input type="text" class="form-control numberonly" name="acc_number">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">IFSC Code</label>
-				    <input type="text" class="form-control numberonly" name="ifsc">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Bank Branch Name</label>
-				    <input type="text" class="form-control" name="branch_name">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">SPDC-Bank Name</label>
-				    <input type="text" class="form-control" name="spdc_bank_name">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">SPDC-Chq Number</label>
-				    <input type="text" class="form-control numberonly" name="spdc_chk_no">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Courier Name</label>
-				    <input type="text" class="form-control" name="courier_name">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">POD Number</label>
-				    <input type="text" class="form-control" name="pod_no">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Cheque Sent Date</label>
-				    <input type="date" class="form-control" name="cheq_sent_date">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Remarks</label>
-				    <input type="text" class="form-control" name="bo_remarks">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Maker at Branch</label>
-				    <input type="text" class="form-control" name="bo_maker">
-				</div>
-
-				<div class="col-3 mb-3">
-				    <label class="form-label">Checker at Branch</label>
-				    <input type="text" class="form-control" name="bo_checker">
-				</div>
-
-			</div>
-
-			<div class="d-flex">
-				<div class="ms-auto">
-					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
-				</div>
-		    </div>
-        </form>
-		</div>
-
-		
-      <!-- BO -->
-
-       <form method="POST" action="">
-		<div class="py-3 d-none" id="checklist">
-		
-			<div class="pagelayout">
-		  	 <div class="contentmain">
-		  	 	 <h2 class="headertext">Insurance Claim Document Checklist</h2>
-
-		  	 	 <table class="twocol-table-noborder">
-			  	 	<tr>
-			  	 		<td class="col-70"><label class="label-font-bold">Branch ID & Name:  </label> <input type="text" name=""> </td>
-			  	 		<td class="col-30"><label class="label-font-bold">Sent Date:</label>
-			  	 			<label class="label-font-bold">Sent Date:</label>
-						      <input type="text" class="date-decoration" maxlength="2" size="2" name="dd" placeholder="DD"/>
-						      <strong>/</strong>
-						      <input type="text" class="date-decoration" maxlength="2" size="2" name="mm" placeholder="MM"/>
-						      <strong>/</strong>
-						      <input type="text" class="year-decoration" maxlength="4" size="4" name="yyyy" placeholder="YYYY" />
-			  	 		</td>
-			  	 	</tr>
-			  	 </table>
-		         
-			  	 <table class="twocol-table-noborder">
-			  	 	<tr>
-			  	 		<td class="col-70"><label class="label-font-bold">Customer ID: <input type="text" name=""></label> </td>
-			  	 		<td class="col-30"><label class="label-font-bold">Deceased Name:</label>
-			  	 			<input type="text" name="">
-			  	 		</td>
-			  	 	</tr>
-			  	 </table>
-
-			  	 <table class="twocol-table margintop">
-		           <tr class="text-center">
-			  	 	<td class="col-7 tdchecklist"><span class="table-head-font ">Sl No</span></td>
-			  	 	<td class="col-65"><span class="table-head-font">Particulars</span></td>
-			  	 	<td class="col-7 tdchecklist"><label class="table-head-font">CCR/CRS/<br>Cashier</label></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><label class="table-head-font ">CRM/<br>PM</label></td>
-			  	 	<td class="col-7 tdchecklist"><label class="table-head-font">HO <br>Maker</label></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><label class="table-head-font">HO <br>Checker</label></td>
-		           </tr>
-		           <tr>
-				 	 <td class="col-7 tdchecklist lableslno" rowspan="2" ><label class="table-font">1</label></td>
-				 	 <td class="col-65">
-				    <span class="table-font">Deceased Name in Bajaj Claim form match with Death Certificate, Age / ID Proof, FIR/Post Mortem Report</span>
-				 	 </td>
-				 	 <td class="col-7 tdchecklist tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				   </tr>
-
-				   <tr>
-					 <td class="col-65">
-					   <span class="table-font"><strong>If name is not matching,</strong> Need Court Affidavit (mentioning all the names)</span>
-					 </td>
-					 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				   </tr>
-
-				    <tr>
-				 	 <td class="col-7 tdchecklist lableslno" rowspan="2" ><label class="table-font">2</label></td>
-				 	 <td class="col-65">
-				    <span class="table-font">Deceased age (as per Bajaj Claim form) match with Death Certificate, Age / ID Proof, FIR
-		                 or Post Mortem Report</span>
-				 	 </td>
-				 	 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				 	 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				   </tr>
-
-				   <tr>
-					 <td class="col-65">
-					   <span class="table-font"><strong>If Age difference is 5 years (+ or -)</strong> Need Court Affidavit </span>
-					 </td>
-					 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-					 <td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-				   </tr>
-
-
-
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">3</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">Correct Customer ID is reflecting in Bajaj Claim form?</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">4</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">Is Date of Death same in the following documents?<br>
-		                Bajaj Claim form, Death Certificate and FIR or Post Mortem Report</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">5</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">Is this Accidental / Murder Death?</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 lableslno"></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">If above is Yes, is Post Mortem or FIR Report attached?</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">6</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">Check Seal & Sign on Death Certificate, FIR & Post Mortem Report<br>
-			  	 			<strong>(Proceed If Death Certificate is Computer generated with barcode)</strong></span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">7</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">In death certificate, is date of registration and date of issuance are equal or greater than date of death? If no, get revised death certificate</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">8</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font"><strong>Documents attached (Mandatory)</strong><br>
-			  	 			<label class="table-font">a) Bajaj Claimant Statement (Claim Form) with only nominee signature</label></span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">b) Death certificate issued by registrar of birth & death (Form No. 6)</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">c) Post Mortem  / FIR Report  (For accident / murder Case)</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font">d) ID and Age Proof of the deceased</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		           <tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-65 td-bg">
-			  	 		<span class="table-font">e) Original Loan Closure Request from Nominee</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-		          <tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-65 td-bg">
-			  	 		<span class="table-font ">f) ECS/ACH Mandate</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-			  	 </table>
-
-			  	 <table class="twocol-table">
-			  	 	<tr>
-		          	<td class="col-7 tdchecklist lableslno"></td>
-			  	 	<td class="col-92">
-			  	 		<span class="table-font "><strong>Nominee bank account details in BLOCK letters (English only)</strong></span>
-			  	 	</td>
-			  	 	
-		          </tr>
-			  	 </table>
-
-			  	 <table class="twocol-table">
-			  	 	<tr class="td-bg2">
-			  	 		<td class="col-7 tdchecklist">
-			  	 			<strong class="mandate-text text-rotate">MANDATORY</strong>
-			  	 		</td>
-			  	 		<td class="col-92">
-			  	 			<table class="twocol-table-nopadding">
-			  	 				<tr class="td-bg2">
-			  	 				  <td class="col-40">
-			  	 				  	<span class="table-font "><strong>g) Nominee name as per a/c passbook</strong></span>
-			  	 				  </td>
-			  	 				  <td class="col-60"><input class="fullwidth" type="text" name=""></td>
-			  	 				</tr>
-			  	 				<tr class="td-bg2">
-			  	 				  <td class="col-40">
-			  	 				  	<span class="table-font "><strong>h) Bank Account Number</strong></span>
-			  	 				  </td>
-			  	 				  <td class="col-60">
-			  	 				  	<input class="fullwidth" type="text" name="">
-			  	 				  </td>
-			  	 				</tr>
-			  	 				<tr class="td-bg2">
-			  	 				  <td class="col-40">
-			  	 				  	<span class="table-font "><strong>i) Name of the Bank</strong></span>
-			  	 				  </td>
-			  	 				  <td class="col-60"><input class="fullwidth" type="text" name=""></td>
-			  	 				</tr>
-			  	 				
-			  	 			</table>
-
-			  	 			 <table class="twocol-table">
-						  	 	<tr class="td-bg2">
-                                  <td>j)MICR Code</td>
-                                  <td><input class="" type="text" name=""></td></td>	
-                                   <td>k)IFSC Code</td>
-                                  	<td><input class="" type="text" name=""></td></td>	
-						  	 	</tr>
-						  	 </table>
-
-						  	 <table class="twocol-table">
-						  	 	<tr class="td-bg2">
-			  	 				  <td class="col-40">
-			  	 				  	<span class="table-font "><strong>l) Bank Branch Name</strong></span>
-			  	 				  </td>
-			  	 				  <td class="col-60"><input class="fullwidth" type="text" name=""></td>
-			  	 				</tr>
-						  	 </table>
-			  	 		</td>
-			  	 	</tr>
-			  	 	
-			  	 </table>
-			  	
-
-			  	 <table class="twocol-table">
-			  	 	<tr>
-		          	<td class="col-7 tdchecklist lableslno"><label class="table-font">9</label></td>
-			  	 	<td class="col-65">
-			  	 		<span class="table-font ">Are all Documents are clear and readable?</span>
-			  	 	</td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-			  	 	<td class="col-7 tdchecklist td-bg"><input class="checkboxbig" type="checkbox" class="full-checkbox" name=""></td>
-		          </tr>
-			  	 </table>
-
-			  	 <div class="margintop"></div>
-
-			  	 <label class="table-font"><strong>Declaration:</strong>  I hereby confirm that all the fields in the checklist above have been checked by me.</label>
-
-			  	  <table class="twocol-table margintop">
-			  	  <tr>
-		          	<td class="col-30"><label class="table-head-font"></label></td>
-			  	 	<td class="col-20"><label class="table-head-font">Employee ID</label></td>
-			  	 	<td class="col-30"><label class="table-head-font">Name</label></td>
-			  	 	<td class="col-10"><label class="table-head-font">Signature</label></td>
-			  	 	<td class="col-10"><label class="table-head-font">Date</label></td>
-		          </tr>
-		          <tr>
-		          	<td class="col-30"><label class="table-head-font">CCR / CRS / Cashier (Maker)</label></td>
-			  	 	<td class="col-20"><label class="table-head-font">UJJ</label></td>
-			  	 	<td class="col-30"><input class="fullwidth" type="text" name=""></td>
-			  	 	<td class="col-10"><input class="fullwidth" type="text" name=""></td>
-			  	 	<td class="col-10"><input class="fullwidth" type="text" name=""></td>
-		          </tr>
-		          <tr>
-		          	<td class="col-30"><label class="table-head-font">CRM / PM (Checker)</label></td>
-			  	 	<td class="col-20"><label class="table-head-font">UJJ</label></td>
-			  	 	<td class="col-30"><input class="fullwidth" type="text" name=""></label></td>
-			  	 	<td class="col-10"><input class="fullwidth" type="text" name=""></label></td>
-			  	 	<td class="col-10"><input class="fullwidth" type="text" name=""></label></td>
-		          </tr>
-			  	 </table>
-
-			  	 <hr/>
-		         	
-		         <span class="table-head-font">For HO USE ONLY</span>
-			  	 <table class="twocol-table-noborder">
-			  	 	<tr>
-			  	 		<td>
-			  	 			<table class="twocol-table">
-				  	 			<tr >
-				  	 				<td class="col-40"><label class="table-head-font">Insurance Maker</label></td>
-				  	 				<td class="col-60"><input class="fullwidth" type="text" name=""></td>
-				  	 			</tr>
-			  	 		   </table>
-			  	 		</td>
-
-			  	 		<td>
-			  	 			<table class="twocol-table">
-				  	 			<tr>
-				  	 				<td class="col-40"><label class="table-head-font">Insurance Checker</label></td>
-				  	 				<td class="col-60"><input class="fullwidth" type="text" name=""></td>
-				  	 			</tr>
-			  	 		   </table>
-			  	 		</td>
-			  	 		
-			  	 	</tr>
-
-			  	 	
-			  	 </table>
-		  	 </div>
-
-		  	 
-		  </div>
-		</div>		
-       </form>
     
-	</div>
-</div>
-
-
 
 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 
@@ -878,6 +544,33 @@
      
 	    }
     
-   }		
+   }	
+
 </script>
+
+<script>
+document.getElementById('myForm').addEventListener('submit', function (e) {
+    if (!this.checkValidity()) {
+        e.preventDefault();
+
+        const firstInvalid = this.querySelector(':invalid');
+        if (firstInvalid) {
+            // Scroll manually using offset if fixed headers are present
+            const offset = -100; // adjust based on header height
+            const y = firstInvalid.getBoundingClientRect().top + window.scrollY + offset;
+
+            window.scrollTo({ top: y, behavior: 'smooth' });
+
+            // Delay to allow scroll before showing message
+            setTimeout(() => {
+                firstInvalid.focus();
+                firstInvalid.reportValidity(); // forces the message
+            }, 400);
+        }
+    }
+});
+
+</script>
+
+
 @endsection

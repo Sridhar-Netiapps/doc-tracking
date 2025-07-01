@@ -15,8 +15,13 @@
     <!-- <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/fonts.css"/>
+
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/fontawesome/css/all.min.css"/>
+   
+   
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/insurance_style.css') }}" rel="stylesheet">
@@ -36,6 +41,13 @@
     
     <script src="{{ env('APP_URL') }}/js/apexchart.js"></script>
     <script src="{{ env('APP_URL') }}/js/apextree.js"></script>
+
+    
+
+    <script rel="stylesheet" src="{{ env('APP_URL') }}/datepicker/moment.min.js"></script>
+    <link rel="stylesheet" href="{{ env('APP_URL') }}/datepicker/daterangepicker.css"/>
+    <script rel="stylesheet" src="{{ env('APP_URL') }}/datepicker/daterangepicker.js"></script>
+
 </head>
 <body>
     <div id="app">
@@ -101,13 +113,23 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('users.index') }}">
-                                            {{ __('Users') }}
+                                        @if(Auth::user()->branch_id != '1100')
+                                        <a class="dropdown-item" href="{{ route('home') }}">
+                                            {{ __('Doc Track') }}
                                         </a>
+                                        @endif
 
-                                         <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
-                                            {{ __('Insurance') }}
+                                        @if(Auth::user()->branch_id == '1100')
+                                        <a class="dropdown-item" href="{{ route('audit') }}">
+                                            {{ __('Audit Logs') }}
                                         </a>
+                                        @endif
+
+                                        @if(Auth::user()->branch_id == '1100')
+                                        <a class="dropdown-item" href="{{ route('leads_report') }}">
+                                            {{ __('Report') }}
+                                        </a>
+                                        @endif
 
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();

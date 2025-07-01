@@ -81,4 +81,17 @@ class InsuranceClaimDetail extends Model
     public function rlStatus(){
         return $this->belongsTo(InsuranceRequestLetterStatus::class,'rl_status','id');
     }
+
+    public function hocreator(){
+        return $this->belongsTo(User::class , 'ho_employee_id','employee_id');
+    }
+
+    public function nominee(){
+        return $this->hasOne(InsuranceNomineeDetail::class , 'id','insurance_claim_details_id');
+    }
+
+    public function lastEditor(){
+        return $this->belongsTo(User::class , 'latest_editor','employee_id');
+    }
+
 }

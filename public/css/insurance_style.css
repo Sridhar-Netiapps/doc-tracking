@@ -83,6 +83,7 @@
 
 .pagelayout {
     margin: 5px;
+    padding: 5px;
     background-color: #fff;
 
  }
@@ -94,6 +95,10 @@
 .headertext{
 	text-align: center;
 	font-size: 22px;
+}
+.text-error{
+	font-size: 12px;
+	color: red;
 }
 
 .twocol-table {
@@ -266,3 +271,13 @@
 
 
 /*checklist css*/
+
+.checkbox-readonly {
+    pointer-events: none;
+    opacity: 0.6; /* Make it look disabled */
+    cursor: not-allowed;
+}
+
+.tablescrollable{
+	overflow-x: auto;
+}
