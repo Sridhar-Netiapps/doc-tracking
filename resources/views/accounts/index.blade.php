@@ -190,7 +190,7 @@
                     <select class="form-select" name="status">
                         <option value="">Select Status</option>
                         @foreach ($process_statuses as $status)
-                            <option value="{{ $status->status }}" {{ ($filters['status'] ?? '') == $status->status ? 'selected' : '' }}>
+                            <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
                                 {{ $status->name }}
                             </option>
                         @endforeach
