@@ -1,3 +1,7 @@
+@php
+    $currentTab = Request::segment(2); // gets 'pending', 'all', etc.
+@endphp
+
 <div class="bg-new">
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">

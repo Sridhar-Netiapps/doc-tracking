@@ -77,8 +77,7 @@ class DocumentController extends Controller
     public function filteredList()
     {
         $filters = session('filters', []);
-        // $process_statuses = ProcessStatus::where('status', 1)->get();
-
+        
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         // $fromDate = $filters['from_date'] ?? null;
@@ -170,9 +169,7 @@ class DocumentController extends Controller
         $gold_loan_total = $gold_loan_document != null ? $gold_loan_document->total():0;
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
-
         $process_statuses = ProcessStatus::where('status', 1)->get();
-
         $type = 'all';
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
     }
@@ -229,9 +226,8 @@ class DocumentController extends Controller
                 return $item;
             });
         $allDocuments = $allDocuments->merge($dtrfs);
-
         $process_statuses = ProcessStatus::where('status', 1)->get();
-        $couriers = Courier::pluck('name','id');
+
         return view('accounts.index', compact('allDocuments','couriers', 'process_statuses'));
     }
     public function addCourierDetails(Request $request)
