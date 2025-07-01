@@ -126,7 +126,7 @@ class ImportClaimDetails implements ToModel, WithStartRow
 
             $claimID = $claimDetail->id;
             
-            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$claimID)->first();
+            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$insurancedetaisl->id)->first();
               if($insurednomineeDetails){
 		         $nomineeDetails = InsuranceNomineeDetail::find($insurednomineeDetails->id);
 			    }else{
@@ -153,7 +153,7 @@ class ImportClaimDetails implements ToModel, WithStartRow
             
             $nomineeDetails->save();
 
-            $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',$claimID)->first();
+            $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',$claimDetail->id)->first();
 	          if($checklistDetails){
 		         $chlistDetails = InsuranceChecklist::find($checklistDetails->id);
 			    }else{
