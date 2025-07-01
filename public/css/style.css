@@ -321,7 +321,9 @@ h2{
 .nav-link{
     color: #229e82 !important;
 }
-
+.active-tab {
+    font-weight: bold;
+}
 .nav-link:hover, .nav-link:focus {
     color: #229e82 !important;
 }

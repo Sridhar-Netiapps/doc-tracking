@@ -181,11 +181,19 @@
                     <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 mt-3">
-                    <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
+                    {{-- <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
                         <option value="">Select Status</option>
                         <option {{ ($filters['status'] ?? '') == 1 ? 'selected' : '' }} value=1>Pending</option>
                         <option {{ ($filters['status'] ?? '') == 3 ? 'selected' : '' }} value=3>Awaiting Checker Approval</option>
                         <option {{ ($filters['status'] ?? '') == 4 ? 'selected' : '' }} value="4">Dispatched</option>
+                    </select> --}}
+                    <select class="form-select" name="status">
+                        <option value="">Select Status</option>
+                        @foreach ($process_statuses as $status)
+                            <option value="{{ $status->status }}" {{ ($filters['status'] ?? '') == $status->status ? 'selected' : '' }}>
+                                {{ $status->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
