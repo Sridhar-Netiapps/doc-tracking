@@ -53,16 +53,15 @@
                     @if ($type === 'received')
                     <li class="ms-auto">
                         <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
-                            {{-- <form method="POST" action="{{ route('accounts.moved') }}" id="proceed">
-                                @csrf
-                                <button class="btn btn-primary proceed" type="button">Proceed</button>
-                            </form> --}}
-                        </li>
+                    </li>
                     @endif
                 @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -174,6 +173,9 @@
                     @endif
                 </div>
                 <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                    @if(isset($gold_loan_document) && $gold_loan_document->count())
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -281,6 +283,9 @@
                     @endif
                 </div>
                 <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                    @if(isset($account_opening_document) && $account_opening_document->count())
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -390,6 +395,9 @@
                     @endif
                 </div>
                 <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                    @if(isset($dtrf_document) && $dtrf_document->count())
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -575,12 +583,14 @@
                     <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 mt-3">
-                    <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
+                    <select class="form-select" name="status">
                         <option value="">Select Status</option>
-                        <option {{ ($filters['status'] ?? '') == 1 ? 'selected' : '' }} value=1>Pending</option>
-                        <option {{ ($filters['status'] ?? '') == 3 ? 'selected' : '' }} value=3>Awaiting Checker Approval</option>
-                        <option {{ ($filters['status'] ?? '') == 4 ? 'selected' : '' }} value="4">Dispatched</option>
-                    </select>
+                        @foreach ($process_statuses as $status)
+                            <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
+                                {{ $status->name }}
+                            </option>
+                        @endforeach
+                    </select>                                      
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
