@@ -8,5 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('documents:revert-draft')->everyMinute();
-// Schedule::command('documents:revert-draft')->daily();
+// Schedule::command('documents:revert-draft')->everyMinute();
+Schedule::command('documents:revert-draft')->dailyAt('06:00');
