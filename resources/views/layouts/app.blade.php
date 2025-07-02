@@ -95,14 +95,9 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('users.index') }}">
-                                            {{ __('Users') }}
-                                        </a>
-
                                          <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
                                         </a>
-
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();

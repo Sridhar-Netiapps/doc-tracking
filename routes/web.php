@@ -98,9 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
-    
 
-    
         // Route::get('/', [UserController::class, 'index'])->name('index');
         // Route::get('/create', [UserController::class, 'create'])->name('create');
         // Route::post('/', [UserController::class, 'store'])->name('store');
