@@ -55,6 +55,7 @@
         <div class="col-10">
             <div class="d-flex page-heading">
                 <h3>Dispatches</h3>
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
         </div>
         <div class="col-1"></div>
@@ -66,16 +67,17 @@
         <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane" aria-selected="true">Ready to Dispatch @if ($ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane"  aria-selected="{{ $type == 'ready' ? 'true' : 'false' }}">Ready to Dispatch  @if ($type == 'ready' && $ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="false">Courier Dispatched @if ($dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="{{ $type == 'list' ? 'true' : 'false' }}">Courier Dispatched @if ($type == 'list' && $dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="false">Courier Delivered @if ($received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="{{ $type == 'received' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'received' && $received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
+
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="false">Courier Rejected @if ($rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="{{ $type == 'rejected' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'rejected' && $rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
                 @hasanyrole('bo-checker')
@@ -193,6 +195,113 @@
             </div>
         </div>
         <div class="col-1"></div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5>Filters</h5>
+        <form method="POST" action="{{ route('dispatches.filter', $type) }}">
+            @csrf
+            <div class="row">
+                {{-- <div class="col-12 mt-3">
+                    <select class="form-select document_type" name="document_type">
+                        <option value="">Select Document Type</option>
+                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
+                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
+                        <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
+                    </select>
+                </div> --}}
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control awb_pod" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
+                </div>
+                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                <div class="col-12 mt-3">
+                    <select class="form-select region" name="region">
+                        <option value="">Select Region</option>
+                        <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
+                        <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
+                        <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
+                        <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
+                    </select>
+                </div>
+                @endunless --}}
+                {{-- <div class="col-12 mt-3">
+                    <input type="text" class="form-control courier_name" placeholder="Courier Name" value="{{ old('courier_name', $filters['courier_name'] ?? '') }}" name="courier_name">
+                </div> --}}
+                <div class="col-12 mt-3">
+                    <select class="form-select" name="courier">
+                        <option value="">Courier Name</option>
+                        @foreach ($couriers as $courier)
+                            <option value="{{ $courier->id }}" {{ ($filters['courier'] ?? '') == $courier->id ? 'selected' : '' }}>
+                                {{ $courier->name }}
+                            </option>
+                        @endforeach
+                    </select>                    
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                </div>
+                {{-- <div class="col-12 mt-3">mmrp_code
+                    <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                </div> --}}
+                {{-- <div class="col-12 mt-3 d-none">
+                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <select class="form-select scheme" name="scheme">
+                        <option value="">Select Scheme</option>
+                        <option value="GL" {{ ($filters['scheme'] ?? '') == 'GL' ? 'selected' : '' }}>GL</option>
+                        <option value="IL" {{ ($filters['scheme'] ?? '') == 'IL' ? 'selected' : '' }}>IL</option>
+                    </select>
+                </div> --}}
+                {{-- <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                </div> --}}
+                {{-- <div class="col-12 mt-3 d-none">
+                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <select class="form-select" name="type">
+                        <option value="">Loan Disbursement/Account Opening</option>
+                        <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
+                        <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3 d-none">
+                    <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
+                </div> --}}
+                {{-- <div class="col-12 mt-3">
+                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                </div> --}}
+                <div class="col-12 mt-3">
+                    <select class="form-select" name="status">
+                        <option value="">Select Status</option>
+                        @foreach ($process_statuses as $status)
+                            <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
+                                {{ $status->name }}
+                            </option>
+                        @endforeach
+                    </select>                                      
+                </div>
+                <div class="col-12 d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

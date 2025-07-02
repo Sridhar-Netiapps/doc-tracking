@@ -10,7 +10,9 @@
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
-        <div class="col-1"></div>
+        <div class="col-1">
+            <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+        </div>
     </div>
 </div>
 <div class="container-fluid mt-3">

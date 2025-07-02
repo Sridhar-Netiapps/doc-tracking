@@ -593,7 +593,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
+                    <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>

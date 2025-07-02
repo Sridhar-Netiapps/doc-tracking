@@ -17,6 +17,8 @@ use App\Imports\VendorDocumentImport;
 use Auth;
 use DB;
 use App\Models\ProcessStatus;
+use Illuminate\Support\Str;
+
 
 class DocumentController extends Controller
 {
@@ -70,10 +72,19 @@ class DocumentController extends Controller
     public function filter(Request $request)
     {
         session(['filters' => $request->all()]);
-        return redirect()->route('document.filtered');
+        // return redirect()->route('document.filtered');
+
+        $previousUrl = url()->previous(); 
+        $type = Str::afterLast($previousUrl, '/'); 
+        // dd($type);   
+        // $type = $request->segment(2); 
+        if($type == 'proceed')
+            return redirect()->route('accounts.selected');
+        else
+            return redirect()->route('document.filtered');
     }
     
-    public function filteredList()
+    public function filteredList(Request $request)
     {
         $filters = session('filters', []);
         $process_statuses = ProcessStatus::where('status', 1)->get();
@@ -170,6 +181,10 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $type = 'all';
+        // $previousUrl = url()->previous();  
+        // $type = Str::afterLast($previousUrl, '/');  // will get 'all'
+        // dd($type);
+
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
     }
     
@@ -186,50 +201,105 @@ class DocumentController extends Controller
 
         return redirect()->route('accounts.selected');
     }
-
-    public function getBulkReview()
+    
+    public function getBulkReview(Request $request)
     {
+        $filters = session('filters', []);
+        $user = $this->user;
+        $hasFilters = collect($filters)->filter()->isNotEmpty();
+    
+        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+    
+        unset($filters['from_date'], $filters['to_date']);
+    
         $allDocuments = collect();
-        $filter = function ($query) {
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-                $query->where('branch_code', $this->user->branch_id);
+    
+        // Filter function for query builder
+        $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+            if ($user->hasRole('ro-user')) {
+                $query->where('region', $user->region);
             }
-            return $query->where('status',2)->orderBy('updated_at', 'desc');
+    
+            if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+                $query->where('branch_code', $user->branch_id);
+            }
+    
+            if ($fromDate && $toDate) {
+                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+            } elseif ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            } elseif ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
+            }
+    
+            if ($hasFilters) {
+                foreach ($filters as $field => $value) {
+                    if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                        if (in_array($field, ['cif_id', 'account_number'])) {
+                            $query->where($field, 'like', '%' . $value . '%');
+                        } else {
+                            $query->where($field, $value);
+                        }
+                    }
+                }
+            }
         };
-        // $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $loans = $filter(LoanDocument::query())->get()
+    
+        // Additional common status filter
+        $statusFilter = function ($query) use ($user) {
+            if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+                $query->where('branch_code', $user->branch_id);
+            }
+            return $query->where('status', 2)->orderBy('updated_at', 'desc');
+        };
+    
+        // Loan Documents
+        $loanQuery = LoanDocument::query();
+        $customFilter($loanQuery, 'loan_documents');
+        $loans = $statusFilter($loanQuery)->get()
             ->map(function ($item) {
                 $item->doc_type = 'loan';
                 return $item;
             });
-            // dd($loans);
         $allDocuments = $allDocuments->merge($loans);
-        // $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $goldloans = $filter(GoldLoanDocument::query())->get()
+    
+        // Gold Loan Documents
+        $goldQuery = GoldLoanDocument::query();
+        $customFilter($goldQuery, 'gold_loan_documents');
+        $goldloans = $statusFilter($goldQuery)->get()
             ->map(function ($item) {
                 $item->doc_type = 'goldloan';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($goldloans);
-        // $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $aofs = $filter(AccountOpeningDocument::query())->get()
+    
+        // AOF Documents
+        $aofQuery = AccountOpeningDocument::query();
+        $customFilter($aofQuery, 'account_opening_documents');
+        $aofs = $statusFilter($aofQuery)->get()
             ->map(function ($item) {
                 $item->doc_type = 'aof';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($aofs);
-        // $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $dtrfs = $filter(DtrfDocument::query())->get()
+    
+        // DTRF Documents
+        $dtrfQuery = DtrfDocument::query();
+        $customFilter($dtrfQuery, 'dtrf_documents');
+        $dtrfs = $statusFilter($dtrfQuery)->get()
             ->map(function ($item) {
                 $item->doc_type = 'dtrf';
                 return $item;
             });
         $allDocuments = $allDocuments->merge($dtrfs);
-        $couriers = Courier::pluck('name','id');
         $process_statuses = ProcessStatus::where('status', 1)->get();
-
-        return view('accounts.index', compact('allDocuments','couriers', 'process_statuses'));
+        $couriers = Courier::pluck('name', 'id');
+    
+        return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters'));
     }
+    
+
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
@@ -280,44 +350,105 @@ class DocumentController extends Controller
         
     }
 
-    public function getDispatches($type)
+
+    public function filterDispatches(Request $request, $type)
     {
-        $filter = function ($query) use ($type) {
-            if ($this->user->hasRole('ro-user')) {
-                $query->where('region_id', $this->user->region_id);
-            }
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-                $query->where('branch_code', $this->user->branch_id);
-            }   
-            return $query
-                ->when($type === 'ready', function ($q){
-                    $q->where('status', 3);
-                })
-                ->when($type === 'list', function ($q){
-                    $q->where('status', 4);
-                })
-                ->when($type === 'received', function ($q){
-                    $q->whereIn('status',[5,7]);
-                })
-                ->when($type === 'rejected', function ($q){
-                    $q->where('status',6);
-                })->orderBy('updated_at', 'desc');
-        };
-
-        $records = $filter(CourierDispatch::query())->paginate(100);
-
-        $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',3)->count();
-        $dispatched_count = $filter(CourierDispatch::query())->where('status',4)->count();
-        $received_count = $filter(CourierDispatch::query())->whereIn('status',[5,7])->count();
-        $rejected_count = $filter(CourierDispatch::query())->where('status',6)->count();
-
-        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count','rejected_count'));
+        session(['filters' => $request->except('_token')]); // Save all filters in session
+        return redirect()->route('dispatches', $type);       // Redirect back to listing
     }
+    
+
+    public function getDispatches($type, Request $request)
+{
+    
+    $filters = session('filters', []);
+
+    $filter = function ($query) use ($type, $filters) {
+        if ($this->user->hasRole('ro-user')) {
+            $query->where('region_id', $this->user->region_id);
+        }
+
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            $query->where('branch_code', $this->user->branch_id);
+        }
+        if (!empty($filters['courier'])) {
+            $query->where('courier_id', $filters['courier']);
+        }
+        
+
+        // Apply form filters
+        if (!empty($filters['awb_pod'])) {
+            $query->where('awb_pod', 'like', '%' . $filters['awb_pod'] . '%');
+        }
+
+        if (!empty($filters['mmrp_barcode'])) {
+            $query->where('mmrp_barcode', 'like', '%' . $filters['mmrp_barcode'] . '%');
+        }
+
+        if (!empty($filters['branch_code'])) {
+            $query->where('branch_code', 'like', '%' . $filters['branch_code'] . '%');
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query
+            ->when($type === 'ready', fn($q) => $q->where('status', 3))
+            ->when($type === 'list', fn($q) => $q->where('status', 4))
+            ->when($type === 'received', fn($q) => $q->whereIn('status', [5, 7]))
+            ->when($type === 'rejected', fn($q) => $q->where('status', 6))
+            ->orderBy('updated_at', 'desc');
+    };
+
+    // Records and counts
+    $records = $filter(CourierDispatch::query())->paginate(100);
+
+    // Status-wise counts (not affected by form filters)
+    $ready_to_dispatch_count = CourierDispatch::where('status', 3)->count();
+    $dispatched_count = CourierDispatch::where('status', 4)->count();
+    $received_count = CourierDispatch::whereIn('status', [5, 7])->count();
+    $rejected_count = CourierDispatch::where('status', 6)->count();
+
+    $process_statuses = ProcessStatus::where('status', 1)->get();
+    $couriers = Courier::where('status', 1)->get();
+    return view('accounts.dispatches', compact(
+        'records',
+        'ready_to_dispatch_count',
+        'dispatched_count',
+        'received_count',
+        'rejected_count',
+        'type',
+        'process_statuses',
+        'filters',
+        'couriers'
+    ));
+}
+public function clearFilters($type)
+{
+    // $previousUrl = url()->previous(); 
+    $previousUrl = url()->previous(); 
+    $previousPath = parse_url($previousUrl, PHP_URL_PATH); 
+    $previousSegments = explode('/', ltrim($previousPath, '/'));
+    $type = Str::afterLast($previousUrl, '/'); 
+    // dd($type);
+    session()->forget('filters');
+    if($type == 'proceed')
+        return redirect()->route('accounts.selected');
+    elseif($type == 'filter')
+        return redirect()->route('document.filtered');
+    else
+        return redirect()->route('dispatches', $type);
+    
+}
+
 
     public function viewDispatches($id)
     {
         $dispatch = CourierDispatch::find($id);
-        $type = 'dispatch';
+        // $type = 'dispatch';
+        $previousUrl = url()->previous(); 
+        $type = Str::afterLast($previousUrl, '/');
 
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100);
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100);
