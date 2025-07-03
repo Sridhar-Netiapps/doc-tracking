@@ -38,9 +38,14 @@ class RevertDraftDocuments extends Command
         ];
 
         foreach ($tables as $model) {
-            $updated = $model::where('status',2)->update(['status' => 1]);
-            $this->info($model . ": Reverted $updated documents.");
-            Log::info($model . ": Reverted $updated documents.");
+            $updated = $model::where('status',2)->get()->each(function ($doc) {
+                $doc->status = 1;
+                $doc->updated_by = 0;
+                $doc->save();
+            });
+            $done = count($updated);
+            $this->info($model . ": Reverted $done documents.");
+            Log::info($model . ": Reverted $done documents.");
         }
 
         return 0;
