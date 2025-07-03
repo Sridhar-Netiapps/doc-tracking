@@ -50,13 +50,27 @@
                 @endhasanyrole
 
                 @role('ro-user')
+                    {{-- @if ($type != 'rejected' && $type != 'pending') --}}
+                        <li class="ms-auto">
+                            {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
+                                {{-- @csrf --}}
+                                <button class="btn btn-danger btn-sm remove-doc" type="button">Delete</button>
+                            {{-- </form> --}}
+                        </li>
+                    {{-- @endif --}}
                     @if ($type === 'received')
-                    <li class="ms-auto">
+                    <li style="margin-left: 10px;">
                         <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
                     </li>
                     @endif
                 @endrole
             </ul>
+            <!-- Hidden inputs to track selected document and reason -->
+            {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch_id ?? '' }}"> --}}
+
+            {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
+<input type="hidden" name="doc-type" value="{{ $type }}"> --}}
+
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
@@ -73,10 +87,10 @@
                                     @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
                                     @endif
-                                {{-- @elsehasrole('ro-user')
-                                    @if ($type === 'received')
+                                @elsehasrole('ro-user')
+                                    {{-- @if ($type === 'received') --}}
                                         <th scope="col"><input type="checkbox" class="loan_all" /></th>
-                                    @endif --}}
+                                    {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
                                     @if (!in_array($type, ['received', 'rejected']))
@@ -121,10 +135,11 @@
                                             @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        {{-- @elsehasrole('ro-user')
-                                            @if ($type === 'received')
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif --}}
+                                        @elsehasrole('ro-user')
+                                            {{-- @if ($type === 'received') --}}
+                                            {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
+                                            <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                            {{-- @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -187,10 +202,10 @@
                                     @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
                                     @endif
-                                {{-- @elsehasrole('ro-user')
-                                    @if ($type === 'received')
+                                @elsehasrole('ro-user')
+                                    {{-- @if ($type === 'received') --}}
                                         <th scope="col"><input type="checkbox" class="goldloan_all" /></th>
-                                    @endif --}}
+                                    {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -233,10 +248,10 @@
                                             @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        {{-- @elsehasrole('ro-user')
-                                            @if ($type === 'received')
+                                        @elsehasrole('ro-user')
+                                            {{-- @if ($type === 'received') --}}
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif --}}
+                                            {{-- @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -297,10 +312,10 @@
                                     @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
                                     @endif
-                                {{-- @elsehasrole('ro-user')
-                                    @if ($type === 'received')
+                                @elsehasrole('ro-user')
+                                    {{-- @if ($type === 'received') --}}
                                         <th scope="col"><input type="checkbox" class="aof_all" /></th>
-                                    @endif --}}
+                                    {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -344,10 +359,10 @@
                                             @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        {{-- @elsehasrole('ro-user')
-                                            @if ($type === 'received')
+                                        @elsehasrole('ro-user')
+                                            {{-- @if ($type === 'received') --}}
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif --}}
+                                            {{-- @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -409,10 +424,10 @@
                                     @if (in_array($type, ['pending', 'all']))
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
                                     @endif
-                                {{-- @elsehasrole('ro-user')
-                                    @if ($type === 'received')
+                                @elsehasrole('ro-user')
+                                    {{-- @if ($type === 'received') --}}
                                         <th scope="col"><input type="checkbox" class="dtrf_all" /></th>
-                                    @endif --}}
+                                    {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker')
                                 @if (!in_array($type, ['received', 'rejected']))
@@ -451,10 +466,10 @@
                                             @if (in_array($type, ['pending', 'all']))
                                                 <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
-                                        {{-- @elsehasrole('ro-user')
-                                            @if ($type === 'received')
+                                        @elsehasrole('ro-user')
+                                            {{-- @if ($type === 'received') --}}
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
-                                            @endif --}}
+                                            {{-- @endif --}}
                                         @endhasrole
                                         {{-- @hasanyrole('master|bo-maker|bo-checker')
                                         <td>
@@ -674,7 +689,7 @@
         </div>
     </div>
 </div>
-
+   
 <script>
     $(document).ready(function () {
         
@@ -728,6 +743,83 @@
                 });
             }
         });
+      
+//         function toggleDeleteButton() {
+//     const hasChecked = $('input[type=checkbox].loan:checked, input[type=checkbox].goldloan:checked, input[type=checkbox].dtrf:checked, input[type=checkbox].aof:checked').length > 0;
+//     $('.remove-doc').prop('disabled', !hasChecked);
+// }
+
+// $(document).on('change', 'input[type=checkbox]', toggleDeleteButton);
+
+$('.remove-doc').click(function (e) {
+    e.preventDefault();
+    
+    let selected = $('input[type=checkbox]:checked');
+    if (selected.length === 0) {
+        Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+        return;
+    }
+
+    let docIds = [];
+    let type = '';
+
+    selected.each(function () {
+        docIds.push($(this).data('id'));
+        if (!type) {
+            if ($(this).hasClass('loan')) type = 'loan';
+            if ($(this).hasClass('goldloan')) type = 'goldloan';
+            if ($(this).hasClass('dtrf')) type = 'dtrf';
+            if ($(this).hasClass('aof')) type = 'aof';
+        }
+    });
+
+    Swal.fire({
+        title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+        input: "text",
+        inputLabel: "Enter reason for deleting the document:",
+        inputPlaceholder: "Reason...",
+        showCancelButton: true,
+        confirmButtonText: '<b>Confirm Delete</b>',
+        cancelButtonText: "Cancel",
+        customClass: {
+            popup: 'rounded-3 shadow',
+            confirmButton: 'btn btn-primary btn-lg',
+            cancelButton: 'btn btn-secondary btn-lg',
+        },
+        inputValidator: (value) => {
+            if (!value) return "Reason is required!";
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post(`{{ route('document.remove') }}`, {
+                _token: $('input[name="_token"]').val(),
+                doc_ids: docIds,
+                type: type,
+                reason: result.value,
+            })
+            .done(function () {
+                Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                    // ✅ Remove deleted rows without reloading
+                    // selected.closest('tr').remove();
+                    location.reload();
+                    // 👇 Check if any checkboxes are left selected
+                    // let anyChecked = $('input[type=checkbox]:checked').length > 0;
+                    // $('.remove-doc').prop('disabled', !anyChecked);
+                });
+            })
+            .fail(function () {
+                Swal.fire("Error!", "Something went wrong!", "error");
+            });
+        }
+    });
+});
+
+
 
         // Filter Form Validation
         $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {

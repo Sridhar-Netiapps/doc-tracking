@@ -1,0 +1,214 @@
+@extends('layouts.insurance-app')
+@section('content')
+
+<div class="container-dashboard py-2">
+    <div class="container-dashboard">
+    	 <div class="align-items-center m-2">
+            <div class="d-flex align-items-center">
+                <img src="/images/note.svg">
+                <strong>Report</strong> 
+
+                <div class="ms-auto ">
+                    <div class="d-flex">
+                       <a class="nav-link" href="{{route('leads_report')}}"><i class="fa fa-sync m-3"></i></a>
+                       <div class="ms-auto ">
+                            <div class="card">
+                             <div id="reportrange" class="pull-right datepiker p-2" >
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
+                                <span name="daterange"></span> <b class="caret"></b>
+                               
+                             </div> 
+                           </div>
+                       </div>
+                     
+                     </div> 
+
+              
+                </div>
+
+
+
+            </div>
+
+            <div class="mt-2">
+             <form method="GET" action="{{route('leads_report')}}">
+               <input type="hidden" id="start" name="start" value="{{$start}}">
+               <input type="hidden" id="end" name="end" value="{{ $end}}">
+               
+               <div class="input-group mb-3">
+                <input class="form-control " type="text" name="search" placeholder="Search" value="{{ $search}}">
+
+                <select class="form-control form-select border-0 p-2 ms-3" name="region">
+                    <option value=""> Select Region</option>
+                    <option {{($region == 'South')?'selected':''}} value="South">South</option>
+                    <option {{($region == 'North')?'selected':''}} value="North">North</option>
+                    <option {{($region == 'East')?'selected':''}} value="East">East</option>
+                    <option {{($region == 'West')?'selected':''}} value="West">West</option>
+                </select>
+
+                <select class="form-control form-select border-0 ms-3" name="branch">
+                    <option value="">Select Branch</option>
+                    
+                </select>
+
+                <select class="form-control form-select border-0 ms-3" name="partner">
+                    <option value="">Select Partner</option>
+                    @foreach($partners as $key=>$val)
+                     <option {{ ($val->partner == $partner)?'selected':''}} value="{{$val->partner}}">{{$val->partner}}</option>
+                    @endforeach
+                </select>
+
+                <select class="form-control form-select border-0 p-2 ms-3" name="product">
+                    <option value="">Select Product</option>
+                    @foreach($products as $key=>$val)
+                     <option {{ ($val->product == $product)?'selected':''}} value="{{$val->product}}">{{$val->product}}</option>
+                    @endforeach
+                </select>
+
+                <select class="form-control form-select border-0 p-2 ms-3" name="status">
+                    <option value="">Select Claim Status</option>
+                    @foreach($claimstatus as $key=>$val)
+                     <option {{ ($val->claim_status == $claim_status)?'selected':''}} value="{{$val->claim_status}}">{{$val->claim_status}}</option>
+                    @endforeach
+                </select>
+
+                <select class="form-control form-select border-0 p-2 ms-3" name="proccesed">
+                    <option value="">Processed By</option>
+                    @foreach($procesedby as $val)
+                     <option {{ ($val == $proccesed)?'selected':''}} value="{{$val}}">{{$val}}</option>
+                    @endforeach
+                </select>
+
+               
+
+                <div class="input-group-prepend ms-3">
+                   <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
+
+                    <button class="btn btn-warning rounded-2 ms-3"  name="action" value="export" value="export">Export</button> 
+                </div>
+               </div>
+             </form>
+            </div>
+ 
+        </div>
+	    
+
+	</div>
+
+
+<div class="mt-3 p-3">
+	<div class="table-responsive tablescrollable">
+        <table class="table  table-bordered" >
+            <thead class="table-dark">
+                <th class="text-nowrap">Lead ID</th>
+                <th class="text-nowrap">Creation Date</th>
+                <th class="text-nowrap">Intimation Date</th>
+                <th class="text-nowrap">Region</th>
+                <th class="text-nowrap">Branch</th> 
+                <th class="text-nowrap">Partner</th>
+                <th class="text-nowrap">Product</th>
+                <th class="text-nowrap">CIF ID</th>
+                <th class="text-nowrap">Deceased Name</th>
+                <th class="text-nowrap">Deceased Type</th>
+                <th class="text-nowrap">Gender</th>
+                <th class="text-nowrap">Loan Acc No</th>
+                <th class="text-nowrap">Cause of Death</th>
+                <th class="text-nowrap">Loan Tenure</th>
+                <th class="text-nowrap">Date of Death</th>
+                <th class="text-nowrap">Claim Status</th>
+                <th class="text-nowrap">CAS Status</th>
+                <th class="text-nowrap">RL Status</th>
+                <th class="text-nowrap">Recovery Status</th>
+                <th class="text-nowrap">Write-Off Status</th>
+            </thead>
+
+            <tbody>
+                @foreach($data as $key=>$value)
+                <tr>
+                    <td>{{ $value->utrn}}</td>
+                     <td>{{ date('d M,Y',strtotime($value->created_at))}}</td>
+                     <td>{{ date('d M,Y',strtotime($value->intimation_date))}}</td>
+                    <td>{{ $value->region}}</td>
+                    <td>{{ $value->branch}}</td> 
+                    <td>{{ $value->partner}}</td>
+                    <td>{{ $value->product}}</td>
+                    <td>{{ $value->cust_id}}</td>
+                    <td>{{ $value->deceased_name}}</td>
+                    <td>{{ $value->deceased}}</td>
+                    <td>{{ $value->gender}}</td>
+                    <td>{{ $value->load_acc_id}}</td>
+                    
+                    <td>{{ $value->cause_of_death}}</td>
+                    <td>{{ $value->loan_tenure}}</td>
+                    <td>{{ $value->date_of_death}}</td>
+                    <td>{{ $value->cliam_status}}</td>
+                    <td>{{ $value->cas_status}}</td>
+                    <td>{{ $value->rl_status}}</td>
+                    <td>{{ $value->recovery_status }}</td>
+                    <td>{{ $value->write_off_status}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+$(function() {  
+   
+    var startdate = $('#start').val();
+    var enddate = $('#end').val();
+
+
+    var today = moment(); // Current date
+
+    if(startdate === ''){
+    var start = moment().month() < 3 
+    ? moment().subtract(1, 'year').startOf('year').month(3).date(1) // Start of last year's April
+    : moment().startOf('year').month(3).date(1); // Start of this year's April
+     var end = moment();
+   }
+   else{
+    var start = moment(startdate);
+    var end = moment(enddate);
+   }
+
+   
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        const formattedStart = start.format('YYYY-MM-DD');
+        const formattedEnd = end.format('YYYY-MM-DD');
+
+        $('#start').val(formattedStart);
+        $('#end').val(formattedEnd);
+        
+        
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+
+
+    $('select').on('change', function() {
+      cb(start, end);
+     
+    });
+    
+});
+</script>
+
+@endsection

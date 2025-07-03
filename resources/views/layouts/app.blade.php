@@ -28,6 +28,10 @@
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ asset('js/flatpickr.min.js') }}"></script>
+
+    <link href="{{ asset('accordin/bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('accordin/bootstrap.bundle.min.js') }}"></script>
+
 </head>
 <body>
     <div id="app">
@@ -91,14 +95,9 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('users.index') }}">
-                                            {{ __('Users') }}
-                                        </a>
-
-                                        {{-- <a class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
-                                        </a> --}}
-
+                                        </a>
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();

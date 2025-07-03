@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Courier extends Model
 {
     use HasFactory;
+    protected $table = 'couriers';
 
     protected $fillable = [
         'courier_id', 'name', 'number', 'address', 'status', 'created_by',

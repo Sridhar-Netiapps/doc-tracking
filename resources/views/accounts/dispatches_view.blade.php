@@ -10,7 +10,9 @@
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
-        <div class="col-1"></div>
+        <div class="col-1">
+            {{-- <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a> --}}
+        </div>
     </div>
 </div>
 <div class="container-fluid mt-3">
@@ -84,6 +86,9 @@
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endhasanyrole
+                <li class="ms-auto">
+                    <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">

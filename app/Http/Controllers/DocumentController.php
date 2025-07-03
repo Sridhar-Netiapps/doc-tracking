@@ -553,7 +553,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
 
-        return view('accounts.dispatches_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dispatch'));
+        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
     // public function viewDispatches($id)
     // {
@@ -689,45 +689,83 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    public function removeDocument(Request $request)
-    {
-        $column = [
-            'loan' => 'loan_ids',
-            'goldloan' => 'goldloan_ids',
-            'dtrf' => 'dtrf_ids',
-            'aof' => 'aof_ids',
-        ];
-        
-        try {
-            DB::beginTransaction();
-            
-            $dispatch = CourierDispatch::find($request->id);
-            $columnName = $column[$request->type];
+    // public function removeDocument(Request $request)
+    // {
+    //     $table = [
+    //         'loan' => LoanDocument::class,
+    //         'goldloan' => GoldLoanDocument::class,
+    //         'dtrf' => DtrfDocument::class,
+    //         'aof' => AccountOpeningDocument::class,
+    //     ];
 
-            $values = collect(explode(',', $dispatch->$columnName))
-                ->map(fn($v) => trim($v))
-                ->filter(fn($v) => $v !== $request->doc_id)
-                ->values()
-                ->implode(',');
+    //     $column = [
+    //         'loan' => 'loan_ids',
+    //         'goldloan' => 'goldloan_ids',
+    //         'dtrf' => 'dtrf_ids',
+    //         'aof' => 'aof_ids',
+    //     ];
+        
+    //     try {
+    //         DB::beginTransaction();
             
-            $dispatch->$columnName = $values;
-            $dispatch->updated_by = $this->user->id;
-            $dispatch->save();
+    //         $dispatch = CourierDispatch::find($request->id);
+    //         $columnName = $column[$request->type];
+
+    //         $values = collect(explode(',', $dispatch->$columnName))
+    //             ->map(fn($v) => trim($v))
+    //             ->filter(fn($v) => $v !== $request->doc_id)
+    //             ->values()
+    //             ->implode(',');
+            
+    //         $dispatch->$columnName = $values;
+    //         $dispatch->updated_by = $this->user->id;
+    //         $dispatch->save();
 
             // $this->table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
 
-            $doc = $this->table[$request->type]::find($request->doc_id);
-            $doc->status = 1;
-            $doc->save();
+            // $doc = $table[$request->type]::find($request->doc_id);
+            // $doc->status = 1;
+            // $doc->save();
             
-            // if(isset($request->type) && $request->type == 'loan')
-            //     LoanDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'goldloan')
-            //     GoldLoanDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'dtrf')
-            //     DtrfDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'aof')
-            //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // if(isset($request->type) && $request->type == 'loan')
+    //         //     LoanDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'goldloan')
+    //         //     GoldLoanDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'dtrf')
+    //         //     DtrfDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'aof')
+    //         //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
+
+    //         DB::commit();
+    //         return response()->json(['success' => true]);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
+    public function removeDocument(Request $request)
+    {
+        $tables = [
+            'loan' => LoanDocument::class,
+            'goldloan' => GoldLoanDocument::class,
+            'dtrf' => DtrfDocument::class,
+            'aof' => AccountOpeningDocument::class,
+        ];
+
+        $type = $request->type;
+        $docIds = $request->doc_ids;  // array of selected IDs
+        $reason = $request->reason;
+
+        try {
+            DB::beginTransaction();
+
+            // Store reason if needed (optional, if reason column exists)
+            foreach ($docIds as $id) {
+                $doc = $tables[$type]::findOrFail($id);
+                $doc->reason = $reason;
+                $doc->save();
+                $doc->delete(); // Laravel soft delete
+            }
 
             DB::commit();
             return response()->json(['success' => true]);
@@ -736,6 +774,7 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     public function statusUpdate(Request $request)
     {
         try {
