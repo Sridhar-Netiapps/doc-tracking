@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="col-1">
-            <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+            {{-- <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a> --}}
         </div>
     </div>
 </div>
@@ -86,6 +86,9 @@
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endhasanyrole
+                <li class="ms-auto">
+                    <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
