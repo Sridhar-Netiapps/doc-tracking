@@ -41,6 +41,7 @@
     
     <script src="{{ env('APP_URL') }}/js/apexchart.js"></script>
     <script src="{{ env('APP_URL') }}/js/apextree.js"></script>
+    <script src="{{ env('APP_URL') }}/js/custom_insurance_script.js"></script>
 
     
 

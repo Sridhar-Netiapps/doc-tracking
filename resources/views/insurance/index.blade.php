@@ -45,7 +45,7 @@
                     <div class="d-flex">
                     <button class="btn btn-danger">Import</button>
                     
-                    <a class="ms-auto" href=""><button class="btn btn-outline-secondary">Download Template</button></a>
+                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.Xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
                     </div>
                     
                 </form>
@@ -112,7 +112,7 @@
 					
 					<td>{{ $value->cause_of_death}}</td>
 					<td>{{ $value->cliam_status}}</td>
-					<td>{{ $value->claim_amount}}</td>
+					<td class="number">{{ $value->claim_amount}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach
