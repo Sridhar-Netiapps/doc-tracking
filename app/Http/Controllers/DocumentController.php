@@ -17,6 +17,9 @@ use App\Imports\VendorDocumentImport;
 use Auth;
 use DB;
 use App\Models\ProcessStatus;
+use App\Models\DocumentHistory;
+use Illuminate\Support\Str;
+
 
 class DocumentController extends Controller
 {
@@ -24,6 +27,12 @@ class DocumentController extends Controller
     {
         $this->middleware(function ($request, $next) {
             $this->user = auth()->user();
+            $this->table = [
+                'loan' => LoanDocument::class,
+                'goldloan' => GoldLoanDocument::class,
+                'dtrf' => DtrfDocument::class,
+                'aof' => AccountOpeningDocument::class,
+            ];
             return $next($request);
         });
     }
@@ -71,12 +80,22 @@ class DocumentController extends Controller
     public function filter(Request $request)
     {
         session(['filters' => $request->all()]);
-        return redirect()->route('document.filtered');
+        // return redirect()->route('document.filtered');
+
+        $previousUrl = url()->previous(); 
+        $type = Str::afterLast($previousUrl, '/'); 
+        // dd($type);   
+        // $type = $request->segment(2); 
+        if($type == 'proceed')
+            return redirect()->route('accounts.selected');
+        else
+            return redirect()->route('document.filtered');
     }
     
-    public function filteredList()
+    public function filteredList(Request $request)
     {
-        $filters = session('filters', []);
+        // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
         
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
@@ -171,6 +190,7 @@ class DocumentController extends Controller
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $type = 'all';
+
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
     }
     
@@ -202,49 +222,163 @@ class DocumentController extends Controller
         }
         return redirect()->route('accounts.selected');
     }
-
-    public function getBulkReview()
+    
+    public function getBulkReview(Request $request)
     {
-        $allDocuments = collect();
-        $filter = function ($query) {
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-                $query->where('branch_code', $this->user->branch_id);
-            }
-            return $query->where('status',2)->orderBy('updated_at', 'desc');
-        };
-        // $loans = LoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $loans = $filter(LoanDocument::query())->get()
-            ->map(function ($item) {
-                $item->doc_type = 'loan';
-                return $item;
-            });
-            // dd($loans);
-        $allDocuments = $allDocuments->merge($loans);
-        // $goldloans = GoldLoanDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $goldloans = $filter(GoldLoanDocument::query())->get()
-            ->map(function ($item) {
-                $item->doc_type = 'goldloan';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($goldloans);
-        // $aofs = AccountOpeningDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $aofs = $filter(AccountOpeningDocument::query())->get()
-            ->map(function ($item) {
-                $item->doc_type = 'aof';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($aofs);
-        // $dtrfs = DtrfDocument::where('branch_code', $this->user->branch_id)->where('status', 2)->get()
-        $dtrfs = $filter(DtrfDocument::query())->get()
-            ->map(function ($item) {
-                $item->doc_type = 'dtrf';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($dtrfs);
-        $process_statuses = ProcessStatus::where('status', 1)->get();
+        // // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
+        // dd($filters);
+        $user = $this->user;
+        $hasFilters = collect($filters)->filter()->isNotEmpty();
+    
+        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        $selectedType = $filters['document_type'] ?? null;
+    
+        unset($filters['from_date'], $filters['to_date']);
+    
+        // $allDocuments = collect();
+    
+        // // Filter function for query builder
+        // $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+        //     if ($user->hasRole('ro-user')) {
+        //         $query->where('region', $user->region);
+        //     }
+    
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+    
+        //     if ($fromDate && $toDate) {
+        //         $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+        //     } elseif ($fromDate) {
+        //         $query->whereDate('created_at', '>=', $fromDate);
+        //     } elseif ($toDate) {
+        //         $query->whereDate('created_at', '<=', $toDate);
+        //     }
+    
+        //     if ($hasFilters) {
+        //         foreach ($filters as $field => $value) {
+        //             if (!empty($value) && \Schema::hasColumn($table, $field)) {
+        //                 if (in_array($field, ['cif_id', 'account_number'])) {
+        //                     $query->where($field, 'like', '%' . $value . '%');
+        //                 } else {
+        //                     $query->where($field, $value);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // };
+    
+        // // Additional common status filter
+        // $statusFilter = function ($query) use ($user) {
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+        //     return $query->where('status', 2)->orderBy('updated_at', 'desc');
+        // };
+    
+        // // Loan Documents
+        // $loanQuery = LoanDocument::query();
+        // $customFilter($loanQuery, 'loan_documents');
+        // $loans = $statusFilter($loanQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'loan';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($loans);
+    
+        // // Gold Loan Documents
+        // $goldQuery = GoldLoanDocument::query();
+        // $customFilter($goldQuery, 'gold_loan_documents');
+        // $goldloans = $statusFilter($goldQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'goldloan';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($goldloans);
+    
+        // // AOF Documents
+        // $aofQuery = AccountOpeningDocument::query();
+        // $customFilter($aofQuery, 'account_opening_documents');
+        // $aofs = $statusFilter($aofQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'aof';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($aofs);
+    
+        // // DTRF Documents
+        // $dtrfQuery = DtrfDocument::query();
+        // $customFilter($dtrfQuery, 'dtrf_documents');
+        // $dtrfs = $statusFilter($dtrfQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'dtrf';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($dtrfs);
 
-        return view('accounts.index', compact('allDocuments','couriers', 'process_statuses'));
+        $filtered = function ($model, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+            $query = $model::query();
+        
+            if ($user->hasRole('ro-user')) {
+                $query->where('region', $user->region);
+            }
+        
+            if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+                $query->where('branch_code', $user->branch_id);
+            }
+        
+            if ($fromDate && $toDate) {
+                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+            } elseif ($fromDate) {
+                $query->whereDate('account_creation_date', '>=', $fromDate);
+            } elseif ($toDate) {
+                $query->whereDate('account_creation_date', '<=', $toDate);
+            }
+
+            if ($hasFilters) {
+                foreach ($filters as $field => $value) {
+                    if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                        $query->where($field, in_array($field, ['cif_id', 'account_number']) ? 'like' : '=', 
+                            in_array($field, ['cif_id', 'account_number']) ? "%$value%" : $value
+                        );
+                    }
+                }
+            }
+            $query->where('status', 2)->orderBy('updated_at', 'desc');
+            return $query->get();
+        };
+        
+        $documentsMap = [
+            'loan' => [LoanDocument::class, 'loan_documents'],
+            'goldloan' => [GoldLoanDocument::class, 'gold_loan_documents'],
+            'aof' => [AccountOpeningDocument::class, 'account_opening_documents'],
+            'dtrf' => [DtrfDocument::class, 'dtrf_documents'],
+        ];
+        
+        $allDocuments = collect();
+        
+        foreach ($documentsMap as $type => [$model, $table]) {
+            if ($selectedType && $selectedType !== $type) {
+                continue;
+            }
+        
+            $records = $filtered($model, $table)->map(function ($item) use ($type) {
+                $item->doc_type = $type;
+                return $item;
+            });
+        
+            $allDocuments = $allDocuments->merge($records);
+        }
+        // dd($filters);
+        $process_statuses = ProcessStatus::where('status', 1)->get();
+        $couriers = Courier::pluck('name', 'id');
+    
+        return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters'));
     }
+    
+
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
@@ -310,44 +444,105 @@ class DocumentController extends Controller
         
     }
 
-    public function getDispatches($type)
+
+    public function filterDispatches(Request $request, $type)
     {
-        $filter = function ($query) use ($type) {
+        session(['filters' => $request->except('_token')]); // Save all filters in session
+        return redirect()->route('dispatches', $type);       // Redirect back to listing
+    }
+    
+
+    public function getDispatches($type, Request $request)
+    {
+        
+        // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
+
+        $filter = function ($query) use ($type, $filters) {
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region_id', $this->user->region_id);
             }
+
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
-            }   
+            }
+            if (!empty($filters['courier'])) {
+                $query->where('courier_id', $filters['courier']);
+            }
+            
+
+            // Apply form filters
+            if (!empty($filters['awb_pod'])) {
+                $query->where('awb_pod', 'like', '%' . $filters['awb_pod'] . '%');
+            }
+
+            if (!empty($filters['mmrp_barcode'])) {
+                $query->where('mmrp_barcode', 'like', '%' . $filters['mmrp_barcode'] . '%');
+            }
+
+            if (!empty($filters['branch_code'])) {
+                $query->where('branch_code', 'like', '%' . $filters['branch_code'] . '%');
+            }
+
+            if (!empty($filters['status'])) {
+                $query->where('status', $filters['status']);
+            }
+
             return $query
-                ->when($type === 'ready', function ($q){
-                    $q->where('status', 3);
-                })
-                ->when($type === 'list', function ($q){
-                    $q->where('status', 4);
-                })
-                ->when($type === 'received', function ($q){
-                    $q->whereIn('status',[5,7]);
-                })
-                ->when($type === 'rejected', function ($q){
-                    $q->where('status',6);
-                })->orderBy('updated_at', 'desc');
+                ->when($type === 'ready', fn($q) => $q->where('status', 3))
+                ->when($type === 'list', fn($q) => $q->where('status', 4))
+                ->when($type === 'received', fn($q) => $q->whereIn('status', [5, 7]))
+                ->when($type === 'rejected', fn($q) => $q->where('status', 6))
+                ->orderBy('updated_at', 'desc');
         };
 
-        $records = $filter(CourierDispatch::query())->paginate(100)->withQueryString();
+        // Records and counts
+        $records = $filter(CourierDispatch::query())->paginate(100);
 
-        $ready_to_dispatch_count = $filter(CourierDispatch::query())->where('status',3)->count();
-        $dispatched_count = $filter(CourierDispatch::query())->where('status',4)->count();
-        $received_count = $filter(CourierDispatch::query())->whereIn('status',[5,7])->count();
-        $rejected_count = $filter(CourierDispatch::query())->where('status',6)->count();
+        // Status-wise counts (not affected by form filters)
+        $ready_to_dispatch_count = CourierDispatch::where('status', 3)->count();
+        $dispatched_count = CourierDispatch::where('status', 4)->count();
+        $received_count = CourierDispatch::whereIn('status', [5, 7])->count();
+        $rejected_count = CourierDispatch::where('status', 6)->count();
 
-        return view('accounts.dispatches', compact('ready_to_dispatch_count','dispatched_count','type','records','received_count','rejected_count'));
+        $process_statuses = ProcessStatus::where('status', 1)->get();
+        $couriers = Courier::where('status', 1)->get();
+        return view('accounts.dispatches', compact(
+            'records',
+            'ready_to_dispatch_count',
+            'dispatched_count',
+            'received_count',
+            'rejected_count',
+            'type',
+            'process_statuses',
+            'filters',
+            'couriers'
+        ));
+    }
+    public function clearFilters($type)
+    {
+        // $previousUrl = url()->previous(); 
+        $previousUrl = url()->previous(); 
+        $previousPath = parse_url($previousUrl, PHP_URL_PATH); 
+        $previousSegments = explode('/', ltrim($previousPath, '/'));
+        $type = Str::afterLast($previousUrl, '/'); 
+        // dd($type);
+        session()->forget('filters');
+        if($type == 'proceed')
+            return redirect()->route('accounts.selected');
+        elseif($type == 'filter')
+            return redirect()->route('document.filtered');
+        else
+            return redirect()->route('dispatches', $type);
+        
     }
 
     public function viewDispatches($id)
     {
         $dispatch = CourierDispatch::find($id);
-        $type = 'dispatch';
+        // $type = 'dispatch';
+        $previousUrl = url()->previous(); 
+        $type = Str::afterLast($previousUrl, '/');
 
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
@@ -496,13 +691,6 @@ class DocumentController extends Controller
     }
     public function removeDocument(Request $request)
     {
-        $table = [
-            'loan' => LoanDocument::class,
-            'goldloan' => GoldLoanDocument::class,
-            'dtrf' => DtrfDocument::class,
-            'aof' => AccountOpeningDocument::class,
-        ];
-
         $column = [
             'loan' => 'loan_ids',
             'goldloan' => 'goldloan_ids',
@@ -526,9 +714,9 @@ class DocumentController extends Controller
             $dispatch->updated_by = $this->user->id;
             $dispatch->save();
 
-            // $table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
+            // $this->table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
 
-            $doc = $table[$request->type]::find($request->doc_id);
+            $doc = $this->table[$request->type]::find($request->doc_id);
             $doc->status = 1;
             $doc->save();
             
@@ -550,12 +738,6 @@ class DocumentController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $table = [
-            'loan' => LoanDocument::class,
-            'goldloan' => GoldLoanDocument::class,
-            'dtrf' => DtrfDocument::class,
-            'aof' => AccountOpeningDocument::class,
-        ];
         try {
             DB::beginTransaction();
 
@@ -565,7 +747,7 @@ class DocumentController extends Controller
                 $updates[] = $request->all();
             
             foreach ($updates as $update) {
-                $doc = $table[$update['type']]::find($update['id']);
+                $doc = $this->table[$update['type']]::find($update['id']);
                 $doc->status = $update['remarks'];
                 if(isset($update['reason_for_rejection']))
                     $doc->reason = $update['reason_for_rejection'];
@@ -590,12 +772,6 @@ class DocumentController extends Controller
 
     public function addRmaDetails(Request $request)
     {
-        $table = [
-            'loan' => LoanDocument::class,
-            'goldloan' => GoldLoanDocument::class,
-            'dtrf' => DtrfDocument::class,
-            'aof' => AccountOpeningDocument::class,
-        ];
         $validated = $request->validate([
             'lot_no' => 'nullable|string|max:255',
             'category_of_document' => 'nullable|string|max:255',
@@ -610,7 +786,7 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
 
-            $doc = $table[$request->type]::find($request->id);
+            $doc = $this->table[$request->type]::find($request->id);
             $doc->lot_no = $validated['lot_no'];
             $doc->category_of_document = $validated['category_of_document'];
             $doc->work_order_no = $validated['work_order_no'];
@@ -649,5 +825,12 @@ class DocumentController extends Controller
         }
         
         return redirect()->back()->with('success', 'Excel uploaded successfully!');
+    }
+    public function viewHistory($id,$type)
+    {
+        $document = $this->table[$type]::find($id);
+        $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$type]))->get();
+
+        return view('accounts.doc_history', compact('document','history','type'));    
     }
 }
