@@ -86,7 +86,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Branch ID-Name</label>
-				    <input type="text" class="form-control" name="branch" value="1100-Koramangala" >
+				    <input type="text" class="form-control clsAlphaNoOnly" name="branch" value="1100-Koramangala" >
 				    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -114,55 +114,55 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Policy Number</label>
-				    <input type="text" class="form-control numberonly" name="policy_number" value="{{ old('policy_number')}}">
+				    <input type="text" class="form-control numbersonly" name="policy_number" value="{{ old('policy_number')}}">
 				    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Customer ID</label>
-				    <input type="text" class="form-control numberonly" name="cust_id" value="{{ old('cust_id')}}">
+				    <input type="text" class="form-control clsAlphaNoOnly" name="cust_id" value="{{ old('cust_id')}}">
 				    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">ACTUAL ID</label>
-				    <input type="text" class="form-control numberonly" name="actual_id" value="{{ old('actual_id')}}">
+				    <input type="text" class="form-control clsAlphaNoOnly" name="actual_id" value="{{ old('actual_id')}}">
 				    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Deceased Name</label>
-				    <input type="text" class="form-control numberonly" name="deceased_name" value="{{ old('deceased_name')}}">
+				    <input type="text" class="form-control clsAlphaNoOnly" name="deceased_name" value="{{ old('deceased_name')}}">
 				    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">MP NO</label>
-				    <input type="text" class="form-control numberonly" name="mp_no" value="{{ old('mp_no')}}">
+				    <input type="text" class="form-control numbersonly" name="mp_no" value="{{ old('mp_no')}}">
 				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Policy Covered</label>
-				    <input type="date" class="form-control" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
+				    <input type="date" class="form-control valid-date" name="policy_covered_date" value="{{ old('policy_covered_date')}}" min="{{ date('Y-m-d')}}">
 				    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Loan Tenure</label>
-				    <input type="text" class="form-control numberonly" name="loan_tenure" value="{{ old('loan_tenure')}}">
+				    <input type="text" class="form-control numbersonly" name="loan_tenure" value="{{ old('loan_tenure')}}" maxlength="3" >
 				    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Policy Expired Date</label>
-				    <input type="date" class="form-control" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}">
+				    <input type="date" class="form-control valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}" min="{{ date('Y-m-d')}}">
 				    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Date of Death</label>
-				    <input type="date" class="form-control" name="date_of_death" value="{{ old('date_of_death')}}">
+				    <input type="date" class="form-control valid-date" name="date_of_death" value="{{ old('date_of_death')}}" max="{{ date('Y-m-d')}}">
 				    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -191,13 +191,13 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Date Of Death Intimation</label>
-				    <input type="date" class="form-control" name="intimation_date" value="{{ old('intimation_date')}}">
+				    <input type="date" class="form-control valid-date" name="intimation_date" value="{{ old('intimation_date')}}" max="{{ date('Y-m-d')}}">
 				    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Age</label>
-				    <input type="text" class="form-control numberonly" name="age" value="{{ old('age')}}">
+				    <input type="text" class="form-control numbersonly" name="age" value="{{ old('age')}}">
 				    @error('age')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -214,7 +214,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Cause of Death</label>
-				    <select class="form-control form-select" name="cause_of_death">
+				    <select class="form-control form-select " name="cause_of_death">
 				    	<option>Select</option>
 				    	@foreach($deathcause as $key=>$value)
 				    	   <option {{ ( old('cause_of_death')==$value->cause)?'selected':''}} value="{{$value->cause}}">{{$value->cause}}</option>
@@ -226,19 +226,19 @@
 				
 				<div class="col-3 mb-3">
 				    <label class="form-label">Loan Account ID</label>
-				    <input type="text" class="form-control numberonly" name="load_acc_id" value="{{ old('load_acc_id')}}">
+				    <input type="text" class="form-control numbersonly" name="load_acc_id" value="{{ old('load_acc_id')}}">
 				    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Claim Amount</label>
-				    <input type="text" class="form-control numberonly" name="claim_amount" value="{{ old('claim_amount')}}">
+				    <input type="text" class="form-control number-with-format" name="claim_amount" value="{{ old('claim_amount')}}">
 				    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Date of Birth</label>
-				    <input type="date" class="form-control" name="dob" value="{{ old('dob')}}">
+				    <input type="date" class="form-control valid-date" name="dob" max="{{ date('Y-m-d')}}" value="{{ old('dob')}}">
 				    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -277,7 +277,7 @@
 				
 				<div class="col-3 mb-3">
 				    <label class="form-label">Packet Number</label>
-				    <input type="text" class="form-control numberonly" name="pkt_no" value="{{ old('pkt_no')}}">
+				    <input type="text" class="form-control numbersonly" name="pkt_no" value="{{ old('pkt_no')}}">
 				    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -291,14 +291,14 @@
         		<div class="row">
         		    <div class="col-6 mb-3">
 					    <label class="form-label">HO Remarks</label>
-					    <textarea class="form-control" name="ho_remark">{{ old('ho_remarks')}}</textarea>
+					    <textarea class="form-control clsAlphaNoOnly" name="ho_remark">{{ old('ho_remarks')}}</textarea>
 					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 					<div class="col-6 mb-3"></div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of document received</label>
-					    <input type="date" class="form-control" name="doc_rec_date" value="{{ old('doc_rec_date')}}">
+					    <input type="date" class="form-control valid-date" name="doc_rec_date" value="{{ old('doc_rec_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -315,19 +315,19 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of submision to partner</label>
-					    <input type="date" class="form-control" name="submit_to_partner_date" value="{{ old('submit_to_partner_date')}}">
+					    <input type="date" class="form-control valid-date" name="submit_to_partner_date" value="{{ old('submit_to_partner_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-6 mb-3">
 					    <label class="form-label">Remarks</label>
-					    <input type="text" class="form-control numberonly" name="ho_remark2" value="{{ old('ho_remark2')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="ho_remark2" value="{{ old('ho_remark2')}}">
 					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of re-submision to partner</label>
-					    <input type="date" class="form-control" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date')}}">
+					    <input type="date" class="form-control valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>	
 
@@ -344,25 +344,25 @@
 
         			<div class="col-3 mb-3">
 					    <label class="form-label">Loan Outstanding Amt</label>
-					    <input type="text" class="form-control numberonly" name="loan_outstanding" value="{{ old('loan_outstanding')}}">
+					    <input type="text" class="form-control number-with-format" name="loan_outstanding" value="{{ old('loan_outstanding')}}">
 					    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Payable to Nominee</label>
-					    <input type="text" class="form-control numberonly" name="payable_to_nominee" value="{{ old('payable_to_nominee')}}">
+					    <input type="text" class="form-control number-with-format" name="payable_to_nominee" value="{{ old('payable_to_nominee')}}">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Nominee Name</label>
-					    <input type="text" class="form-control" name="nominee_name" value="{{ old('nominee_name')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="nominee_name" value="{{ old('nominee_name')}}">
 					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
         			<div class="col-3 mb-3">
 					    <label class="form-label">Nominee Contact No</label>
-					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ old('nominee_number')}}">
+					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ old('nominee_number')}}" minlength="10" maxlength="10">
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -380,32 +380,32 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Acknowledgement Received Date</label>
-					    <input type="date" class="form-control numberonly" name="ack_rec_date" value="{{ old('ack_rec_date')}}">
+					    <input type="date" class="form-control valid-date" name="ack_rec_date" value="{{ old('ack_rec_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of settlement</label>
-					    <input type="date" class="form-control" name="settlement_date" value="{{ old('settlement_date')}}">
+					    <input type="date" class="form-control valid-date" name="settlement_date" value="{{ old('settlement_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">NEFT Rejection Date</label>
-					    <input type="date" class="form-control" name="neft_rejection_date" value="{{ old('neft_rejection_date')}}">
+					    <input type="date" class="form-control valid-date" name="neft_rejection_date" value="{{ old('neft_rejection_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">NEFT Reason For Rejection</label>
-					    <input type="text" class="form-control" name="neft_rejection_reason" value="{{ old('neft_rejection_reason')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="neft_rejection_reason" value="{{ old('neft_rejection_reason')}}">
 					    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Final Settlement Date</label>
-					    <input type="date" class="form-control" name="final_settlement_date" value="{{ old('final_settlement_date')}}">
+					    <input type="date" class="form-control valid-date" name="final_settlement_date" value="{{ old('final_settlement_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
@@ -424,19 +424,19 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Bounced CHQ No</label>
-					    <input type="text" class="form-control" name="bounced_chq_no" value="{{ old('bounced_chq_no')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="bounced_chq_no" value="{{ old('bounced_chq_no')}}">
 					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">CHQ Bounced Date</label>
-					    <input type="date" class="form-control" name="bounced_chq_date" value="{{ old('bounced_chq_date')}}">
+					    <input type="date" class="form-control valid-date" name="bounced_chq_date" value="{{ old('bounced_chq_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">CHQ Bounced reason</label>
-					    <input type="text" class="form-control" name="bounced_chq_reason" value="{{ old('bounced_chq_reason')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="bounced_chq_reason" value="{{ old('bounced_chq_reason')}}">
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
@@ -449,25 +449,25 @@
         		<div class="row">
         			<div class="col-3 mb-3">
 					    <label class="form-label">Write off received</label>
-					    <input type="text" class="form-control" name="write_off_rec" value="{{ old('write_off_rec')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="write_off_rec" value="{{ old('write_off_rec')}}">
 					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Write off status</label>
-					    <input type="text" class="form-control" name="write_off_status" value="{{ old('write_off_status')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="write_off_status" value="{{ old('write_off_status')}}">
 					    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Handed over to Business Head</label>
-					    <input type="text" class="form-control" name="handed_to_bh" value="{{ old('handed_to_bh')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="handed_to_bh" value="{{ old('handed_to_bh')}}">
 					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Handed over to credit</label>
-					    <input type="text" class="form-control" name="handed_to_credit" value="{{ old('handed_to_credit')}}">
+					    <input type="text" class="form-control clsAlphaNoOnly" name="handed_to_credit" value="{{ old('handed_to_credit')}}">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
@@ -548,28 +548,59 @@
 
 </script>
 
-<script>
-document.getElementById('myForm').addEventListener('submit', function (e) {
-    if (!this.checkValidity()) {
-        e.preventDefault();
+<script nonce="wUDPhZ1Z60inspnMCukimCi">
+document.addEventListener("DOMContentLoaded", function () {
 
-        const firstInvalid = this.querySelector(':invalid');
-        if (firstInvalid) {
-            // Scroll manually using offset if fixed headers are present
-            const offset = -100; // adjust based on header height
-            const y = firstInvalid.getBoundingClientRect().top + window.scrollY + offset;
+  let numberonlyInputs = document.querySelectorAll(".numbersonly");
 
-            window.scrollTo({ top: y, behavior: 'smooth' });
+    numberonlyInputs.forEach(function (input) {
+      
+        input.addEventListener("keypress", function (event) {
+            numbersonly(event);
+        });
 
-            // Delay to allow scroll before showing message
-            setTimeout(() => {
-                firstInvalid.focus();
-                firstInvalid.reportValidity(); // forces the message
-            }, 400);
-        }
-    }
-});
+ 
+    });
 
+    let alphaInputs = document.querySelectorAll(".clsAlphaNoOnly");
+
+    alphaInputs.forEach(function (input) {
+      
+       
+        input.addEventListener("keypress", function (event) {
+            clsAlphaNoOnly(event);
+        });
+
+    });
+
+     let numberInputs = document.querySelectorAll(".number-with-format");
+
+    numberInputs.forEach(function (input) {
+    	// Restrict input to numbers and a single decimal point
+        input.addEventListener("keypress", function (event) {
+        	 numbersonly(event);
+        });
+
+        // Format input on change
+        input.addEventListener("input", function () {
+            formatNumber(this);
+        });
+    });
+
+    let datesInputs = document.querySelectorAll(".valid-date");
+
+    datesInputs.forEach(function (input) {
+      
+       
+        input.addEventListener("keypress", function (event) {
+            event.preventDefault();
+        });
+
+    });
+
+
+
+ });
 </script>
 
 

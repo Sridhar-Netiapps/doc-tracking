@@ -126,9 +126,9 @@ class ImportClaimDetails implements ToModel, WithStartRow
 
             $claimID = $claimDetail->id;
             
-            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$insurancedetaisl->id)->first();
+            $insurednomineeDetails = InsuranceNomineeDetail::where('insurance_claim_details_id',$claimID)->first();
               if($insurednomineeDetails){
-		         $nomineeDetails = InsuranceNomineeDetail::find($insurednomineeDetails->id);
+		         $nomineeDetails = InsuranceNomineeDetail::find($claimID);
 			    }else{
 			         $nomineeDetails = new InsuranceNomineeDetail;
 			         $nomineeDetails->insurance_claim_details_id = $claimID;
