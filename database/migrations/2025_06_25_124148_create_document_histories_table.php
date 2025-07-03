@@ -18,8 +18,11 @@ return new class extends Migration
             $table->string('previous_status')->nullable();
             $table->string('current_status');
             $table->text('remarks')->nullable();
-            $table->unsignedBigInteger('created_by'); // user ID
+            $table->string('created_by');
+            $table->integer('updated_by')->nullable();
+            $table->integer('deleted_by')->nullable();
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }
