@@ -54,7 +54,7 @@
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
                                 {{-- @csrf --}}
-                                <button class="btn btn-danger btn-sm remove-doc" type="button" disabled>Delete</button>
+                                <button class="btn btn-danger btn-sm remove-doc" type="button">Delete</button>
                             {{-- </form> --}}
                         </li>
                     {{-- @endif --}}
@@ -744,19 +744,24 @@
             }
         });
       
-        function toggleDeleteButton() {
-    const hasChecked = $('input[type=checkbox].loan:checked, input[type=checkbox].goldloan:checked, input[type=checkbox].dtrf:checked, input[type=checkbox].aof:checked').length > 0;
-    $('.remove-doc').prop('disabled', !hasChecked);
-}
+//         function toggleDeleteButton() {
+//     const hasChecked = $('input[type=checkbox].loan:checked, input[type=checkbox].goldloan:checked, input[type=checkbox].dtrf:checked, input[type=checkbox].aof:checked').length > 0;
+//     $('.remove-doc').prop('disabled', !hasChecked);
+// }
 
-$(document).on('change', 'input[type=checkbox]', toggleDeleteButton);
+// $(document).on('change', 'input[type=checkbox]', toggleDeleteButton);
 
 $('.remove-doc').click(function (e) {
     e.preventDefault();
     
     let selected = $('input[type=checkbox]:checked');
     if (selected.length === 0) {
-        Swal.fire("Please select at least one document.");
+        Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
         return;
     }
 
@@ -800,10 +805,11 @@ $('.remove-doc').click(function (e) {
             .done(function () {
                 Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
                     // ✅ Remove deleted rows without reloading
-                    selected.closest('tr').remove();
+                    // selected.closest('tr').remove();
+                    location.reload();
                     // 👇 Check if any checkboxes are left selected
-                    let anyChecked = $('input[type=checkbox]:checked').length > 0;
-                    $('.remove-doc').prop('disabled', !anyChecked);
+                    // let anyChecked = $('input[type=checkbox]:checked').length > 0;
+                    // $('.remove-doc').prop('disabled', !anyChecked);
                 });
             })
             .fail(function () {

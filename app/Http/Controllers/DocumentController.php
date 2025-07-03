@@ -699,6 +699,7 @@ class DocumentController extends Controller
         foreach ($docIds as $id) {
             $doc = $tables[$type]::findOrFail($id);
             $doc->reason = $reason;
+            $doc->save();
             $doc->delete(); // Laravel soft delete
         }
 
