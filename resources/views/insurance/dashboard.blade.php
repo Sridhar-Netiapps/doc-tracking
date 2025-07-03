@@ -31,7 +31,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="danger">{{ $total}}</h3>
+              <h3 class="danger number">{{ $total}}</h3> 
               <span>Intimation Received</span>
             </div>
             <div class="align-self-center">
@@ -48,7 +48,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="success">{{ $claimed}}</h3>
+              <h3 class="success number">{{ $claimed}}</h3>
               <span>Claim Settled</span>
             </div>
             <div class="align-self-center">
@@ -66,7 +66,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="warning">{{ $noneligible }}</h3>
+              <h3 class="warning number">{{ $noneligible }}</h3>
               <span>Non Eligible</span>
             </div>
             <div class="align-self-center">
@@ -84,7 +84,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="primary">{{ $rejected}}</h3>
+              <h3 class="primary number">{{ $rejected}}</h3>
               <span>Rejected</span>
             </div>
             <div class="align-self-center">
@@ -102,7 +102,7 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="primary">{{ $inprogress}}</h3>
+              <h3 class="primary number">{{ $inprogress}}</h3>
               <span>Processed to Partner</span>
             </div>
             <div class="align-self-center">
@@ -161,6 +161,20 @@
       width: 400,
       type: 'pie',
 
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+          if (typeof value !== "undefined") {
+
+              return value.toLocaleString('en-IN');
+            
+          }
+          return value;
+        }
+      }
     },
     labels: @json($partnerChart['names']),
     responsive: [{
@@ -241,8 +255,7 @@
               // TEAM A – plain number with "points"
               return value.toFixed(0) + " Lead(s)";
             } else {
-              // TEAM B and TEAM C – formatted as rupees
-              return "₹" + value.toFixed(2);
+              return "₹" +(value.toLocaleString('en-IN'));
             }
           }
           return value;
@@ -318,6 +331,20 @@
           },
           tickAmount:'5',
           stepsize:'1',
+        },
+         tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+              if (typeof value !== "undefined") {
+
+                  return value.toLocaleString('en-IN');
+                
+              }
+              return value;
+            }
+          }
         },
         fill: {
           type: 'gradient',
@@ -402,6 +429,20 @@
           type: 'text',
           categories: ['North','South','East','West'],
         },
+         tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+              if (typeof value !== "undefined") {
+
+                  return value.toLocaleString('en-IN');
+                
+              }
+              return value;
+            }
+          }
+        },
         legend: {
           position: 'right',
           offsetY: 40
@@ -469,14 +510,20 @@
          // type: 'datetime',
          categories: ['0-10','11-20','21-30','31-40','41-50','51-60','61-70','72-80','81-90','91-100'],
         },
-        tooltip: {
-          shared: false,
+         tooltip: {
+          shared: true,
+          intersect: false,
           y: {
-            formatter: function (val) {
-              return (val ).toFixed(0);
+            formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+              if (typeof value !== "undefined") {
+
+                  return value.toLocaleString('en-IN');
+                
+              }
+              return value;
             }
           }
-        }
+        },
         };
 
         var death_linechart = new ApexCharts(document.querySelector("#causeofdeath"), options_death);
@@ -487,6 +534,7 @@
           $('#filter_data').click();
 
         });
+    
 
 </script>
 @endsection	
