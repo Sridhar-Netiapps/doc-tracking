@@ -45,7 +45,7 @@
                     <div class="d-flex">
                     <button class="btn btn-danger">Import</button>
                     
-                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.Xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
+                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
                     </div>
                     
                 </form>
