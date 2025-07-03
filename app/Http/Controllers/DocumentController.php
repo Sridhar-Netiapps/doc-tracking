@@ -199,24 +199,28 @@ class DocumentController extends Controller
         if(isset($request->loan_ids)){
             LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) {
                 $doc->status = 2;
+                $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->goldloan_ids)){
             GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) {
                 $doc->status = 2;
+                $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->dtrf_ids)){
             DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) {
                 $doc->status = 2;
+                $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->aof_ids)){
             AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) {
                 $doc->status = 2;
+                $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
@@ -413,24 +417,28 @@ class DocumentController extends Controller
             if(isset($request->loan_ids)){
                 LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) {
                     $doc->status = 3;
+                    $doc->updated_by = $this->user->id;
                     $doc->save();
                 });
             }
             if(isset($request->goldloan_ids)){
                 GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) {
                     $doc->status = 3;
+                    $doc->updated_by = $this->user->id;
                     $doc->save();
                 });
             }
             if(isset($request->dtrf_ids)){
                 DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) {
                     $doc->status = 3;
+                    $doc->updated_by = $this->user->id;
                     $doc->save();
                 });
             }
             if(isset($request->aof_ids)){
                 AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) {
                     $doc->status = 3;
+                    $doc->updated_by = $this->user->id;
                     $doc->save();
                 });
             }
@@ -623,24 +631,28 @@ class DocumentController extends Controller
                 if($dispatch->loan_ids != null){
                     LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->get()->each(function ($doc) {
                         $doc->status = 4;
+                        $doc->updated_by = $this->user->id;
                         $doc->save();
                     });
                 }
                 if($dispatch->goldloan_ids != null){
                     GoldLoanDocument::whereIn('id',explode(',', $dispatch->goldloan_ids))->get()->each(function ($doc) {
                         $doc->status = 4;
+                        $doc->updated_by = $this->user->id;
                         $doc->save();
                     });
                 }
                 if($dispatch->dtrf_ids != null){
                     DtrfDocument::whereIn('id',explode(',', $dispatch->dtrf_ids))->get()->each(function ($doc) {
                         $doc->status = 4;
+                        $doc->updated_by = $this->user->id;
                         $doc->save();
                     });
                 }
                 if($dispatch->aof_ids != null){
                     AccountOpeningDocument::whereIn('id',explode(',', $dispatch->aof_ids))->get()->each(function ($doc) {
                         $doc->status = 4;
+                        $doc->updated_by = $this->user->id;
                         $doc->save();
                     });
                 }
