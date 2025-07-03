@@ -17,7 +17,7 @@ class DocumentObserver
                 'previous_status'=> $model->getOriginal('status'),
                 'current_status' => $model->status,
                 'remarks'        => $model->reason,
-                'created_by'     => Auth::id(),
+                'created_by'     => $model->updated_by,
                 'created_at'     => now(),
             ]);
         }
