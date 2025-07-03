@@ -1,5 +1,5 @@
 @php
-    $currentTab = Request::segment(2); // gets 'all', 'pending', etc.
+    $currentTab = Request::segment(2); // gets 'pending', 'all', etc.
 @endphp
 
 <div class="bg-new">
