@@ -63,7 +63,17 @@
                                     @hasanyrole('master|bo-maker|bo-checker')
                                     <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                     @endhasanyrole
-                                    <td>{{ ucfirst($doc->doc_type) }}</td>
+                                    <td>
+                                        @if ($doc->doc_type == 'loan')
+                                            MB Loan
+                                        @elseif ($doc->doc_type == 'goldloan')
+                                            Gold Loan
+                                        @elseif ($doc->doc_type == 'aof')
+                                            Liablities
+                                        @elseif ($doc->doc_type == 'dtrf')
+                                            DTR File
+                                        @endif
+                                    </td>
                                     <td>{{ $doc->unique_ref_no ?? '-' }}</td>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <td>{{ $doc->region ?? '-' }}</td>

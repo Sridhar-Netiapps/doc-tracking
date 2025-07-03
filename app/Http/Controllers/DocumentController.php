@@ -17,6 +17,7 @@ use App\Imports\VendorDocumentImport;
 use Auth;
 use DB;
 use App\Models\ProcessStatus;
+use App\Models\DocumentHistory;
 use Illuminate\Support\Str;
 
 
@@ -26,6 +27,12 @@ class DocumentController extends Controller
     {
         $this->middleware(function ($request, $next) {
             $this->user = auth()->user();
+            $this->table = [
+                'loan' => LoanDocument::class,
+                'goldloan' => GoldLoanDocument::class,
+                'dtrf' => DtrfDocument::class,
+                'aof' => AccountOpeningDocument::class,
+            ];
             return $next($request);
         });
     }
@@ -87,7 +94,8 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        $filters = session('filters', []);
+        // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
         
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
@@ -182,9 +190,6 @@ class DocumentController extends Controller
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $type = 'all';
-        // $previousUrl = url()->previous();  
-        // $type = Str::afterLast($previousUrl, '/');  // will get 'all'
-        // dd($type);
 
         return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
     }
@@ -220,95 +225,153 @@ class DocumentController extends Controller
     
     public function getBulkReview(Request $request)
     {
-        $filters = session('filters', []);
+        // // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
+        // dd($filters);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
     
         $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
         $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        $selectedType = $filters['document_type'] ?? null;
     
         unset($filters['from_date'], $filters['to_date']);
     
-        $allDocuments = collect();
+        // $allDocuments = collect();
     
-        // Filter function for query builder
-        $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+        // // Filter function for query builder
+        // $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+        //     if ($user->hasRole('ro-user')) {
+        //         $query->where('region', $user->region);
+        //     }
+    
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+    
+        //     if ($fromDate && $toDate) {
+        //         $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+        //     } elseif ($fromDate) {
+        //         $query->whereDate('created_at', '>=', $fromDate);
+        //     } elseif ($toDate) {
+        //         $query->whereDate('created_at', '<=', $toDate);
+        //     }
+    
+        //     if ($hasFilters) {
+        //         foreach ($filters as $field => $value) {
+        //             if (!empty($value) && \Schema::hasColumn($table, $field)) {
+        //                 if (in_array($field, ['cif_id', 'account_number'])) {
+        //                     $query->where($field, 'like', '%' . $value . '%');
+        //                 } else {
+        //                     $query->where($field, $value);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // };
+    
+        // // Additional common status filter
+        // $statusFilter = function ($query) use ($user) {
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+        //     return $query->where('status', 2)->orderBy('updated_at', 'desc');
+        // };
+    
+        // // Loan Documents
+        // $loanQuery = LoanDocument::query();
+        // $customFilter($loanQuery, 'loan_documents');
+        // $loans = $statusFilter($loanQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'loan';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($loans);
+    
+        // // Gold Loan Documents
+        // $goldQuery = GoldLoanDocument::query();
+        // $customFilter($goldQuery, 'gold_loan_documents');
+        // $goldloans = $statusFilter($goldQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'goldloan';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($goldloans);
+    
+        // // AOF Documents
+        // $aofQuery = AccountOpeningDocument::query();
+        // $customFilter($aofQuery, 'account_opening_documents');
+        // $aofs = $statusFilter($aofQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'aof';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($aofs);
+    
+        // // DTRF Documents
+        // $dtrfQuery = DtrfDocument::query();
+        // $customFilter($dtrfQuery, 'dtrf_documents');
+        // $dtrfs = $statusFilter($dtrfQuery)->get()
+        //     ->map(function ($item) {
+        //         $item->doc_type = 'dtrf';
+        //         return $item;
+        //     });
+        // $allDocuments = $allDocuments->merge($dtrfs);
+
+        $filtered = function ($model, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
+            $query = $model::query();
+        
             if ($user->hasRole('ro-user')) {
                 $query->where('region', $user->region);
             }
-    
+        
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
             }
-    
+        
             if ($fromDate && $toDate) {
                 $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
             } elseif ($fromDate) {
-                $query->whereDate('created_at', '>=', $fromDate);
+                $query->whereDate('account_creation_date', '>=', $fromDate);
             } elseif ($toDate) {
-                $query->whereDate('created_at', '<=', $toDate);
+                $query->whereDate('account_creation_date', '<=', $toDate);
             }
-    
+
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                        if (in_array($field, ['cif_id', 'account_number'])) {
-                            $query->where($field, 'like', '%' . $value . '%');
-                        } else {
-                            $query->where($field, $value);
-                        }
+                        $query->where($field, in_array($field, ['cif_id', 'account_number']) ? 'like' : '=', 
+                            in_array($field, ['cif_id', 'account_number']) ? "%$value%" : $value
+                        );
                     }
                 }
             }
+            $query->where('status', 2)->orderBy('updated_at', 'desc');
+            return $query->get();
         };
-    
-        // Additional common status filter
-        $statusFilter = function ($query) use ($user) {
-            if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
-                $query->where('branch_code', $user->branch_id);
+        
+        $documentsMap = [
+            'loan' => [LoanDocument::class, 'loan_documents'],
+            'goldloan' => [GoldLoanDocument::class, 'gold_loan_documents'],
+            'aof' => [AccountOpeningDocument::class, 'account_opening_documents'],
+            'dtrf' => [DtrfDocument::class, 'dtrf_documents'],
+        ];
+        
+        $allDocuments = collect();
+        
+        foreach ($documentsMap as $type => [$model, $table]) {
+            if ($selectedType && $selectedType !== $type) {
+                continue;
             }
-            return $query->where('status', 2)->orderBy('updated_at', 'desc');
-        };
-    
-        // Loan Documents
-        $loanQuery = LoanDocument::query();
-        $customFilter($loanQuery, 'loan_documents');
-        $loans = $statusFilter($loanQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'loan';
+        
+            $records = $filtered($model, $table)->map(function ($item) use ($type) {
+                $item->doc_type = $type;
                 return $item;
             });
-        $allDocuments = $allDocuments->merge($loans);
-    
-        // Gold Loan Documents
-        $goldQuery = GoldLoanDocument::query();
-        $customFilter($goldQuery, 'gold_loan_documents');
-        $goldloans = $statusFilter($goldQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'goldloan';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($goldloans);
-    
-        // AOF Documents
-        $aofQuery = AccountOpeningDocument::query();
-        $customFilter($aofQuery, 'account_opening_documents');
-        $aofs = $statusFilter($aofQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'aof';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($aofs);
-    
-        // DTRF Documents
-        $dtrfQuery = DtrfDocument::query();
-        $customFilter($dtrfQuery, 'dtrf_documents');
-        $dtrfs = $statusFilter($dtrfQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'dtrf';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($dtrfs);
+        
+            $allDocuments = $allDocuments->merge($records);
+        }
+        // dd($filters);
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::pluck('name', 'id');
     
@@ -392,7 +455,8 @@ class DocumentController extends Controller
     public function getDispatches($type, Request $request)
     {
         
-        $filters = session('filters', []);
+        // $filters = session('filters', []);
+        $filters = session()->pull('filters', []);
 
         $filter = function ($query) use ($type, $filters) {
             if ($this->user->hasRole('ro-user')) {
@@ -489,7 +553,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
 
-        return view('accounts.dispatches_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dispatch'));
+        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
     // public function viewDispatches($id)
     // {
@@ -625,52 +689,83 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    // public function removeDocument(Request $request)
+    // {
+    //     $table = [
+    //         'loan' => LoanDocument::class,
+    //         'goldloan' => GoldLoanDocument::class,
+    //         'dtrf' => DtrfDocument::class,
+    //         'aof' => AccountOpeningDocument::class,
+    //     ];
+
+    //     $column = [
+    //         'loan' => 'loan_ids',
+    //         'goldloan' => 'goldloan_ids',
+    //         'dtrf' => 'dtrf_ids',
+    //         'aof' => 'aof_ids',
+    //     ];
+        
+    //     try {
+    //         DB::beginTransaction();
+            
+    //         $dispatch = CourierDispatch::find($request->id);
+    //         $columnName = $column[$request->type];
+
+    //         $values = collect(explode(',', $dispatch->$columnName))
+    //             ->map(fn($v) => trim($v))
+    //             ->filter(fn($v) => $v !== $request->doc_id)
+    //             ->values()
+    //             ->implode(',');
+            
+    //         $dispatch->$columnName = $values;
+    //         $dispatch->updated_by = $this->user->id;
+    //         $dispatch->save();
+
+            // $this->table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
+
+            // $doc = $table[$request->type]::find($request->doc_id);
+            // $doc->status = 1;
+            // $doc->save();
+            
+    //         // if(isset($request->type) && $request->type == 'loan')
+    //         //     LoanDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'goldloan')
+    //         //     GoldLoanDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'dtrf')
+    //         //     DtrfDocument::where('id', $request->id)->update(['status'=>2]);
+    //         // elseif(isset($request->type) && $request->type == 'aof')
+    //         //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
+
+    //         DB::commit();
+    //         return response()->json(['success' => true]);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
     public function removeDocument(Request $request)
     {
-        $table = [
+        $tables = [
             'loan' => LoanDocument::class,
             'goldloan' => GoldLoanDocument::class,
             'dtrf' => DtrfDocument::class,
             'aof' => AccountOpeningDocument::class,
         ];
 
-        $column = [
-            'loan' => 'loan_ids',
-            'goldloan' => 'goldloan_ids',
-            'dtrf' => 'dtrf_ids',
-            'aof' => 'aof_ids',
-        ];
-        
+        $type = $request->type;
+        $docIds = $request->doc_ids;  // array of selected IDs
+        $reason = $request->reason;
+
         try {
             DB::beginTransaction();
-            
-            $dispatch = CourierDispatch::find($request->id);
-            $columnName = $column[$request->type];
 
-            $values = collect(explode(',', $dispatch->$columnName))
-                ->map(fn($v) => trim($v))
-                ->filter(fn($v) => $v !== $request->doc_id)
-                ->values()
-                ->implode(',');
-            
-            $dispatch->$columnName = $values;
-            $dispatch->updated_by = $this->user->id;
-            $dispatch->save();
-
-            // $table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
-
-            $doc = $table[$request->type]::find($request->doc_id);
-            $doc->status = 1;
-            $doc->save();
-            
-            // if(isset($request->type) && $request->type == 'loan')
-            //     LoanDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'goldloan')
-            //     GoldLoanDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'dtrf')
-            //     DtrfDocument::where('id', $request->id)->update(['status'=>2]);
-            // elseif(isset($request->type) && $request->type == 'aof')
-            //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
+            // Store reason if needed (optional, if reason column exists)
+            foreach ($docIds as $id) {
+                $doc = $tables[$type]::findOrFail($id);
+                $doc->reason = $reason;
+                $doc->save();
+                $doc->delete(); // Laravel soft delete
+            }
 
             DB::commit();
             return response()->json(['success' => true]);
@@ -679,14 +774,9 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     public function statusUpdate(Request $request)
     {
-        $table = [
-            'loan' => LoanDocument::class,
-            'goldloan' => GoldLoanDocument::class,
-            'dtrf' => DtrfDocument::class,
-            'aof' => AccountOpeningDocument::class,
-        ];
         try {
             DB::beginTransaction();
 
@@ -696,7 +786,7 @@ class DocumentController extends Controller
                 $updates[] = $request->all();
             
             foreach ($updates as $update) {
-                $doc = $table[$update['type']]::find($update['id']);
+                $doc = $this->table[$update['type']]::find($update['id']);
                 $doc->status = $update['remarks'];
                 if(isset($update['reason_for_rejection']))
                     $doc->reason = $update['reason_for_rejection'];
@@ -721,12 +811,6 @@ class DocumentController extends Controller
 
     public function addRmaDetails(Request $request)
     {
-        $table = [
-            'loan' => LoanDocument::class,
-            'goldloan' => GoldLoanDocument::class,
-            'dtrf' => DtrfDocument::class,
-            'aof' => AccountOpeningDocument::class,
-        ];
         $validated = $request->validate([
             'lot_no' => 'nullable|string|max:255',
             'category_of_document' => 'nullable|string|max:255',
@@ -741,7 +825,7 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
 
-            $doc = $table[$request->type]::find($request->id);
+            $doc = $this->table[$request->type]::find($request->id);
             $doc->lot_no = $validated['lot_no'];
             $doc->category_of_document = $validated['category_of_document'];
             $doc->work_order_no = $validated['work_order_no'];
@@ -780,5 +864,12 @@ class DocumentController extends Controller
         }
         
         return redirect()->back()->with('success', 'Excel uploaded successfully!');
+    }
+    public function viewHistory($id,$type)
+    {
+        $document = $this->table[$type]::find($id);
+        $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$type]))->get();
+
+        return view('accounts.doc_history', compact('document','history','type'));    
     }
 }
