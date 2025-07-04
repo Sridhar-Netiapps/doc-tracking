@@ -29,7 +29,7 @@ class AddHttpHeaders
             //     "default-src 'self'; " .
             //     "img-src 'self' data:; " .// for dropdown
             //     //"font-src 'self' data:; " .
-            //     "style-src 'self' 'nonce-wUDPhZ1Z60inspnMCukimCi'; " .  // ✅ Nonce included here for apexchart
+            //     "style-src 'self' 'nonce-wUDPhZ1Z60inspnMCukimCi'; " .  
             //     "script-src 'self' 'nonce-wUDPhZ1Z60inspnMCukimCi'; " .
             //     "object-src 'none';"
             // );
