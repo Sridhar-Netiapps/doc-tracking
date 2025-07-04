@@ -363,7 +363,7 @@ class InsuranceHomeController extends Controller
 
         if($claimdata->id !='' || $claimdata->id != 0){
             InsuranceNomineeDetail::create(['insurance_claim_details_id' => $claimdata->id]);
-            InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
+           // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
              $module = 'Insurance'; 
              $operation = 'create';
