@@ -258,7 +258,6 @@
 				    <select class="form-control form-select" name="cas_status">
 				    	<option value="">Select</option>
 				    	<option {{ ( old('cas_status')=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
-				    	<option {{ ( old('cas_status')=='PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
 				    </select>
 				    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
 				</div>

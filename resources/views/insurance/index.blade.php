@@ -81,18 +81,16 @@
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
 				<th>Lead ID</th>
-				<!-- <th>Creation Date</th>
-				<th>Region</th>-->
-				<th>Branch</th> 
-				<th>Partner</th>
 				<th>Product</th>
 				<th>CIF ID</th>
 				<th>Deceased Name</th>
 				<th>Deceased Type</th>
 				<th>Loan Acc No</th>
-				<th>Cause of Death</th>
 				<th>Claim Status</th>
 				<th>Amount</th>
+				<th>Policy Covered</th>
+				<th>Date of Document Received</th>
+				<th>Date of Submision to Partner</th>
 				<th>Action</th>
 			</thead>
 
@@ -100,19 +98,16 @@
 				@foreach($data as $key=>$value)
 				<tr>
 					<td>{{ $value->utrn}}</td>
-					<!-- <td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
-					<td>{{ $value->region}}</td>-->
-					<td>{{ $value->branch}}</td> 
-					<td>{{ $value->partner}}</td>
 					<td>{{ $value->product}}</td>
 					<td>{{ $value->cust_id}}</td>
 					<td>{{ $value->deceased_name}}</td>
 					<td>{{ $value->deceased}}</td>
 					<td>{{ $value->load_acc_id}}</td>
-					
-					<td>{{ $value->cause_of_death}}</td>
 					<td>{{ $value->cliam_status}}</td>
 					<td class="number">{{ $value->claim_amount}}</td>
+					<td>{{ ($value->policy_covered_date !='')?date('d M,Y',strtotime($value->policy_covered_date)):''}}</td>
+					<td>{{  ($value->doc_rec_date !='')?date('d M,Y',strtotime($value->doc_rec_date)):''}}</td>
+					<td>{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach

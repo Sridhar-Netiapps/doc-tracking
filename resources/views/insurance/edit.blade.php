@@ -9,7 +9,7 @@
 		<div class="ms-auto">
 			<a target="_blank" href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
 
-			<!-- <a target="_blank" href="{{ route('download_checklist',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2">Download Checklist</button> </a> -->
+			<a target="_blank" href="{{ route('download_checklist',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2">Download Checklist</button> </a>
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
 		</div>
@@ -76,28 +76,29 @@
         			<div class="col">
         				<div class="row">
         					<div class="col text-end">
-		        				<label>First Name </label><br>
-		        				<label>Last Name</label><br>
-		        				<label>Creation Date</label><br>
-		        				<label>Modified Date</label>
+		        				<label>Created by </label><br>
+		        				<label>Modified by</label><br>
+		        				<label>POD Number</label>
+		        				
 		        			</div>
 		        			<div class="col">
-		        				<strong>{{ $data->hocreator->first_name ?? ''}}</strong><br>
-		        				<strong>{{ $data->hocreator->last_name ?? ''}}</strong><br>
-		        				<strong>{{ date('d M Y H:i:s',strtotime($data->created_at)) }}</strong><br>
-		        				<strong>{{ date('d M Y H:i:s',strtotime($data->updated_at)) }}</strong>
+		        				<strong>{{ $data->hocreator->first_name ?? ''}} {{ $data->hocreator->last_name ?? ''}} - {{ $data->hocreator->employee_id ?? ''}}</strong><br>
+		        				<strong>{{ $data->lastEditor->first_name ?? ''}} {{ $data->lastEditor->last_name ?? ''}} - {{ $data->hocreator->employee_id ?? ''}}</strong><br>
+		        				
+		        				<strong>{{ $nomineedata->pod_no ?? ''}}</strong>
+		        				
 		        			</div>
 		        			<div class="col text-end">
 		        				<label>Lead Number</label><br>
-		        				<label>Assigned To </label><br>
-		        				<label>Latest Editor</label><br>
-		        				<label>POD Number</label>
+		        				<label>Creation Date</label><br>
+		        				<label>Modified Date</label><br>
+		        				
 		        			</div>
 		        			<div class="col">
 		        				<strong>{{ $data->utrn}}</strong><br>
-		        				<strong></strong><br>
-		        				<strong>{{ $data->lastEditor->employee_id ?? ''}}-{{ $data->lastEditor->first_name ?? ''}}</strong><br>
-		        				<strong>{{ $nomineedata->pod_no ?? ''}}</strong>
+		        				<strong>{{ date('d M Y H:i:s',strtotime($data->created_at)) }}</strong><br>
+		        				<strong>{{ date('d M Y H:i:s',strtotime($data->updated_at)) }}</strong><br>
+		        				
 		        			</div>
         				</div>
         			</div>
