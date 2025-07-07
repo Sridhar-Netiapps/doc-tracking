@@ -1,11 +1,17 @@
 @php
     $currentTab = Request::segment(2); // gets 'pending', 'all', etc.
+    $isActive = request()->is('home');
 @endphp
 
 <div class="bg-new">
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">
             <ul class="d-flex justify-content-center align-items-center list-unstyled m-0">
+                <li class="nav-item px-4">
+                    <a class="nav-link {{ $isActive ? 'active' : '' }}" href="{{ url('/home') }}">
+                        <img src="{{ $isActive ? '/images/home1.svg' : '/images/home2.svg' }}" />
+                    </a>
+                </li>
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'all' ? 'active-tab' : '' }}" href="{{ route('accounts.index','all') }}">All</a>
                 </li>

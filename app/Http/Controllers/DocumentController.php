@@ -624,7 +624,8 @@ class DocumentController extends Controller
             $updates = $request->input('updates', []);
 
             foreach ($updates as $update) {
-                $dispatch = CourierDispatch::find('id');
+                // dd($update);
+                $dispatch = CourierDispatch::find($update['id']);
                 $dispatch->status = $update['remarks'];
                 $dispatch->comments = $update['reason_for_rejection'];
                 $dispatch->updated_by = $this->user->id;

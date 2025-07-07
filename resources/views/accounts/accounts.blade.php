@@ -49,7 +49,7 @@
                     @endif
                 @endhasanyrole
 
-                @role('ro-user')
+                @role('ro-user|super_admin|master')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
