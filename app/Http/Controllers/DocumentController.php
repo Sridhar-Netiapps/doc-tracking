@@ -19,6 +19,7 @@ use DB;
 use App\Models\ProcessStatus;
 use App\Models\DocumentHistory;
 use Illuminate\Support\Str;
+use App\Models\Vendor;
 
 
 class DocumentController extends Controller
@@ -71,9 +72,10 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
         $process_statuses = ProcessStatus::where('status', 1)->get();
+        $vendors = Vendor::all();
 
         if($type != 'moved')
-            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses'));
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors'));
         else
             return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
@@ -818,10 +820,10 @@ class DocumentController extends Controller
             'category_of_document' => 'nullable|string|max:255',
             'work_order_no' => 'nullable|string|max:255',
             'vendor_name' => 'nullable|string|max:255',
-            'vendor_movement_date' => 'nullable',
+            'vendor_movement_date' => 'nullable|date|before_or_equal:today',
             'file_barcode' => 'nullable|string|max:255',
             'box_barcode' => 'nullable|string|max:255',
-            'date_added_to_vendor' => 'nullable',
+            'date_added_to_vendor' => 'nullable|date|before_or_equal:today',
         ]);
 
         try {
@@ -839,7 +841,6 @@ class DocumentController extends Controller
             $doc->status = 8;
             $doc->updated_by = $this->user->id;
             $doc->save();
-
             DB::commit();
 
             return redirect()->back()->with('success', 'File Moved to RMA successfully!');
