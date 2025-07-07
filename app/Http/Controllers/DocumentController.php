@@ -251,9 +251,9 @@ class DocumentController extends Controller
             if ($fromDate && $toDate) {
                 $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
             } elseif ($fromDate) {
-                $query->whereDate('created_at', '>=', $fromDate);
+                $query->whereDate('account_creation_date', '>=', $fromDate);
             } elseif ($toDate) {
-                $query->whereDate('created_at', '<=', $toDate);
+                $query->whereDate('account_creation_date', '<=', $toDate);
             }
     
             if ($hasFilters) {
