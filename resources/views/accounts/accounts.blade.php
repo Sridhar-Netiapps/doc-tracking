@@ -119,7 +119,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -176,7 +178,9 @@
                                         </td> 
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                       @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -232,7 +236,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -286,7 +292,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -343,7 +351,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -398,7 +408,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -450,7 +462,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -500,7 +514,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                     @endforeach
@@ -524,6 +540,7 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
+            <input type="hidden" name="doc_type" value="{{$type}}">
             <div class="row">
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
@@ -609,7 +626,8 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a> 
+                    <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
+                    {{-- {{dd($type)}} --}}
                 </div>
             </div>
         </form>

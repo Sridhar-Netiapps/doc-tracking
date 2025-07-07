@@ -135,6 +135,14 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @hasanyrole('bo-checker')
+                                            @if ($row->status == 3)
+                                                <td class="border-start">
+                                                    <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
+                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                </td>
+                                            @endif
+                                        @endhasanyrole
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="loan">
@@ -196,6 +204,13 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @hasanyrole('bo-checker')
+                                            @if ($row->status == 3)
+                                                <td class="border-start">
+                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                </td>
+                                            @endif
+                                        @endhasanyrole
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="goldloan">
@@ -259,6 +274,13 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @hasanyrole('bo-checker')
+                                            @if ($row->status == 3)
+                                                <td class="border-start">
+                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                </td>
+                                            @endif
+                                        @endhasanyrole
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="aof">
@@ -312,6 +334,13 @@
                                               </span>
                                             @endif
                                         </td>
+                                        @hasanyrole('bo-checker')
+                                            @if ($row->status == 3)
+                                                <td class="border-start">
+                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                </td>
+                                            @endif
+                                        @endhasanyrole
                                         @hasanyrole('ro-user')
                                         @if ($row->status == 4)
                                         <td class="dtrf">
@@ -590,7 +619,53 @@
             return { id, type, remarks, reason_for_rejection: reason };
         }
 
-        // Handle individual update
+        $('.remove-doc').click(function (e) {
+    e.preventDefault();
+
+    let docId = $(this).data('id');
+    let type = $(this).data('type');
+    let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
+    let row = $(this).closest('tr');
+
+    if (!docId || !type || !dispatchId) {
+        Swal.fire("Warning!", "Missing document data.", "warning");
+        return;
+    }
+
+    Swal.fire({
+        title: "Confirm Deletion",
+        text: "Are you sure you want to delete this document?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post(`{{ route('document.dispatchremove') }}`, {
+                _token: $('input[name="_token"]').val(),
+                doc_id: docId,
+                type: type,
+                dispatch_id: dispatchId,
+            })
+            .done(function () {
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Document removed successfully.",
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+                row.remove(); 
+                location.reload();
+            })
+            .fail(function (xhr) {
+                Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+            });
+        }
+    });
+});
+
+
         $('.update-row').on('click', function () {
             const row = $(this).closest('tr');
             let data;
