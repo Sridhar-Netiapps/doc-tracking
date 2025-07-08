@@ -138,8 +138,10 @@ h2{
 }
 
 .bg-new{
-    background: #ececec;
+    background: linear-gradient(90deg, #229E82 0%, #0C382E 100%);
     margin-bottom: 20px;
+}
+.bg-new .nav-link{
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -249,12 +251,22 @@ h2{
 }
 
 .bg-tran-white, .bg-new{
-    background: rgba(255, 255, 255, 0.41);
+    background: linear-gradient(90deg, #229E82 0%, #0C382E 100%);
+}
+
+.bg-new .active-tab{
+    border-bottom: solid 2px #f78f35;
+    color: #f78f35 !important;
+}
+
+.bg-new .nav-link:hover{
+    color: #f78f35 !important;
 }
 
 .btn{
     font-size: 13px;
 }
+
 
 .alert{
     padding: 10px;
@@ -317,12 +329,14 @@ h2{
     color: #229e82;
 }
 
+.bg-new .nav-link{
+    color: #fff;
+}
+
 .nav-link{
-    color: #229e82 !important;
+    color: #229e82;
 }
-.active-tab {
-    font-weight: bold;
-}
+
 
 .nav-link:hover, .nav-link:focus {
     color: #229e82 !important;
