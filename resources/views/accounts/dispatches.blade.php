@@ -73,6 +73,9 @@
                     <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="{{ $type == 'list' ? 'true' : 'false' }}">Courier Dispatched @if ($type == 'list' && $dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <a href="{{ route('dispatches','tracking') }}" class="nav-link {{$type == 'tracking' ? 'active':''}}" id="tracking-tab" role="tab" aria-controls="tracking-tab-pane" aria-selected="{{ $type == 'tracking' ? 'true' : 'false' }}">Pending for Tracking @if ($type == 'tracking' && $tracking_count != 0)<span class="badge text-bg-warning">{{$tracking_count}}</span>@endif</a>
+                </li>
+                <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="{{ $type == 'received' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'received' && $received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
                 </li>
 
@@ -122,7 +125,7 @@
                                 <th scope="col">Dispatch By</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
-                                @if ($type == 'list')
+                                @if ($type == 'list' || $type == 'tracking')
                                     @hasanyrole('ro-user')
                                         <th scope="col">Update Status</th>
                                     @endhasanyrole
@@ -176,15 +179,30 @@
                                         </td>
                                         @endhasanyrole
                                     @endif
+                                    @if ($type == 'tracking')
+                                        @hasanyrole('ro-user')
+                                        <td>
+                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                <option selected value=12>Tracking Completed</option>
+                                            </select>
+                                            <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                        </td>
+                                        @endhasanyrole
+                                    @endif
                                     <td class="border-start">
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                         <div class="">
                                             <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
-                                            @if ($type == 'list')
+                                            @if ($type == 'list' || $type == 'tracking')
                                                 @hasanyrole('ro-user')
                                                     <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
                                                 @endhasanyrole
                                             @endif
+                                            {{-- @if ($type == 'tracking')
+                                                @hasanyrole('ro-user')
+                                                    <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
+                                                @endhasanyrole
+                                            @endif --}}
                                         </div>
                                     </td>
                                 </tr>
@@ -481,7 +499,7 @@
         const remarks = row.find('.remarks').val();
         const reason = row.find('.reason').val();
 
-        if (remarks !== '5' && !reason.trim()) {
+        if ((remarks == '6'|| remarks == '7') && !reason.trim()) {
             throw `Reason is required for this Dispatch No: #${dispatch}`;
         }
 
@@ -492,7 +510,8 @@
     $('.update-row').on('click', function () {
         const row = $(this).closest('tr');
         let data;
-
+        console.log(row);
+        
         try {
             data = [collectRowData(row)];
         } catch (err) {
