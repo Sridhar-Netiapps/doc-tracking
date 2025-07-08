@@ -18,7 +18,9 @@ class HrmGoldLoanDocumentFactory extends Factory
             'customer_name' => fake()->name(),
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'channel' => 'Gold Loan',
+            'loan_amount' => $this->faker->unique()->numberBetween(10000, 99999),
             'barcode' => NULL,
+            'added_at' => date('Y-m-d'),
             'business_category' => 'Gold Loan',
         ];
     }

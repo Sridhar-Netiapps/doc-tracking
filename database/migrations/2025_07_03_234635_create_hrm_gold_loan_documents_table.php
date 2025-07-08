@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('account_creation_date');
             $table->string('channel');
             $table->string('loan_amount');
-            $table->string('barcode');
+            $table->string('barcode')->nullable();
             $table->string('business_category');
             $table->date('added_at');
             $table->string('status')->default('migrated');

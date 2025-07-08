@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('channel');
             $table->string('glow_application_id');
             $table->string('loan_amount');
-            $table->string('disbursement_type');
+            $table->string('loan_disbursement_type');
             $table->string('business_category');
+            $table->string('barcode')->nullable();
             $table->date('added_at');
             $table->string('status')->default('migrated');
             $table->string('created_by')->default('IT');

@@ -15,6 +15,7 @@ class HrmDtrfDocumentFactory extends Factory
             'branch_name' => fake()->city(),
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'barcode' => Null,
+            'added_at' => date('Y-m-d'),
             'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];
     }

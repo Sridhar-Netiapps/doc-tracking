@@ -154,7 +154,6 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
-                                        
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->lot_no }}</td>
                                         <td>{{ $row->category_of_document }}</td>
