@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DocumentObserver
 {
-    public function creating(Model $model)
+    public function created(Model $model)
     {
         if ($model->isDirty('status')) {
             DocumentHistory::create([
@@ -17,7 +17,7 @@ class DocumentObserver
                 'previous_status'=> $model->getOriginal('status'),
                 'current_status' => $model->status,
                 'remarks'        => $model->reason,
-                'created_by'     => $model->updated_by,
+                'created_by'     => 0,
                 'created_at'     => now(),
             ]);
         }
