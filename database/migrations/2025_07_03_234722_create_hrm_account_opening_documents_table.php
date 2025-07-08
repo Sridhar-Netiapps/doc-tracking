@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('scheme');
             $table->string('channel');
             $table->string('pgk_no');
-            $table->string('barcode');
-            $table->string('account_opening_type');
+            $table->string('barcode')->nullable();
+            $table->string('type_of_account_opening');
             $table->string('business_category');
             $table->date('added_at');
             $table->string('status')->default('migrated');

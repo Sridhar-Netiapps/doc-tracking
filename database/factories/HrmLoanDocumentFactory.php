@@ -19,7 +19,10 @@ class HrmLoanDocumentFactory extends Factory
             'customer_name' => $this->faker->name,
             'account_creation_date' => $this->faker->dateTimeBetween('-1 week', 'now'),
             'channel' => $this->faker->randomElement(['GL', 'IL']),
+            'glow_application_id' => 'GLW' . $this->faker->unique()->numberBetween(100000, 999999),
+            'loan_amount' => $this->faker->unique()->numberBetween(10000, 99999),
             'barcode' => NULL,
+            'added_at' => date('Y-m-d'),
             'loan_disbursement_type' => fake()->randomElement(['Esign', 'Manual']),
             'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];

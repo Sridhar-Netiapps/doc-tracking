@@ -18,8 +18,10 @@ class HrmAccountOpeningDocumentFactory extends Factory
             'customer_name' => fake()->name(),
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),
             'scheme' => fake()->word(),
+            'pgk_no' => fake()->word(),
             'channel' => fake()->randomElement(['Swagat', 'HHD', 'CRM']),
             'barcode' => NULL,
+            'added_at' => date('Y-m-d'),
             'type_of_account_opening' => fake()->randomElement(['Esign', 'Manual']),
             'business_category' => fake()->randomElement(['Micro Banking', 'Branch Banking']),
         ];
