@@ -11,9 +11,18 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
+                                <div class="icon"><img src="/images/icon-2.svg" /></div>
+                                <p class="card-text">Total Documents</p>
+                                <h3>{{$total_doc}}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
                                 <p class="card-text">Total Pending Documents</p>
-                                <h3>{{$total_pending}}/{{$total_doc}}</h3>
+                                <h3>{{$total_pending}}</h3>
                             </div>
                         </div>
                     </div>
@@ -31,7 +40,7 @@
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-2.svg" /></div>
                                 <p class="card-text">Pending for Dispatch</p>
-                                <h3>{{$total_dispatch}}/{{$total_doc}}</h3>
+                                <h3>{{$total_dispatch}}</h3>
                             </div>
                         </div>
                     </div>
@@ -40,7 +49,7 @@
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-3.svg" /></div>
                                 <p class="card-text">In Transit</p>
-                                <h3>{{$total_transist}}/{{$total_doc}}</h3>
+                                <h3>{{$total_transist}}</h3>
                             </div>
                         </div>
                     </div>
@@ -49,7 +58,7 @@
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
                                 <p class="card-text">Rejected By RO</p>
-                                <h3>{{$total_rejected}}/{{$total_doc}}</h3>
+                                <h3>{{$total_rejected}}</h3>
                             </div>
                         </div>
                     </div>
@@ -58,7 +67,7 @@
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-4.svg" /></div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>{{$total_received}}/{{$total_doc}}</h3>
+                                <h3>{{$total_received}}</h3>
                             </div>
                         </div>
                     </div>
@@ -72,11 +81,11 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($loan_total[1] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{array_sum($loan_total)}}</h3>
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="col">
+                    <div class="col">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
@@ -84,10 +93,10 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
-                                <h3>{{($loan_total[1] ?? 0 + $loan_total[2] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{ ($loan_total[1] ?? 0) + ($loan_total[2] ?? 0) }}</h3>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
@@ -96,7 +105,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending for Dispatch</p>
-                                <h3>{{($loan_total[3] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -108,7 +117,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
-                                <h3>{{($loan_total[4] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[4] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -120,7 +129,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
-                                <h3>{{($loan_total[6] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                <h3>{{($loan_total[6] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -132,7 +141,8 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>{{($loan_total[5] ?? 0)}}/{{array_sum($loan_total)}}</h3>
+                                {{-- <h3>{{($loan_total[5] ?? 0)}}</h3> --}}
+                                <h3>{{ ($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -146,7 +156,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($gold_loan_total[1] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{array_sum($gold_loan_total)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -158,7 +168,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
-                                <h3>{{($gold_loan_total[2] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{ ($gold_loan_total[1] ?? 0) + ($gold_loan_total[2] ?? 0) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -170,7 +180,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">Pending for Dispatch</p>
-                                <h3>{{($gold_loan_total[3] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{($gold_loan_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -182,7 +192,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
-                                <h3>{{($gold_loan_total[4] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{($gold_loan_total[4] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -194,7 +204,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
-                                <h3>{{($gold_loan_total[6] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{($gold_loan_total[6] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -206,7 +216,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>{{($gold_loan_total[5] ?? 0)}}/{{array_sum($gold_loan_total)}}</h3>
+                                <h3>{{($gold_loan_total[5] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -220,7 +230,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($dtrf_total[1] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{array_sum($dtrf_total)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -232,7 +242,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
-                                <h3>{{($dtrf_total[2] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{ ($dtrf_total[1] ?? 0) + ($dtrf_total[2] ?? 0) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -244,7 +254,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">Pending for Dispatch</p>
-                                <h3>{{($dtrf_total[3] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{($dtrf_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -256,7 +266,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
-                                <h3>{{($dtrf_total[4] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{($dtrf_total[4] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -268,7 +278,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
-                                <h3>{{($dtrf_total[6] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{($dtrf_total[6] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -280,7 +290,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>{{($dtrf_total[5] ?? 0)}}/{{array_sum($dtrf_total)}}</h3>
+                                <h3>{{($dtrf_total[5] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -294,7 +304,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">Pending Documents</p>
-                                <h3>{{($aof_total[1] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{array_sum($aof_total)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -306,7 +316,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
-                                <h3>{{($aof_total[2] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{ ($aof_total[1] ?? 0) + ($aof_total[2] ?? 0) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -318,7 +328,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">Pending for Dispatch</p>
-                                <h3>{{($aof_total[3] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{($aof_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -330,7 +340,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
-                                <h3>{{($aof_total[4] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{($aof_total[4] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -342,7 +352,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
-                                <h3>{{($aof_total[6] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{($aof_total[6] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>
@@ -354,7 +364,7 @@
                                     <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
-                                <h3>{{($aof_total[5] ?? 0)}}/{{array_sum($aof_total)}}</h3>
+                                <h3>{{($aof_total[5] ?? 0)}}</h3>
                             </div>
                         </div>
                     </div>

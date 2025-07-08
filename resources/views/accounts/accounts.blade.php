@@ -49,7 +49,7 @@
                     @endif
                 @endhasanyrole
 
-                @role('ro-user')
+                @role('ro-user|super_admin|master')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
@@ -119,7 +119,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -176,7 +178,9 @@
                                         </td> 
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -232,7 +236,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -286,7 +292,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -343,7 +351,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -398,7 +408,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                 @endforeach
@@ -450,7 +462,9 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'received')
+                                @hasrole('ro-user')
                                 <th scope="col">Actions</th>
+                                @endhasrole
                                 @endif
                             </tr>
                         </thead>
@@ -500,7 +514,9 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
+                                        @hasrole('ro-user')
                                         <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
+                                        @endhasrole
                                         @endif
                                     </tr>
                                     @endforeach
@@ -524,6 +540,7 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
+            <input type="hidden" name="doc_type" value="{{$type}}">
             <div class="row">
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
@@ -609,7 +626,8 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a> 
+                    <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
+                    {{-- {{dd($type)}} --}}
                 </div>
             </div>
         </form>
@@ -629,23 +647,38 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <label for="lot_no" class="form-label">Lot No.</label>
-                        <input type="number" name="lot_no" class="form-control">
+                        <input type="text" name="lot_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Category of the Document.</label>
-                        <input type="text" name="category_of_document" class="form-control">
+                        {{-- <input type="text" name="category_of_document" class="form-control"> --}}
+                        <select class="form-select document_type" name="category_of_document" required>
+                            <option value="">Select Document Category</option>
+                            <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
+                            <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
+                            <option value="cat_b"  {{ ($doc->category_of_document ?? '') == 'cat_b'  ? 'selected' : '' }}>CAT B</option>
+                            <option value="cat_c"  {{ ($doc->category_of_document ?? '') == 'cat_c'  ? 'selected' : '' }}>CAT C</option>
+                        </select>                                               
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
-                        <input type="number" name="work_order_no" class="form-control">
+                        <input type="text" name="work_order_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name</label>
-                        <input type="text" name="vendor_name" class="form-control">
+                        {{-- <input type="text" name="vendor_name" class="form-control"> --}}
+                        <select class="form-select" name="vendor_name" required>
+                            <option value="">Select Vendor Name</option>
+                            @foreach ($vendors as $vendor)
+                                <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
+                                    {{ $vendor->name }}
+                                </option>                            
+                            @endforeach
+                        </select>                                                
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
@@ -657,7 +690,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
-                        <input type="text" readonly name="date_added_to_vendor" class="form-control datepicker date_added_to_vendor" value="{{ request('vendor_movement_date') }}">
+                        <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -706,6 +739,13 @@
             $(".dtrf").prop('checked', $(this).prop('checked'));
         });
 
+    flatpickr(".flatpickr-date", {
+        dateFormat: "Y-m-d",
+        maxDate: "today",          // ✅ disables future dates
+        allowInput: false,         // ✅ disables manual typing
+        clickOpens: true
+    });
+
         let selectedDocuments = [];
         
         $('.proceed').click(function () {
@@ -744,12 +784,6 @@
             }
         });
       
-//         function toggleDeleteButton() {
-//     const hasChecked = $('input[type=checkbox].loan:checked, input[type=checkbox].goldloan:checked, input[type=checkbox].dtrf:checked, input[type=checkbox].aof:checked').length > 0;
-//     $('.remove-doc').prop('disabled', !hasChecked);
-// }
-
-// $(document).on('change', 'input[type=checkbox]', toggleDeleteButton);
 
 $('.remove-doc').click(function (e) {
     e.preventDefault();
@@ -804,12 +838,9 @@ $('.remove-doc').click(function (e) {
             })
             .done(function () {
                 Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                    // ✅ Remove deleted rows without reloading
-                    // selected.closest('tr').remove();
+                    
                     location.reload();
-                    // 👇 Check if any checkboxes are left selected
-                    // let anyChecked = $('input[type=checkbox]:checked').length > 0;
-                    // $('.remove-doc').prop('disabled', !anyChecked);
+                   
                 });
             })
             .fail(function () {

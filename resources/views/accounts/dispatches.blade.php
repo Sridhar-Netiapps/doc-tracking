@@ -233,14 +233,22 @@
                     <input type="text" class="form-control courier_name" placeholder="Courier Name" value="{{ old('courier_name', $filters['courier_name'] ?? '') }}" name="courier_name">
                 </div> --}}
                 <div class="col-12 mt-3">
-                    <select class="form-select" name="courier">
+                    {{-- <select class="form-select" name="courier">
                         <option value="">Courier Name</option>
                         @foreach ($couriers as $courier)
                             <option value="{{ $courier->id }}" {{ ($filters['courier'] ?? '') == $courier->id ? 'selected' : '' }}>
                                 {{ $courier->name }}
                             </option>
                         @endforeach
-                    </select>                    
+                    </select> --}}
+                    <select class="form-select" name="courier" id="courierSelect">
+                        <option value="">Courier Name</option>
+                        @foreach ($couriers as $courier)
+                            <option value="{{ $courier->id }}" {{ ($filters['courier'] ?? '') == $courier->id ? 'selected' : '' }}>
+                                {{ $courier->name }}
+                            </option>
+                        @endforeach
+                    </select>                  
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode">
@@ -388,7 +396,11 @@
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
-
+        $('#courierSelect').select2({
+            placeholder: "Courier Name",
+            width: '100%',
+            dropdownAutoWidth: true
+        });
         $('select[name="remarks"]').change(function () {
             const row = $(this).closest('tr');
             const reasonField = row.find('textarea[name="reason_for_rejection"]');

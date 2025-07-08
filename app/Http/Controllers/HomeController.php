@@ -74,8 +74,8 @@ class HomeController extends Controller
         $total_dispatch = ($loan_total[3] ?? 0) + ($gold_loan_total[3] ?? 0) + ($dtrf_total[3] ?? 0) + ($aof_total[3] ?? 0);
         $total_transist = ($loan_total[4] ?? 0) + ($gold_loan_total[4] ?? 0) + ($dtrf_total[4] ?? 0) + ($aof_total[4] ?? 0);
         $total_received = ($loan_total[5] ?? 0) + ($gold_loan_total[5] ?? 0) + ($dtrf_total[5] ?? 0) + ($aof_total[5] ?? 0);
-        $total_rejected_query = ($loan_total[7] ?? 0) + ($gold_loan_total[7] ?? 0) + ($dtrf_total[7] ?? 0) + ($aof_total[7] ?? 0);
-        $total_rejected = ($loan_total[6] ?? 0) + ($gold_loan_total[6] ?? 0) + ($dtrf_total[6] ?? 0) + ($aof_total[6] ?? 0) + $total_rejected_query;
+        $total_received_query = ($loan_total[7] ?? 0) + ($gold_loan_total[7] ?? 0) + ($dtrf_total[7] ?? 0) + ($aof_total[7] ?? 0);
+        $total_rejected = ($loan_total[6] ?? 0) + ($gold_loan_total[6] ?? 0) + ($dtrf_total[6] ?? 0) + ($aof_total[6] ?? 0) + $total_received_query;
 
         // $loan_total = $loan_document->total();
         // $gold_loan_total = $gold_loan_document->total();
@@ -89,6 +89,6 @@ class HomeController extends Controller
         // $aof_total = AccountOpeningDocument::whereBetween('account_creation_date', [$start_date, $end_date])->count();
 
         // Return the view with the totals
-        return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending','total_dispatch','total_transist','total_received','total_rejected','total_selected'));
+        return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending','total_dispatch','total_transist','total_received','total_rejected','total_selected', 'total_received_query'));
     }
 }
