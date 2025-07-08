@@ -107,7 +107,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
-                                            @if ($row->status == 8)
+                                            @if ($row->status != 11)
                                             <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive">Update</button>
                                             @endif
                                         </td>
@@ -165,7 +165,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
-                                            @if ($row->status == 8)
+                                            @if ($row->status != 11)
                                             <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive">Update</button>
                                             @endif
                                         </td>
@@ -225,7 +225,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
-                                            @if ($row->status == 8)
+                                            @if ($row->status != 11)
                                             <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive">Update</button>
                                             @endif
                                         </td>
@@ -275,7 +275,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
-                                            @if ($row->status == 8)
+                                            @if ($row->status != 11)
                                             <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive">Update</button>
                                             @endif
                                         </td>
@@ -389,14 +389,78 @@
     </div>
 </div>
 <div class="modal fade" id="retrive" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="doc-retrive" action="{{ route('document.update') }}" method="POST">
+            {{-- <form id="doc-retrive" action="{{ route('document.update') }}" method="POST"> --}}
+                <form id="doc-retrive" action="{{ route('accounts.moved')}}" method="POST">
                 @csrf
                 <div class="modal-header text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Retrive Document from RMA</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4 row">
+                    <div class="col-4 pb-2">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="type">
+                        <label for="lot_no" class="form-label">Lot No.</label>
+                        <input type="text" name="lot_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="category_of_document" class="form-label">Category of the Document.</label>
+                        {{-- <input type="text" name="category_of_document" class="form-control"> --}}
+                        <select class="form-select document_type" name="category_of_document" required>
+                            <option value="">Select Document Category</option>
+                            <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
+                            <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
+                            <option value="cat_b"  {{ ($doc->category_of_document ?? '') == 'cat_b'  ? 'selected' : '' }}>CAT B</option>
+                            <option value="cat_c"  {{ ($doc->category_of_document ?? '') == 'cat_c'  ? 'selected' : '' }}>CAT C</option>
+                        </select>                                               
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="work_order_no" class="form-label">Work Order No.</label>
+                        <input type="text" name="work_order_no" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_name" class="form-label">Vendor Name</label>
+                        {{-- <input type="text" name="vendor_name" class="form-control"> --}}
+                        <select class="form-select" name="vendor_name" required>
+                            <option value="">Select Vendor Name</option>
+                            @foreach ($vendors as $vendor)
+                                <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
+                                    {{ $vendor->name }}
+                                </option>                            
+                            @endforeach
+                        </select>                                                
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
+                        <input type="text" name="file_barcode" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="box_barcode" class="form-label">Box Barcode.</label>
+                        <input type="text" name="box_barcode" class="form-control">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
+                        <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="type">
+                        <select name="status" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            <option value='8'>In</option>
+                            <option value='9'>Out</option>
+                            <option value='10'>Permout</option>
+                            <option value='11'>Destroyed</option>
+                        </select>
+                    </div>
+                </div>
+                {{-- <div class="modal-body">
                     <label for="status" class="form-label">Status</label>
                     <input type="hidden" name="id">
                     <input type="hidden" name="type">
@@ -407,7 +471,7 @@
                         <option value='10'>Permout</option>
                         <option value='11'>Destroyed</option>
                     </select>
-                </div>
+                </div> --}}
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
@@ -423,13 +487,81 @@
             $('input[name="type"]').val($(this).data('type'));
             $('#retrive').modal('show');
         });
+        flatpickr(".flatpickr-date", {
+        dateFormat: "Y-m-d",
+        maxDate: "today",         
+        allowInput: false,         
+        clickOpens: true
+    });
         $('#doc-retrive').validate({
             rules: {
+                lot_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                work_order_no: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_name: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                vendor_movement_date: {
+                    required: true,
+                    sanitize: true
+                },
+                file_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
+                box_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                },
                 status: {
                     required: true,
                     sanitize: true
                 }
+            },
+            submitHandler: function (form) {
+
+                let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+                let hasSelection = false;
+
+                $('#doc-retrive').find('input[name$="_ids[]"]').remove();
+
+                documentTypes.forEach(function (type) {
+                    let ids = [];
+
+                    $('input.' + type + ':checked').each(function () {
+                        ids.push($(this).data('id'));
+                    });
+
+                    if (ids.length > 0) {
+                        hasSelection = true;
+
+                        ids.forEach(function (id) {
+                            $('#doc-retrive').append(
+                                '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+                            );
+                        });
+                    }
+                });
+
+                $('#doc-retrive').submit();
             }
+            // rules: {
+            //     status: {
+            //         required: true,
+            //         sanitize: true
+            //     }
+            // }
         });
     });
 </script>

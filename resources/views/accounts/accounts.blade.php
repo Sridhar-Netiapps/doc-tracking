@@ -646,6 +646,7 @@
                     <div class="col-4 pb-2">
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
+                        <input type="hidden" name="status" value="8">
                         <label for="lot_no" class="form-label">Lot No.</label>
                         <input type="text" name="lot_no" class="form-control">
                     </div>
@@ -741,8 +742,8 @@
 
     flatpickr(".flatpickr-date", {
         dateFormat: "Y-m-d",
-        maxDate: "today",          // ✅ disables future dates
-        allowInput: false,         // ✅ disables manual typing
+        maxDate: "today",         
+        allowInput: false,         
         clickOpens: true
     });
 
