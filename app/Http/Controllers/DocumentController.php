@@ -438,7 +438,8 @@ class DocumentController extends Controller
             return $query
                 ->when($type === 'ready', fn($q) => $q->where('status', 3))
                 ->when($type === 'list', fn($q) => $q->where('status', 4))
-                ->when($type === 'received', fn($q) => $q->whereIn('status', [5, 7]))
+                ->when($type === 'tracking', fn($q) => $q->whereIn('status', [5, 7]))
+                ->when($type === 'received', fn($q) => $q->whereIn('status', [12]))
                 ->when($type === 'rejected', fn($q) => $q->where('status', 6))
                 ->orderBy('updated_at', 'desc');
         };
@@ -449,7 +450,8 @@ class DocumentController extends Controller
         // Status-wise counts (not affected by form filters)
         $ready_to_dispatch_count = CourierDispatch::where('status', 3)->count();
         $dispatched_count = CourierDispatch::where('status', 4)->count();
-        $received_count = CourierDispatch::whereIn('status', [5, 7])->count();
+        $tracking_count = CourierDispatch::whereIn('status', [5, 7])->count();
+        $received_count = CourierDispatch::whereIn('status', [12])->count();
         $rejected_count = CourierDispatch::where('status', 6)->count();
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
@@ -458,6 +460,7 @@ class DocumentController extends Controller
             'records',
             'ready_to_dispatch_count',
             'dispatched_count',
+            'tracking_count',
             'received_count',
             'rejected_count',
             'type',
