@@ -73,7 +73,7 @@
                     <a href="{{ route('dispatches','list') }}" class="nav-link {{$type == 'list' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="{{ $type == 'list' ? 'true' : 'false' }}">Courier Dispatched @if ($type == 'list' && $dispatched_count != 0)<span class="badge text-bg-warning">{{$dispatched_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','tracking') }}" class="nav-link {{$type == 'tracking' ? 'active':''}}" id="list-tab" role="tab" aria-controls="list-tab-pane" aria-selected="{{ $type == 'tracking' ? 'true' : 'false' }}">Pending for Tracking @if ($type == 'tracking' && $tracking_count != 0)<span class="badge text-bg-warning">{{$tracking_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','tracking') }}" class="nav-link {{$type == 'tracking' ? 'active':''}}" id="tracking-tab" role="tab" aria-controls="tracking-tab-pane" aria-selected="{{ $type == 'tracking' ? 'true' : 'false' }}">Pending for Tracking @if ($type == 'tracking' && $tracking_count != 0)<span class="badge text-bg-warning">{{$tracking_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="{{ $type == 'received' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'received' && $received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
