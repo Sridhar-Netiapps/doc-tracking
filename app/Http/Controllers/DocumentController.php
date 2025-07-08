@@ -77,7 +77,7 @@ class DocumentController extends Controller
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors'));
         else
-            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'vendors'));
     }
     public function filter(Request $request)
     {
@@ -815,6 +815,7 @@ class DocumentController extends Controller
 
     public function addRmaDetails(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'lot_no' => 'nullable|string|max:255',
             'category_of_document' => 'nullable|string|max:255',
@@ -824,6 +825,7 @@ class DocumentController extends Controller
             'file_barcode' => 'nullable|string|max:255',
             'box_barcode' => 'nullable|string|max:255',
             'date_added_to_vendor' => 'nullable|date|before_or_equal:today',
+            'status' => 'nullable',
         ]);
 
         try {
@@ -838,7 +840,7 @@ class DocumentController extends Controller
             $doc->file_barcode = $validated['file_barcode'];
             $doc->box_barcode = $validated['box_barcode'];
             $doc->date_added_to_vendor = Carbon::parse($validated['date_added_to_vendor'])->format('Y-m-d');
-            $doc->status = 8;
+            $doc->status = $validated['status'];
             $doc->updated_by = $this->user->id;
             $doc->save();
             DB::commit();
