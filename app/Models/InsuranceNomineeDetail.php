@@ -17,12 +17,16 @@ class InsuranceNomineeDetail extends Model
     	'spdc_chk_no',
     	'courier_name',
     	'pod_no',
+        'nominee_number',
     	'cheq_sent_date',
     	'bo_remarks',
     	'bo_maker',
     	'bo_checker',
     	'bo_employee_id',
-    	'latest_editor'
+    	'latest_editor',
+        'spdc_rec_date',
+        'ack_rec_date',
+        'pkt_no'
     ];
 
 }

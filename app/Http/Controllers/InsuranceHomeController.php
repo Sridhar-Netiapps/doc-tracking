@@ -21,6 +21,7 @@ use App\AuditLogTrait;
 use File;
 use Excel;
 use Auth;
+use ZipArchive;
 
 
 class InsuranceHomeController extends Controller
@@ -312,48 +313,54 @@ class InsuranceHomeController extends Controller
         $claimdata->product = $request->product;
         $claimdata->region = $request->region;
         $claimdata->policy_number = $request->policy_number;
-        $claimdata->cust_id = $request->cust_id;
-        $claimdata->actual_id = $request->actual_id;
-        $claimdata->deceased = $request->deceased;
-        $claimdata->cause_of_death = $request->cause_of_death;
-        $claimdata->cliam_status = $request->cliam_status;
-        $claimdata->rl_status = $request->rl_status;
-
-        $claimdata->deceased_name = $request->deceased_name;
         $claimdata->mp_no = $request->mp_no;
         $claimdata->policy_covered_date = $request->policy_covered_date;
-        $claimdata->loan_tenure = $request->loan_tenure;
         $claimdata->policy_expiry_date = $request->policy_expiry_date;
-        $claimdata->date_of_death = $request->date_of_death;
-        $claimdata->gender = $request->gender;
-        $claimdata->intimation_date = $request->intimation_date;
-        $claimdata->age = $request->age;
-        $claimdata->place_of_death = $request->place_of_death;
-        $claimdata->load_acc_id = $request->load_acc_id;
-        $claimdata->claim_amount = $request->claim_amount;
+        $claimdata->cust_id = $request->cust_id;
+        $claimdata->actual_id = $request->actual_id;
+        $claimdata->deceased_name = $request->deceased_name;
         $claimdata->dob = $request->dob;
-        $claimdata->cas_status = $request->cas_status;
+        $claimdata->date_of_death = $request->date_of_death;
+        $claimdata->gender = $request->gender;    
+        $claimdata->age = $request->age; 
+        $claimdata->deceased = $request->deceased;
+        $claimdata->intimation_date = $request->intimation_date;
+        $claimdata->place_of_death = $request->place_of_death;
+        $claimdata->cause_of_death = $request->cause_of_death;
+        $claimdata->load_acc_id = $request->load_acc_id;
+        $claimdata->loan_tenure = $request->loan_tenure;
+        $claimdata->claim_amount = $request->claim_amount;
         $claimdata->nominee_name = $request->nominee_name;
         $claimdata->relationship = $request->relationship;
-        $claimdata->nominee_number = $request->nominee_number;
-        $claimdata->loan_outstanding = $request->loan_outstanding;
-        $claimdata->payable_to_nominee = $request->payable_to_nominee;
-        $claimdata->ack_rec_date = $request->ack_rec_date;
-        $claimdata->pkt_no = $request->pkt_no;
+
+        $claimdata->doc_rec_date = $request->doc_rec_date;
         $claimdata->processed_by = $request->processed_by;
         $claimdata->ho_remark = $request->ho_remark;
-        $claimdata->doc_rec_date = $request->doc_rec_date;
         $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
         $claimdata->ho_remark2 = $request->ho_remark2;
         $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->cliam_status = $request->cliam_status;
+        $claimdata->cas_status = $request->cas_status;
+        $claimdata->rl_status = $request->rl_status;
+        $claimdata->notification_number = $request->notification_number;
+
+        $claimdata->loan_amount = $request->loan_amount;
+        $claimdata->loan_outstanding = $request->loan_outstanding;
+        $claimdata->payable_to_nominee = $request->payable_to_nominee;
         $claimdata->settlement_date = $request->settlement_date;
         $claimdata->neft_rejection_date = $request->neft_rejection_date;
         $claimdata->neft_rejection_reason = $request->neft_rejection_reason;
         $claimdata->final_settlement_date = $request->final_settlement_date;
+        $claimdata->utrn_mph = $request->utrn_mph;
+        $claimdata->utrn_nominee = $request->utrn_nominee;
+
         $claimdata->recovery_status = $request->recovery_status;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
+        $claimdata->chq_deposit_date = $request->chq_deposit_date;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
         $claimdata->bounced_chq_reason = $request->bounced_chq_reason;
+        $claimdata->recovered_amount = $request->recovered_amount;
+
         $claimdata->write_off_rec = $request->write_off_rec;
         $claimdata->write_off_status = $request->write_off_status;
         $claimdata->handed_to_bh = $request->handed_to_bh;
@@ -395,14 +402,29 @@ class InsuranceHomeController extends Controller
         $deathcause = InsuranceCauseOfDeath::get();
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
-        $procesedby=['NA','Vindhya','Ujjivan','HO'];
+        $procesedby=['NA','Vindhya','HO'];
         
-        $deceased=['CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
        // print_r($checklistdata);die();
+        $productDetails = InsuranceProduct::where('product',$data->product)->first();
+        $formArray=array();
+        $claimformtype =$productDetails->type;
+        if($claimformtype == 'NMB'){
+           $folder =  $productDetails->folder_name;
+           $files = File::files(('template/'.$folder));
+          // print_r($files);die();
+           foreach ($files as $file) {
+              //$relativePath = str_replace(public_path(), '', $file->getRealPath());
+              $formArray[] = 'template/'.$folder.'/'.$file->getFilename();
+          }
 
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata'));
+
+        }
+        
+      // print_r($formArray);die();
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray'));
     }
 
     /**
@@ -419,63 +441,67 @@ class InsuranceHomeController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-        'region' => 'required',
-        'branch' => 'required',
-        'partner' => 'required',
-        'product' => 'required',
-        'region' => 'required',
-        'policy_number' => 'required',
-        'cust_id' => 'required',
-        'actual_id' => 'required',
-        'cliam_status' => 'required',
-        'cause_of_death' => 'required',
-        'deceased'=> 'required'
-    ]);
+          'region' => 'required',
+          'branch' => 'required',
+          'partner' => 'required',
+          'product' => 'required',
+          'region' => 'required',
+          'policy_number' => 'required',
+          'cust_id' => 'required',
+          'actual_id' => 'required',
+          'cliam_status' => 'required',
+          'cause_of_death' => 'required',
+          'deceased'=> 'required'
+      ]);
 
         $claimdata = InsuranceClaimDetail::find(decrypt($id));
         $claimdata->branch = $request->branch;
         $claimdata->partner = $request->partner;
         $claimdata->product = $request->product;
         $claimdata->region = $request->region;
+         $claimdata->mp_no = $request->mp_no;
         $claimdata->policy_number = $request->policy_number;
+        $claimdata->policy_covered_date = $request->policy_covered_date;
+        $claimdata->policy_expiry_date = $request->policy_expiry_date; 
         $claimdata->cust_id = $request->cust_id;
         $claimdata->actual_id = $request->actual_id;
-        $claimdata->deceased = $request->deceased;
-        $claimdata->cause_of_death = $request->cause_of_death;
-        $claimdata->cliam_status = $request->cliam_status;
-        $claimdata->rl_status = $request->rl_status;
-
         $claimdata->deceased_name = $request->deceased_name;
-        $claimdata->mp_no = $request->mp_no;
-        $claimdata->policy_covered_date = $request->policy_covered_date;
-        $claimdata->loan_tenure = $request->loan_tenure;
-        $claimdata->policy_expiry_date = $request->policy_expiry_date;
+        $claimdata->dob = $request->dob;
         $claimdata->date_of_death = $request->date_of_death;
         $claimdata->gender = $request->gender;
-        $claimdata->intimation_date = $request->intimation_date;
         $claimdata->age = $request->age;
+        $claimdata->deceased = $request->deceased;
+        $claimdata->intimation_date = $request->intimation_date;
         $claimdata->place_of_death = $request->place_of_death;
+        $claimdata->cause_of_death = $request->cause_of_death;
         $claimdata->load_acc_id = $request->load_acc_id;
+        $claimdata->loan_tenure = $request->loan_tenure;
         $claimdata->claim_amount = $request->claim_amount;
-        $claimdata->dob = $request->dob;
-        $claimdata->cas_status = $request->cas_status;
         $claimdata->nominee_name = $request->nominee_name;
         $claimdata->relationship = $request->relationship;
-        $claimdata->nominee_number = $request->nominee_number;
+
+        $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
+        $claimdata->processed_by = $request->processed_by;
+        $claimdata->doc_rec_date = $request->doc_rec_date;
+        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->ho_remark = $request->ho_remark;
+        $claimdata->ho_remark2 = $request->ho_remark2;
+        $claimdata->cliam_status = $request->cliam_status;
+        $claimdata->cas_status = $request->cas_status;
+        $claimdata->rl_status = $request->rl_status;
+        $claimdata->notification_number = $request->notification_number;
+        
+        $claimdata->loan_amount = $request->loan_amount;
         $claimdata->loan_outstanding = $request->loan_outstanding;
         $claimdata->payable_to_nominee = $request->payable_to_nominee;
-        $claimdata->ack_rec_date = $request->ack_rec_date;
-        $claimdata->pkt_no = $request->pkt_no;
-        $claimdata->processed_by = $request->processed_by;
-        $claimdata->ho_remark = $request->ho_remark;
-        $claimdata->doc_rec_date = $request->doc_rec_date;
-        $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
-        $claimdata->ho_remark2 = $request->ho_remark2;
-        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
         $claimdata->settlement_date = $request->settlement_date;
         $claimdata->neft_rejection_date = $request->neft_rejection_date;
         $claimdata->neft_rejection_reason = $request->neft_rejection_reason;
         $claimdata->final_settlement_date = $request->final_settlement_date;
+        $claimdata->utrn_mph = $request->utrn_mph;
+        $claimdata->utrn_nominee = $request->utrn_nominee;
+      
+        
         $claimdata->recovery_status = $request->recovery_status;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
@@ -576,50 +602,63 @@ class InsuranceHomeController extends Controller
 
 
     public function downloadFolderSmart($folderName)
-    {
-        $folderPath = public_path('/template/' . $folderName);
+{
+    $folderPath = public_path('template/' . $folderName);
 
-       
-
-        if (!File::exists($folderPath)) {
-            return response()->json(['error' => 'Folder not found'], 404);
-        }
-
-        // Get all files inside the folder
-        $files = File::allFiles($folderPath);
-
-        if (count($files) === 0) {
-            return response()->json(['error' => 'No files found in folder'], 404);
-        }
-
-        // If only one file exists, download directly
-        if (count($files) === 1) {
-            return response()->download($files[0]->getRealPath(), $files[0]->getFilename());
-        }
-        // print_r($folderPath);die();
-
-        // If multiple files exist, zip and download
-        $zipFileName = $folderName . '.zip';
-        $zipPath = storage_path('app/' . $zipFileName);
-
-        // Delete previous zip if exists
-        if (File::exists($zipPath)) {
-            File::delete($zipPath);
-        }
-
-        $zip = new \ZipArchive();
-        if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
-            foreach ($files as $file) {
-                $relativePath = str_replace($folderPath . '/', '', $file->getRealPath());
-                $zip->addFile($file->getRealPath(), $relativePath);
-            }
-            $zip->close();
-        } else {
-            return response()->json(['error' => 'Could not create zip file'], 500);
-        }
-
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+    if (!File::exists($folderPath)) {
+        return response()->json(['error' => 'Folder not found'], 404);
     }
+
+    $files = File::allFiles($folderPath);
+
+    if (count($files) === 0) {
+        return response()->json(['error' => 'No files found'], 404);
+    }
+
+    // 🔽 If only one file, download it directly
+    if (count($files) === 1) {
+        $file = $files[0];
+        $realPath = $file->getRealPath();
+        $fileName = str_replace(' ', '_', $file->getFilename()); // sanitize name
+        
+         if (!file_exists($realPath)) {
+            return response()->json(['error' => 'File not found on disk'], 404);
+        }
+
+        // ✅ Clean output buffer
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        // ✅ Try both options:
+        return response()->download($realPath, $fileName); // recommended
+       
+    }
+
+
+    // 🔽 If multiple files, zip and download
+    $zipFileName = $folderName . '.zip';
+    $zipPath = storage_path('app/' . $zipFileName);
+
+    if (File::exists($zipPath)) {
+        File::delete($zipPath);
+    }
+
+    $zip = new \ZipArchive();
+    if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+        foreach ($files as $file) {
+            $relativePath = str_replace($folderPath . '/', '', $file->getRealPath());
+            $zip->addFile($file->getRealPath(), $relativePath);
+        }
+        $zip->close();
+    } else {
+        return response()->json(['error' => 'Could not create zip file'], 500);
+    }
+
+    return response()->download($zipPath)->deleteFileAfterSend(true);
+}
+
+
 
     public function import_claim_data(Request $request){
 
@@ -658,7 +697,7 @@ class InsuranceHomeController extends Controller
     }
 
     public function save_nominee_details(Request $request){
-
+      // print_r($request->input());die();
        $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($request->lead_id))->first();
        if($insurancenomineedata) {
            $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
@@ -676,10 +715,14 @@ class InsuranceHomeController extends Controller
        $nomineedetail->spdc_chk_no =$request->spdc_chk_no;
        $nomineedetail->courier_name =$request->courier_name;
        $nomineedetail->pod_no =$request->pod_no;
-       $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
+       $nomineedetail->nominee_number =$request->nominee_number;
+      // $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
        $nomineedetail->bo_remarks =$request->bo_remarks;
        $nomineedetail->bo_maker =$request->bo_maker;
        $nomineedetail->bo_checker =$request->bo_checker;
+       $nomineedetail->spdc_rec_date = $request->spdc_rec_date;
+       $nomineedetail->ack_rec_date = $request->ack_rec_date;
+       $nomineedetail->pkt_no = $request->pkt_no;
 
        $nomineedetail->save();
 
@@ -889,14 +932,14 @@ class InsuranceHomeController extends Controller
 
     public function download_checklist($id){
 
-        $formname='checklist';
+        /*$formname='checklist';
         $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->first();
         $pdf = PDF::loadView('insurance.templates.'.$formname, ['data'=> $checklistDetails])->setPaper('A4', 'portrait')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
                     'isPhpEnabled' => true,
                 ]);
-        return $pdf->stream('Checklist'.$checklistDetails->leadDetails->utrn.'.pdf');
+        return $pdf->stream('Checklist.pdf');
        // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
 
              $module = 'Insurance'; 
@@ -904,6 +947,9 @@ class InsuranceHomeController extends Controller
              $note = 'Downladed Checklist - '.$checklistDetails->leadDetails->utrn;
              $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
 
-            $this->auditlogs($module , $operation ,$note , $link);
+            $this->auditlogs($module , $operation ,$note , $link);*/
+
+          return response()->download(public_path('/template/checklist.pdf'));  
+
     }
 }

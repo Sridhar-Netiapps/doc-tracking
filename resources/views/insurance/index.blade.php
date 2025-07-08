@@ -38,7 +38,7 @@
                     @csrf
                     <div class="form-group mb-4">
                         <div class="custom-file text-left">
-                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile">
+                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile" required>
                            
                         </div>
                     </div>
@@ -113,6 +113,12 @@
 				@endforeach
 			</tbody>
 		</table>
+
+		 <label>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }}
+                of {{$data->total()}} results</label>
+
+              {!! $data->appends('abc')->links('pagination::bootstrap-4') !!}
+    	
 	</div>
 </div>
 @endsection	

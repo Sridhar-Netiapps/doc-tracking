@@ -7,8 +7,13 @@
 
         
 		<div class="ms-auto">
-			<a target="_blank" href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
-
+			@if($data->products->type == 'MB')
+			<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button> </a>
+			@else
+			  <button id="openFilesBtn" class="btn btn-sm btn-warning btn-text p-2">Download Claim Form</button>
+               
+			@endif
+          
 			<a target="_blank" href="{{ route('download_checklist',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2">Download Checklist</button> </a>
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
@@ -26,7 +31,7 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			<!-- <div class="col-3">
+			<!--  <div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
 			</div> -->
 		</div>
@@ -153,9 +158,27 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label">Member code</label>
+					    <input type="text" class="form-control numbersonly" name="mp_no" value="{{ $data->mp_no}}">
+					    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label">Policy Number</label>
 					    <input type="text" class="form-control numbersonly" name="policy_number" value="{{ $data->policy_number}}">
 					    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Policy Covered</label>
+					    <input type="date" class="form-control valid-date" name="policy_covered_date" value="{{ $data->policy_covered_date}}">
+					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Policy Expired Date</label>
+					    <input type="date" class="form-control valid-date" name="policy_expiry_date" value="{{ $data->policy_expiry_date}}">
+					    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
@@ -177,27 +200,9 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">MP NO</label>
-					    <input type="text" class="form-control numbersonly" name="mp_no" value="{{ $data->mp_no}}">
-					    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Policy Covered</label>
-					    <input type="date" class="form-control valid-date" name="policy_covered_date" value="{{ $data->policy_covered_date}}">
-					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Loan Tenure</label>
-					    <input type="text" class="form-control numbersonly" name="loan_tenure" value="{{ $data->loan_tenure}}" maxlength="3">
-					    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Policy Expired Date</label>
-					    <input type="date" class="form-control valid-date" name="policy_expiry_date" value="{{ $data->policy_expiry_date}}">
-					    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
+					    <label class="form-label">Date of Birth</label>
+					    <input type="date" class="form-control valid-date" name="dob" value="{{ $data->dob}}">
+					    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
@@ -206,7 +211,6 @@
 					    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-
 					<div class="col-3 mb-3">
 					    <label class="form-label">Gender</label>
 					    <select class="form-control form-select" name="gender">
@@ -214,6 +218,12 @@
 					    	<option {{ ( $data->gender=='Male')?'selected':''}}  value="Male">Male</option>
 					    	<option {{ ( $data->gender=='Female')?'selected':''}}  value="Female">Female</option>
 					    </select>
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Age</label>
+					    <input type="text" class="form-control numbersonly" name="age" value="{{ $data->age}}" maxlength="3">
+					    @error('age')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
@@ -235,11 +245,7 @@
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					<div class="col-3 mb-3">
-					    <label class="form-label">Age</label>
-					    <input type="text" class="form-control numbersonly" name="age" value="{{ $data->age}}" maxlength="3">
-					    @error('age')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Place of Death</label>
@@ -270,55 +276,36 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label">Loan Tenure</label>
+					    <input type="text" class="form-control numbersonly" name="loan_tenure" value="{{ $data->loan_tenure}}" maxlength="3">
+					    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label">Claim Amount</label>
 					    <input type="text" class="form-control number-input number-with-format" name="claim_amount" value="{{ $data->claim_amount}}">
 					    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Date of Birth</label>
-					    <input type="date" class="form-control valid-date" name="dob" value="{{ $data->dob}}">
-					    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
+					    <label class="form-label">Nominee Name</label>
+					    <input type="text" class="form-control clsAlphaNoOnly" name="nominee_name" value="{{ $data->nominee_name}}">
+					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Claim Status</label>
-					    <select class="form-control form-select" name="cliam_status" >
+					    <label class="form-label">Relationship</label>
+					    <select class="form-control form-select" name="relationship" >
 					    	<option value="">Select</option>
-					    	@foreach($claimstatus as $key=>$value)
-					    	   <option {{ ( $data->cliam_status==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+					    	@foreach($relationship as $key=>$value)
+					    	   <option {{ ( $data->relationship==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
 					    	@endforeach
 					    </select>
-					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">CAS Status</label>
-					    <select class="form-control form-select" name="cas_status">
-					    	<option value="">Select</option>
-					    	<option {{ ( $data->cas_status=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
-					    	<option {{ ( $data->cas_status=='PDC Process')?'selected':''}} value="PDC Process">PDC Process</option>
-					    </select>
-					    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
-					</div>	
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">SPDC/RL Status</label>
-					    <select class="form-control form-select" name="rl_status" >
-					    	<option value="">Select</option>
-					    	@foreach($rlStat as $key=>$stat)
-					    	  <option {{ ($data->rl_status==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
-		                    @endforeach
-		                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
-					    </select>
+					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 
-					<div class="col-3 mb-3">
-					    <label class="form-label">Packet Number</label>
-					    <input type="text" class="form-control clsAlphaNoOnly" name="pkt_no" value="{{ $data->pkt_no}}">
-					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
         	    </div>
         	</div>    		
         </div>
@@ -328,18 +315,13 @@
         	<div class="card-header label-font-header">Claim Status</div>
         	<div class="card-body">
         		<div class="row">
-        			<div class="col-6 mb-3">
-					    <label class="form-label">HO Remarks</label>
-					    <textarea class="form-control clsAlphaNoOnly" name="ho_remark">{{ $data->ho_remark}}</textarea>
-					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-					<div class="col-6 mb-3"></div>
-
+        			
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of document received</label>
 					    <input type="date" class="form-control valid-date" name="doc_rec_date" value="{{ $data->doc_rec_date}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
+
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Processed By</label>
@@ -358,17 +340,69 @@
 					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					<div class="col-6 mb-3">
-					    <label class="form-label">Remarks</label>
-					    <input type="text" class="form-control clsAlphaNoOnly" name="ho_remark2" value="{{ $data->ho_remark2}}">
-					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
 
 					<div class="col-3 mb-3">
 					    <label class="form-label">Date of re-submision to partner</label>
 					    <input type="date" class="form-control valid-date" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
+
+					
+                    <div class="col-6 mb-3">
+					    <label class="form-label">HO Remarks</label>
+					    <textarea class="form-control clsAlphaNoOnly" name="ho_remark">{{ $data->ho_remark}}</textarea>
+					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					
+					<div class="col-6 mb-3">
+					    <label class="form-label">Remarks</label>
+					    <textarea type="text" class="form-control clsAlphaNoOnly" name="ho_remark2">{{ $data->ho_remark2}}</textarea>
+					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Claim Status</label>
+					    <select class="form-control form-select" name="cliam_status" >
+					    	<option value="">Select</option>
+					    	@foreach($claimstatus as $key=>$value)
+					    	   <option {{ ( $data->cliam_status==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+					    	@endforeach
+					    </select>
+					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">CAS Status</label>
+					    <select class="form-control form-select" name="cas_status">
+					    	<option value="">Select</option>
+					    	<option {{ ( $data->cas_status=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
+					    	
+					    </select>
+					    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>	
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC/RL Status</label>
+					    <select class="form-control form-select" name="rl_status" >
+					    	<option value="">Select</option>
+					    	@foreach($rlStat as $key=>$stat)
+					    	  <option {{ ($data->rl_status==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
+		                    @endforeach
+		                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
+					    </select>
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Notification number</label>
+					    <input type="text" class="form-control clsAlphaNoOnly" name="notification_number" value="{{ $data->notification_number}}">
+					    @error('notification_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+
+
+					
         	    </div>
         	</div>    		
         </div>
@@ -377,6 +411,13 @@
         	<div class="card-header label-font-header">Settlement Details</div>
         	<div class="card-body">
         		<div class="row">
+
+        			<div class="col-3 mb-3">
+					    <label class="form-label">Loan Amount</label>
+					    <input type="text" class="form-control number-input number-with-format" name="loan_amount" value="{{ $data->loan_amount}}">
+					    @error('loan_amount')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
         			<div class="col-3 mb-3">
 					    <label class="form-label">Loan Outstanding Amt</label>
 					    <input type="text" class="form-control number-input number-with-format" name="loan_outstanding" value="{{ $data->loan_outstanding}}">
@@ -387,35 +428,6 @@
 					    <label class="form-label">Payable to Nominee</label>
 					    <input type="text" class="form-control number-input number-with-format" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Nominee Name</label>
-					    <input type="text" class="form-control clsAlphaNoOnly" name="nominee_name" value="{{ $data->nominee_name}}">
-					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Nominee Contact No</label>
-					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ $data->nominee_number}}" minlength="10" maxlength="10">
-					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Relationship</label>
-					    <select class="form-control form-select" name="relationship" >
-					    	<option value="">Select</option>
-					    	@foreach($relationship as $key=>$value)
-					    	   <option {{ ( $data->relationship==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
-					    	@endforeach
-					    </select>
-					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
-
-					<div class="col-3 mb-3">
-					    <label class="form-label">Acknowledgement Received Date</label>
-					    <input type="date" class="form-control valid-date" name="ack_rec_date" value="{{ $data->ack_rec_date}}">
-					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
@@ -441,6 +453,19 @@
 					    <input type="date" class="form-control valid-date" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
+					<div class="col-3"></div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">UTRN of MPH</label>
+					    <input type="text" class="form-control clsAlphaNoOnly" name="utrn_mph" value="{{ $data->utrn_mph}}">
+					    @error('utrn_mph')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">UTRN  of Nominee</label>
+					    <input type="dtextte" class="form-control clsAlphaNoOnly" name="utrn_nominee" value="{{ $data->utrn_nominee}}" >
+					    @error('utrn_nominee')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
 
         	    </div>
         	</div>    		
@@ -457,21 +482,33 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Bounced CHQ No</label>
+					    <label class="form-label">Bounced SPDC No</label>
 					    <input type="text" class="form-control clsAlphaNoOnly" name="bounced_chq_no" value="{{ $data->bounced_chq_no}}">
 					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">CHQ Bounced Date</label>
+					    <label class="form-label">SPDC Deposit Date</label>
+					    <input type="date" class="form-control valid-date" name="chq_deposit_date" value="{{ $data->chq_deposit_date}}" max="{{ date('Y-m-d')}}">
+					    @error('chq_deposit_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC Bounced Date</label>
 					    <input type="date" class="form-control valid-date" name="bounced_chq_date" value="{{ $data->bounced_chq_date}}">
 					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">CHQ Bounced reason</label>
+					    <label class="form-label">SPDC Bounced reason</label>
 					    <input type="text" class="form-control clsAlphaNoOnly" name="bounced_chq_reason" value="{{ $data->bounced_chq_reason}}">
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Recovered Amount</label>
+					    <input type="text" class="form-control numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}">
+					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
         	</div>    		
@@ -482,8 +519,8 @@
         	<div class="card-body">
         		<div class="row">
         			<div class="col-3 mb-3">
-					    <label class="form-label">Write off received</label>
-					    <input type="text" class="form-control clsAlphaNoOnly" name="write_off_rec" value="{{ $data->write_off_rec}}">
+					    <label class="form-label">Write off received Date</label>
+					    <input type="date" class="form-control valid-date" name="write_off_rec" value="{{ $data->write_off_rec}}">
 					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -529,6 +566,9 @@
 			<form method="POST" action="{{route('save_nominee_details')}}">
 			@csrf
 			<fieldset >
+		    <div class="card mt-3">
+        	<div class="card-header label-font-header">Nominee Details</div>
+        	<div class="card-body">		
 			<div class="row">
 				<div class="col-3 mb-3">
 				    <label class="form-label">Nominee Name as per Bank Records</label>
@@ -576,14 +616,22 @@
 				</div>
 
 				<div class="col-3 mb-3">
+					    <label class="form-label">Nominee Contact No</label>
+					    <input type="text" class="form-control numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10">
+					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+				<!-- <div class="col-3 mb-3">
 				    <label class="form-label">Cheque Sent Date</label>
 				    <input type="date" class="form-control valid-date" name="cheq_sent_date"  value="{{$nomineedata->cheq_sent_date ?? ''}}">
 				</div>
-
+ -->
 				<div class="col-3 mb-3">
 				    <label class="form-label">Remarks</label>
 				    <input type="text" class="form-control clsAlphaNoOnly" name="bo_remarks"  value="{{$nomineedata->bo_remarks ?? ''}}">
 				</div>
+
+				<div class="col-3"></div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">Maker at Branch</label>
@@ -596,11 +644,41 @@
 				</div>
 
 			</div>
+		    </div></div>
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
+
+            <div class="card mt-3">
+        	<div class="card-header label-font-header">SPDC Details</div>
+        	<div class="card-body">
+        		<div class="row">
+        			
+					<div class="col-3 mb-3">
+					    <label class="form-label">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control valid-date" name="ack_rec_date" value="{{ $nomineedata->ack_rec_date}}">
+					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC Received Date</label>
+					    <input type="date" class="form-control valid-date" name="spdc_rec_date" value="{{ $nomineedata->spdc_rec_date}}">
+					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Packet Number</label>
+					    <input type="text" class="form-control numbersonly" name="pkt_no" value="{{ $nomineedata->pkt_no}}">
+					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+
+					
+        	    </div>
+        	</div>    		
+        </div>
 		
             </fieldset>
            
-			<div class="d-flex">
+			<div class="d-flex py-4">
 				<div class="ms-auto">
 					<button type="submit" class="btn btn-sm btn-danger btn-text p-2">Update</button>
 				</div>
@@ -805,7 +883,7 @@ document.querySelectorAll(".number-input").forEach(inputElement => {
       });
     });
 
-function transformation(input) {
+    function transformation(input) {
       input = input.replace(/,/g, ""); // Remove existing commas
       const lastThreeDigits = input.slice(-3); // Extract the last 3 digits
       const restOfTheNumber = input.slice(0, -3); // Extract the remaining part
@@ -815,6 +893,25 @@ function transformation(input) {
       }
       return lastThreeDigits;
     }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+    	const fileUrls = @json(array_map(fn($file) => asset($file), $formArray));
+    	 
+        document.getElementById("openFilesBtn").addEventListener("click", function () {
+        	
+            fileUrls.forEach(url => {
+                window.open(url, "_blank");
+               /* const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", ""); // triggers download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);*/
+            });
+        });
+    });
+
+
 
 
 </script>

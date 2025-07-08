@@ -30,15 +30,15 @@ class InsuranceClaimDetail extends Model
     	'load_acc_id',
     	'claim_amount',
     	'dob',
+        'notification_number',
     	'cliam_status',
     	'cas_status',
     	'nominee_name',
     	'relationship',
     	'nominee_number',
+        'loan_amount',
     	'loan_outstanding',
     	'payable_to_nominee',
-    	'ack_rec_date',
-    	'pkt_no',
     	'rl_status',
     	'processed_by',
     	'ho_remark',
@@ -50,10 +50,17 @@ class InsuranceClaimDetail extends Model
     	'neft_rejection_date',
     	'neft_rejection_reason',
     	'final_settlement_date',
+        'utrn_mph',
+        'utrn_nominee',
+
     	'recovery_status',
     	'bounced_chq_no',
     	'bounced_chq_date',
     	'bounced_chq_reason',
+
+        'chq_deposit_date',
+        'recovered_amount',
+
     	'write_off_rec',
     	'write_off_status',
     	'handed_to_bh',
@@ -63,23 +70,23 @@ class InsuranceClaimDetail extends Model
     ];
 
     public function products(){
-        return $this->belongsTo(InsuranceProduct::class,'product','id');
+        return $this->belongsTo(InsuranceProduct::class,'product','product');
     }
 
     public function partners(){
-        return $this->belongsTo(InsurancePartner::class,'partner','id');
+        return $this->belongsTo(InsurancePartner::class,'partner','partner');
     }
 
     public function claim_stat(){
-        return $this->belongsTo(InsuranceClaimStatus::class,'cliam_status','id');
+        return $this->belongsTo(InsuranceClaimStatus::class,'cliam_status','claim_status');
     }
 
     public function deathCause(){
-        return $this->belongsTo(InsuranceCauseOfDeath::class,'cause_of_death','id');
+        return $this->belongsTo(InsuranceCauseOfDeath::class,'cause_of_death','cause');
     }
 
     public function rlStatus(){
-        return $this->belongsTo(InsuranceRequestLetterStatus::class,'rl_status','id');
+        return $this->belongsTo(InsuranceRequestLetterStatus::class,'rl_status','rl_status');
     }
 
     public function hocreator(){
