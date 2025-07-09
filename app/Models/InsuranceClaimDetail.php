@@ -94,7 +94,7 @@ class InsuranceClaimDetail extends Model
     }
 
     public function nominee(){
-        return $this->hasOne(InsuranceNomineeDetail::class , 'id','insurance_claim_details_id');
+        return $this->hasOne(InsuranceNomineeDetail::class ,'insurance_claim_details_id');
     }
 
     public function lastEditor(){

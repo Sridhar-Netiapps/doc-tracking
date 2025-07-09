@@ -886,6 +886,7 @@ class InsuranceHomeController extends Controller
       $branch= $request->branch;
 
       $data = InsuranceClaimDetail::whereBetween('intimation_date',[$start , $end])
+              ->with('nominee')
               ->when($region,function($q)use($region){
                  $q->where('region',$region);
               })
@@ -906,10 +907,11 @@ class InsuranceHomeController extends Controller
               })
               ->when($branch,function($q)use($branch){
                  $q->where('branch',$branch);
-              })  
+              })
+              
               ->orderBy('id','DESC')->get();
 
-     
+    // print_r(json_encode($data));die();
      if(!isset($request->action) || $request->action == 'filter'){
       
         $partners = InsurancePartner::get();

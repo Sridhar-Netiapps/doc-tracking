@@ -80,34 +80,34 @@
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
-				<th>Lead ID</th>
-				<th>Product</th>
-				<th>CIF ID</th>
-				<th>Deceased Name</th>
-				<th>Deceased Type</th>
-				<th>Loan Acc No</th>
-				<th>Claim Status</th>
-				<th>Amount</th>
-				<th>Policy Covered</th>
-				<th>Date of Document Received</th>
-				<th>Date of Submision to Partner</th>
-				<th>Action</th>
+				<th class="text-table-head">Lead ID</th>
+				<th class="text-table-head">Product</th>
+				<th class="text-table-head">CIF ID</th>
+				<th class="text-table-head">Deceased Name</th>
+				<th class="text-table-head">Deceased Type</th>
+				<th class="text-table-head">Loan Acc No</th>
+				<th class="text-table-head">Claim Status</th>
+				<th class="text-table-head">Amount</th>
+				<th class="text-table-head">Policy Covered</th>
+				<th class="text-table-head">Date of Document Received</th>
+				<th class="text-table-head">Date of Submision to Partner</th>
+				<th class="text-table-head">Action</th>
 			</thead>
 
 			<tbody>
 				@foreach($data as $key=>$value)
 				<tr>
-					<td>{{ $value->utrn}}</td>
-					<td>{{ $value->product}}</td>
-					<td>{{ $value->cust_id}}</td>
-					<td>{{ $value->deceased_name}}</td>
-					<td>{{ $value->deceased}}</td>
-					<td>{{ $value->load_acc_id}}</td>
-					<td>{{ $value->cliam_status}}</td>
+					<td class="text-table">{{ $value->utrn}}</td>
+					<td class="text-table">{{ $value->product}}</td>
+					<td class="text-table">{{ $value->cust_id}}</td>
+					<td class="text-table">{{ $value->deceased_name}}</td>
+					<td class="text-table">{{ $value->deceased}}</td>
+					<td class="text-table">{{ $value->load_acc_id}}</td>
+					<td class="text-table">{{ $value->cliam_status}}</td>
 					<td class="number">{{ $value->claim_amount}}</td>
-					<td>{{ ($value->policy_covered_date !='')?date('d M,Y',strtotime($value->policy_covered_date)):''}}</td>
-					<td>{{  ($value->doc_rec_date !='')?date('d M,Y',strtotime($value->doc_rec_date)):''}}</td>
-					<td>{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
+					<td class="text-table">{{ ($value->policy_covered_date !='')?date('d M,Y',strtotime($value->policy_covered_date)):''}}</td>
+					<td class="text-table">{{  ($value->doc_rec_date !='')?date('d M,Y',strtotime($value->doc_rec_date)):''}}</td>
+					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach

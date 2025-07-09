@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Insurance Leads</button></a>
+         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-danger text-white btn-text p-2">Insurance Leads</button></a>
          <div class="ms-auto">
           <form method="GET" action="{{ route('insurance_dashboard')}}">
             <select class="form-control" name="fy" id="finaceyear">
@@ -136,19 +136,19 @@
 
 <div class="row py-4">
   @if(Auth::user()->branch_id == '1100')
-	<div class="col">
+	<div class="col-4">
 	  <div class="card shadow-lg p-3 mb-5 bg-white rounded">
 	  	<div id="regionwise"></div>
 	  </div>	
 	</div>
   @endif
-	<div class="col">
+	<div class="col-4">
 		<div class="card shadow-lg p-3 mb-5 bg-white rounded">
       <div id="causeofdeath"></div>
     </div>
 	</div>
 
-	 <div class="col">
+	 <div class="col-4">
     <div class="card shadow-lg p-3 mb-5 bg-white rounded">
       <div id="death_chart"></div>
     </div>  
@@ -164,6 +164,10 @@
       type: 'pie',
 
     },
+    title: {
+          text: 'Partners ',
+          align: 'left'
+        },
     tooltip: {
       shared: true,
       intersect: false,
@@ -213,10 +217,14 @@
         data: @json($claimchart['2'])
       }],
       chart: {
-        height: 260,
+        height: 280,
         type: 'line',
         stacked: false,
       },
+       title: {
+          text: 'Claimed vs Settled Amount ',
+          align: 'left'
+        },
       stroke: {
         width: [0, 2, 5],
         curve: 'smooth'
@@ -471,7 +479,7 @@
 
         var options_death = {
           series: [{
-          name: 'Claim Amount',
+          name: 'Death Count',
           data: @json($deathagegroup),
         }],
           chart: {

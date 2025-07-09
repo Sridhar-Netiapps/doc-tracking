@@ -29,4 +29,8 @@ class InsuranceNomineeDetail extends Model
         'pkt_no'
     ];
 
+    public function lead(){
+        return $this->belongsTo(InsuranceClaimDetail::class , 'insurance_claim_details_id' , 'id');
+    }
+
 }
