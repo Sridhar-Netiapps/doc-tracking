@@ -39,7 +39,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                <p class="card-text">Pending for Dispatch</p>
+                                <p class="card-text">Awaiting Checker Approval</p>
                                 <h3>{{$total_dispatch}}</h3>
                             </div>
                         </div>
@@ -78,9 +78,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
+                                    {{-- <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div> --}}
                                 </div>
-                                <p class="card-text">Pending Documents</p>
+                                <p class="card-text">Total MB Loan Documents</p>
                                 <h3>{{array_sum($loan_total)}}</h3>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
                                     <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>
                                 </div>
-                                <p class="card-text">Pending for Dispatch</p>
+                                <p class="card-text"></p>Awaiting Checker Approval
                                 <h3>{{($loan_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
@@ -153,9 +153,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
+                                    {{-- <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div> --}}
                                 </div>
-                                <p class="card-text">Pending Documents</p>
+                                <p class="card-text">Total Gold Loan Documents</p>
                                 <h3>{{array_sum($gold_loan_total)}}</h3>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
                                     <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>
                                 </div>
-                                <p class="card-text">Pending for Dispatch</p>
+                                <p class="card-text">Awaiting Checker Approval</p>
                                 <h3>{{($gold_loan_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
@@ -227,9 +227,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    {{-- <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div> --}}
                                 </div>
-                                <p class="card-text">Pending Documents</p>
+                                <p class="card-text">Total DTR Files Documents</p>
                                 <h3>{{array_sum($dtrf_total)}}</h3>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
                                 <h3>{{ ($dtrf_total[1] ?? 0) + ($dtrf_total[2] ?? 0) }}</h3>
@@ -251,9 +251,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>
                                 </div>
-                                <p class="card-text">Pending for Dispatch</p>
+                                <p class="card-text">Awaiting Checker Approval</p>
                                 <h3>{{($dtrf_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
@@ -263,7 +263,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
                                 <h3>{{($dtrf_total[4] ?? 0)}}</h3>
@@ -275,7 +275,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
                                 <h3>{{($dtrf_total[6] ?? 0)}}</h3>
@@ -287,7 +287,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
                                 <h3>{{($dtrf_total[5] ?? 0)}}</h3>
@@ -301,9 +301,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    {{-- <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div> --}}
                                 </div>
-                                <p class="card-text">Pending Documents</p>
+                                <p class="card-text">Total Liablities Documents</p>
                                 <h3>{{array_sum($aof_total)}}</h3>
                             </div>
                         </div>
@@ -313,7 +313,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>
                                 </div>
                                 <p class="card-text">Pending to Proceed</p>
                                 <h3>{{ ($aof_total[1] ?? 0) + ($aof_total[2] ?? 0) }}</h3>
@@ -325,9 +325,9 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>
                                 </div>
-                                <p class="card-text">Pending for Dispatch</p>
+                                <p class="card-text">Awaiting Checker Approval</p>
                                 <h3>{{($aof_total[3] ?? 0)}}</h3>
                             </div>
                         </div>
@@ -337,7 +337,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-2.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>
                                 </div>
                                 <p class="card-text">In Transit</p>
                                 <h3>{{($aof_total[4] ?? 0)}}</h3>
@@ -349,7 +349,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>
                                 </div>
                                 <p class="card-text">Rejected By RO</p>
                                 <h3>{{($aof_total[6] ?? 0)}}</h3>
@@ -361,7 +361,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between"> 
                                     <div class="icon"><img src="/images/icon-4.svg" /></div>
-                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div>
+                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>
                                 </div>
                                 <p class="card-text">Received Documents</p>
                                 <h3>{{($aof_total[5] ?? 0)}}</h3>
