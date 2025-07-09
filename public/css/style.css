@@ -251,7 +251,7 @@ h2{
 }
 
 .bg-new{
-    background: linear-gradient(90deg, #229E82 0%, #0C382E 100%);
+    background: #229E82;
 }
 
 .bg-tran-white{
@@ -259,12 +259,16 @@ h2{
 }
 
 .bg-new .active-tab{
-    border-bottom: solid 2px #f78f35;
-    color: #f78f35 !important;
+    border-bottom: solid 2px #ffca43;
+    color: #ffca43 !important;
+}
+
+.listView{
+    font-size: 15px;
 }
 
 .bg-new .nav-link:hover{
-    color: #f78f35 !important;
+    color: #ffca43 !important;
 }
 
 .btn{
@@ -456,15 +460,19 @@ table p{
 
 .bigCard .col{
     border-right: 1px solid #051b11;
-    padding: 20px 40px;
+    padding: 20px 22px;
     transition: 0.5s ease all;
+}
+
+.bigCard .col:last-child{
+    border: none;
 }
 
 .smallCard{
     background: #fff;
     width: 100%;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     padding: 20px;
 }
 
@@ -477,6 +485,27 @@ table p{
     display: flex;
     justify-content: space-between;
     padding-bottom: 10px;
+    padding-top: 8px;
+    border-bottom: 1px solid #efefef;
+    line-height: 30px;
+}
+
+.smallCard .listView:last-child{
+    border-bottom: none;
+}
+
+.smallCard .listView .value{
+    font-weight: 600;
+    background: #ffca43;
+    padding: 4px;
+    border-radius: 7px;
+    color: #000000;
+    height: 25px;
+    line-height: 18px;
+}
+
+.topDash{
+    background: #229E82;
 }
 
 
