@@ -439,8 +439,8 @@ class DocumentController extends Controller
                 ->when($type === 'ready', fn($q) => $q->where('status', 3))
                 ->when($type === 'list', fn($q) => $q->where('status', 4))
                 ->when($type === 'tracking', fn($q) => $q->whereIn('status', [5, 7]))
-                ->when($type === 'received', fn($q) => $q->whereIn('status', [12]))
-                ->when($type === 'rejected', fn($q) => $q->where('status', 6))
+                ->when($type === 'delivered', fn($q) => $q->whereIn('status', [12]))
+                ->when($type === 'reject', fn($q) => $q->where('status', 6))
                 ->orderBy('updated_at', 'desc');
         };
 
@@ -451,8 +451,8 @@ class DocumentController extends Controller
         $ready_to_dispatch_count = CourierDispatch::where('status', 3)->count();
         $dispatched_count = CourierDispatch::where('status', 4)->count();
         $tracking_count = CourierDispatch::whereIn('status', [5, 7])->count();
-        $received_count = CourierDispatch::whereIn('status', [12])->count();
-        $rejected_count = CourierDispatch::where('status', 6)->count();
+        $delivered_count = CourierDispatch::whereIn('status', [12])->count();
+        $reject_count = CourierDispatch::where('status', 6)->count();
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::where('status', 1)->get();
@@ -461,8 +461,8 @@ class DocumentController extends Controller
             'ready_to_dispatch_count',
             'dispatched_count',
             'tracking_count',
-            'received_count',
-            'rejected_count',
+            'delivered_count',
+            'reject_count',
             'type',
             'process_statuses',
             'filters',

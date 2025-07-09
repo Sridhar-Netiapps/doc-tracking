@@ -26,11 +26,8 @@
                 
                 <li class="nav-item px-4">
                     <a class="nav-link 
-                        @hasanyrole('master|ro-user')
-                            {{ Request::segment(1) === 'dispatches' && Request::segment(2) === 'list' ? 'active-tab' : '' }}
-                        @else
-                            {{ Request::segment(1) === 'dispatches' && Request::segment(2) === 'ready' ? 'active-tab' : '' }}
-                        @endhasanyrole
+                       
+                            {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}
                     " href="@hasanyrole('master|ro-user'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
                 </li>
                 

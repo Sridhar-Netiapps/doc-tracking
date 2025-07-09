@@ -12,7 +12,7 @@ class LoanDocument extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id', 'account_number',
-        'loan_cycle', 'customer_name', 'account_creation_date', 'channel', 'barcode',
+        'loan_cycle', 'customer_name', 'account_creation_date', 'channel', 'glow_application_id', 'loan_amount', 'barcode',
         'loan_disbursement_type', 'business_category','status'
     ];
 

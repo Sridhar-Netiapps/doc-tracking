@@ -24,12 +24,14 @@ class ProcessStatusSeeder extends Seeder
             ['name' => 'IN'],
             ['name' => 'OUT'],
             ['name' => 'Permount'],
-            ['name' => 'Destroyed']
+            ['name' => 'Destroyed'],
+            ['name' => 'Tracking Completed']
         ];
 
         foreach ($process_status as $status) {
-            ProcessStatus::table('process_status')->insert([
+            ProcessStatus::insert([
                 'name' => $status['name'],
+                'created_by' => 0,
             ]);
         }
     }
