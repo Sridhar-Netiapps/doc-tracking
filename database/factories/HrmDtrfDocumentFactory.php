@@ -10,7 +10,7 @@ class HrmDtrfDocumentFactory extends Factory
     {
         return [
             // 'unique_ref_no' => 'REF' . fake()->unique()->numberBetween(1000, 9999),
-            'region' => 'South',
+            'region' => fake()->randomElement(['South', 'North','East','West']),
             'branch_code' => fake()->numberBetween(1110, 1119),
             'branch_name' => fake()->city(),
             'account_creation_date' => fake()->dateTimeBetween('-1 week', 'now'),

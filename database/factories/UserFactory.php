@@ -52,6 +52,8 @@ class UserFactory extends Factory
             'branch_id'         => $this->faker->numberBetween(1111, 1119),
             'region'            => $regionName,
             'region_id'         => $regions[$regionName],
+            'designation_id'    => 0,
+            'department_id'    => 0,
         ];
     }
 
