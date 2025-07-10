@@ -448,7 +448,39 @@ class DocumentController extends Controller
         return redirect()->route('dispatches', $type);       // Redirect back to listing
     }
     
+    public function checkDispatchStatus($id)
+    {
+        $dispatch = CourierDispatch::find($id);
+    
+        $hasStatus4 = false;
+    
+        if ($dispatch) {
 
+            if (!empty($dispatch->loan_ids)) {
+                $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->goldloan_ids)) {
+                $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->aof_ids)) {
+                $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->dtrf_ids)) {
+                $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))
+                                ->where('status', 4)->exists();
+            }
+        }
+    
+        return response()->json(['disable_update' => $hasStatus4]);
+    }
+    
+    
     public function getDispatches($type, Request $request)
     {
         
