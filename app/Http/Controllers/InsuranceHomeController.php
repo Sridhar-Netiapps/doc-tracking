@@ -506,6 +506,10 @@ class InsuranceHomeController extends Controller
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
         $claimdata->bounced_chq_reason = $request->bounced_chq_reason;
+
+        $claimdata->chq_deposit_date = $request->chq_deposit_date;
+        $claimdata->recovered_amount = $request->recovered_amount;
+        
         $claimdata->write_off_rec = $request->write_off_rec;
         $claimdata->write_off_status = $request->write_off_status;
         $claimdata->handed_to_bh = $request->handed_to_bh;
@@ -538,7 +542,7 @@ class InsuranceHomeController extends Controller
      */
     public function download_claim_form(string $id)
     {
-        $claimdata = InsuranceClaimDetail::where('id',decrypt($id))->first();
+        $claimdata = InsuranceClaimDetail::with('nominee')->where('id',decrypt($id))->first();
 
         $partner_type = InsuranceProduct::where('product',$claimdata->product)->first();
 
@@ -569,6 +573,8 @@ class InsuranceHomeController extends Controller
               $partner = 'MAXLIFE';
               $formname='maxlife';
           }
+
+         // print_r(json_encode($claimdata));die();
           
           $type = pathinfo($path, PATHINFO_EXTENSION);
           $data = file_get_contents($path);
@@ -602,61 +608,61 @@ class InsuranceHomeController extends Controller
 
 
     public function downloadFolderSmart($folderName)
-{
-    $folderPath = public_path('template/' . $folderName);
+    {
+      $folderPath = public_path('template/' . $folderName);
 
-    if (!File::exists($folderPath)) {
-        return response()->json(['error' => 'Folder not found'], 404);
+      if (!File::exists($folderPath)) {
+          return response()->json(['error' => 'Folder not found'], 404);
+      }
+
+      $files = File::allFiles($folderPath);
+
+      if (count($files) === 0) {
+          return response()->json(['error' => 'No files found'], 404);
+      }
+
+      // 🔽 If only one file, download it directly
+      if (count($files) === 1) {
+          $file = $files[0];
+          $realPath = $file->getRealPath();
+          $fileName = str_replace(' ', '_', $file->getFilename()); // sanitize name
+          
+           if (!file_exists($realPath)) {
+              return response()->json(['error' => 'File not found on disk'], 404);
+          }
+
+          // ✅ Clean output buffer
+          if (ob_get_level()) {
+              ob_end_clean();
+          }
+
+          // ✅ Try both options:
+          return response()->download($realPath, $fileName); // recommended
+         
+      }
+
+
+      // 🔽 If multiple files, zip and download
+      $zipFileName = $folderName . '.zip';
+      $zipPath = storage_path('app/' . $zipFileName);
+
+      if (File::exists($zipPath)) {
+          File::delete($zipPath);
+      }
+
+      $zip = new \ZipArchive();
+      if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+          foreach ($files as $file) {
+              $relativePath = str_replace($folderPath . '/', '', $file->getRealPath());
+              $zip->addFile($file->getRealPath(), $relativePath);
+          }
+          $zip->close();
+      } else {
+          return response()->json(['error' => 'Could not create zip file'], 500);
+      }
+
+      return response()->download($zipPath)->deleteFileAfterSend(true);
     }
-
-    $files = File::allFiles($folderPath);
-
-    if (count($files) === 0) {
-        return response()->json(['error' => 'No files found'], 404);
-    }
-
-    // 🔽 If only one file, download it directly
-    if (count($files) === 1) {
-        $file = $files[0];
-        $realPath = $file->getRealPath();
-        $fileName = str_replace(' ', '_', $file->getFilename()); // sanitize name
-        
-         if (!file_exists($realPath)) {
-            return response()->json(['error' => 'File not found on disk'], 404);
-        }
-
-        // ✅ Clean output buffer
-        if (ob_get_level()) {
-            ob_end_clean();
-        }
-
-        // ✅ Try both options:
-        return response()->download($realPath, $fileName); // recommended
-       
-    }
-
-
-    // 🔽 If multiple files, zip and download
-    $zipFileName = $folderName . '.zip';
-    $zipPath = storage_path('app/' . $zipFileName);
-
-    if (File::exists($zipPath)) {
-        File::delete($zipPath);
-    }
-
-    $zip = new \ZipArchive();
-    if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
-        foreach ($files as $file) {
-            $relativePath = str_replace($folderPath . '/', '', $file->getRealPath());
-            $zip->addFile($file->getRealPath(), $relativePath);
-        }
-        $zip->close();
-    } else {
-        return response()->json(['error' => 'Could not create zip file'], 500);
-    }
-
-    return response()->download($zipPath)->deleteFileAfterSend(true);
-}
 
 
 

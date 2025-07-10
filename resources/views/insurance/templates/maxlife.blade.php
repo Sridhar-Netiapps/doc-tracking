@@ -273,8 +273,8 @@
         <div class="header-bg">I. Claimant’s Information</div>
         <table class="twocol-table">
           <tr>
-            <td class="col-50"> <label class="label-font">1A) *Name of the Group Policy Holder:</label> <strong></strong> </td>
-            <td class="col-50"><label class="label-font"> 1B) *Group Policy Number:</label><strong class="label-font">{{$data->policy_number}}</strong></td>
+            <td class="col-50"> <label class="label-font">1A) *Name of the Group Policy Holder : </label> <strong class="label-font">Ujjivan Small Finance Bank</strong> </td>
+            <td class="col-50"><label class="label-font"> 1B) *Group Policy Number : </label><strong class="label-font">{{$data->policy_number}}</strong></td>
           </tr>
         </table>
 
@@ -291,8 +291,8 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50"> 
-              <label class="label-font">1D)*Name of the Beneficiary:</label> <strong></strong>
-              <div class="sub-label">*Relationship of Beneficiary with the insured member:<strong></strong></div>
+              <label class="label-font">1D)*Name of the Beneficiary:</label> <strong class="label-font">{{ $data->nominee_name }}</strong>
+              <div class="sub-label">*Relationship of Beneficiary with the insured member:<strong class="label-font">{{ $data->relationship }}</strong></div>
              </td>
             <td class="col-50">
               <label class="label-font">1E)* Beneficiary’s Contact No. -</label><strong></strong>
@@ -314,16 +314,16 @@
         <table class="twocol-table">
           <tr>
             <td > 
-              <label class="label-font">1G) *Bank A/c No. of the Beneficiary:</label> <strong></strong>
-              <div class="sub-label">*Bank Name:<strong></strong></div>
+              <label class="label-font">1G) *Bank A/c No. of the Beneficiary : </label> <strong class="label-font">{{ $data->nominee->acc_number}}</strong>
+              <div class="sub-label">*Bank Name : <strong class="label-font">{{ $data->nominee->bank_name}}</strong></div>
              </td>
           </tr>
         </table>
 
          <table class="twocol-table">
           <tr>
-            <td class="col-50 td-height"> <label class="label-font">1G) *Outstanding Loan Amount as on Date of Death</label> <strong></strong> </td>
-            <td class="col-50"><label class="label-font">1H)* Remaining Amount </label></td>
+            <td class="col-50 td-height"> <label class="label-font">1G) *Outstanding Loan Amount as on Date of Death</label> <strong class="label-font">{{ $data->loan_outstanding}}</strong> </td>
+            <td class="col-50"><label class="label-font">1H)* Remaining Amount : </label> <strong class="label-font">{{ $data->payable_to_nominee }}</strong></td>
           </tr>
         </table>
         
@@ -331,28 +331,28 @@
          <table class="twocol-table">
           <tr>
             <td class="col-50 td-height"> 
-              <label class="label-font">2A) *Full Name of the Deceased:</label> <strong></strong>
+              <label class="label-font">2A) *Full Name of the Deceased : </label> <strong class="label-font">{{ $data->deceased_name}}</strong>
               <div class="sub-label">*Gender:
-                <input type="checkbox" name=""> Male
-                <input type="checkbox" name=""> Female
+                <input type="checkbox" name="" {{ ($data->gender == 'Male')?'checked':''}}> Male
+                <input type="checkbox" name="" {{ ($data->gender == 'Female')?'checked':''}}> Female
               </div>
              </td>
-            <td class="col-50"><label class="label-font">2B) *Date of Joining Membership:</label><strong></strong> </td>
+            <td class="col-50"><label class="label-font">2B) *Date of Joining Membership:</label><br><strong class="label-font">{{ $data->policy_covered_date }}</strong> </td>
           </tr>
         </table>
 
         <table class="twocol-table">
           <tr>
-            <td class="col-50"> <label class="label-font"> 2C) *Date of Birth:</label> <strong></strong> </td>
-            <td class="col-50"><label class="label-font"> 2D) *Membership/Loan A/c Number:</label><strong></strong></td>
+            <td class="col-50"> <label class="label-font"> 2C) *Date of Birth : </label> <strong class="label-font">{{ $data->dob}}</strong> </td>
+            <td class="col-50"><label class="label-font"> 2D) *Membership/Loan A/c Number : </label><strong class="label-font">{{ $data->load_acc_id}}</strong></td>
           </tr>
         </table>
 
         <table class="twocol-table">
           <tr>
             <td class="col-50 td-height"> 
-              <label class="label-font">2E) *Date & Time of Death:</label><strong></strong><br>
-              <label class="label-font">2G) Deceased’s Residential Address:</label><strong></strong>
+              <label class="label-font">2E) *Date & Time of Death : </label><strong class="label-font">{{ $data->date_of_death}}</strong><br>
+              <label class="label-font">2G) Deceased’s Residential Address : </label><strong></strong>
             </td> 
           </tr>
         </table>
@@ -360,7 +360,7 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50 "> 
-              <label class="label-font">2H) Deceased’s Occupation at the time of death:</label><strong></strong><br>
+              <label class="label-font">2H) Deceased’s Occupation at the time of death : </label><strong></strong><br>
             </td> 
           </tr>
         </table>
@@ -368,7 +368,7 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50 "> 
-              <label class="label-font">2I) *Immediate cause of Death:</label><strong></strong><br>
+              <label class="label-font">2I) *Immediate cause of Death : </label><strong class="label-font">{{ $data->cause_of_death}}</strong><br>
             </td> 
           </tr>
         </table>

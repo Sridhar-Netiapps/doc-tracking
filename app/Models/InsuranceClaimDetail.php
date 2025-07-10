@@ -52,15 +52,12 @@ class InsuranceClaimDetail extends Model
     	'final_settlement_date',
         'utrn_mph',
         'utrn_nominee',
-
     	'recovery_status',
     	'bounced_chq_no',
     	'bounced_chq_date',
     	'bounced_chq_reason',
-
         'chq_deposit_date',
         'recovered_amount',
-
     	'write_off_rec',
     	'write_off_status',
     	'handed_to_bh',
