@@ -20,6 +20,7 @@ use App\Models\ProcessStatus;
 use App\Models\DocumentHistory;
 use Illuminate\Support\Str;
 use App\Models\Vendor;
+use App\Exports\DocumentExport;
 
 
 class DocumentController extends Controller
@@ -42,7 +43,7 @@ class DocumentController extends Controller
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
-        $filter = function ($query) use ($type, $start_date, $end_date) {
+        $filter = function ($query) use ($type) {
             if($type === 'moved'){
                 $query->where('status','>=',8);
             }
@@ -63,6 +64,7 @@ class DocumentController extends Controller
             }
             return $query->orderBy('updated_at', 'desc');
         };
+        // dd($filter(LoanDocfiltersument::query())->tosql());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
         $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
@@ -74,8 +76,21 @@ class DocumentController extends Controller
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $vendors = Vendor::all();
 
+        $fixedStatuses = [
+            'pending' => 1,
+            'rejected' => 6,
+            'received' => [5, 7],
+        ];
+        
+        $type = $request->input('doc_type', $type ?? null);
+        $fixed_status = $fixedStatuses[$type] ?? null;
+        
+        if ($fixed_status) {
+            $filters['status'] = $fixed_status;
+        }
+
         if($type != 'moved')
-            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors'));
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
         else
             return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'vendors'));
     }
@@ -85,9 +100,10 @@ class DocumentController extends Controller
         // return redirect()->route('document.filtered');
         $previousUrl = url()->previous(); 
         $type = Str::afterLast($previousUrl, '/'); 
-        // dd($type);   
+        // dd($request->all());   
         // $type = $request->segment(2); 
-        if($type == 'proceed')
+        // if($type == 'proceed')
+        if ($type == 'proceed')
             return redirect()->route('accounts.selected');
         else
             return redirect()->route('document.filtered');
@@ -97,7 +113,7 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        
+        // dd($filters);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         // $fromDate = $filters['from_date'] ?? null;
@@ -112,7 +128,7 @@ class DocumentController extends Controller
         unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate) {
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
 
             if ($user->hasRole('ro-user')) {
                 $query->where('region', $user->region);
@@ -127,11 +143,17 @@ class DocumentController extends Controller
             } elseif ($toDate != null) {
                 $query->whereDate('created_at', '<=', $toDate);
             }
+            if ($filters['doc_type'] === 'moved') {
+                $query->whereIn('status', [8, 9, 10, 11]);
+            }
             
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                        if ($filters['doc_type'] === 'moved' && $field === 'status') {
+                            continue;
+                        }
                         if (in_array($field, ['cif_id', 'account_number'])) {
                             $query->where($field, 'like', '%' . $value . '%');
                         } else {
@@ -191,8 +213,26 @@ class DocumentController extends Controller
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $type = $filters['doc_type'];
+        $fixedStatuses = [
+            'pending' => 1,
+            'rejected' => 6,
+            'received' => [5, 7],
+            
+        ];
+        
+        $type = $request->input('doc_type', $type ?? null);
+        $fixed_status = $fixedStatuses[$type] ?? null;
+        
+        // if ($fixed_status) {
+        if (!empty($fixed_status) && !is_array($fixed_status)) {
+            $filters['status'] = $fixed_status;
+        }
+        $vendors = Vendor::all();
 
-        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses'));
+        if($type != 'moved')
+        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
+        else
+        return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors' ));
     }
     
     public function bulkReview(Request $request)
@@ -317,7 +357,7 @@ class DocumentController extends Controller
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::pluck('name', 'id');
     
-        return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters'));
+         return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters'));
     }
     
     
@@ -419,6 +459,9 @@ class DocumentController extends Controller
             
 
             // Apply form filters
+            if (!empty($filters['dispatch_no'])) {
+                $query->where('dispatch_no', 'like', '%' . $filters['dispatch_no'] . '%');
+            }
             if (!empty($filters['awb_pod'])) {
                 $query->where('awb_pod', 'like', '%' . $filters['awb_pod'] . '%');
             }
@@ -439,20 +482,22 @@ class DocumentController extends Controller
                 ->when($type === 'ready', fn($q) => $q->where('status', 3))
                 ->when($type === 'list', fn($q) => $q->where('status', 4))
                 ->when($type === 'tracking', fn($q) => $q->whereIn('status', [5, 7]))
-                ->when($type === 'received', fn($q) => $q->whereIn('status', [12]))
-                ->when($type === 'rejected', fn($q) => $q->where('status', 6))
+                ->when($type === 'delivered', fn($q) => $q->whereIn('status', [12]))
+                ->when($type === 'reject', fn($q) => $q->where('status', 6))
                 ->orderBy('updated_at', 'desc');
         };
 
         // Records and counts
         $records = $filter(CourierDispatch::query())->paginate(100);
-
+        // dd($records);
         // Status-wise counts (not affected by form filters)
-        $ready_to_dispatch_count = CourierDispatch::where('status', 3)->count();
-        $dispatched_count = CourierDispatch::where('status', 4)->count();
-        $tracking_count = CourierDispatch::whereIn('status', [5, 7])->count();
-        $received_count = CourierDispatch::whereIn('status', [12])->count();
-        $rejected_count = CourierDispatch::where('status', 6)->count();
+        
+        $ready_to_dispatch_count =  $filter(CourierDispatch::query())->where('status', 3)->count();
+        $dispatched_count = $filter(CourierDispatch::query())->where('status', 4)->count();
+        $tracking_count = $filter(CourierDispatch::query())->where('status', [5, 7])->count();
+        $delivered_count = $filter(CourierDispatch::query())->where('status', 12)->count();
+        $reject_count = $filter(CourierDispatch::query())->where('status', 6)->count();
+
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::where('status', 1)->get();
@@ -461,8 +506,8 @@ class DocumentController extends Controller
             'ready_to_dispatch_count',
             'dispatched_count',
             'tracking_count',
-            'received_count',
-            'rejected_count',
+            'delivered_count',
+            'reject_count',
             'type',
             'process_statuses',
             'filters',
@@ -879,5 +924,24 @@ class DocumentController extends Controller
         $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$type]))->get();
 
         return view('accounts.doc_history', compact('document','history','type'));    
+    }
+
+    public function export(Request $request)
+    {
+        $docType = $request->doc_type; // 'loan', 'gold', 'aof', 'dtrf'
+
+        $data = match ($docType) {
+            'loan' => LoanDocument::get(),
+            // with('yourRelations')->
+            'gold' => GoldLoanDocument::get(),
+            // with('yourRelations')->
+            'aof'  => AccountOpeningDocument::get(),
+            // with('yourRelations')->
+            'dtrf' => DtrfDocument::get(),
+            // with('yourRelations')->
+            default => collect(),
+        };
+
+        return Excel::download(new DocumentExport($data, $docType), "{$docType}_export.xlsx");
     }
 }

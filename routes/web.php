@@ -16,8 +16,8 @@ use App\Http\Controllers\InsuranceHomeController;
 
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/sample', function () {
-        return view('sample.index');
+    Route::get('/reports', function () {
+        return view('accounts.delivered');
     });
     Route::get('/accounts-index', function () {
         return view('sample.index');

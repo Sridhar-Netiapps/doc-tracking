@@ -76,11 +76,11 @@
                     <a href="{{ route('dispatches','tracking') }}" class="nav-link {{$type == 'tracking' ? 'active':''}}" id="tracking-tab" role="tab" aria-controls="tracking-tab-pane" aria-selected="{{ $type == 'tracking' ? 'true' : 'false' }}">Pending for Tracking @if ($type == 'tracking' && $tracking_count != 0)<span class="badge text-bg-warning">{{$tracking_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','received') }}" class="nav-link {{$type == 'received' ? 'active':''}}" id="received-tab" role="tab" aria-controls="received-tab-pane" aria-selected="{{ $type == 'received' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'received' && $received_count != 0)<span class="badge text-bg-warning">{{$received_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','delivered') }}" class="nav-link {{$type == 'delivered' ? 'active':''}}" id="delivered-tab" role="tab" aria-controls="delivered-tab-pane" aria-selected="{{ $type == 'delivered' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'delivered' && $delivered_count != 0)<span class="badge text-bg-warning">{{$delivered_count}}</span>@endif</a>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','rejected') }}" class="nav-link {{$type == 'rejected' ? 'active':''}}" id="rejected-tab" role="tab" aria-controls="rejected-tab-pane" aria-selected="{{ $type == 'rejected' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'rejected' && $rejected_count != 0)<span class="badge text-bg-warning">{{$rejected_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
                 @hasanyrole('bo-checker')
@@ -234,6 +234,9 @@
                     </select>
                 </div> --}}
                 <div class="col-12 mt-3">
+                    <input type="text" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no">
+                </div>
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control awb_pod" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
                 </div>
                 {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -315,11 +318,17 @@
                 <div class="col-12 mt-3">
                     <select class="form-select" name="status">
                         <option value="">Select Status</option>
-                        @foreach ($process_statuses as $status)
+                        {{-- @foreach ($process_statuses as $status)
                             <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
                                 {{ $status->name }}
                             </option>
-                        @endforeach
+                        @endforeach --}}
+                        <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
+                        <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
+                        <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
+                        <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
+                        <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
+                        <option value="12" {{ ($filters['status'] ?? '') == '12' ? 'selected' : '' }}> Tracking Completed </option>
                     </select>                                      
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">

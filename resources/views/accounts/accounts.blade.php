@@ -19,7 +19,7 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">
+                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">
                         MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
                     </button>
                 </li>
@@ -72,7 +72,7 @@
 <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
 
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -614,16 +614,94 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
-                <div class="col-12 mt-3">
-                    <select class="form-select" name="status">
+                {{-- <div class="col-12 mt-3">
+                    <select class="form-select" name="status" {{ isset($fixed_status) ? 'disabled' : '' }}>
+                       
                         <option value="">Select Status</option>
-                        @foreach ($process_statuses as $status)
-                            <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
-                                {{ $status->name }}
-                            </option>
-                        @endforeach
-                    </select>                                      
-                </div>
+                        <option value="1" {{ ($filters['status'] ?? '') == '1' ? 'selected' : '' }}> Pending </option>
+                        <option value="2" {{ ($filters['status'] ?? '') == '2' ? 'selected' : '' }}> Selected </option>
+                        <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
+                        <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
+                        <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
+                        <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
+                        <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
+                
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                            <option value="8" {{ ($filters['status'] ?? '') == '8' ? 'selected' : '' }}> IN </option>
+                            <option value="9" {{ ($filters['status'] ?? '') == '9' ? 'selected' : '' }}> OUT </option>
+                            <option value="10" {{ ($filters['status'] ?? '') == '10' ? 'selected' : '' }}> Permount </option>
+                            <option value="11" {{ ($filters['status'] ?? '') == '11' ? 'selected' : '' }}> Destroyed </option>
+                        @endunless
+
+                    </select> 
+                    @if(isset($fixed_status))
+                        <input type="hidden" name="status" value="{{ $fixed_status }}">
+                    @endif                                     
+                </div> --}}
+               @php
+    $statusLabels = [
+        1 => 'Pending',
+        2 => 'Selected',
+        3 => 'Awaiting checker Approval',
+        4 => 'Dispatched',
+        5 => 'Received',
+        6 => 'Rejected',
+        7 => 'Received with query',
+        8 => 'IN',
+        9 => 'OUT',
+        10 => 'Permount',
+        11 => 'Destroyed',
+    ];
+
+    // $selectedStatus = $filters['status'] ?? '';
+    $selectedStatus = is_array($filters['status'] ?? '') ? null : ($filters['status'] ?? '');
+
+@endphp
+
+<div class="col-12 mt-3">
+    <select class="form-select" name="status"
+        {{ isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5 ? 'disabled' : '' }}>
+        
+        {{-- Case: Fixed status is array and it's [5, 7] --}}
+        @if(isset($fixed_status) && is_array($fixed_status) && $fixed_status === [5, 7])
+            <option value="5" {{ $selectedStatus == 5 ? 'selected' : '' }}>Received</option>
+            <option value="7" {{ $selectedStatus == 7 ? 'selected' : '' }}>Received with query</option>
+
+        {{-- Case: Fixed status is a single value like 1, 6 --}}
+        @elseif(isset($fixed_status) && !is_array($fixed_status))
+            <option value="{{ $fixed_status }}" selected>
+                {{ $statusLabels[$fixed_status] ?? 'Status' }}
+            </option>
+
+        {{-- Case: No fixed status --}}
+        @else
+            <option value="">Select Status</option>
+            @foreach ($statusLabels as $key => $label)
+                {{-- <option value="{{ $key }}" {{ $selectedStatus == $key ? 'selected' : '' }}>
+                    {{ $label }}
+                </option> --}}
+                @php
+                $hideForRoles = [8, 9, 10, 11];
+                $isRestricted = in_array($key, $hideForRoles) && auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']);
+            @endphp
+
+            @if (!$isRestricted)
+                <option value="{{ $key }}" {{ $selectedStatus == $key ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endif
+            @endforeach
+        @endif
+    </select>
+
+    {{-- Keep hidden input for fixed status if dropdown is disabled --}}
+    @if(isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5)
+        <input type="hidden" name="status" value="{{ $fixed_status }}">
+    @endif
+</div>
+
+                        
+                
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
@@ -698,6 +776,7 @@
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
                 </div>
+                 {{-- window.location.href = `{{ route('accounts.index',${type})}}`; --}}
             </form>
         </div>
     </div>
@@ -728,16 +807,16 @@
     $(document).ready(function () {
         
         $(".loan_all").click(function () {
-            $(".loan").prop('checked', $(this).prop('checked'));
+            $(".loan:visible").prop('checked', $(this).prop('checked'));
         });
         $(".goldloan_all").click(function () {
-            $(".goldloan").prop('checked', $(this).prop('checked'));
+            $(".goldloan:visible").prop('checked', $(this).prop('checked'));
         });
         $(".aof_all").click(function () {
-            $(".aof").prop('checked', $(this).prop('checked'));
+            $(".aof:visible").prop('checked', $(this).prop('checked'));
         });
         $(".dtrf_all").click(function () {
-            $(".dtrf").prop('checked', $(this).prop('checked'));
+            $(".dtrf:visible").prop('checked', $(this).prop('checked'));
         });
 
     flatpickr(".flatpickr-date", {
@@ -786,7 +865,74 @@
         });
       
 
-$('.remove-doc').click(function (e) {
+        // $('.remove-doc').click(function (e) {
+        //     e.preventDefault();
+        //     let type = $('input[name="type"]').val();
+        //     let selected = $('input[type=checkbox]:checked');
+        //     if (selected.length === 0) {
+        //         Swal.fire({
+        //             title: "Warning!",
+        //             text: "Please select at least one Document.",
+        //             icon: "warning",
+        //             confirmButtonText: "OK"
+        //         });
+        //         return;
+        //     }
+
+        //     let docIds = [];
+        //     let type = '';
+
+        //     selected.each(function () {
+        //         docIds.push($(this).data('id'));
+        //         if (!type) {
+        //             if ($(this).hasClass('loan')) type = 'loan';
+        //             if ($(this).hasClass('goldloan')) type = 'goldloan';
+        //             if ($(this).hasClass('dtrf')) type = 'dtrf';
+        //             if ($(this).hasClass('aof')) type = 'aof';
+        //         }
+        //     });
+
+        //     Swal.fire({
+        //         title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+        //         input: "text",
+        //         inputLabel: "Enter reason for deleting the document:",
+        //         inputPlaceholder: "Reason...",
+        //         showCancelButton: true,
+        //         confirmButtonText: '<b>Confirm Delete</b>',
+        //         cancelButtonText: "Cancel",
+        //         customClass: {
+        //             popup: 'rounded-3 shadow',
+        //             confirmButton: 'btn btn-primary btn-lg',
+        //             cancelButton: 'btn btn-secondary btn-lg',
+        //         },
+        //         inputValidator: (value) => {
+        //             if (!value) return "Reason is required!";
+        //         }
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.post(`{{ route('document.remove') }}`, {
+        //                 _token: $('input[name="_token"]').val(),
+        //                 doc_ids: docIds,
+        //                 type: type,
+        //                 reason: result.value,
+        //             })
+        //             .done(function () {
+        //                 Swal.fire("Deleted!", "Document removed successfully.", "success");
+        //                 .then(() => {
+        //                     // location.reload();
+        //                     selected.each(function () {
+        //                         $(this).closest('tr').remove();
+        //                     });
+        //                 });
+        //             })
+        //             .fail(function () {
+        //                 Swal.fire("Error!", "Something went wrong!", "error");
+        //             });
+        //         }
+        //     });
+        // });
+
+        $('.remove-doc').click(function (e) {
     e.preventDefault();
     
     let selected = $('input[type=checkbox]:checked');
@@ -802,7 +948,7 @@ $('.remove-doc').click(function (e) {
 
     let docIds = [];
     let type = '';
-
+    // var doc_count = parseInt($('span.badge').text());
     selected.each(function () {
         docIds.push($(this).data('id'));
         if (!type) {
@@ -812,7 +958,9 @@ $('.remove-doc').click(function (e) {
             if ($(this).hasClass('aof')) type = 'aof';
         }
     });
-
+// var doc_count = $(`#${type}-tab`).closest('span.badge').text();
+var doc_count = $(`#${type}-tab`).find('span.badge').text();
+console.log(doc_count);
     Swal.fire({
         title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
         input: "text",
@@ -839,9 +987,10 @@ $('.remove-doc').click(function (e) {
             })
             .done(function () {
                 Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                    
-                    location.reload();
-                   
+                    selected.each(function () {
+                        $(this).closest('tr').remove();
+                        $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
+                    });
                 });
             })
             .fail(function () {
@@ -850,6 +999,7 @@ $('.remove-doc').click(function (e) {
         }
     });
 });
+
 
 
 

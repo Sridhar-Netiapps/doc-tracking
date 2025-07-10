@@ -250,17 +250,25 @@ h2{
     padding-top: 66px;
 }
 
-.bg-tran-white, .bg-new{
-    background: linear-gradient(90deg, #229E82 0%, #0C382E 100%);
+.bg-new{
+    background: #229E82;
+}
+
+.bg-tran-white{
+    background: #FFFFFF;
 }
 
 .bg-new .active-tab{
-    border-bottom: solid 2px #f78f35;
-    color: #f78f35 !important;
+    border-bottom: solid 2px #ffca43;
+    color: #ffca43 !important;
+}
+
+.listView{
+    font-size: 15px;
 }
 
 .bg-new .nav-link:hover{
-    color: #f78f35 !important;
+    color: #ffca43 !important;
 }
 
 .btn{
@@ -409,7 +417,7 @@ input[type=checkbox]{
 
 .page-heading h3{
     padding-right: 20px;
-    font-size: 22px;
+    font-size: 18px;
 }
 .page-heading .btn{
     height: 30px;
@@ -417,3 +425,87 @@ input[type=checkbox]{
 table p{
     margin-bottom: 0;
 }
+
+.bigCard{
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+
+
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #051b11;
+
+}
+
+.bigCard h2{
+    font-weight: 600;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: 30px;
+}
+
+.bigCard p{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: 13px;
+    color: #051b11;
+    transition: 0.5s ease all;
+}
+
+.bigCard .col{
+    border-right: 1px solid #051b11;
+    padding: 20px 22px;
+    transition: 0.5s ease all;
+}
+
+.bigCard .col:last-child{
+    border: none;
+}
+
+.smallCard{
+    background: #fff;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0px;
+    padding: 20px;
+}
+
+.smallCard h3{
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+.smallCard .listView{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    padding-top: 8px;
+    border-bottom: 1px solid #efefef;
+    line-height: 30px;
+}
+
+.smallCard .listView:last-child{
+    border-bottom: none;
+}
+
+.smallCard .listView .value{
+    font-weight: 600;
+    background: #ffca43;
+    padding: 4px;
+    border-radius: 7px;
+    color: #000000;
+    height: 25px;
+    line-height: 18px;
+}
+
+.topDash{
+    background: #229E82;
+}
+
+

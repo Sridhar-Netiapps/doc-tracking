@@ -7,7 +7,7 @@
         <div class="col-10">
             <div class="d-flex page-heading">
                 <h3 > Moved to RMA</h3>
-                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
             @if(session('upload_failures'))
                 <div class="alert alert-danger">
@@ -30,22 +30,22 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}} " id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($gold_loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($account_opening_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($dtrf_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
                 @hasanyrole('ro-user')
@@ -55,7 +55,7 @@
                 @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                <div class="tab-pane fade show active" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -299,13 +299,14 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
+            <input type="hidden" name="doc_type" value="{{$type}}">
             <div class="row">
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
-                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
+                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div>
@@ -313,7 +314,7 @@
                     <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                <div class="col-12 mt-3">
+                <div class="col-12 mt-3 d-none">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
                         <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
@@ -331,14 +332,14 @@
                     <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
-                <div class="col-12 mt-3 d-none">
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
-                <div class="col-12 mt-3 d-none">
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control account_number" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
-                <div class="col-12 mt-3 d-none">
-                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
+                <div class="col-12 mt-3">
+                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min=0>
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select scheme" name="scheme">
@@ -356,7 +357,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
-                <div class="col-12 mt-3 d-none">
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
                 <div class="col-12 mt-3 d-none">
@@ -374,15 +375,16 @@
                 </div>
                 <div class="col-12 mt-3">
                     <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
-                        <option value="">Select Status</option>
-                        <option {{ ($filters['status'] ?? '') == 1 ? 'selected' : '' }} value=1>Pending</option>
-                        <option {{ ($filters['status'] ?? '') == 3 ? 'selected' : '' }} value=3>Awaiting Checker Approval</option>
-                        <option {{ ($filters['status'] ?? '') == 4 ? 'selected' : '' }} value="4">Dispatched</option>
+                        <option value=''>Select Status</option>
+                            <option value='8' {{ ($filters['status'] ?? '') == 8 ? 'selected' : '' }}>In</option>
+                            <option value='9' {{ ($filters['status'] ?? '') == 9 ? 'selected' : '' }}>Out</option>
+                            <option value='10' {{ ($filters['status'] ?? '') == 10 ? 'selected' : '' }}>Permout</option>
+                            <option value='11' {{ ($filters['status'] ?? '') == 11 ? 'selected' : '' }}>Destroyed</option>
                     </select>
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
+                    <a  href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a>
                 </div>
             </div>
         </form>
@@ -392,7 +394,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
             {{-- <form id="doc-retrive" action="{{ route('document.update') }}" method="POST"> --}}
-                <form id="doc-retrive" action="{{ route('accounts.moved')}}" method="POST">
+            <form id="doc-retrive" action="{{ route('accounts.moved')}}" method="POST">
                 @csrf
                 <div class="modal-header text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Retrive Document from RMA</h5>
@@ -452,7 +454,7 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <select name="status" class="form-control select2" required>
-                            <option value=''>Select</option>
+                            <option value=''>Select Status</option>
                             <option value='8'>In</option>
                             <option value='9'>Out</option>
                             <option value='10'>Permout</option>
