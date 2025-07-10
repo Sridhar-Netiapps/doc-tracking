@@ -26,7 +26,7 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
-    use ListensForLdapBindFailure;
+    // use ListensForLdapBindFailure;
 
     /**
      * Where to redirect users after login.
