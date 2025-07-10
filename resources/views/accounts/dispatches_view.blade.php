@@ -80,13 +80,12 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
-                {{-- @endif --}}
-                @hasanyrole('ro-user')
                 <li class="ms-auto">
-                    <button id="update-all" class="btn btn-primary d-none">Update All</button>
-                </li>
-                @endhasanyrole
-                <li class="ms-auto">
+                    @hasanyrole('ro-user')
+                    @if ($dispatch->status == 5)
+                        <button id="update-all" class="btn btn-primary d-none">Update All</button>
+                    @endif 
+                    @endhasanyrole
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
                 </li>
             </ul>
@@ -108,8 +107,10 @@
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
+                                @if ($dispatch->status == 5 || $dispatch->status == 7)
                                 <th class="d-none loan" scope="col">Update Status</th>
                                 <th class="d-none loan" scope="col">Actions</th>
+                                @endif
                                 @endhasanyrole
                             </tr>
                         </thead>
@@ -144,6 +145,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="loan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -156,6 +158,7 @@
                                         <td class="border-start">
                                                 <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
+                                        @endif
                                         @endif
                                         @endhasanyrole
                                     </tr>
@@ -179,8 +182,10 @@
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
+                                @if ($dispatch->status == 5)
                                 <th class="d-none goldloan" scope="col">Update Status</th>
                                 <th class="d-none goldloan" scope="col">Actions</th>
+                                @endif
                                 @endhasanyrole
                             </tr>
                         </thead>
@@ -212,6 +217,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
+                                        @if ($dispatch->status == 5)
                                         @if ($row->status == 4)
                                         <td class="goldloan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -224,6 +230,7 @@
                                         <td class="border-start">
                                             <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
+                                        @endif
                                         @endif
                                         @endhasanyrole
                                     </tr>
@@ -248,8 +255,10 @@
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
+                                @if ($dispatch->status == 5)
                                 <th class="d-none aof" scope="col">Update Status</th>
-                                <th class="d-none aof" scope="col">Actions</th>                            
+                                <th class="d-none aof" scope="col">Actions</th> 
+                                @endif                           
                                 @endhasanyrole
                             </tr>
                         </thead>
@@ -282,6 +291,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
+                                        @if ($dispatch->status == 5)
                                         @if ($row->status == 4)
                                         <td class="aof">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -294,6 +304,7 @@
                                         <td class="border-start">
                                             <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
+                                        @endif
                                         @endif
                                         @endhasanyrole
                                     </tr>
@@ -313,8 +324,10 @@
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
+                                @if ($dispatch->status == 5)
                                 <th class="d-none dtrf" scope="col">Update Status</th>
                                 <th class="d-none dtrf" scope="col">Actions</th>
+                                @endif
                                 @endhasanyrole
                             </tr>
                         </thead>
@@ -342,6 +355,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
+                                        @if ($dispatch->status == 5)
                                         @if ($row->status == 4)
                                         <td class="dtrf">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -354,6 +368,7 @@
                                         <td class="border-start">
                                             <button type="button" class="btn btn-primary update-row">Update</button>
                                         </td>
+                                        @endif
                                         @endif
                                         @endhasanyrole
                                     </tr>
