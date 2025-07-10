@@ -328,7 +328,9 @@
                         <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
                         <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
                         <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                         <option value="12" {{ ($filters['status'] ?? '') == '12' ? 'selected' : '' }}> Tracking Completed </option>
+                        @endunless
                     </select>                                      
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">

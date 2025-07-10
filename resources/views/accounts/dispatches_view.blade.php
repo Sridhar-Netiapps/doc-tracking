@@ -10,9 +10,7 @@
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
-        <div class="col-1">
-            {{-- <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a> --}}
-        </div>
+        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
@@ -51,7 +49,6 @@
                     </div> --}}
                 </div>
             </div>
-            {{-- {{dd($dispatch)}} --}}
         </div>
         <div class="col-1"></div>
     </div>
@@ -61,22 +58,18 @@
         <div class="col-1"></div>
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($gold_loan_document) --}}
+               
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($account_opening_document) --}}
+                
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($dtrf_document) --}}
+                
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
@@ -86,7 +79,8 @@
                         <button id="update-all" class="btn btn-primary d-none">Update All</button>
                     @endif 
                     @endhasanyrole
-                    <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                    {{-- <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a> --}}
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
