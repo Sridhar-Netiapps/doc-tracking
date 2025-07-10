@@ -20,6 +20,7 @@ use App\Models\ProcessStatus;
 use App\Models\DocumentHistory;
 use Illuminate\Support\Str;
 use App\Models\Vendor;
+use App\Exports\DocumentExport;
 
 
 class DocumentController extends Controller
@@ -879,5 +880,24 @@ class DocumentController extends Controller
         $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$type]))->get();
 
         return view('accounts.doc_history', compact('document','history','type'));    
+    }
+
+    public function export(Request $request)
+    {
+        $docType = $request->doc_type; // 'loan', 'gold', 'aof', 'dtrf'
+
+        $data = match ($docType) {
+            'loan' => LoanDocument::get(),
+            // with('yourRelations')->
+            'gold' => GoldLoanDocument::get(),
+            // with('yourRelations')->
+            'aof'  => AccountOpeningDocument::get(),
+            // with('yourRelations')->
+            'dtrf' => DtrfDocument::get(),
+            // with('yourRelations')->
+            default => collect(),
+        };
+
+        return Excel::download(new DocumentExport($data, $docType), "{$docType}_export.xlsx");
     }
 }

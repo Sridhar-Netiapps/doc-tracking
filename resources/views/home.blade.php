@@ -1,591 +1,191 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
-
-
-
-
 <div class="container mt-3 ">
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col">
-                <h2>323</h2>
+                <h2>{{$total_doc}}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col">
-                <h2>323</h2>
-                <p>Total Documents</p>
+                <h2>{{$total_selected}}</h2>
+                <p>Pending to Proceed</p>
             </div>
             <div class="col">
-                <h2>323</h2>
-                <p>Total Documents</p>
+                <h2>{{$total_dispatch}}</h2>
+                <p>Awaiting Checker Approval</p>
             </div>
             <div class="col">
-                <h2>323</h2>
-                <p>Total Documents</p>
+                <h2>{{$total_transist}}</h2>
+                <p>In Transit</p>
             </div>
             <div class="col">
-                <h2>323</h2>
-                <p>Total Documents</p>
+                <h2>{{$total_rejected}}</h2>
+                <p>Rejected By RO</p>
+            </div>
+            <div class="col">
+                <h2>{{$total_received}}</h2>
+                <p>Received Documents</p>
             </div>
         </div>
     </div>
-
-
     <div class="row">
         <div class="col">
             <div class="smallCard">
-                <h3>MB Loan</h3>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <h3>MB Loan Docs</h3>
+                    <div class="value">{{array_sum($loan_total)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Pending to Proceed</div>
+                    <div class="value">{{ ($loan_total[1] ?? 0) + ($loan_total[2] ?? 0) }}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Awaiting Checker Approval</div>
+                    <div class="value">{{($loan_total[3] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">In Transit</div>
+                    <div class="value">{{($loan_total[4] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="smallCard">
-                <h3>MB Loan</h3>
-                <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Rejected By RO</div>
+                    <div class="value">{{($loan_total[6] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
-                </div>
-                <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
-                </div>
-                <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
-                </div>
-                <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Received Documents</div>
+                    <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</div>
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="smallCard">
-                <h3>MB Loan</h3>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <h3>Gold Loan Docs</h3>
+                    <div class="value">{{array_sum($gold_loan_total)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Pending to Proceed</div>
+                    <div class="value">{{ ($gold_loan_total[1] ?? 0) + ($gold_loan_total[2] ?? 0) }}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Awaiting Checker Approval</div>
+                    <div class="value">{{($gold_loan_total[3] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">In Transit</div>
+                    <div class="value">{{($gold_loan_total[4] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Rejected By RO</div>
+                    <div class="value">{{($gold_loan_total[6] ?? 0)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Received Documents</div>
+                    <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0)}}</div>
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="smallCard">
-                <h3>MB Loan</h3>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <h3>Liablities Docs</h3>
+                    <div class="value">{{array_sum($aof_total)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Pending to Proceed</div>
+                    <div class="value">{{ ($aof_total[1] ?? 0) + ($aof_total[2] ?? 0) }}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Awaiting Checker Approval</div>
+                    <div class="value">{{($aof_total[3] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">In Transit</div>
+                    <div class="value">{{($aof_total[4] ?? 0)}}</div>
                 </div>
                 <div class="listView">
-                    <div class="label">Pending Documents</div>
-                    <div class="value">29</div>
+                    <div class="label">Rejected By RO</div>
+                    <div class="value">{{($aof_total[6] ?? 0)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Received Documents</div>
+                    <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0)}}</div>
                 </div>
             </div>
         </div>
-
+        <div class="col">
+            <div class="smallCard">
+                <div class="listView">
+                    <h3>DTR Files</h3>
+                    <div class="value">{{array_sum($dtrf_total)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Pending to Proceed</div>
+                    <div class="value">{{ ($dtrf_total[1] ?? 0) + ($dtrf_total[2] ?? 0) }}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Awaiting Checker Approval</div>
+                    <div class="value">{{($dtrf_total[3] ?? 0)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">In Transit</div>
+                    <div class="value">{{($dtrf_total[4] ?? 0)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Rejected By RO</div>
+                    <div class="value">{{($dtrf_total[6] ?? 0)}}</div>
+                </div>
+                <div class="listView">
+                    <div class="label">Received Documents</div>
+                    <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0)}}</div>
+                </div>
+            </div>
+        </div>
     </div>
-
     <div class="row justify-content-center">
         {{-- <div class="col-1"></div>
         <div class="col-10"> --}}
-        {{-- <div class="d-flex mb-3"><div class="ms-2"><a href="/accounts/accounts">Filters</a></div></div> --}}
-            <div class="headerCards">
-{{--                <div class="row">--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                <p class="card-text">Total Documents</p>--}}
-{{--                                <h3>{{$total_doc}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                <p class="card-text">Total Pending Documents</p>--}}
-{{--                                <h3>{{$total_pending}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    --}}{{-- <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                <p class="card-text">Pending to Proceed</p>--}}
-{{--                                <h3>{{$total_selected}}/{{$total_doc}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div> --}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                <p class="card-text">Awaiting Checker Approval</p>--}}
-{{--                                <h3>{{$total_dispatch}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-3.svg" /></div>--}}
-{{--                                <p class="card-text">In Transit</p>--}}
-{{--                                <h3>{{$total_transist}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                <p class="card-text">Rejected By RO</p>--}}
-{{--                                <h3>{{$total_rejected}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                <p class="card-text">Received Documents</p>--}}
-{{--                                <h3>{{$total_received}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="row">--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    --}}{{-- <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div> --}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Total MB Loan Documents</p>--}}
-{{--                                <h3>{{array_sum($loan_total)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Pending to Proceed</p>--}}
-{{--                                <h3>{{ ($loan_total[1] ?? 0) + ($loan_total[2] ?? 0) }}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text"></p>Awaiting Checker Approval--}}
-{{--                                <h3>{{($loan_total[3] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">In Transit</p>--}}
-{{--                                <h3>{{($loan_total[4] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Rejected By RO</p>--}}
-{{--                                <h3>{{($loan_total[6] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-primary">MB Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Received Documents</p>--}}
-{{--                                --}}{{-- <h3>{{($loan_total[5] ?? 0)}}</h3> --}}
-{{--                                <h3>{{ ($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="row">--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    --}}{{-- <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div> --}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Total Gold Loan Documents</p>--}}
-{{--                                <h3>{{array_sum($gold_loan_total)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Pending to Proceed</p>--}}
-{{--                                <h3>{{ ($gold_loan_total[1] ?? 0) + ($gold_loan_total[2] ?? 0) }}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Awaiting Checker Approval</p>--}}
-{{--                                <h3>{{($gold_loan_total[3] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">In Transit</p>--}}
-{{--                                <h3>{{($gold_loan_total[4] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Rejected By RO</p>--}}
-{{--                                <h3>{{($gold_loan_total[6] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-secondary">Gold Loan</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Received Documents</p>--}}
-{{--                                <h3>{{($gold_loan_total[5] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="row">--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    --}}{{-- <div class="text-right"><span class="badge rounded-pill bg-warning">DTR Files</span></div> --}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Total DTR Files Documents</p>--}}
-{{--                                <h3>{{array_sum($dtrf_total)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Pending to Proceed</p>--}}
-{{--                                <h3>{{ ($dtrf_total[1] ?? 0) + ($dtrf_total[2] ?? 0) }}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Awaiting Checker Approval</p>--}}
-{{--                                <h3>{{($dtrf_total[3] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">In Transit</p>--}}
-{{--                                <h3>{{($dtrf_total[4] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Rejected By RO</p>--}}
-{{--                                <h3>{{($dtrf_total[6] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-warning">DTRF</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Received Documents</p>--}}
-{{--                                <h3>{{($dtrf_total[5] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <div class="row">--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    --}}{{-- <div class="text-right"><span class="badge rounded-pill bg-info">Liablities Documents</span></div> --}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Total Liablities Documents</p>--}}
-{{--                                <h3>{{array_sum($aof_total)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Pending to Proceed</p>--}}
-{{--                                <h3>{{ ($aof_total[1] ?? 0) + ($aof_total[2] ?? 0) }}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Awaiting Checker Approval</p>--}}
-{{--                                <h3>{{($aof_total[3] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-2.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">In Transit</p>--}}
-{{--                                <h3>{{($aof_total[4] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Rejected By RO</p>--}}
-{{--                                <h3>{{($aof_total[6] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="col">--}}
-{{--                        <div class="card">--}}
-{{--                            <div class="card-body">--}}
-{{--                                <div class="d-flex align-items-center justify-content-between">--}}
-{{--                                    <div class="icon"><img src="/images/icon-4.svg" /></div>--}}
-{{--                                    <div class="text-right"><span class="badge rounded-pill bg-info">Liablities</span></div>--}}
-{{--                                </div>--}}
-{{--                                <p class="card-text">Received Documents</p>--}}
-{{--                                <h3>{{($aof_total[5] ?? 0)}}</h3>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-                {{-- <div class="headerCards">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="icon"><img src="/images/icon-1.svg" /></div>
-                                    <p class="card-text">Loan Documents</p>
-                                    <h3>{{ $loan_total[1] }}</h3>  <!-- Display dynamic total here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
-                                    <p class="card-text">Gold Loan Documents</p>
-                                    <h3>{{ $gold_loan_total[1] }}</h3>  <!-- Display dynamic total here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
-                                    <p class="card-text">AOF</p>
-                                    <h3>{{ $aof_total[1] }}</h3>  <!-- Display dynamic total here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="icon"><img src="/images/icon-3.svg" /></div>
-                                    <p class="card-text">DTRF</p>
-                                    <h3>{{ $dtrf_total[1] }}</h3>  <!-- Display dynamic total here -->
-                                </div>
+        <div class="dashboardCards mt-4">
+            <div class="row">
+                <!-- Line Chart -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Submissions Over Time</h5>
+                            <div style="height: 300px;">
+                                <canvas id="lineChart" style="width: 100%; height: 100% !important;"></canvas>
                             </div>
                         </div>
                     </div>
-                </div> --}}
-            </div>
-            <div class="dashboardCards mt-4">
-                <div class="row">
-                    <!-- Line Chart -->
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Submissions Over Time</h5>
-                                <div style="height: 300px;">
-                                    <canvas id="lineChart" style="width: 100%; height: 100% !important;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
-                    <!-- Doughnut Chart -->
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Category Breakdown</h5>
-                                <div style="height: 300px; margin: auto">
-                                    <canvas id="doughnutChart" style="width: 100%; height: 100% !important;"></canvas>
-                                </div>
+                <!-- Doughnut Chart -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Category Breakdown</h5>
+                            <div style="height: 300px; margin: auto">
+                                <canvas id="doughnutChart" style="width: 100%; height: 100% !important;"></canvas>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                                <!-- Bar Chart -->
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Monthly Verifications</h5>
-                                <div style="height: 300px;">
-                                    <canvas id="barChart" style="width: 100%; height: 100% !important;"></canvas>
-                                </div>
+                <!-- Bar Chart -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Monthly Verifications</h5>
+                            <div style="height: 300px;">
+                                <canvas id="barChart" style="width: 100%; height: 100% !important;"></canvas>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-        {{-- </div>
-        <div class="col-1"></div> --}}
+        </div>
     </div>
 </div>
 <div class="container">
