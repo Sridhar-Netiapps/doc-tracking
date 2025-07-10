@@ -5,8 +5,9 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            <div class="d-flex page-heading">
+            <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
             </div>
         </div>
         <div class="col-1"></div>
