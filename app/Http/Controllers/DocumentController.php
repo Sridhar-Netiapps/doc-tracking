@@ -318,42 +318,52 @@ class DocumentController extends Controller
             }
             return $query->where('status', 2)->orderBy('updated_at', 'desc');
         };
-    
-        $loanQuery = LoanDocument::query();
-        $customFilter($loanQuery, 'loan_documents');
-        $loans = $statusFilter($loanQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'loan';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($loans);
-    
-        $goldQuery = GoldLoanDocument::query();
-        $customFilter($goldQuery, 'gold_loan_documents');
-        $goldloans = $statusFilter($goldQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'goldloan';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($goldloans);
-    
-        $aofQuery = AccountOpeningDocument::query();
-        $customFilter($aofQuery, 'account_opening_documents');
-        $aofs = $statusFilter($aofQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'aof';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($aofs);
-    
-        $dtrfQuery = DtrfDocument::query();
-        $customFilter($dtrfQuery, 'dtrf_documents');
-        $dtrfs = $statusFilter($dtrfQuery)->get()
-            ->map(function ($item) {
-                $item->doc_type = 'dtrf';
-                return $item;
-            });
-        $allDocuments = $allDocuments->merge($dtrfs);
+
+        $docType = $filters['document_type'] ?? null;
+        if (!$docType || $docType === 'loan') {
+            $loanQuery = LoanDocument::query();
+            $customFilter($loanQuery, 'loan_documents');
+            $loans = $statusFilter($loanQuery)->get()
+                ->map(function ($item) {
+                    $item->doc_type = 'loan';
+                    return $item;
+                });
+            $allDocuments = $allDocuments->merge($loans);
+        }
+        
+        if (!$docType || $docType === 'gold_loan') {
+            $goldQuery = GoldLoanDocument::query();
+            $customFilter($goldQuery, 'gold_loan_documents');
+            $goldloans = $statusFilter($goldQuery)->get()
+                ->map(function ($item) {
+                    $item->doc_type = 'gold_loan';  // match with select value
+                    return $item;
+                });
+            $allDocuments = $allDocuments->merge($goldloans);
+        }
+        
+        if (!$docType || $docType === 'aof') {
+            $aofQuery = AccountOpeningDocument::query();
+            $customFilter($aofQuery, 'account_opening_documents');
+            $aofs = $statusFilter($aofQuery)->get()
+                ->map(function ($item) {
+                    $item->doc_type = 'aof';
+                    return $item;
+                });
+            $allDocuments = $allDocuments->merge($aofs);
+        }
+        
+        if (!$docType || $docType === 'dtrf') {
+            $dtrfQuery = DtrfDocument::query();
+            $customFilter($dtrfQuery, 'dtrf_documents');
+            $dtrfs = $statusFilter($dtrfQuery)->get()
+                ->map(function ($item) {
+                    $item->doc_type = 'dtrf';
+                    return $item;
+                });
+            $allDocuments = $allDocuments->merge($dtrfs);
+        }
+
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::pluck('name', 'id');
     
@@ -438,7 +448,39 @@ class DocumentController extends Controller
         return redirect()->route('dispatches', $type);       // Redirect back to listing
     }
     
+    public function checkDispatchStatus($id)
+    {
+        $dispatch = CourierDispatch::find($id);
+    
+        $hasStatus4 = false;
+    
+        if ($dispatch) {
 
+            if (!empty($dispatch->loan_ids)) {
+                $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->goldloan_ids)) {
+                $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->aof_ids)) {
+                $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))
+                                ->where('status', 4)->exists();
+            }
+
+            if (!empty($dispatch->dtrf_ids)) {
+                $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))
+                                ->where('status', 4)->exists();
+            }
+        }
+    
+        return response()->json(['disable_update' => $hasStatus4]);
+    }
+    
+    
     public function getDispatches($type, Request $request)
     {
         
