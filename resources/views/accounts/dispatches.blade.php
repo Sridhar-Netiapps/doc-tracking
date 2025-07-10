@@ -234,6 +234,9 @@
                     </select>
                 </div> --}}
                 <div class="col-12 mt-3">
+                    <input type="text" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no">
+                </div>
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control awb_pod" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
                 </div>
                 {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -315,11 +318,17 @@
                 <div class="col-12 mt-3">
                     <select class="form-select" name="status">
                         <option value="">Select Status</option>
-                        @foreach ($process_statuses as $status)
+                        {{-- @foreach ($process_statuses as $status)
                             <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
                                 {{ $status->name }}
                             </option>
-                        @endforeach
+                        @endforeach --}}
+                        <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
+                        <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
+                        <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
+                        <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
+                        <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
+                        <option value="12" {{ ($filters['status'] ?? '') == '12' ? 'selected' : '' }}> Tracking Completed </option>
                     </select>                                      
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
