@@ -25,10 +25,7 @@
                 </li>
                 
                 <li class="nav-item px-4">
-                    <a class="nav-link 
-                       
-                            {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}
-                    " href="@hasanyrole('master|ro-user'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
+                    <a class="nav-link {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}" href="@hasanyrole('master|ro-user'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
                 </li>
                 
                 <li class="nav-item px-4">
@@ -43,10 +40,10 @@
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
                 </li>
+                {{-- <li class="nav-item px-4">
+                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
+                </li> --}}
                 @endhasanyrole
-                
-                {{-- @hasanyrole('master|bo-maker|bo-checker') --}}
-                {{-- @endhasanyrole --}}
             </ul>
         </div>
     </div>

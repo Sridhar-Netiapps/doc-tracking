@@ -807,16 +807,16 @@
     $(document).ready(function () {
         
         $(".loan_all").click(function () {
-            $(".loan").prop('checked', $(this).prop('checked'));
+            $(".loan:visible").prop('checked', $(this).prop('checked'));
         });
         $(".goldloan_all").click(function () {
-            $(".goldloan").prop('checked', $(this).prop('checked'));
+            $(".goldloan:visible").prop('checked', $(this).prop('checked'));
         });
         $(".aof_all").click(function () {
-            $(".aof").prop('checked', $(this).prop('checked'));
+            $(".aof:visible").prop('checked', $(this).prop('checked'));
         });
         $(".dtrf_all").click(function () {
-            $(".dtrf").prop('checked', $(this).prop('checked'));
+            $(".dtrf:visible").prop('checked', $(this).prop('checked'));
         });
 
     flatpickr(".flatpickr-date", {
