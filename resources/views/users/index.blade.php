@@ -33,6 +33,7 @@
                                 <th>S.No</th>
                                 <th>Name</th>
                                 <th>Employee ID</th>
+                                <th>Region</th>
                                 <th>Branch Code</th>
                                 <th>Email</th>
                                 <th>Gender</th>
@@ -55,6 +56,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $user->employee_id }}</td>
+                                    <td>{{ $user->region }}</td>
                                     <td>{{ $user->branch_id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ ucfirst($user->gender) }}</td>
