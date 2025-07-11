@@ -519,7 +519,6 @@
 
     checkDocumentStatuses();
 
-    // Then: attach click event handler to all buttons
     $('.update-row').on('click', function () {
         if ($(this).prop('disabled')) return; // Prevent if disabled
 
@@ -548,13 +547,13 @@
                 success: function(response) {
                     if (response.disable_update) {
                         button.prop('disabled', true)
-                              .css('background-color', '#a9a9a9') // gray
+                              .css('background-color', '#a9a9a9') 
                               .css('border-color', '#a9a9a9')
                               .attr('title', 'Update disabled: one or more documents have status 4');
                     } else {
                         button.prop('disabled', false)
                               .removeAttr('title')
-                              .css('background-color', '')  // default style
+                              .css('background-color', '')  
                               .css('border-color', '');
                     }
                 },

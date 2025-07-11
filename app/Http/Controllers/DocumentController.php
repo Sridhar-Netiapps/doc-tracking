@@ -709,82 +709,47 @@ class DocumentController extends Controller
     }
 
     public function dispatchDetails(Request $request)
-    {
-        try {
-            DB::beginTransaction();
+{
+    try {
+        DB::beginTransaction();
 
-            $updates = $request->input('updates', []);
+        $updates = $request->input('updates', []);
 
-            foreach ($updates as $update) {
-                // dd($update);
-                $dispatch = CourierDispatch::find($update['id']);
-                $dispatch->status = $update['remarks'];
-                $dispatch->comments = $update['reason_for_rejection'];
-                $dispatch->updated_by = $this->user->id;
-                $dispatch->save();
+        foreach ($updates as $update) {
+            $dispatch = CourierDispatch::find($update['id']);
+
+            if (!$dispatch) continue;
+
+            $dispatch->status = $update['remarks'];
+            $dispatch->comments = $update['reason_for_rejection'];
+            $dispatch->updated_by = $this->user->id;
+            $dispatch->save();
+
+            // ✅ If status is 6 (Rejected), update all related documents to status 6
+            if ((int)$update['remarks'] === 6) {
+                if (!empty($dispatch->loan_ids)) {
+                    LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->update(['status' => 6]);
+                }
+                if (!empty($dispatch->goldloan_ids)) {
+                    GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->update(['status' => 6]);
+                }
+                if (!empty($dispatch->aof_ids)) {
+                    AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->update(['status' => 6]);
+                }
+                if (!empty($dispatch->dtrf_ids)) {
+                    DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->update(['status' => 6]);
+                }
             }
-            DB::commit();
-
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 500);
         }
+
+        DB::commit();
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => $e->getMessage()], 500);
     }
-    // public function removeDocument(Request $request)
-    // {
-    //     $table = [
-    //         'loan' => LoanDocument::class,
-    //         'goldloan' => GoldLoanDocument::class,
-    //         'dtrf' => DtrfDocument::class,
-    //         'aof' => AccountOpeningDocument::class,
-    //     ];
+}
 
-    //     $column = [
-    //         'loan' => 'loan_ids',
-    //         'goldloan' => 'goldloan_ids',
-    //         'dtrf' => 'dtrf_ids',
-    //         'aof' => 'aof_ids',
-    //     ];
-        
-    //     try {
-    //         DB::beginTransaction();
-            
-    //         $dispatch = CourierDispatch::find($request->id);
-    //         $columnName = $column[$request->type];
-
-    //         $values = collect(explode(',', $dispatch->$columnName))
-    //             ->map(fn($v) => trim($v))
-    //             ->filter(fn($v) => $v !== $request->doc_id)
-    //             ->values()
-    //             ->implode(',');
-            
-    //         $dispatch->$columnName = $values;
-    //         $dispatch->updated_by = $this->user->id;
-    //         $dispatch->save();
-
-            // $this->table[$request->type]::where('id', $request->doc_id)->update(['status'=>2]);
-
-    //         $doc = $table[$request->type]::find($request->doc_id);
-    //         $doc->status = 1;
-    //         $doc->save();
-            
-    //         // if(isset($request->type) && $request->type == 'loan')
-    //         //     LoanDocument::where('id', $request->id)->update(['status'=>2]);
-    //         // elseif(isset($request->type) && $request->type == 'goldloan')
-    //         //     GoldLoanDocument::where('id', $request->id)->update(['status'=>2]);
-    //         // elseif(isset($request->type) && $request->type == 'dtrf')
-    //         //     DtrfDocument::where('id', $request->id)->update(['status'=>2]);
-    //         // elseif(isset($request->type) && $request->type == 'aof')
-    //         //     AccountOpeningDocument::where('id', $request->id)->update(['status'=>2]);
-
-    //         DB::commit();
-    //         return response()->json(['success' => true]);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json(['error' => $e->getMessage()], 500);
-    //     }
-    // }
 
     public function removeDispatchesDocument(Request $request)
     {
