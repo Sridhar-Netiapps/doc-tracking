@@ -108,36 +108,6 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			if(!empty($row['53'])){ $claimDetail->handed_to_credit = $row['53']; } 
 			 
 			
-
-			
-
-			
-			 
-			//if(!empty($row['16'])){ $claimDetail->intimation_date = $row['16']; } 
-			
-
-			
-			
-			
-			//if(!empty($row['22'])){ $claimDetail->dob = $row['22']; } 
-			
-			
-			 
-			
-			//if(!empty($row['40'])){ $claimDetail->ack_rec_date = $row['40']; } 
-			
-			
-			
-			
-			//if(!empty($row['48'])){ $claimDetail->re_submit_to_partner_date = $row['48']; } 
-			
-
-			//if(!empty($row['49'])){ $claimDetail->settlement_date = $row['49']; } 
-			
-
-			 
-			
-            
             $claimDetail->save();
 
             $claimID = $claimDetail->id;

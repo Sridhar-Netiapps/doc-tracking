@@ -204,34 +204,34 @@
       
       <div class="contentrows">
         <label class="label-font"> Group Policy No.:<strong class="policy">{{$data->policy_number}}</strong></label>
-        <label class="label-font"> Member Id:<strong class="policy"></strong></label>
+        <label class="label-font"> Member Id:<strong class="policy"> {{$data->mp_no}} </strong></label>
         <label class="label-font"> Client ID:<strong class="policy">{{$data->cust_id}}</strong></label>
-        <label class="label-font"> Claim Amount:<strong class="policy"></strong></label>
+        <label class="label-font"> Claim Amount:<strong class="policy">{{$data->claim_amount}}</strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Name of Group Policyholder:<strong class="policy"></strong></label>
-        <label class="label-font"> Gender:<strong class="policy">Male</strong></label>
+        <label class="label-font"> Name of Group Policyholder:<strong class="policy">Ujjivan Small Finance Bank</strong></label>
+        <label class="label-font"> Gender:<strong class="policy">{{$data->gender}}</strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Full Name of deceased Member:<strong class="policy"></strong></label>
+        <label class="label-font"> Full Name of deceased Member:<strong class="policy">{{$data->deceased_name}}</strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Birth:<strong class="policy"></strong></label>
-        <label class="label-font"> Date of Joining Policy:<strong class="policy"></strong></label>
+        <label class="label-font"> Date of Birth:<strong class="policy">{{$data->dob}}</strong></label>
+        <label class="label-font"> Date of Joining Policy:<strong class="policy">{{$data->deceased_name}}</strong></label>
         <label class="label-font"> Date of last attended duties:<strong class="policy"></strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Death:<strong class="policy"></strong></label>
+        <label class="label-font"> Date of Death:<strong class="policy">{{$data->date_of_death}}</strong></label>
         <label class="label-font"> Time of Death:<strong class="policy"></strong></label>
         <label class="label-font"> A.M/P.M</label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Cause of Death:<strong class="policy">{{$data->cause_od_death}}</strong></label>
+        <label class="label-font"> Cause of Death:<strong class="policy">{{$data->cause_of_death}}</strong></label>
         <label class="label-font"> Age as on Date of Death:<strong class="smallpad"></strong></label>
         <label>Years</label>
         <strong class="smallpad policyunderine" ></strong>
@@ -250,7 +250,7 @@
       </div>
 
       <div class="contentrows">
-         <label class="label-font"> Upon admissibility of Claim, the Payment is to be made in favour of - <strong class="policy"></strong></label>
+         <label class="label-font"> Upon admissibility of Claim, the Payment is to be made in favour of - <strong class="policy">{{$data->nominee_name}}</strong></label>
         
       </div>
 
@@ -275,25 +275,25 @@
 
           <tr>
             <td>
-              <div>Beneficiary’s Name:<strong class="policy">JAYADA BANU</strong></div>
-              <div>Bank Name:<strong class="policy"></strong></div>
-              <div>Relationship to the deceased:<strong class="policy">spouse</strong></div>
-              <div>Account Type:<strong class="policy"></strong></div>
-              <div>Account No.:<strong class="policy"></strong></div>
-              <div>IFSC Code:<strong class="policy"></strong></div>
-              <div>Contact No.:<strong class="policy"></strong></div>
-              <div>Email Id:<strong class="policy"></strong></div>
+              <div class="label-font">Beneficiary’s Name:<strong class="policy">{{$data->nominee_name}}</strong></div>
+              <div class="label-font">Bank Name:<strong class="policy">{{$data->nominee->bank_name}}</strong></div>
+              <div class="label-font">Relationship to the deceased:<strong class="policy">{{$data->relationship}}</strong></div>
+              <div class="label-font">Account Type:<strong class="policy"></strong></div>
+              <div class="label-font">Account No.:<strong class="policy">{{$data->nominee->acc_number}}</strong></div>
+              <div class="label-font">IFSC Code:<strong class="policy">{{$data->nominee->ifsc}}</strong></div>
+              <div class="label-font">Contact No.:<strong class="policy"></strong></div>
+              <div class="label-font">Email Id:<strong class="policy"></strong></div>
               
             </td>
             
             <td>
-              <div>GPH Name:<strong class="policy"></strong></div>
-              <div>Bank Name:<strong class="policy"></strong></div>
-              <div>Account Type:<strong class="policy"></strong></div>
-              <div>Account No.:<strong class="policy"></strong></div>
-              <div>IFSC Code:<strong class="policy"></strong></div>
-              <div>Contact No.:<strong class="policy"></strong></div>
-              <div>Email Id:<strong class="policy"></strong></div>
+              <div class="label-font">GPH Name:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? 'Ujjivan Small Finance Bank':''}}</strong></div>
+              <div class="label-font">Bank Name:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? ' Ujjivan ABSLI Insurance ':''}}</strong></div>
+              <div class="label-font">Account Type:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? ' CURRENT ACCOUNT ':''}}</strong></div>
+              <div class="label-font">Account No.:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? '10001025261001':''}}</strong></div>
+              <div class="label-font">IFSC Code:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? 'UJVN0099999':''}}</strong></div>
+              <div class="label-font">Contact No.:<strong class="policy"></strong></div>
+              <div class="label-font">Email Id:<strong class="policy"></strong></div>
               
             </td>
           </tr>

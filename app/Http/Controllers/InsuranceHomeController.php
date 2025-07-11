@@ -459,7 +459,7 @@ class InsuranceHomeController extends Controller
         $claimdata->partner = $request->partner;
         $claimdata->product = $request->product;
         $claimdata->region = $request->region;
-         $claimdata->mp_no = $request->mp_no;
+        $claimdata->mp_no = $request->mp_no;
         $claimdata->policy_number = $request->policy_number;
         $claimdata->policy_covered_date = $request->policy_covered_date;
         $claimdata->policy_expiry_date = $request->policy_expiry_date; 
@@ -520,8 +520,8 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
-            InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
-            InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
+            //InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
+           // InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -585,23 +585,27 @@ class InsuranceHomeController extends Controller
                       'isHtml5ParserEnabled' => true,
                       'isPhpEnabled' => true,
                   ]);
+
+           $module = 'Insurance'; 
+           $operation = 'Download Claim Form';
+           $note = 'Downloaded/Viewed Claim Form - '.$claimdata->utrn;
+           $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
+
+          $this->auditlogs($module , $operation ,$note , $link);        
           return $pdf->stream($partner.'_MB_'.$claimdata->utrn.'.pdf');
          // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
 
          }
          else if($partner_type->type == 'NMB'){
+            
+
              $this->downloadFolderSmart($partner_type->folder_name);      
           }
           else{
          
           }
 
-         $module = 'Insurance'; 
-         $operation = 'Update';
-         $note = 'Downladed Claim Form - '.$claimdata->utrn;
-         $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
-
-        $this->auditlogs($module , $operation ,$note , $link);
+         
 
 
     }
@@ -609,6 +613,8 @@ class InsuranceHomeController extends Controller
 
     public function downloadFolderSmart($folderName)
     {
+        print_r("lll");die();
+
       $folderPath = public_path('template/' . $folderName);
 
       if (!File::exists($folderPath)) {
@@ -933,7 +939,14 @@ class InsuranceHomeController extends Controller
      }
      else{
        
-        return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.csv');
+         $module = 'Insurance'; 
+         $operation = 'Export';
+         $note = 'Report generated';
+         $link = url('/').'/insurance/leads-report/';
+
+         $this->auditlogs($module , $operation ,$note , $link);
+
+         return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.xlsx');
      }
 
     }
@@ -957,7 +970,41 @@ class InsuranceHomeController extends Controller
 
             $this->auditlogs($module , $operation ,$note , $link);*/
 
+
+
+             $this->downloadFolderSmart($partner_type->folder_name); 
+
           return response()->download(public_path('/template/checklist.pdf'));  
 
+    }
+
+    public function downloadClaim(Request $request)
+    {
+        $claim = InsuranceClaimDetail::findOrFail($request->claim_id);
+
+        $module = 'Insurance';
+        $operation = 'Claim Form';
+        $note = 'Downloaded/Viewed Claim Form - ' . $claim->utrn;
+        $link = url('/insurance/view_claim_details/' . encrypt($claim->id));
+
+        // Your custom method to save the audit log
+        $this->auditlogs($module, $operation, $note, $link);
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function downloadChecklist(Request $request)
+    {
+        $claim = InsuranceClaimDetail::findOrFail($request->claim_id);
+
+        $module = 'Insurance';
+        $operation = 'Checklist';
+        $note = 'Downloaded/Viewed Checklist - ' . $claim->utrn;
+        $link = url('/insurance/view_claim_details/' . encrypt($claim->id));
+
+        // Your custom method to save the audit log
+        $this->auditlogs($module, $operation, $note, $link);
+
+        return response()->json(['status' => 'success']);
     }
 }

@@ -13,9 +13,9 @@
 			  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button>        
 			@endif
             
-			<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2">Download Checklist</button> </a>
+			<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
 			
-			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2">Go Back</button> </a>
+			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
 	</div>
 
@@ -896,6 +896,7 @@ document.querySelectorAll(".number-input").forEach(inputElement => {
     
     document.addEventListener("DOMContentLoaded", function () {
     	const fileUrls = @json(array_map(fn($file) => asset($file), $formArray));
+    	const claimId = @json($data->id);
     	 
         document.getElementById("openFilesBtn").addEventListener("click", function () {
         	
@@ -908,6 +909,43 @@ document.querySelectorAll(".number-input").forEach(inputElement => {
                 link.click();
                 document.body.removeChild(link);*/
             });
+
+            fetch("{{ route('audit.download.claim') }}", {
+	            method: "POST",
+	            headers: {
+	                "Content-Type": "application/json",
+	                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+	            },
+	            body: JSON.stringify({ claim_id: claimId })
+	        })
+	        .then(response => response.json())
+	        .then(data => {
+	            console.log("Audit log saved:", data);
+	        })
+	        .catch(error => {
+	            console.error("Error saving audit log:", error);
+	        });
+
+        });
+
+
+        document.getElementById("btnChecklist").addEventListener("click", function () {
+        	  fetch("{{ route('audit.download.checklist') }}", {
+	            method: "POST",
+	            headers: {
+	                "Content-Type": "application/json",
+	                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+	            },
+	            body: JSON.stringify({ claim_id: claimId })
+	        })
+	        .then(response => response.json())
+	        .then(data => {
+	            console.log("Audit log saved:", data);
+	        })
+	        .catch(error => {
+	            console.error("Error saving audit log:", error);
+	        });
+
         });
     });
 

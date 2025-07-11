@@ -4,7 +4,7 @@
   <title>Birla Group Insurance</title>
   <style type="text/css" nonce="wUDPhZ1Z60inspnMCukimCi">
     @page {
-      margin: 80px 30px 50px 30px; /* top right bottom left */
+      margin: 70px 30px 50px 30px; /* top right bottom left */
     }
 
     body {
@@ -73,7 +73,7 @@
     }
 
     .label-font {
-      font-size: 13px;
+      font-size: 12px;
     }
 
    
@@ -133,7 +133,7 @@
 
     .twocol-table td, .twocol-table th {
       border: 1px solid black;
-      padding: 0px 4px 6px 4px;
+      padding: 0px 4px 5px 4px;
       vertical-align: top;
     }
     .td-height{
@@ -218,6 +218,9 @@
       display: inline-block;
       height: 100px;
     }
+    .margintop{
+      margin-top: 1px;
+    }
 
 
   </style>
@@ -274,7 +277,11 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50"> <label class="label-font">1A) *Name of the Group Policy Holder : </label> <strong class="label-font">Ujjivan Small Finance Bank</strong> </td>
-            <td class="col-50"><label class="label-font"> 1B) *Group Policy Number : </label><strong class="label-font">{{$data->policy_number}}</strong></td>
+            <td class="col-50">
+              <label class="label-font"> 1B) *Group Policy Number : </label><strong class="label-font">{{$data->policy_number}}</strong><br>
+              <label class="label-font"> Member Code : </label><strong class="label-font">{{$data->mp_no}}</strong>
+            
+          </td>
           </tr>
         </table>
 
@@ -307,6 +314,10 @@
             <td class="col-50 td-height"> 
               <label class="label-font">1F) Address of the Beneficiary:</label> 
               <strong class="label-font"></strong>
+            </td>
+            <td class="col-50 td-height"> 
+              <label class="label-font">Sum assured:</label> 
+              <strong class="label-font">{{$data->claim_amount}}</strong>
             </td> 
           </tr>
         </table>
@@ -344,7 +355,10 @@
         <table class="twocol-table">
           <tr>
             <td class="col-50"> <label class="label-font"> 2C) *Date of Birth : </label> <strong class="label-font">{{ $data->dob}}</strong> </td>
-            <td class="col-50"><label class="label-font"> 2D) *Membership/Loan A/c Number : </label><strong class="label-font">{{ $data->load_acc_id}}</strong></td>
+            <td class="col-50">
+              <label class="label-font"> 2D) *Membership/Loan A/c Number : </label><strong class="label-font">{{ $data->load_acc_id}}</strong><br>
+              <label class="label-font"> CIF ID : </label><strong class="label-font">{{ $data->actual_id}}</strong>
+            </td>
           </tr>
         </table>
 
@@ -448,7 +462,7 @@
         </table>  
         
 
-        <div class="header-bg">III. Declaration and Authorization</div>
+        <div class="header-bg margintop">III. Declaration and Authorization</div>
         <div class="declarationtext">I/We, the above-named claimant(s), do solemnly declare that the foregoing answers and statements are true in all respects, and further agree that
         the furnishing of this form, or any other form supplemental thereto, to the Company, shall not constitute an admission by the Company that there
         was any insurance in force on the life in question or a waiver of any rights or defence. <br>

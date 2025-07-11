@@ -50,7 +50,7 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="warning number">{{ $pending_at_branch }}</h3>
-              <span>Pending from branch</span>
+              <span>Pending from Branch</span>
             </div>
             <div class="align-self-center">
               <i class="icon-pie-chart warning font-large-2 float-right"></i>
@@ -68,7 +68,7 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="primary number">{{ $doc_at_ho}}</h3>
-              <span>Document sent to HO</span>
+              <span>Document Sent to HO</span>
             </div>
             <div class="align-self-center">
               <i class="icon-support primary font-large-2 float-right"></i>
