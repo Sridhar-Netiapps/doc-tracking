@@ -36,15 +36,16 @@ return new class extends Migration
             $table->string('load_acc_id')->nullable();
             $table->string('claim_amount')->nullable();
             $table->string('dob')->nullable();
+            $table->string('notification_number')->nullable();
             $table->string('cliam_status')->nullable();
             $table->string('cas_status')->nullable();
             $table->string('nominee_name')->nullable();
             $table->string('relationship')->nullable();
             $table->string('nominee_number')->nullable();
+            $table->string('loan_amount')->nullable();
             $table->string('loan_outstanding')->nullable();
             $table->string('payable_to_nominee')->nullable();
-            $table->string('ack_rec_date')->nullable();
-            $table->string('pkt_no')->nullable();
+            
             $table->string('rl_status')->nullable();
             $table->string('processed_by')->nullable();
             $table->string('ho_remark')->nullable();
@@ -56,10 +57,17 @@ return new class extends Migration
             $table->string('neft_rejection_date')->nullable();
             $table->string('neft_rejection_reason')->nullable();
             $table->string('final_settlement_date')->nullable();
+            $table->string('utrn_mph')->nullable();
+            $table->string('utrn_nominee')->nullable();
+
             $table->string('recovery_status')->nullable();
             $table->string('bounced_chq_no')->nullable();
             $table->string('bounced_chq_date')->nullable();
             $table->string('bounced_chq_reason')->nullable();
+
+            $table->string('chq_deposit_date')->nullable();
+            $table->string('recovered_amount')->nullable();
+            
             $table->string('write_off_rec')->nullable();
             $table->string('write_off_status')->nullable();
             $table->string('handed_to_bh')->nullable();

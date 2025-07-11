@@ -26,7 +26,7 @@ class InsuranceDeathPlacesSeeder extends Seeder
 			['place' =>'ROAD ACCIDENT',],
 			['place' =>'ON ROAD',],
 			['place' =>'RAILWAY TRACK',],
-			['place' =>'Outside',],
+			['place' =>'ABROAD',],
 	    ];
         foreach ($data as $key => $value) {
         	InsurancePlaceofDeath::create($value);

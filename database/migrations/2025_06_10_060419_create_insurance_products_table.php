@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('insurance_products', function (Blueprint $table) {
             $table->id();
             $table->string('product');
+            $table->string('type');
+            $table->string('folder_name')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });
