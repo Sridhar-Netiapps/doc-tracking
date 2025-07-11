@@ -438,19 +438,15 @@ table p{
 }
 
 .bigCard{
-    /* From https://css.glass */
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-
-
-
     width: 100%;
     border-radius: 8px;
     margin-bottom: 20px;
-    border: 1px solid #051b11;
+    font-weight: 600;
 
 }
 
@@ -470,8 +466,8 @@ table p{
 }
 
 .bigCard .col{
-    border-right: 1px solid #051b11;
-    padding: 20px 22px;
+    border-right: 1px solid #937424;
+    padding: 20px 2px;
     transition: 0.5s ease all;
 }
 
