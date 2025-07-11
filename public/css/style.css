@@ -37,7 +37,7 @@ body{
 }
 
 body{
-    background: #E6FDF7;
+    background: #efefef;
     font-family: "Sora", sans-serif;
     font-optical-sizing: auto;
 }
@@ -513,6 +513,11 @@ table p{
 
 .topDash{
     background: #229E82;
+}
+
+.invert{
+    background: #000000 !important;
+    color: #fff !important;
 }
 
 
