@@ -523,6 +523,20 @@ class InsuranceHomeController extends Controller
             //InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
            // InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
 
+      $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->first();
+       if($insurancenomineedata) {
+           $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
+       }else{
+         $nomineedetail = new InsuranceNomineeDetail;
+         $nomineedetail->insurance_claim_details_id = decrypt($id);
+       }
+ 
+       $nomineedetail->spdc_rec_date = $request->spdc_rec_date;
+       $nomineedetail->ack_rec_date = $request->ack_rec_date;
+       $nomineedetail->pkt_no = $request->pkt_no;
+
+       $nomineedetail->save();
+
              $module = 'Insurance'; 
              $operation = 'Update';
              $note = 'Lead details updated - '.$claimdata->utrn;
