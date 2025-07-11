@@ -262,7 +262,7 @@ h2{
     color: #000000 !important;
     background: #ffca43;
     font-weight: 600;
-    background: linear-gradient(180deg, #FFCA43 0%, #997928 100%);
+    background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%);
 }
 
 .bg-new .nav-link:hover{
