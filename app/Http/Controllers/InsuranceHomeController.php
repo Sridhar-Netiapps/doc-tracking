@@ -21,6 +21,8 @@ use App\AuditLogTrait;
 use File;
 use Excel;
 use Auth;
+use ZipArchive;
+
 
 class InsuranceHomeController extends Controller
 {
@@ -82,10 +84,10 @@ class InsuranceHomeController extends Controller
 
         if(Auth::user()->branch_id == '1100'){
           $total = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->count();
-          $claimed = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->count();
-          $noneligible = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->whereIn('cliam_status',['08-Not Eligible','09-Not Eligible [Having outstanding]'])->count();
-          $rejected = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','11-Rejected')->count();
-          $inprogress = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->whereIn('cliam_status',['04-Pending from Insurance Company'])->count();
+          $claimed = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->count();
+          $pending_at_branch = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->whereIn('cliam_status',['Pending From Branch','Pending from branch-Require additional documents'])->count();
+          $doc_at_ho = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Document Sent to HO to Process')->count();
+          $inprogress = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->whereIn('cliam_status',['Pending from Insurance Company'])->count();
           
           foreach ($partners as $key => $value) {
               $partnerArray[]=$value->partner;
@@ -96,10 +98,10 @@ class InsuranceHomeController extends Controller
 
           
           foreach ($region as $val) {
-              $claimedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->where('cliam_status','07-Completed')->count();
-              $noneligibleArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->whereIn('cliam_status',['08-Not Eligible','09-Not Eligible [Having outstanding]'])->count();
-              $rejectedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->where('cliam_status','11-Rejected')->count();
-              $inprogressArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->whereNotIn('cliam_status',['07-Completed','08-Not Eligible','09-Not Eligible [Having outstanding]','11-Rejected',])->count();
+              $claimedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->where('cliam_status','Completed')->count();
+              $noneligibleArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->whereIn('cliam_status',['Not Eligible','Not Eligible [Having outstanding]'])->count();
+              $rejectedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->where('cliam_status','Rejected')->count();
+              $inprogressArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('region',$val)->whereNotIn('cliam_status',['Completed','Not Eligible','Not Eligible [Having outstanding]','Rejected',])->count();
           } 
 
           $regionChart = [$claimedArray ,$noneligibleArray , $rejectedArray , $inprogressArray]; 
@@ -107,9 +109,9 @@ class InsuranceHomeController extends Controller
           $monthArray=$this->getFinancialYearMonths();
           
           foreach ($monthArray as $vals) {
-              $claimedAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->sum('claim_amount');
-              $settledAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->sum('payable_to_nominee');
-              $claimcount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->count();
+              $claimedAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->sum('claim_amount');
+              $settledAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->sum('payable_to_nominee');
+              $claimcount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->count();
 
 
           }
@@ -119,32 +121,33 @@ class InsuranceHomeController extends Controller
           $causeofdeath =  InsuranceCauseOfDeath::all();
 
           foreach ($causeofdeath as $key => $value) {
-             $deathcounts[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->where('cause_of_death',$value->cause)->count();
+             $deathcounts[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->where('cause_of_death',$value->cause)->count();
              $causenames[]=$value->cause;
           }
 
           $deathcausehart = [ $causenames , $deathcounts];
 
-          $count10 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[0,10])->count();
-          $count20 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[11,20])->count();
-          $count30 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[21,30])->count();
-          $count40 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[31,40])->count();
-          $count50 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[41,50])->count();
-          $count60 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[51,60])->count();
-          $count70 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[61,70])->count();
-          $count80 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[71,80])->count();
-          $count90 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[81,90])->count();
-          $count100 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[91,100])->count();
+          $count10 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[0,10])->count();
+          $count20 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[11,20])->count();
+          $count30 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[21,30])->count();
+          $count40 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[31,40])->count();
+          $count50 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[41,50])->count();
+          $count60 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[51,60])->count();
+          $count70 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[61,70])->count();
+          $count80 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[71,80])->count();
+          $count90 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[81,90])->count();
+          $count100 = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[91,100])->count();
 
           $deathagegroup = [$count10,$count20,$count30,$count40,$count50,$count60,$count70,$count80,$count90,$count100];
 
         } 
         else{
+        
           $total = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->count();
-          $claimed = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','07-Completed')->count();
-          $noneligible = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->whereIn('cliam_status',['08-Not Eligible','09-Not Eligible [Having outstanding]'])->count();
-          $rejected = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','11-Rejected')->count();
-          $inprogress = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->whereIn('cliam_status',['04-Pending from Insurance Company'])->count();
+          $claimed = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','Completed')->count();
+          $pending_at_branch = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->whereIn('cliam_status',['Pending From Branch','Pending from branch-Require additional documents'])->count();
+          $doc_at_ho = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','Document Sent to HO to Process')->count();
+          $inprogress = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->whereIn('cliam_status',['Pending from Insurance Company'])->count();
 
            foreach ($partners as $key => $value) {
               $partnerArray[]=$value->partner;
@@ -155,10 +158,10 @@ class InsuranceHomeController extends Controller
 
           
           foreach ($region as $val) {
-              $claimedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','07-Completed')->count();
-              $noneligibleArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->whereIn('cliam_status',['08-Not Eligible','09-Not Eligible [Having outstanding]'])->count();
-              $rejectedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','11-Rejected')->count();
-              $inprogressArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->whereNotIn('cliam_status',['07-Completed','08-Not Eligible','09-Not Eligible [Having outstanding]','11-Rejected',])->count();
+              $claimedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','Completed')->count();
+              $noneligibleArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->whereIn('cliam_status',['Not Eligible','Not Eligible [Having outstanding]'])->count();
+              $rejectedArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->where('cliam_status','Rejected')->count();
+              $inprogressArray[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('region',$val)->whereNotIn('cliam_status',['Completed','Not Eligible','Not Eligible [Having outstanding]','Rejected',])->count();
            } 
 
            $regionChart = [$claimedArray ,$noneligibleArray , $rejectedArray , $inprogressArray];  
@@ -166,38 +169,38 @@ class InsuranceHomeController extends Controller
            $monthArray=$this->getFinancialYearMonths();
           
           foreach ($monthArray as $vals) {
-              $claimedAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->sum('claim_amount');
-              $settledAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->sum('payable_to_nominee');
-              $claimcount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','07-Completed')->count();
+              $claimedAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->sum('claim_amount');
+              $settledAmount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->sum('payable_to_nominee');
+              $claimcount[]=InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('intimation_date','LIKE',$vals.'%')->where('cliam_status','Completed')->count();
           }
           
           $claimchart=[$claimcount , $settledAmount , $claimedAmount];
           
           $causeofdeath =  InsuranceCauseOfDeath::all();
           foreach ($causeofdeath as $key => $value) {
-             $deathcounts[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','07-Completed')->where('cause_of_death',$value->id)->count();
+             $deathcounts[] = InsuranceClaimDetail::whereBetween('created_at',[$start , $end])->where('branch',Auth::user()->branch_id)->where('cliam_status','Completed')->where('cause_of_death',$value->cause)->count();
              $causenames[]=$value->cause;
           }
 
           $deathcausehart = [ $causenames , $deathcounts];
 
-          $count10 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[0,10])->count();
-          $count20 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[11,20])->count();
-          $count30 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[21,30])->count();
-          $count40 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[31,40])->count();
-          $count50 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[41,50])->count();
-          $count60 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[51,60])->count();
-          $count70 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[61,70])->count();
-          $count80 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[71,80])->count();
-          $count90 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[81,90])->count();
-          $count100 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','07-Completed')->whereBetween('age',[91,100])->count();
+          $count10 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[0,10])->count();
+          $count20 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[11,20])->count();
+          $count30 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[21,30])->count();
+          $count40 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[31,40])->count();
+          $count50 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[41,50])->count();
+          $count60 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[51,60])->count();
+          $count70 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[61,70])->count();
+          $count80 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[71,80])->count();
+          $count90 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[81,90])->count();
+          $count100 = InsuranceClaimDetail::where('branch',Auth::user()->branch_id)->whereBetween('created_at',[$start , $end])->where('cliam_status','Completed')->whereBetween('age',[91,100])->count();
 
           $deathagegroup = [$count10,$count20,$count30,$count40,$count50,$count60,$count70,$count80,$count90,$count100];
 
          }
 
         //print_r(json_encode($deathcausehart));die();
-        return view('insurance.dashboard',compact('total','claimed','noneligible','rejected','inprogress','partnerChart','regionChart','claimchart','claimedAmount','monthArray','deathcausehart','financialYears','slectedyear','deathagegroup'));
+        return view('insurance.dashboard',compact('total','claimed','pending_at_branch','doc_at_ho','inprogress','partnerChart','regionChart','claimchart','claimedAmount','monthArray','deathcausehart','financialYears','slectedyear','deathagegroup'));
     }
 
     /**
@@ -275,8 +278,8 @@ class InsuranceHomeController extends Controller
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
 
-        $procesedby=['NA','Vindhya','Ujjivan','HO'];  
-        $deceased=['CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $procesedby=['NA','Vindhya','HO'];  
+        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
 
         return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased'));
     }
@@ -310,48 +313,54 @@ class InsuranceHomeController extends Controller
         $claimdata->product = $request->product;
         $claimdata->region = $request->region;
         $claimdata->policy_number = $request->policy_number;
-        $claimdata->cust_id = $request->cust_id;
-        $claimdata->actual_id = $request->actual_id;
-        $claimdata->deceased = $request->deceased;
-        $claimdata->cause_of_death = $request->cause_of_death;
-        $claimdata->cliam_status = $request->cliam_status;
-        $claimdata->rl_status = $request->rl_status;
-
-        $claimdata->deceased_name = $request->deceased_name;
         $claimdata->mp_no = $request->mp_no;
         $claimdata->policy_covered_date = $request->policy_covered_date;
-        $claimdata->loan_tenure = $request->loan_tenure;
         $claimdata->policy_expiry_date = $request->policy_expiry_date;
-        $claimdata->date_of_death = $request->date_of_death;
-        $claimdata->gender = $request->gender;
-        $claimdata->intimation_date = $request->intimation_date;
-        $claimdata->age = $request->age;
-        $claimdata->place_of_death = $request->place_of_death;
-        $claimdata->load_acc_id = $request->load_acc_id;
-        $claimdata->claim_amount = $request->claim_amount;
+        $claimdata->cust_id = $request->cust_id;
+        $claimdata->actual_id = $request->actual_id;
+        $claimdata->deceased_name = $request->deceased_name;
         $claimdata->dob = $request->dob;
-        $claimdata->cas_status = $request->cas_status;
+        $claimdata->date_of_death = $request->date_of_death;
+        $claimdata->gender = $request->gender;    
+        $claimdata->age = $request->age; 
+        $claimdata->deceased = $request->deceased;
+        $claimdata->intimation_date = $request->intimation_date;
+        $claimdata->place_of_death = $request->place_of_death;
+        $claimdata->cause_of_death = $request->cause_of_death;
+        $claimdata->load_acc_id = $request->load_acc_id;
+        $claimdata->loan_tenure = $request->loan_tenure;
+        $claimdata->claim_amount = $request->claim_amount;
         $claimdata->nominee_name = $request->nominee_name;
         $claimdata->relationship = $request->relationship;
-        $claimdata->nominee_number = $request->nominee_number;
-        $claimdata->loan_outstanding = $request->loan_outstanding;
-        $claimdata->payable_to_nominee = $request->payable_to_nominee;
-        $claimdata->ack_rec_date = $request->ack_rec_date;
-        $claimdata->pkt_no = $request->pkt_no;
+
+        $claimdata->doc_rec_date = $request->doc_rec_date;
         $claimdata->processed_by = $request->processed_by;
         $claimdata->ho_remark = $request->ho_remark;
-        $claimdata->doc_rec_date = $request->doc_rec_date;
         $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
         $claimdata->ho_remark2 = $request->ho_remark2;
         $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->cliam_status = $request->cliam_status;
+        $claimdata->cas_status = $request->cas_status;
+        $claimdata->rl_status = $request->rl_status;
+        $claimdata->notification_number = $request->notification_number;
+
+        $claimdata->loan_amount = $request->loan_amount;
+        $claimdata->loan_outstanding = $request->loan_outstanding;
+        $claimdata->payable_to_nominee = $request->payable_to_nominee;
         $claimdata->settlement_date = $request->settlement_date;
         $claimdata->neft_rejection_date = $request->neft_rejection_date;
         $claimdata->neft_rejection_reason = $request->neft_rejection_reason;
         $claimdata->final_settlement_date = $request->final_settlement_date;
+        $claimdata->utrn_mph = $request->utrn_mph;
+        $claimdata->utrn_nominee = $request->utrn_nominee;
+
         $claimdata->recovery_status = $request->recovery_status;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
+        $claimdata->chq_deposit_date = $request->chq_deposit_date;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
         $claimdata->bounced_chq_reason = $request->bounced_chq_reason;
+        $claimdata->recovered_amount = $request->recovered_amount;
+
         $claimdata->write_off_rec = $request->write_off_rec;
         $claimdata->write_off_status = $request->write_off_status;
         $claimdata->handed_to_bh = $request->handed_to_bh;
@@ -363,7 +372,7 @@ class InsuranceHomeController extends Controller
 
         if($claimdata->id !='' || $claimdata->id != 0){
             InsuranceNomineeDetail::create(['insurance_claim_details_id' => $claimdata->id]);
-            InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
+           // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
              $module = 'Insurance'; 
              $operation = 'create';
@@ -393,14 +402,29 @@ class InsuranceHomeController extends Controller
         $deathcause = InsuranceCauseOfDeath::get();
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
-        $procesedby=['NA','Vindhya','Ujjivan','HO'];
+        $procesedby=['NA','Vindhya','HO'];
         
-        $deceased=['CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
        // print_r($checklistdata);die();
+        $productDetails = InsuranceProduct::where('product',$data->product)->first();
+        $formArray=array();
+        $claimformtype =$productDetails->type;
+        if($claimformtype == 'NMB'){
+           $folder =  $productDetails->folder_name;
+           $files = File::files(('template/'.$folder));
+          // print_r($files);die();
+           foreach ($files as $file) {
+              //$relativePath = str_replace(public_path(), '', $file->getRealPath());
+              $formArray[] = 'template/'.$folder.'/'.$file->getFilename();
+          }
 
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata'));
+
+        }
+        
+      // print_r($formArray);die();
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray'));
     }
 
     /**
@@ -417,67 +441,75 @@ class InsuranceHomeController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-        'region' => 'required',
-        'branch' => 'required',
-        'partner' => 'required',
-        'product' => 'required',
-        'region' => 'required',
-        'policy_number' => 'required',
-        'cust_id' => 'required',
-        'actual_id' => 'required',
-        'cliam_status' => 'required',
-        'cause_of_death' => 'required',
-        'deceased'=> 'required'
-    ]);
+          'region' => 'required',
+          'branch' => 'required',
+          'partner' => 'required',
+          'product' => 'required',
+          'region' => 'required',
+          'policy_number' => 'required',
+          'cust_id' => 'required',
+          'actual_id' => 'required',
+          'cliam_status' => 'required',
+          'cause_of_death' => 'required',
+          'deceased'=> 'required'
+      ]);
 
         $claimdata = InsuranceClaimDetail::find(decrypt($id));
         $claimdata->branch = $request->branch;
         $claimdata->partner = $request->partner;
         $claimdata->product = $request->product;
         $claimdata->region = $request->region;
+        $claimdata->mp_no = $request->mp_no;
         $claimdata->policy_number = $request->policy_number;
+        $claimdata->policy_covered_date = $request->policy_covered_date;
+        $claimdata->policy_expiry_date = $request->policy_expiry_date; 
         $claimdata->cust_id = $request->cust_id;
         $claimdata->actual_id = $request->actual_id;
-        $claimdata->deceased = $request->deceased;
-        $claimdata->cause_of_death = $request->cause_of_death;
-        $claimdata->cliam_status = $request->cliam_status;
-        $claimdata->rl_status = $request->rl_status;
-
         $claimdata->deceased_name = $request->deceased_name;
-        $claimdata->mp_no = $request->mp_no;
-        $claimdata->policy_covered_date = $request->policy_covered_date;
-        $claimdata->loan_tenure = $request->loan_tenure;
-        $claimdata->policy_expiry_date = $request->policy_expiry_date;
+        $claimdata->dob = $request->dob;
         $claimdata->date_of_death = $request->date_of_death;
         $claimdata->gender = $request->gender;
-        $claimdata->intimation_date = $request->intimation_date;
         $claimdata->age = $request->age;
+        $claimdata->deceased = $request->deceased;
+        $claimdata->intimation_date = $request->intimation_date;
         $claimdata->place_of_death = $request->place_of_death;
+        $claimdata->cause_of_death = $request->cause_of_death;
         $claimdata->load_acc_id = $request->load_acc_id;
+        $claimdata->loan_tenure = $request->loan_tenure;
         $claimdata->claim_amount = $request->claim_amount;
-        $claimdata->dob = $request->dob;
-        $claimdata->cas_status = $request->cas_status;
         $claimdata->nominee_name = $request->nominee_name;
         $claimdata->relationship = $request->relationship;
-        $claimdata->nominee_number = $request->nominee_number;
+
+        $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
+        $claimdata->processed_by = $request->processed_by;
+        $claimdata->doc_rec_date = $request->doc_rec_date;
+        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->ho_remark = $request->ho_remark;
+        $claimdata->ho_remark2 = $request->ho_remark2;
+        $claimdata->cliam_status = $request->cliam_status;
+        $claimdata->cas_status = $request->cas_status;
+        $claimdata->rl_status = $request->rl_status;
+        $claimdata->notification_number = $request->notification_number;
+        
+        $claimdata->loan_amount = $request->loan_amount;
         $claimdata->loan_outstanding = $request->loan_outstanding;
         $claimdata->payable_to_nominee = $request->payable_to_nominee;
-        $claimdata->ack_rec_date = $request->ack_rec_date;
-        $claimdata->pkt_no = $request->pkt_no;
-        $claimdata->processed_by = $request->processed_by;
-        $claimdata->ho_remark = $request->ho_remark;
-        $claimdata->doc_rec_date = $request->doc_rec_date;
-        $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
-        $claimdata->ho_remark2 = $request->ho_remark2;
-        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
         $claimdata->settlement_date = $request->settlement_date;
         $claimdata->neft_rejection_date = $request->neft_rejection_date;
         $claimdata->neft_rejection_reason = $request->neft_rejection_reason;
         $claimdata->final_settlement_date = $request->final_settlement_date;
+        $claimdata->utrn_mph = $request->utrn_mph;
+        $claimdata->utrn_nominee = $request->utrn_nominee;
+      
+        
         $claimdata->recovery_status = $request->recovery_status;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
         $claimdata->bounced_chq_reason = $request->bounced_chq_reason;
+
+        $claimdata->chq_deposit_date = $request->chq_deposit_date;
+        $claimdata->recovered_amount = $request->recovered_amount;
+        
         $claimdata->write_off_rec = $request->write_off_rec;
         $claimdata->write_off_status = $request->write_off_status;
         $claimdata->handed_to_bh = $request->handed_to_bh;
@@ -488,8 +520,8 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
-            InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
-            InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
+            //InsuranceNomineeDetail::create(['insurance_claim_details_id' => decrypt($id) ]);
+           // InsuranceChecklist::create(['insurance_claim_details_id' => decrypt($id) ]);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -510,53 +542,135 @@ class InsuranceHomeController extends Controller
      */
     public function download_claim_form(string $id)
     {
-        $claimdata = InsuranceClaimDetail::where('id',decrypt($id))->first();
+        $claimdata = InsuranceClaimDetail::with('nominee')->where('id',decrypt($id))->first();
+
+        $partner_type = InsuranceProduct::where('product',$claimdata->product)->first();
+
+        $claimform =$partner_type->description;
+
+        if($partner_type->type == 'MB'){
         
-        if($claimdata->partner == 'Bajaj'){
-            $path = public_path('insurance_images/bajaj_logo.png');
-            $partner = 'BAJAJ';
-            $formname='bajaj';
-        }
+          if($claimdata->partner == 'Bajaj'){
+              $path = public_path('insurance_images/bajaj_logo.png');
+              $partner = 'BAJAJ';
+              $formname='bajaj';
+          }
 
-        if($claimdata->partner == 'Birla'){
-            $path = public_path('insurance_images/birlalogo.png');
-            $partner = 'BIRLA';
-            $formname='birlagroup';
-        }
+          if($claimdata->partner == 'ABSLI'){
+              $path = public_path('insurance_images/birlalogo.png');
+              $partner = 'BIRLA';
+              $formname='birlagroup';
+          }
 
-        if($claimdata->partner == 'HDFC'){
-            $path = public_path('insurance_images/hdfc.png');
-            $partner = 'HDFC';
-            $formname='hdfc';
-        }
+          if($claimdata->partner == 'HDFC'){
+              $path = public_path('insurance_images/hdfc.png');
+              $partner = 'HDFC';
+              $formname='hdfc';
+          }
 
-        if($claimdata->partner == 'Max Life'){
-            $path = public_path('insurance_images/maxlife.png');
-            $partner = 'MAXLIFE';
-            $formname='maxlife';
-        }
-        
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+          if($claimdata->partner == 'Max Life'){
+              $path = public_path('insurance_images/maxlife.png');
+              $partner = 'MAXLIFE';
+              $formname='maxlife';
+          }
 
-        $pdf = PDF::loadView('insurance.templates.'.$formname, ['base64' => $base64,'data'=> $claimdata])->setPaper('A4', 'portrait')
-                ->setOptions([
-                    'isHtml5ParserEnabled' => true,
-                    'isPhpEnabled' => true,
-                ]);
-        return $pdf->stream($partner.'_'.$claimdata->cust_id.'.pdf');
-       // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
+         // print_r(json_encode($claimdata));die();
+          
+          $type = pathinfo($path, PATHINFO_EXTENSION);
+          $data = file_get_contents($path);
+          $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-         $module = 'Insurance'; 
-         $operation = 'Update';
-         $note = 'Downladed Claim Form - '.$claimdata->utrn;
-         $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
+          $pdf = PDF::loadView('insurance.templates.'.$formname, ['base64' => $base64,'data'=> $claimdata])->setPaper('A4', 'portrait')
+                  ->setOptions([
+                      'isHtml5ParserEnabled' => true,
+                      'isPhpEnabled' => true,
+                  ]);
 
-        $this->auditlogs($module , $operation ,$note , $link);
+           $module = 'Insurance'; 
+           $operation = 'Download Claim Form';
+           $note = 'Downloaded/Viewed Claim Form - '.$claimdata->utrn;
+           $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
+
+          $this->auditlogs($module , $operation ,$note , $link);        
+          return $pdf->stream($partner.'_MB_'.$claimdata->utrn.'.pdf');
+         // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
+
+         }
+         else if($partner_type->type == 'NMB'){
+            
+
+             $this->downloadFolderSmart($partner_type->folder_name);      
+          }
+          else{
+         
+          }
+
+         
 
 
     }
+
+
+    public function downloadFolderSmart($folderName)
+    {
+        print_r("lll");die();
+
+      $folderPath = public_path('template/' . $folderName);
+
+      if (!File::exists($folderPath)) {
+          return response()->json(['error' => 'Folder not found'], 404);
+      }
+
+      $files = File::allFiles($folderPath);
+
+      if (count($files) === 0) {
+          return response()->json(['error' => 'No files found'], 404);
+      }
+
+      // 🔽 If only one file, download it directly
+      if (count($files) === 1) {
+          $file = $files[0];
+          $realPath = $file->getRealPath();
+          $fileName = str_replace(' ', '_', $file->getFilename()); // sanitize name
+          
+           if (!file_exists($realPath)) {
+              return response()->json(['error' => 'File not found on disk'], 404);
+          }
+
+          // ✅ Clean output buffer
+          if (ob_get_level()) {
+              ob_end_clean();
+          }
+
+          // ✅ Try both options:
+          return response()->download($realPath, $fileName); // recommended
+         
+      }
+
+
+      // 🔽 If multiple files, zip and download
+      $zipFileName = $folderName . '.zip';
+      $zipPath = storage_path('app/' . $zipFileName);
+
+      if (File::exists($zipPath)) {
+          File::delete($zipPath);
+      }
+
+      $zip = new \ZipArchive();
+      if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+          foreach ($files as $file) {
+              $relativePath = str_replace($folderPath . '/', '', $file->getRealPath());
+              $zip->addFile($file->getRealPath(), $relativePath);
+          }
+          $zip->close();
+      } else {
+          return response()->json(['error' => 'Could not create zip file'], 500);
+      }
+
+      return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
+
+
 
     public function import_claim_data(Request $request){
 
@@ -595,7 +709,7 @@ class InsuranceHomeController extends Controller
     }
 
     public function save_nominee_details(Request $request){
-
+      // print_r($request->input());die();
        $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($request->lead_id))->first();
        if($insurancenomineedata) {
            $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
@@ -613,10 +727,14 @@ class InsuranceHomeController extends Controller
        $nomineedetail->spdc_chk_no =$request->spdc_chk_no;
        $nomineedetail->courier_name =$request->courier_name;
        $nomineedetail->pod_no =$request->pod_no;
-       $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
+       $nomineedetail->nominee_number =$request->nominee_number;
+      // $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
        $nomineedetail->bo_remarks =$request->bo_remarks;
        $nomineedetail->bo_maker =$request->bo_maker;
        $nomineedetail->bo_checker =$request->bo_checker;
+       $nomineedetail->spdc_rec_date = $request->spdc_rec_date;
+       $nomineedetail->ack_rec_date = $request->ack_rec_date;
+       $nomineedetail->pkt_no = $request->pkt_no;
 
        $nomineedetail->save();
 
@@ -780,6 +898,7 @@ class InsuranceHomeController extends Controller
       $branch= $request->branch;
 
       $data = InsuranceClaimDetail::whereBetween('intimation_date',[$start , $end])
+              ->with('nominee')
               ->when($region,function($q)use($region){
                  $q->where('region',$region);
               })
@@ -800,10 +919,11 @@ class InsuranceHomeController extends Controller
               })
               ->when($branch,function($q)use($branch){
                  $q->where('branch',$branch);
-              })  
+              })
+              
               ->orderBy('id','DESC')->get();
 
-     
+    // print_r(json_encode($data));die();
      if(!isset($request->action) || $request->action == 'filter'){
       
         $partners = InsurancePartner::get();
@@ -819,21 +939,28 @@ class InsuranceHomeController extends Controller
      }
      else{
        
-        return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.csv');
+         $module = 'Insurance'; 
+         $operation = 'Export';
+         $note = 'Report generated';
+         $link = url('/').'/insurance/leads-report/';
+
+         $this->auditlogs($module , $operation ,$note , $link);
+
+         return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.xlsx');
      }
 
     }
 
     public function download_checklist($id){
 
-        $formname='checklist';
+        /*$formname='checklist';
         $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->first();
         $pdf = PDF::loadView('insurance.templates.'.$formname, ['data'=> $checklistDetails])->setPaper('A4', 'portrait')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
                     'isPhpEnabled' => true,
                 ]);
-        return $pdf->stream('Checklist'.$checklistDetails->leadDetails->utrn.'.pdf');
+        return $pdf->stream('Checklist.pdf');
        // return $pdf->download($partner.'_'.$claimdata->cust_id.'.pdf');
 
              $module = 'Insurance'; 
@@ -841,6 +968,43 @@ class InsuranceHomeController extends Controller
              $note = 'Downladed Checklist - '.$checklistDetails->leadDetails->utrn;
              $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
 
-            $this->auditlogs($module , $operation ,$note , $link);
+            $this->auditlogs($module , $operation ,$note , $link);*/
+
+
+
+             $this->downloadFolderSmart($partner_type->folder_name); 
+
+          return response()->download(public_path('/template/checklist.pdf'));  
+
+    }
+
+    public function downloadClaim(Request $request)
+    {
+        $claim = InsuranceClaimDetail::findOrFail($request->claim_id);
+
+        $module = 'Insurance';
+        $operation = 'Claim Form';
+        $note = 'Downloaded/Viewed Claim Form - ' . $claim->utrn;
+        $link = url('/insurance/view_claim_details/' . encrypt($claim->id));
+
+        // Your custom method to save the audit log
+        $this->auditlogs($module, $operation, $note, $link);
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function downloadChecklist(Request $request)
+    {
+        $claim = InsuranceClaimDetail::findOrFail($request->claim_id);
+
+        $module = 'Insurance';
+        $operation = 'Checklist';
+        $note = 'Downloaded/Viewed Checklist - ' . $claim->utrn;
+        $link = url('/insurance/view_claim_details/' . encrypt($claim->id));
+
+        // Your custom method to save the audit log
+        $this->auditlogs($module, $operation, $note, $link);
+
+        return response()->json(['status' => 'success']);
     }
 }

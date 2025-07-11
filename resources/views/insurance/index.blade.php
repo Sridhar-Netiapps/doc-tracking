@@ -38,14 +38,14 @@
                     @csrf
                     <div class="form-group mb-4">
                         <div class="custom-file text-left">
-                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile">
+                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile" required>
                            
                         </div>
                     </div>
                     <div class="d-flex">
                     <button class="btn btn-danger">Import</button>
                     
-                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.Xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
+                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
                     </div>
                     
                 </form>
@@ -80,44 +80,45 @@
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
-				<th>Lead ID</th>
-				<!-- <th>Creation Date</th>
-				<th>Region</th>-->
-				<th>Branch</th> 
-				<th>Partner</th>
-				<th>Product</th>
-				<th>CIF ID</th>
-				<th>Deceased Name</th>
-				<th>Deceased Type</th>
-				<th>Loan Acc No</th>
-				<th>Cause of Death</th>
-				<th>Claim Status</th>
-				<th>Amount</th>
-				<th>Action</th>
+				<th class="text-table-head">Lead ID</th>
+				<th class="text-table-head">Product</th>
+				<th class="text-table-head">CIF ID</th>
+				<th class="text-table-head">Deceased Name</th>
+				<th class="text-table-head">Deceased Type</th>
+				<th class="text-table-head">Loan Acc No</th>
+				<th class="text-table-head">Claim Status</th>
+				<th class="text-table-head">Amount</th>
+				<th class="text-table-head">Policy Covered</th>
+				<th class="text-table-head">Date of Document Received</th>
+				<th class="text-table-head">Date of Submision to Partner</th>
+				<th class="text-table-head">Action</th>
 			</thead>
 
 			<tbody>
 				@foreach($data as $key=>$value)
 				<tr>
-					<td>{{ $value->utrn}}</td>
-					<!-- <td>{{ date('d M,Y H:i',strtotime($value->created_at))}}</td>
-					<td>{{ $value->region}}</td>-->
-					<td>{{ $value->branch}}</td> 
-					<td>{{ $value->partner}}</td>
-					<td>{{ $value->product}}</td>
-					<td>{{ $value->cust_id}}</td>
-					<td>{{ $value->deceased_name}}</td>
-					<td>{{ $value->deceased}}</td>
-					<td>{{ $value->load_acc_id}}</td>
-					
-					<td>{{ $value->cause_of_death}}</td>
-					<td>{{ $value->cliam_status}}</td>
+					<td class="text-table">{{ $value->utrn}}</td>
+					<td class="text-table">{{ $value->product}}</td>
+					<td class="text-table">{{ $value->cust_id}}</td>
+					<td class="text-table">{{ $value->deceased_name}}</td>
+					<td class="text-table">{{ $value->deceased}}</td>
+					<td class="text-table">{{ $value->load_acc_id}}</td>
+					<td class="text-table">{{ $value->cliam_status}}</td>
 					<td class="number">{{ $value->claim_amount}}</td>
+					<td class="text-table">{{ ($value->policy_covered_date !='')?date('d M,Y',strtotime($value->policy_covered_date)):''}}</td>
+					<td class="text-table">{{  ($value->doc_rec_date !='')?date('d M,Y',strtotime($value->doc_rec_date)):''}}</td>
+					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
 				</tr>
 				@endforeach
 			</tbody>
 		</table>
+
+		 <label>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }}
+                of {{$data->total()}} results</label>
+
+              {!! $data->appends('abc')->links('pagination::bootstrap-4') !!}
+    	
 	</div>
 </div>
 @endsection	

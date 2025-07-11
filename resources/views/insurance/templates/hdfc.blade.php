@@ -50,7 +50,7 @@
     	padding: 10px 5px 10px ;
     	margin-left: 10px;
     	font-weight: bold;
-    	font-size: 14px;
+    	font-size: 12px;
     }
 
      .linespace{
@@ -69,14 +69,14 @@
 
     .content-label{
     	padding: 5px;
-    	margin-left: 10px;
+    	margin-left: 0px;
     	font-size: 12px;
     }
 
    .memname {
       display: inline-block;
       width: 300px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
@@ -85,7 +85,7 @@
     .dob {
       display: inline-block;
       width: 100px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       line-height: 1.5;
     }
@@ -94,14 +94,14 @@
       display: inline-block;
       border-bottom: 2px solid black;
       width: 80px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       line-height: 1.5;
     }
     .palce {
       display: inline-block;
       border-bottom: 2px solid black;
-      font-size: 14px;
+      font-size: 12px;
       width: 80px;  
       font-weight: bold;
       line-height: 1.5;
@@ -136,13 +136,13 @@
     .fullname {
       display: inline-block;
       width: 500px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
     }
     .gender {
-      font-size: 14px;
+      font-size: 12px;
       width: 100px;  
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -150,7 +150,7 @@
     }
 
     .relation {
-      font-size: 14px;
+      font-size: 12px;
       width: 120px;  
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -158,7 +158,7 @@
     }
 
      .contact {
-      font-size: 14px;
+      font-size: 12px;
       width: 120px;  
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -166,7 +166,7 @@
     }
 
      .email {
-      font-size: 14px;
+      font-size: 12px;
       width: 160px;  
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
@@ -176,7 +176,7 @@
     .bankname {
       display: inline-block;
       width: 300px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
@@ -185,7 +185,7 @@
     .branchname {
       display: inline-block;
       width: 280px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
@@ -194,7 +194,7 @@
     .bankacc {
       display: inline-block;
       width: 300px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
@@ -203,7 +203,7 @@
     .ifsc {
       display: inline-block;
       width: 260px;               /* Fixed width */
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       border-bottom: 2px solid black; /* Underline */
       line-height: 1.5;
@@ -348,7 +348,7 @@
 				  <label class="header-label">Master Policyholder Details</label> 
 			   </div>
 			   <div class="linespace">
-			  	 <span class="content-label">Policy No.:  <strong class="content-label">{{$data->policy_number}}</strong>  Lending Institution/Master Policyholder Name: <strong></strong> </span>
+			  	 <span class="content-label">Policy No : <strong class="content-label">{{$data->policy_number}}</strong>  Lending Institution/Master Policyholder Name : <strong class="content-label">Ujjivan Small Finance Bank</strong> </span>
 			  </div>
 
 			  <div class="heade-bg">
@@ -356,32 +356,32 @@
 			  </div>
 
 			  <div class="rown">
-			  	<span class="content-label">Member Name :  </span><strong class="memname"></strong>
-          <span class="content-label"> Member No.: <strong></strong> 
+			  	<span class="content-label">Member Name :  </span><strong class="memname"> {{ $data->deceased_name}}</strong>
+          <span class="content-label"> Member No.: <strong> {{ $data->actual_id}}</strong> 
 			  </div>
 
         <div class="rown">
-          <span class="content-label">Date Of Birth :  </span><strong class="dob"></strong>
-          <span class="content-label"> Certificate/Loan Id: <strong></strong> 
+          <span class="content-label">Date Of Birth :  </span><strong class="dob"> {{ $data->dob}}</strong>
+          <span class="content-label"> Certificate/Loan Id: <strong> {{ $data->load_acc_id}}</strong> 
         </div>
 
         <div class="rown">
-          <span class="content-label">Date of commencement of Risk:  </span><strong class="risk"></strong>
-          <span class="content-label">Date of Death:  </span><strong class="risk"></strong>
-          <span class="content-label">Place of Death:  </span><strong class="palce"></strong>
+          <span class="content-label">Date of commencement of Risk:  </span><strong class="risk">{{ $data->policy_covered_date}}</strong>
+          <span class="content-label">Date of Death:  </span><strong class="risk"> {{ $data->date_of_death}}</strong>
+          <span class="content-label">Place of Death:  </span><strong class="palce">{{ $data->place_of_death}}</strong>
         </div>
 
         <div class=" rowd">
           
           <div class="checkbox-group">
             <span class="content-label">Cause of Death (Please tick):</span>
-            <label><input type="checkbox"> Heart Disease</label>
-            <label><input type="checkbox"> Kidney Disease</label>
-            <label><input type="checkbox"> Liver Disease</label>
-            <label><input type="checkbox"> Cancer</label>
-            <label><input type="checkbox"> Accidental</label>
-            <label><input type="checkbox"> Suicide</label>
-            <label><input type="checkbox"> Natural</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'HEART ATTACK')?'checked':''}}> Heart Disease</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'KIDNEY FAILURE')?'checked':''}}> Kidney Disease</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Liver Disease')?'checked':''}}> Liver Disease</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'CANCER')?'checked':''}}> Cancer</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'ACCIDENT' || $data->cause_of_death == 'ACCIDENT(BURNING)')?'checked':''}}> Accidental</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'SUICIDE')?'checked':''}}> Suicide</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'NATURAL')?'checked':''}}> Natural</label>
           </div>
 
         </div>
@@ -394,7 +394,7 @@
         </div>
 
         <div class="rowfullwidth">
-          <span class="content-label">Full Name: </span><strong class="fullname"></strong>
+          <span class="content-label">Full Name: </span><strong class="fullname"> {{ $data->nominee_name}}</strong>
           <span class="content-label"> Gender: </span><strong class="gender"></strong> 
         </div>
 
@@ -404,7 +404,7 @@
         </div>
 
         <div class="rowfullwidth">
-          <span class="content-label"> Relationship with Member: </span><strong class="relation"></strong>
+          <span class="content-label"> Relationship with Member: </span><strong class="relation">{{ $data->relationship}}</strong>
           <span class="content-label"> Contact No.: </span><strong class="contact"></strong> 
           <span class="content-label"> Email ID: </span><strong class="email"></strong>   
         </div>
@@ -414,13 +414,13 @@
         </div> 
   			
         <div class="rowfullwidth">
-          <span class="content-label">Bank Name: </span><strong class="bankname"></strong>
-          <span class="content-label"> Branch: </span><strong class="branchname"></strong> 
+          <span class="content-label">Bank Name: </span><strong class="bankname"> {{ $data->nominee->bank_name}} </strong>
+          <span class="content-label"> Branch: </span><strong class="branchname"> {{ $data->nominee->branch_name}}</strong> 
         </div>
 
         <div class="rowfullwidth">
-          <span class="content-label">Bank Account No. </span><strong class="bankacc"></strong>
-          <span class="content-label"> IFSC: </span><strong class="ifsc"></strong> 
+          <span class="content-label">Bank Account No. </span><strong class="bankacc"> {{ $data->nominee->acc_number}}</strong>
+          <span class="content-label"> IFSC: </span><strong class="ifsc"> {{ $data->nominee->ifsc}}</strong> 
         </div>
     </div>
 
@@ -580,24 +580,24 @@
           <table class="twocol-table">
           <tr>
             <td class="col-70 content-label">a) Sum Assured for which the member of the Group Insurance Policy was insured</td>
-            <td class="col-30 content-label">INR 42000/-</td>
+            <td class="col-30 content-label">INR {{ $data->claim_amount}}/-</td>
           </tr>
           <tr>
             <td class="col-70 content-label">b) Original Amount of Loan</td>
-            <td class="col-30 content-label">INR</td>
+            <td class="col-30 content-label">INR {{ $data->loan_amount}}/-</td>
           </tr>
           <tr>
             <td class="col-70 content-label">c) Particulars of the recoveries made by the Master Policyholder towards the Loan</td>
-            <td class="col-30 content-label">INR</td>
+            <td class="col-30 content-label">INR {{ $data->recovered_amount }}/-</td>
           </tr>
           <tr>
             <td class="col-70 content-label">d) Outstanding Loan Balance as on the date of happening on the contingent event covered. (Amount Payable to Master Policyholder)</td>
-            <td class="col-30 content-label">INR</td>
+            <td class="col-30 content-label">INR {{ $data->loan_outstanding }}/-</td>
           </tr>
           <tr>
             <td class="col-70 content-label">e) Balanc e and
 Outstanding Loan Balance referred under (d) above) payable to the insured on the happening ased member in case of death claims</td>
-            <td class="col-30 content-label">INR</td>
+            <td class="col-30 content-label">INR {{ $data->payable_to_nominee }}/-</td>
           </tr>
         </table>
 

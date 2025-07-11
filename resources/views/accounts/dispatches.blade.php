@@ -193,16 +193,16 @@
                                         {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                         <div class="">
                                             <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
-                                            @if ($type == 'list' || $type == 'tracking')
+                                            @if ($type == 'tracking')
                                                 @hasanyrole('ro-user')
-                                                    <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
+                                                    <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                 @endhasanyrole
                                             @endif
-                                            {{-- @if ($type == 'tracking')
+                                            @if ($type == 'list')
                                                 @hasanyrole('ro-user')
                                                     <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                 @endhasanyrole
-                                            @endif --}}
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -233,6 +233,9 @@
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div> --}}
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no">
+                </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control awb_pod" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
                 </div>
@@ -315,11 +318,19 @@
                 <div class="col-12 mt-3">
                     <select class="form-select" name="status">
                         <option value="">Select Status</option>
-                        @foreach ($process_statuses as $status)
+                        {{-- @foreach ($process_statuses as $status)
                             <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
                                 {{ $status->name }}
                             </option>
-                        @endforeach
+                        @endforeach --}}
+                        <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
+                        <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
+                        <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
+                        <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
+                        <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
+                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                        <option value="12" {{ ($filters['status'] ?? '') == '12' ? 'selected' : '' }}> Tracking Completed </option>
+                        @endunless
                     </select>                                      
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
@@ -506,12 +517,15 @@
         return { id, remarks, reason_for_rejection: reason };
     }
 
-    // Handle individual update
+    checkDocumentStatuses();
+
+    // Then: attach click event handler to all buttons
     $('.update-row').on('click', function () {
+        if ($(this).prop('disabled')) return; // Prevent if disabled
+
         const row = $(this).closest('tr');
         let data;
-        console.log(row);
-        
+
         try {
             data = [collectRowData(row)];
         } catch (err) {
@@ -521,6 +535,87 @@
 
         sendUpdateRequest(data);
     });
+
+    // Reusable function to check status
+    function checkDocumentStatuses() {
+        $('.disable-update-btn').each(function () {
+            let button = $(this);
+            let dispatchId = button.data('id');
+
+            $.ajax({
+                url: '/dispatches/check-status/' + dispatchId,
+                method: 'GET',
+                success: function(response) {
+                    if (response.disable_update) {
+                        button.prop('disabled', true)
+                              .css('background-color', '#a9a9a9') // gray
+                              .css('border-color', '#a9a9a9')
+                              .attr('title', 'Update disabled: one or more documents have status 4');
+                    } else {
+                        button.prop('disabled', false)
+                              .removeAttr('title')
+                              .css('background-color', '')  // default style
+                              .css('border-color', '');
+                    }
+                },
+                error: function() {
+                    console.error('Status check failed for dispatch ID: ' + dispatchId);
+                }
+            });
+        });
+    }
+
+    function sendUpdateRequest(payload) {
+        $.ajax({
+            url: '{{ route("dispatches.update") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                updates: payload
+            },
+            success: function () {
+                Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+            },
+            error: function () {
+                Swal.fire("Error", "Update failed", "error");
+            }
+        });
+    }
+    
+
+    // $('.disable-update-btn').each(function () {
+    //     let button = $(this);
+    //     let dispatchId = button.data('id');
+
+    //     $.ajax({
+    //         url: '/dispatches/check-status/' + dispatchId,
+    //         method: 'GET',
+    //         success: function(response) {
+    //             if (response.disable_update) {
+    //                 button.prop('disabled', true).attr('title', 'Update disabled: one or more documents have status 4');
+    //             }
+    //         },
+    //         error: function() {
+    //             console.error('Status check failed for dispatch ID: ' + dispatchId);
+    //         }
+    //     });
+    // });
+
+    // $('.update-row').on('click', function () {
+    //     const row = $(this).closest('tr');
+    //     let data;
+    //     console.log(row);
+        
+    //     try {
+    //         data = [collectRowData(row)];
+    //     } catch (err) {
+    //         Swal.fire("Alert", err, "warning");
+    //         return;
+    //     }
+
+    //     sendUpdateRequest(data);
+    // });
+    
 
     // Handle bulk update
     $('#update-all').on('click', function () {

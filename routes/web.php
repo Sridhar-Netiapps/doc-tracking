@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProcessStatusController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
@@ -14,10 +15,16 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
 
+// Route::middleware('guest')->group(function () {
+//     Route::get('login', [LoginController::class, 'insex'])->name('login');
+//     Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
+// });
+
+// Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/sample', function () {
-        return view('sample.index');
+    Route::get('/reports', function () {
+        return view('accounts.delivered');
     });
     Route::get('/accounts-index', function () {
         return view('sample.index');
@@ -56,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
+    Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
     Route::get('home', [HomeController::class, 'index'])->name('home');
@@ -128,5 +136,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');
     Route::get('insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
+    Route::post('/audit/download-claim', [InsuranceHomeController::class, 'downloadClaim'])->name('audit.download.claim');
+    Route::post('/audit/download-checklist', [InsuranceHomeController::class, 'downloadChecklist'])->name('audit.download.checklist');
+
    
 });

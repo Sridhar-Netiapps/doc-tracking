@@ -15,7 +15,6 @@ class InsuranceRLStatusSeeder extends Seeder
     {
         $data = [
         	['rl_status' => 'NA'],
-        	['rl_status' => 'PDC'],
         	['rl_status' => 'PDC Process'],
         	['rl_status' => 'RL Process']
         ];
