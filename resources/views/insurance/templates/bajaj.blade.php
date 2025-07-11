@@ -18,7 +18,7 @@
       margin: 10px;
     }
     .innercontent{
-      padding : 10px 20px 20px 0px;	
+      padding : 5px 20px 5px 0px;	
     }
     .headerlogo{
       text-align: right;
@@ -47,10 +47,10 @@
     	font-size: 12px;
     }	
     .margintop{
-    	margin-top: 30px;
+    	margin-top: 20px;
     }
      .nomineename{
-    	width: 80px;
+    	
     	display: inline-block;
     	padding: 0px 2px 0px 2px;
     	text-align: center;
@@ -158,7 +158,7 @@
 	  <div class="highlights">
 	  	<div>&bull;&nbsp;&nbsp;The company retains right to call for further evidence needed to process the claim and to entertain or repudiate the claim.</div>
 	  	<div>&bull;&nbsp;&nbsp;Acceptance of forms does not amount to admission of claim.</div>
-	  	<div class="margintop">I/ we  <strong class="label-font nomineename">«NOMINEE»</strong>(Names of Claimant/ Beneficiary) hereby intimate the death of life assured with the following details:</div>
+	  	<div class="margintop">I/ we  <strong class="label-font nomineename">{{ $data->nominee_name}}</strong>(Names of Claimant/ Beneficiary) hereby intimate the death of life assured with the following details:</div>
 	  </div>
       
       <div class="maincontent">
@@ -170,16 +170,16 @@
 	      <table class="twocol-table">
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Master Policy No: <strong class="label-font">{{$data->policy_number}}</strong></label>
+	      			<label class="label-font">Master Policy No : <strong class="label-font">{{$data->policy_number}}</strong></label>
 	      		</td>
 	      		<td class="col-50">
-	      			<label class="label-font">Master Policyholders Name: <strong class="label-font">UJJIVAN SMALL FINANCE BANK</strong></label>
+	      			<label class="label-font">Master Policyholders Name : <strong class="label-font">UJJIVAN SMALL FINANCE BANK</strong></label>
 	      		</td>
 	      	</tr>
 
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Members Name: <strong class="label-font"></strong></label>
+	      			<label class="label-font">Members Name : <strong class="label-font">{{$data->deceased_name}}</strong></label>
 	      		</td>
 	      		<td class="col-50">
 	      			<label class="label-font">Membership No: <strong class="label-font"></strong></label>
@@ -197,19 +197,19 @@
 
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Loan Account Number: <strong class="label-font">{{ $data->load_acc_id}}</strong></label>
+	      			<label class="label-font">Loan Account Number: <strong class="label-font"></strong></label>
 	      		</td>
 	      		<td class="col-50">
-	      			<label class="label-font">Sum Assured: <strong class="label-font"></strong></label>
+	      			<label class="label-font">Sum Assured: <strong class="label-font">{{ $data->claim_amount}}</strong></label>
 	      		</td>
 	      	</tr>
 
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Outstanding Loan Amount: Rs. <strong class="label-font"></strong></label>
+	      			<label class="label-font">Outstanding Loan Amount: Rs. <strong class="label-font">{{ $data->loan_outstanding }}</strong></label>
 	      		</td>
 	      		<td class="col-50">
-	      			<label class="label-font">Balance Payable Claimant / Beneficiary (if any): Rs. <strong class="label-font"></strong></label>
+	      			<label class="label-font">Balance Payable Claimant / Beneficiary (if any): Rs. <strong class="label-font">{{ $data->payable_to_nominee}}</strong></label>
 	      		</td>
 	      	</tr>
 	      </table>
@@ -221,13 +221,13 @@
       	<table class="twocol-table">
       		<tr>
       			<td class="col-30">
-      				<label class="label-font">Date of Event giving rise to claim<strong class="label-font"></strong></label>
+      				<label class="label-font">Date of Event giving rise to claim</label>
       			</td>
-      			<td class="col-20"><strong class="label-font"></strong></td>
+      			<td class="col-20"><strong class="label-font">{{ $data->date_of_death}}</strong></td>
       			<td class="col-30">
-      				<label class="label-font">Cause of Event giving rise to claim<strong class="label-font"></strong></label>
+      				<label class="label-font">Cause of Event giving rise to claim</label>
       			</td>
-      			<td class="col-20"><strong class="label-font"></strong></td>
+      			<td class="col-20"><strong class="label-font"><strong class="label-font">{{$data->cause_of_death}}</strong></strong></td>
       		</tr>
       	</table>
       </div>
@@ -238,16 +238,16 @@
       	<table class="twocol-table">
       		<tr>
       			<td class="col-50">
-      				<label class="label-font">Name :<strong class="label-font"></strong></label>
+      				<label class="label-font">Name : <strong class="label-font">{{$data->nominee_name}}</strong></label>
       			</td>
       			<td class="col-50">
-      				<label class="label-font">Relationship with Insured Member:<strong class="label-font"></strong></label>
+      				<label class="label-font">Relationship with Insured Member : <strong class="label-font">{{$data->relationship}}</strong></label>
       			</td>
       		</tr>
 
       		<tr>
       			<td class="col-50">
-      				<label class="label-font">Address :<strong class="label-font"></strong></label>
+      				<label class="label-font">Address : <strong class="label-font"></strong></label>
       			</td>
       			<td class="col-50">
       				<strong class="label-font"></strong>
@@ -256,7 +256,7 @@
 
       		<tr>
       			<td class="col-50">
-      				<label class="label-font">Details of Identity Proof submitted :<strong class="label-font"></strong></label>
+      				<label class="label-font">Details of Identity Proof submitted : <strong class="label-font"></strong></label>
       			</td>
       			<td class="col-50">
       				<label class="label-font">PAN/ Form-60<strong class="label-font"></strong></label>
@@ -279,24 +279,24 @@
       	<table class="twocol-table-nopadding">
       		<tr>
       			<td class="col-20">
-      				<label class="label-font">Bank Name<strong class="label-font"></strong></label>
+      				<label class="label-font">Bank Name</label>
       			</td>
-      			<td class="col-30"><strong class="label-font"></strong></td>
+      			<td class="col-30"><strong class="label-font">{{$data->nominee->bank_name}}</strong></td>
       			<td class="col-20">
-      				<label class="label-font">Bank Branch<strong class="label-font"></strong></label>
+      				<label class="label-font">Bank Branch</label>
       			</td>
-      			<td class="col-30"> <strong class="label-font"></strong></td>
+      			<td class="col-30"> <strong class="label-font">{{$data->nominee->branch_name}}</strong></td>
       		</tr>
 
       		<tr>
       			<td class="col-20">
-      				<label class="label-font">IFSC Code<strong class="label-font"></strong></label>
+      				<label class="label-font">IFSC Code</label>
       			</td>
-      			<td class="col-30"><strong class="label-font"></strong></td>
+      			<td class="col-30"><<strong class="label-font">{{$data->nominee->ifsc}}</strong></td>
       			<td class="col-20">
-      				<label class="label-font">Account Number<strong class="label-font"></strong></label>
+      				<label class="label-font">Account Number</label>
       			</td>
-      			<td class="col-30"><strong class="label-font"></strong></td>
+      			<td class="col-30"><strong class="label-font">{{$data->nominee->acc_number}}</strong></td>
       		</tr>
       	</table>
       </div>
@@ -339,7 +339,7 @@
 	  </div>
 	  
 	  	<p class="label-font">1. Insured Member is the same person who has been registered as the Member in the Membership Register maintained by
-	  	<strong>UJJIVAN SMALL FINANCE BANK</strong> for the purposes of group insurance scheme administered under Master Policy No.</p> 
+	  	<strong>UJJIVAN SMALL FINANCE BANK</strong> for the purposes of group insurance scheme administered under Master Policy No. <strong>{{$data->policy_number}}</strong></p> 
 	  
 	  	<p class="label-font ">2. As per the membership register, Claimant/ Beneficiary who has executed this Claim Discharge Form is the same person who has been nominated by insured member.</p>
 	
@@ -351,7 +351,7 @@
 	  </div>
 
 	  <div class="margintop">
-	  	<label>Name &amp; Designation :</label>
+	  	<label>Name &amp; Designation : </label>
 	  </div>
     </div>
 </div>

@@ -39,7 +39,7 @@
                 <input class="form-control " type="text" name="search" placeholder="Search" value="{{ $search}}">
 
                 <select class="form-control form-select border-0 p-2 ms-3" name="region">
-                    <option value=""> Select Region</option>
+                    <option value=""> All Regions</option>
                     <option {{($region == 'South')?'selected':''}} value="South">South</option>
                     <option {{($region == 'North')?'selected':''}} value="North">North</option>
                     <option {{($region == 'East')?'selected':''}} value="East">East</option>
@@ -47,26 +47,26 @@
                 </select>
 
                 <select class="form-control form-select border-0 ms-3" name="branch">
-                    <option value="">Select Branch</option>
+                    <option value="">All Branch</option>
                     
                 </select>
 
                 <select class="form-control form-select border-0 ms-3" name="partner">
-                    <option value="">Select Partner</option>
+                    <option value="">All Partner</option>
                     @foreach($partners as $key=>$val)
                      <option {{ ($val->partner == $partner)?'selected':''}} value="{{$val->partner}}">{{$val->partner}}</option>
                     @endforeach
                 </select>
 
                 <select class="form-control form-select border-0 p-2 ms-3" name="product">
-                    <option value="">Select Product</option>
+                    <option value="">All Products</option>
                     @foreach($products as $key=>$val)
                      <option {{ ($val->product == $product)?'selected':''}} value="{{$val->product}}">{{$val->product}}</option>
                     @endforeach
                 </select>
 
                 <select class="form-control form-select border-0 p-2 ms-3" name="status">
-                    <option value="">Select Claim Status</option>
+                    <option value="">All Claim Status</option>
                     @foreach($claimstatus as $key=>$val)
                      <option {{ ($val->claim_status == $claim_status)?'selected':''}} value="{{$val->claim_status}}">{{$val->claim_status}}</option>
                     @endforeach

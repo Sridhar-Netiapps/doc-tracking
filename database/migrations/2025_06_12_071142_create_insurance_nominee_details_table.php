@@ -23,12 +23,16 @@ return new class extends Migration
             $table->string('spdc_chk_no')->nullable();
             $table->string('courier_name')->nullable();
             $table->string('pod_no')->nullable();
+            $table->string('nominee_number')->nullable();
             $table->string('cheq_sent_date')->nullable();
             $table->string('bo_remarks')->nullable();
             $table->string('bo_maker')->nullable();
             $table->string('bo_checker')->nullable();
             $table->string('bo_employee_id')->nullable();
             $table->string('latest_editor')->nullable();
+            $table->string('ack_rec_date')->nullable();
+            $table->string('spdc_rec_date')->nullable();
+            $table->string('pkt_no')->nullable();
             $table->timestamps();
         });
     }
