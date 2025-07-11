@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProcessStatusController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
@@ -14,6 +15,12 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
 
+// Route::middleware('guest')->group(function () {
+//     Route::get('login', [LoginController::class, 'insex'])->name('login');
+//     Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
+// });
+
+// Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/reports', function () {
@@ -56,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
     Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
+    Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
     Route::get('home', [HomeController::class, 'index'])->name('home');
