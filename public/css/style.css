@@ -259,17 +259,28 @@ h2{
 }
 
 .bg-new .active-tab{
-    border-bottom: solid 2px #ffca43;
-    color: #ffca43 !important;
+    color: #000000 !important;
+    background: #ffca43;
+    font-weight: 600;
+    background: linear-gradient(180deg, #FFCA43 0%, #997928 100%);
 }
+
+.bg-new .nav-link:hover{
+    color: #000000 !important;
+    background: linear-gradient(180deg, #FFCA43 0%, #997928 100%);
+    font-weight: 600;
+}
+
+.bg-new .nav-link{
+    padding: 10px 30px;
+    font-weight: 600;
+}
+
 
 .listView{
     font-size: 15px;
 }
 
-.bg-new .nav-link:hover{
-    color: #ffca43 !important;
-}
 
 .btn{
     font-size: 13px;
