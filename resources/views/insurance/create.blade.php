@@ -465,6 +465,35 @@
         </div>
 
         <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">SPDC Details</div>
+        	<div class="card-body bg-card-branch">
+        		<div class="row">
+        			
+					<div class="col-3 mb-3">
+					    <label class="form-label">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ old('ack_rec_date')}}">
+					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ old('spdc_rec_date')}}">
+					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Packet Number</label>
+					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ old('pkt_no')}}" placeholder="Enter Packet Number">
+					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+
+					
+        	    </div>
+        	</div>    		
+        </div>
+
+        <div class="card mt-3">
         	<div class="card-header label-font-header bg-card-header text-white">Write-Off Details</div>
         	<div class="card-body">
         		<div class="row">

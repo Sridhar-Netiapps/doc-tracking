@@ -22,6 +22,7 @@ use File;
 use Excel;
 use Auth;
 use ZipArchive;
+use Smalot\PdfParser\Parser;
 
 
 class InsuranceHomeController extends Controller
@@ -296,13 +297,13 @@ class InsuranceHomeController extends Controller
         'branch' => 'required',
         'partner' => 'required',
         'product' => 'required',
-        'region' => 'required',
+        /*'region' => 'required',
         'policy_number' => 'required',
         'cust_id' => 'required',
         'actual_id' => 'required',
         'cliam_status' => 'required',
         'cause_of_death' => 'required',
-        'deceased'=> 'required',
+        'deceased'=> 'required',*/
     ]);
 
         $utrn = rand('000000','999999');
@@ -371,7 +372,15 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
-            InsuranceNomineeDetail::create(['insurance_claim_details_id' => $claimdata->id]);
+            InsuranceNomineeDetail::create(
+              [
+                'insurance_claim_details_id' => $claimdata->id,
+                'spdc_rec_date' => $request->spdc_rec_date,
+                'ack_rec_date' => $request->ack_rec_date ,
+                'pkt_no' => $request->pkt_no 
+              ]);
+
+           
            // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
              $module = 'Insurance'; 
@@ -1021,4 +1030,200 @@ class InsuranceHomeController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
+    public function settings(){
+
+        $partners = InsurancePartner::get();
+        $products = InsuranceProduct::get();
+        $placeofdeath = InsurancePlaceofDeath::get();
+        $relationship = InsuranceRelationship::get();
+        $deathcause = InsuranceCauseOfDeath::get();
+
+        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause'));
+    }
+
+    public function add_new_insurance_item(Request $request){
+      $module = $request->modulename;
+
+      //print_r($request->input());die();
+
+      if($module == 'Partner'){
+        InsurancePartner::create(['partner'=> $request->title]);
+      }
+
+      if($module == 'Product'){
+        $folderName = "FOLD_".date('YmdHi');
+
+        $errors = [];
+        $uploadedFiles = [];
+
+        if ($request->hasFile('files')) {
+
+            foreach ($request->file('files') as $file) {
+
+                // 🔍 Validate each file
+                $result = $this->validateFileWhileSaving($file);
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+                
+                //print_r($result);die();
+                // ✅ Save the valid file
+
+            }
+        }
+
+        if (!empty($errors)) {
+            return back()->withErrors($errors)->withInput();
+        }
+
+        if (file_exists(public_path().'/template/'.$folderName)) {  
+          } else {
+            File::makeDirectory(public_path().'/template/'.$folderName, $mode = 0777, true, true);
+          }
+
+           foreach($_FILES['files']['name'] as $key=>$val){ 
+          
+               $fileName = basename($_FILES['files']['name'][$key]); 
+                 
+              $destinationPath = public_path().'/template/'.$folderName.'/'.$fileName ;
+              //print_r($fileName);die();
+              move_uploaded_file($_FILES["files"]["tmp_name"][$key], $destinationPath);
+
+          
+            }
+
+
+
+        InsuranceProduct::create(['product'=> $request->title , 'type' => $request->partner_type , 'folder_name' => $folderName]);
+      }
+
+      if($module == 'Cause of Death'){
+        InsuranceCauseOfDeath::create(['cause'=> $request->title ]);
+      }
+
+      if($module == 'Place Of Death'){
+        InsurancePlaceofDeath::create(['place'=> $request->title]);
+      }
+
+      return redirect()->back()->with('sucees', "Added Successfully");
+
+    }
+
+    public function validateFileWhileSaving(\Illuminate\Http\UploadedFile $file)
+    {
+        $maliciousPatterns = [
+            '/<script\b[^>]*>(.*?)<\/script>/is',
+            '/<iframe\b[^>]*>/is',
+            '/<\/iframe>/is',
+            '/<base\b[^>]*>/is',
+            '/href\s*=\s*["\']?(https?:\/\/[^\s"\'<>]+)["\']?/i',
+            '/style\s*=\s*["\']?[^"\']*(?:width|height|background)[^"\']*["\']?/i',
+            '/base64_decode\(/i',
+            '/eval\(/i',
+            '/shell_exec\(/i',
+            '/phpinfo\(/i',
+            '/system\(/i',
+            '/\bfunction\s+[a-zA-Z0-9_]+\s*\(/i',
+            '/\bvar\s+[a-zA-Z0-9_]+\s*=\s*function\s*\(/i',
+            '/\bconst\s+[a-zA-Z0-9_]+\s*=\s*\(\s*\)\s*=>/i',
+            '/\bon[a-z]{3,16}\s*=\s*["\']?\s*[^"\']*\s*\(?\s*\)?/i'
+        ];
+
+        $fileName = $file->getClientOriginalName();
+        $extension = strtolower($file->getClientOriginalExtension());
+        $allowedExtensions = ['pdf', 'docx', 'jpg', 'jpeg', 'png'];
+        $maxSize = 40 * 1024 * 1024; // 40MB
+
+        if (!in_array($extension, $allowedExtensions)) {
+            return "$fileName: Invalid file type.";
+        }
+
+        if ($file->getSize() > $maxSize) {
+            return "$fileName: File size exceeds 40MB.";
+        }
+
+        $isValidExtension = self::isValidFileExtension($fileName, $allowedExtensions);
+        if (!$isValidExtension) {
+            return true;
+        } 
+
+        if ($extension === 'pdf') {
+            try {
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($file->getPathname());
+                $text = $pdf->getText();
+
+                if (empty($text)) {
+                   // return "$fileName: Corrupt PDF or unreadable content.";
+                }
+
+                $fileContent = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                foreach ($maliciousPatterns as $pattern) {
+                    if (preg_match($pattern, $fileContent)) {
+                        return "$fileName: Malicious content detected.";
+                    }
+                }
+            } catch (\Exception $e) {
+                //return "$fileName: PDF extraction failed.";
+            }
+        }
+
+        if ($extension === 'docx') {
+            $content = '';
+            $zip = new \ZipArchive();
+            if ($zip->open($file->getPathname()) === true) {
+                if (($index = $zip->locateName('word/document.xml')) !== false) {
+                    $xmlData = $zip->getFromIndex($index);
+                    $xml = new \SimpleXMLElement($xmlData);
+                    $content = strip_tags($xml->asXML());
+                }
+                $zip->close();
+            }
+
+            $fileContent = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            foreach ($maliciousPatterns as $pattern) {
+                if (preg_match($pattern, $fileContent)) {
+                    return "$fileName: Malicious content detected.";
+                }
+            }
+        }
+
+        return "$fileName: File is clean.";
+    }
+
+    public static function isValidFileExtension($fileName, $allowedExtensions)
+    {
+        // Extract the actual extension (last part)
+        $fileParts = explode('.', $fileName);
+        
+        // Ensure there's at least one dot
+        if (count($fileParts) < 2) {
+            return false;
+        }
+
+        // Get the last part as the extension
+        $fileExtension = strtolower(array_pop($fileParts));
+
+        // Validate the last extension
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            return false; // Invalid extension
+        }
+
+        // Reconstruct the filename without the extension
+        $baseName = implode('.', $fileParts); 
+
+        // Check if the base name contains another valid extension
+        foreach ($allowedExtensions as $ext) {
+            if (preg_match('/\b' . preg_quote($ext, '/') . '\b/i', $baseName)) {
+                // echo 'ERR';exit;
+                return false; // Found another valid extension earlier, reject file
+            }
+        }
+        return true; // Valid file
+    }
+
 }
