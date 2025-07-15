@@ -80,6 +80,7 @@
                     @endif 
                     @endhasanyrole
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                    {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -694,23 +695,43 @@
 
         // Handle bulk update
         $('#update-all').on('click', function () {
-            const data = [];
-            let hasError = false;
+    const activeTab = $('.nav-link.active').attr('id'); // e.g., "loan-tab"
+    const data = [];
+    let hasError = false;
 
-            $('tr[data-id]').each(function () {
-                try {
-                    data.push(collectRowData($(this)));
-                } catch (err) {
-                    Swal.fire("Alert", err, "warning");
-                    hasError = true;
-                    return false; // stop loop
-                }
-            });
+    let tabSelector = '';
 
-            if (!hasError && data.length) {
-                sendUpdateRequest(data);
-            }
-        });
+    // Map tab id to row class or pane
+    switch (activeTab) {
+        case 'loan-tab':
+            tabSelector = '#loan-tab-pane';
+            break;
+        case 'goldloan-tab':
+            tabSelector = '#goldloan-tab-pane';
+            break;
+        case 'aof-tab':
+            tabSelector = '#aof-tab-pane';
+            break;
+        case 'dtrf-tab':
+            tabSelector = '#dtrf-tab-pane';
+            break;
+    }
+
+    $(`${tabSelector} tr[data-id]`).each(function () {
+        try {
+            data.push(collectRowData($(this)));
+        } catch (err) {
+            Swal.fire("Alert", err, "warning");
+            hasError = true;
+            return false; // stop loop
+        }
+    });
+
+    if (!hasError && data.length) {
+        sendUpdateRequest(data);
+    }
+});
+
 
         // Common AJAX function
         function sendUpdateRequest(payload) {

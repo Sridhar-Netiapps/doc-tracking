@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-success btn-text p-2">Insurance Leads</button></a>
+         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-danger text-white btn-text p-2">Insurance Leads</button></a>
          <div class="ms-auto">
           <form method="GET" action="{{ route('insurance_dashboard')}}">
             <select class="form-control" name="fy" id="finaceyear">
@@ -32,27 +32,10 @@
           <div class="media d-flex">
             <div class="media-body text-left">
               <h3 class="danger number">{{ $total}}</h3> 
-              <span>Intimation Received</span>
+              <span>Death Intimation Received</span>
             </div>
             <div class="align-self-center">
               <i class="icon-rocket danger font-large-2 float-right"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card card-row1-bg">
-      <div class="card-content">
-        <div class="card-body">
-          <div class="media d-flex">
-            <div class="media-body text-left">
-              <h3 class="success number">{{ $claimed}}</h3>
-              <span>Claim Settled</span>
-            </div>
-            <div class="align-self-center">
-              <i class="icon-user success font-large-2 float-right"></i>
             </div>
           </div>
         </div>
@@ -66,8 +49,8 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="warning number">{{ $noneligible }}</h3>
-              <span>Non Eligible</span>
+              <h3 class="warning number">{{ $pending_at_branch }}</h3>
+              <span>Pending from Branch</span>
             </div>
             <div class="align-self-center">
               <i class="icon-pie-chart warning font-large-2 float-right"></i>
@@ -84,8 +67,8 @@
         <div class="card-body">
           <div class="media d-flex">
             <div class="media-body text-left">
-              <h3 class="primary number">{{ $rejected}}</h3>
-              <span>Rejected</span>
+              <h3 class="primary number">{{ $doc_at_ho}}</h3>
+              <span>Document Sent to HO</span>
             </div>
             <div class="align-self-center">
               <i class="icon-support primary font-large-2 float-right"></i>
@@ -113,6 +96,25 @@
       </div>
     </div>
   </div>
+
+   <div class="col">
+    <div class="card card-row1-bg">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="success number">{{ $claimed}}</h3>
+              <span>Claim Settled</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-user success font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
 
@@ -146,7 +148,7 @@
     </div>
 	</div>
 
-	 <div class="col">
+	 <div class="col-4">
     <div class="card shadow-lg p-3 mb-5 bg-white rounded">
       <div id="death_chart"></div>
     </div>  
@@ -158,10 +160,14 @@
 	var options = {
       series: @json($partnerChart['counts']),
       chart: {
-      width: 400,
+      width: 600,
       type: 'pie',
 
     },
+    title: {
+          text: 'Partners ',
+          align: 'left'
+        },
     tooltip: {
       shared: true,
       intersect: false,
@@ -176,12 +182,14 @@
         }
       }
     },
+    colors: ['#E7C845','#0000FF','#ED232A','#B02A30','#003874','#722323','#5556AE'],
+
     labels: @json($partnerChart['names']),
     responsive: [{
       breakpoint: 480,
       options: {
         chart: {
-          width: 200,
+          width: 400,
         },
         legend: {
           position: 'right'
@@ -209,10 +217,14 @@
         data: @json($claimchart['2'])
       }],
       chart: {
-        height: 250,
+        height: 280,
         type: 'line',
         stacked: false,
       },
+       title: {
+          text: 'Claimed vs Settled Amount ',
+          align: 'left'
+        },
       stroke: {
         width: [0, 2, 5],
         curve: 'smooth'
@@ -243,6 +255,14 @@
       yaxis: {
         title: {
           text: 'In Rupees',
+        },
+        labels: {
+          formatter: function (value) {
+            if (value >= 10000000) return (value / 10000000).toFixed(2) + 'Cr';
+            if (value >= 100000) return (value / 100000).toFixed(2) + 'L';
+            if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
+            return value;
+          }
         }
       },
       tooltip: {
@@ -312,6 +332,7 @@
             colors: ['#fff', '#f2f2f2']
           }
         },
+
         xaxis: {
           labels: {
             rotate: -45,
@@ -458,7 +479,7 @@
 
         var options_death = {
           series: [{
-          name: 'Claim Amount',
+          name: 'Death Count',
           data: @json($deathagegroup),
         }],
           chart: {
@@ -474,7 +495,7 @@
             autoSelected: 'zoom'
           },
         },
-        colors:['#3EC7A1'],
+        colors:['#FF0000'],
         dataLabels: {
           enabled: false
         },
@@ -496,7 +517,8 @@
           },
         },
         yaxis: {
-          tickAmount: 5,
+          tickAmount:'5',
+          stepsize:'1',
           labels: {
             formatter: function (val) {
               return (val ).toFixed(0);

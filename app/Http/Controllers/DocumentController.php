@@ -592,47 +592,7 @@ class DocumentController extends Controller
 
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
     }
-    // public function viewDispatches($id)
-    // {
-    //     $dispatch = CourierDispatch::find($id);
-    //     $type = 'dispatch';
-
-    //     $allDocuments = collect(); 
-    //     if (isset($dispatch->loan_ids)) {
-    //         $loans = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->get()
-    //                     ->map(function ($item) {
-    //                         $item->doc_type = 'loan';
-    //                         return $item;
-    //                     });
-    //         $allDocuments = $allDocuments->merge($loans);
-    //     }
-    //     if (isset($dispatch->goldloan_ids)) {
-    //         $goldloans = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->get()
-    //                     ->map(function ($item) {
-    //                         $item->doc_type = 'goldloan';
-    //                         return $item;
-    //                     });
-    //         $allDocuments = $allDocuments->merge($goldloans);
-    //     }
-    //     if (isset($dispatch->dtrf_ids)) {
-    //         $dtrfs = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->get()
-    //                     ->map(function ($item) {
-    //                         $item->doc_type = 'dtrf';
-    //                         return $item;
-    //                     });
-    //         $allDocuments = $allDocuments->merge($dtrfs);
-    //     }
-    //     if (isset($dispatch->aof_ids)) {
-    //         $aofs = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->get()
-    //                     ->map(function ($item) {
-    //                         $item->doc_type = 'aof';
-    //                         return $item;
-    //                     });
-    //         $allDocuments = $allDocuments->merge($aofs);
-    //     }
-
-    //     return view('accounts.view', compact('allDocuments','type','dispatch'));
-    // }
+    
 
     public function updateCourier(Request $request)
     {
@@ -725,7 +685,6 @@ class DocumentController extends Controller
             $dispatch->updated_by = $this->user->id;
             $dispatch->save();
 
-            // ✅ If status is 6 (Rejected), update all related documents to status 6
             if ((int)$update['remarks'] === 6) {
                 if (!empty($dispatch->loan_ids)) {
                     LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->update(['status' => 6]);

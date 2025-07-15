@@ -339,7 +339,16 @@
                     <input type="text" class="form-control account_number" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
+                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                </div>
+                <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min=0>
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control category_of_document" placeholder="Document Category" value="{{ old('category_of_document', $filters['category_of_document'] ?? '') }}" name="category_of_document">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="number" class="form-control work_order_no" placeholder="Work Order No" value="{{ old('work_order_no', $filters['work_order_no'] ?? '') }}" name="work_order_no" min="0">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select scheme" name="scheme">
@@ -357,9 +366,6 @@
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
-                <div class="col-12 mt-3">
-                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
-                </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select" name="type">
                         <option value="">Loan Disbursement/Account Opening</option>
@@ -369,9 +375,6 @@
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
-                </div>
-                <div class="col-12 mt-3">
-                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 mt-3">
                     <select class="form-select" placeholder="Status" value="{{ old('status', $filters['status'] ?? '') }}" name="status">
