@@ -97,6 +97,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Glow Application ID</th>
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
@@ -121,6 +124,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
@@ -173,11 +179,13 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
                                 @if ($dispatch->status == 5)
-                                <th class="d-none goldloan" scope="col">Update Status</th>
+                                <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
                                 <th class="d-none goldloan" scope="col">Actions</th>
                                 @endif
                                 @endhasanyrole
@@ -195,6 +203,8 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->statusName->name ?? '-' }}
                                             @if (in_array($row->status, [6,7]))
@@ -245,6 +255,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Scheme</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">PGK No</th>
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
@@ -268,6 +281,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->scheme }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->pgk_no }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
@@ -315,6 +331,7 @@
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">DTR File Date</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
@@ -333,6 +350,7 @@
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                        <td>{{ $row->barcode}}</td>
                                         <td>{{ $row->business_category}}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
                                             @if (in_array($row->status, [6,7]))

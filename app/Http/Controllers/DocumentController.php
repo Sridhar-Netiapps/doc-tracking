@@ -710,6 +710,55 @@ class DocumentController extends Controller
 }
 
 
+    // public function removeDispatchesDocument(Request $request)
+    // {
+    //     $tables = [
+    //         'loan' => LoanDocument::class,
+    //         'goldloan' => GoldLoanDocument::class,
+    //         'dtrf' => DtrfDocument::class,
+    //         'aof' => AccountOpeningDocument::class,
+    //     ];
+    //     // dd($request->all());
+    //     $columns = [
+    //         'loan' => 'loan_ids',
+    //         'goldloan' => 'goldloan_ids',
+    //         'dtrf' => 'dtrf_ids',
+    //         'aof' => 'aof_ids',
+    //     ];
+    
+    //     $type = $request->type;
+    //     $docId = $request->doc_id;
+    //     $dispatchId = $request->dispatch_id;
+    
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $dispatch = CourierDispatch::find($dispatchId);
+    //         $columnName = $columns[$request->type];
+
+    //         $values = collect(explode(',', $dispatch->$columnName))
+    //             ->map(fn($v) => trim($v))
+    //             ->filter(fn($v) => $v !== $docId)
+    //             ->values()
+    //             ->implode(',');
+            
+    //         $dispatch->$columnName = $values;
+    //         $dispatch->updated_by = $this->user->id;
+    //         $dispatch->save();
+    
+    //         // $this->tables[$type]::where('id', $docId)->update(['status' => 1]);
+    //         $tables[$type]::where('id', $docId)->update(['status' => 1]);
+
+    
+    //         DB::commit();
+    //         return response()->json(['success' => true]);
+    
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
+    
     public function removeDispatchesDocument(Request $request)
     {
         $tables = [
@@ -718,7 +767,7 @@ class DocumentController extends Controller
             'dtrf' => DtrfDocument::class,
             'aof' => AccountOpeningDocument::class,
         ];
-    // dd($request->all());
+    
         $columns = [
             'loan' => 'loan_ids',
             'goldloan' => 'goldloan_ids',
@@ -732,26 +781,39 @@ class DocumentController extends Controller
     
         try {
             DB::beginTransaction();
-
-            $dispatch = CourierDispatch::find($dispatchId);
-            $columnName = $columns[$request->type];
-
+    
+            $dispatch = CourierDispatch::findOrFail($dispatchId);
+            $columnName = $columns[$type];
+    
+            // Remove the doc ID from the appropriate column
             $values = collect(explode(',', $dispatch->$columnName))
                 ->map(fn($v) => trim($v))
-                ->filter(fn($v) => $v !== $docId)
+                ->filter(fn($v) => $v !== $docId && $v !== '')
                 ->values()
                 ->implode(',');
-            
+    
             $dispatch->$columnName = $values;
             $dispatch->updated_by = $this->user->id;
+    
             $dispatch->save();
     
-            // $this->tables[$type]::where('id', $docId)->update(['status' => 1]);
             $tables[$type]::where('id', $docId)->update(['status' => 1]);
-
+    
+            $allEmpty = empty($dispatch->loan_ids)
+                     && empty($dispatch->goldloan_ids)
+                     && empty($dispatch->aof_ids)
+                     && empty($dispatch->dtrf_ids);
+    
+            if ($allEmpty) {
+                $dispatch->delete(); 
+            }
     
             DB::commit();
-            return response()->json(['success' => true]);
+    
+            return response()->json([
+                'success' => true,
+                'dispatch_deleted' => $allEmpty
+            ]);
     
         } catch (\Exception $e) {
             DB::rollBack();
@@ -759,7 +821,6 @@ class DocumentController extends Controller
         }
     }
     
-
 
     public function removeDocument(Request $request)
     {

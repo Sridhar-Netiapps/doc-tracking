@@ -65,6 +65,9 @@
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">A/C No</th>
                                 <th scope="col">Loan Cycle</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Glow Application ID</th>
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
@@ -92,6 +95,9 @@
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->loan_cycle }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
@@ -129,6 +135,8 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
                                 <th scope="col">Document Category</th>
@@ -154,6 +162,8 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->lot_no }}</td>
                                         <td>{{ $row->category_of_document }}</td>
@@ -187,6 +197,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Scheme</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">PGK No</th>
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
@@ -213,6 +226,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->scheme }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->pgk_no }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->lot_no }}</td>
@@ -245,6 +261,7 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Document Category</th>
                                 <th scope="col">Work Order No</th>
                                 <th scope="col">Vendor Name</th>
@@ -266,6 +283,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
                                         <td>{{ $row->lot_no }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->category_of_document }}</td>
                                         <td>{{ $row->work_order_no }}</td>
                                         <td>{{ $row->vendor_name }}</td>
