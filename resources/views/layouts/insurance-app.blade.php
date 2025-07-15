@@ -132,6 +132,12 @@
                                         </a>
                                         @endif
 
+                                         @if(Auth::user()->branch_id == '1100')
+                                        <a class="dropdown-item" href="{{ route('insurance_settings') }}">
+                                            {{ __('Settings') }}
+                                        </a>
+                                        @endif
+
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

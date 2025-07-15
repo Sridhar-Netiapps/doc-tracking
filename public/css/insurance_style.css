@@ -79,6 +79,9 @@ input::placeholder {
   opacity: 0.5;
   font-size: 12px;
 }
+.settings-bg{
+	background-color: #34CFAC;
+}
 
 .form-control-design{
 	background: #FAFAFA;
@@ -343,3 +346,7 @@ input::placeholder {
 .tablescrollable{
 	overflow-x: auto;
 }
+.accordion-button[aria-expanded="true"] {
+    background-color: #FFC107; /* light blue */
+    color: #000; /* optional: change text color */
+  }
