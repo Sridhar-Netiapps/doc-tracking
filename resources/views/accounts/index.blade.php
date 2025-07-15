@@ -47,6 +47,9 @@
                                 <th scope="col"> CIF ID</th>
                                 <th scope="col"> Account Number</th>
                                 <th scope="col"> Loan Cycle</th>
+                                <th scope="col"> Loan Amount</th>
+                                <th scope="col"> Barcode</th>
+                                <th scope="col"> Glow Application ID</th>
                                 <th scope="col"> Scheme</th>
                                 <th scope="col"> Customer Name</th>
                                 <th scope="col"> Account Creation Date</th>
@@ -83,6 +86,9 @@
                                     <td>{{ $doc->cif_id ?? '-' }}</td>
                                     <td>{{ $doc->account_number ?? '-' }}</td>
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
+                                    <td>{{ $doc->loan_amount ?? '-' }}</td>
+                                    <td>{{ $doc->barcode ?? '-' }}</td>
+                                    <td>{{ $doc->glow_application_id ?? '-' }}</td>
                                     <td>{{ $doc->scheme ?? '-' }}</td>
                                     <td>{{ $doc->customer_name ?? '-' }}</td>
                                     <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
