@@ -331,12 +331,12 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($loans);
         }
         
-        if (!$docType || $docType === 'gold_loan') {
+        if (!$docType || $docType === 'goldloan') {
             $goldQuery = GoldLoanDocument::query();
             $customFilter($goldQuery, 'gold_loan_documents');
             $goldloans = $statusFilter($goldQuery)->get()
                 ->map(function ($item) {
-                    $item->doc_type = 'gold_loan';  // match with select value
+                    $item->doc_type = 'goldloan';  // match with select value
                     return $item;
                 });
             $allDocuments = $allDocuments->merge($goldloans);
