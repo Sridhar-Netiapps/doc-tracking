@@ -21,25 +21,32 @@
 			</div> -->
 		</div>   
 
-		@if(Session::has('success'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('success') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'success',  
-		        confirmButtonText: 'OK'
-		        }).then((result) => {
-	            if (result.isConfirmed) {
-	                // 👇 Redirect to another URL
-	                window.location.href = "{{ url('/insurance/claim_forms') }}";
-	            }
-	        });
-		    
-		 </script>
-		 
+		@if(session('success'))
+		<script>
+		    document.addEventListener('DOMContentLoaded', function () {
+		        setTimeout(function () {
+		            Swal.fire({
+		                title: 'Message',
+		                text: @json(session('success')),
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                if (result.isConfirmed) {
+		                    console.log('Redirecting...');
+		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
+		                }
+		            });
+		        }, 300); // Delay to ensure full render
+		    });
+		</script>
+		@php
+		    session()->forget('success');
+		@endphp
 		@endif
-
+		
 		@if(Session::has('failure'))
 		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 		  var mesage = '{{ session('failure') }}';
@@ -460,6 +467,35 @@
 					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ old('recovered_amount')}}" placeholder="Enter Rcovered Amount">
 					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
+        	    </div>
+        	</div>    		
+        </div>
+
+        <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">SPDC Details</div>
+        	<div class="card-body bg-card-branch">
+        		<div class="row">
+        			
+					<div class="col-3 mb-3">
+					    <label class="form-label">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ old('ack_rec_date')}}">
+					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">SPDC Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ old('spdc_rec_date')}}">
+					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label">Packet Number</label>
+					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ old('pkt_no')}}" placeholder="Enter Packet Number">
+					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+
+					
         	    </div>
         	</div>    		
         </div>

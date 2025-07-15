@@ -139,5 +139,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/audit/download-claim', [InsuranceHomeController::class, 'downloadClaim'])->name('audit.download.claim');
     Route::post('/audit/download-checklist', [InsuranceHomeController::class, 'downloadChecklist'])->name('audit.download.checklist');
 
+    Route::get('insurance/settings',[InsuranceHomeController::class,'settings'])->name('insurance_settings');
+    Route::post('insurance/add_new_insurance_item',[InsuranceHomeController::class,'add_new_insurance_item'])->name('add_new_insurance_item');
+
    
 });
