@@ -76,7 +76,7 @@
                     <a href="{{ route('dispatches','tracking') }}" class="nav-link {{$type == 'tracking' ? 'active':''}}" id="tracking-tab" role="tab" aria-controls="tracking-tab-pane" aria-selected="{{ $type == 'tracking' ? 'true' : 'false' }}">Pending for Tracking @if ($type == 'tracking' && $tracking_count != 0)<span class="badge text-bg-warning">{{$tracking_count}}</span>@endif</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('dispatches','delivered') }}" class="nav-link {{$type == 'delivered' ? 'active':''}}" id="delivered-tab" role="tab" aria-controls="delivered-tab-pane" aria-selected="{{ $type == 'delivered' ? 'true' : 'false' }}">Courier Delivered  @if ($type == 'delivered' && $delivered_count != 0)<span class="badge text-bg-warning">{{$delivered_count}}</span>@endif</a>
+                    <a href="{{ route('dispatches','delivered') }}" class="nav-link {{$type == 'delivered' ? 'active':''}}" id="delivered-tab" role="tab" aria-controls="delivered-tab-pane" aria-selected="{{ $type == 'delivered' ? 'true' : 'false' }}">Tracking Completed  @if ($type == 'delivered' && $delivered_count != 0)<span class="badge text-bg-warning">{{$delivered_count}}</span>@endif</a>
                 </li>
 
                 <li class="nav-item" role="presentation">
@@ -160,11 +160,16 @@
                                     <td>{{ $row->creator->first_name }}</td>
                                     <td>{{ $row->statusName->name ?? '-' }}
                                         @if ($row->status == 6 || $row->status == 7 )
-                                            <small><p>Reason : </p></small>
+                                            <small><p>Reason : </p><img src="/images/info_icon.svg"/></small>
                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->comments }}">
                                             <i>{{ \Illuminate\Support\Str::words($row->comments, 2, '...') }}</i>
                                             </span>
                                         @endif
+                                        {{-- @if (in_array($row->status, [6,7]))
+                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                            <img src="/images/info_icon.svg"/>
+                                          </span>
+                                        @endif --}}
                                     </td>
                                     <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     @if ($type == 'list')
@@ -519,7 +524,6 @@
 
     checkDocumentStatuses();
 
-    // Then: attach click event handler to all buttons
     $('.update-row').on('click', function () {
         if ($(this).prop('disabled')) return; // Prevent if disabled
 
@@ -548,13 +552,13 @@
                 success: function(response) {
                     if (response.disable_update) {
                         button.prop('disabled', true)
-                              .css('background-color', '#a9a9a9') // gray
+                              .css('background-color', '#a9a9a9') 
                               .css('border-color', '#a9a9a9')
                               .attr('title', 'Update disabled: one or more documents have status 4');
                     } else {
                         button.prop('disabled', false)
                               .removeAttr('title')
-                              .css('background-color', '')  // default style
+                              .css('background-color', '')  
                               .css('border-color', '');
                     }
                 },

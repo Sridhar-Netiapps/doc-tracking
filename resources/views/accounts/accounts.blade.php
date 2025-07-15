@@ -865,73 +865,6 @@
         });
       
 
-        // $('.remove-doc').click(function (e) {
-        //     e.preventDefault();
-        //     let type = $('input[name="type"]').val();
-        //     let selected = $('input[type=checkbox]:checked');
-        //     if (selected.length === 0) {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
-        //         return;
-        //     }
-
-        //     let docIds = [];
-        //     let type = '';
-
-        //     selected.each(function () {
-        //         docIds.push($(this).data('id'));
-        //         if (!type) {
-        //             if ($(this).hasClass('loan')) type = 'loan';
-        //             if ($(this).hasClass('goldloan')) type = 'goldloan';
-        //             if ($(this).hasClass('dtrf')) type = 'dtrf';
-        //             if ($(this).hasClass('aof')) type = 'aof';
-        //         }
-        //     });
-
-        //     Swal.fire({
-        //         title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
-        //         input: "text",
-        //         inputLabel: "Enter reason for deleting the document:",
-        //         inputPlaceholder: "Reason...",
-        //         showCancelButton: true,
-        //         confirmButtonText: '<b>Confirm Delete</b>',
-        //         cancelButtonText: "Cancel",
-        //         customClass: {
-        //             popup: 'rounded-3 shadow',
-        //             confirmButton: 'btn btn-primary btn-lg',
-        //             cancelButton: 'btn btn-secondary btn-lg',
-        //         },
-        //         inputValidator: (value) => {
-        //             if (!value) return "Reason is required!";
-        //         }
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.post(`{{ route('document.remove') }}`, {
-        //                 _token: $('input[name="_token"]').val(),
-        //                 doc_ids: docIds,
-        //                 type: type,
-        //                 reason: result.value,
-        //             })
-        //             .done(function () {
-        //                 Swal.fire("Deleted!", "Document removed successfully.", "success");
-        //                 .then(() => {
-        //                     // location.reload();
-        //                     selected.each(function () {
-        //                         $(this).closest('tr').remove();
-        //                     });
-        //                 });
-        //             })
-        //             .fail(function () {
-        //                 Swal.fire("Error!", "Something went wrong!", "error");
-        //             });
-        //         }
-        //     });
-        // });
-
         $('.remove-doc').click(function (e) {
     e.preventDefault();
     
@@ -960,7 +893,7 @@
     });
 // var doc_count = $(`#${type}-tab`).closest('span.badge').text();
 var doc_count = $(`#${type}-tab`).find('span.badge').text();
-console.log(doc_count);
+// console.log(doc_count);
     Swal.fire({
         title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
         input: "text",

@@ -59,7 +59,7 @@
             <div class="col-10">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link active" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                
                 <li class="nav-item" role="presentation">
@@ -80,10 +80,11 @@
                     @endif 
                     @endhasanyrole
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                    {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
+                <div class="tab-pane fade show active" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -205,7 +206,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -279,7 +280,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -343,7 +344,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -635,6 +636,10 @@
     let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
     let row = $(this).closest('tr');
 
+    var doc_count = $(`#${type}-tab`).find('span.badge').text();
+    // console.log(doc_count);
+
+
     if (!docId || !type || !dispatchId) {
         Swal.fire("Warning!", "Missing document data.", "warning");
         return;
@@ -664,7 +669,7 @@
                     showConfirmButton: false
                 });
                 row.remove(); 
-                location.reload();
+                $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
             })
             .fail(function (xhr) {
                 Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
@@ -690,23 +695,43 @@
 
         // Handle bulk update
         $('#update-all').on('click', function () {
-            const data = [];
-            let hasError = false;
+    const activeTab = $('.nav-link.active').attr('id'); // e.g., "loan-tab"
+    const data = [];
+    let hasError = false;
 
-            $('tr[data-id]').each(function () {
-                try {
-                    data.push(collectRowData($(this)));
-                } catch (err) {
-                    Swal.fire("Alert", err, "warning");
-                    hasError = true;
-                    return false; // stop loop
-                }
-            });
+    let tabSelector = '';
 
-            if (!hasError && data.length) {
-                sendUpdateRequest(data);
-            }
-        });
+    // Map tab id to row class or pane
+    switch (activeTab) {
+        case 'loan-tab':
+            tabSelector = '#loan-tab-pane';
+            break;
+        case 'goldloan-tab':
+            tabSelector = '#goldloan-tab-pane';
+            break;
+        case 'aof-tab':
+            tabSelector = '#aof-tab-pane';
+            break;
+        case 'dtrf-tab':
+            tabSelector = '#dtrf-tab-pane';
+            break;
+    }
+
+    $(`${tabSelector} tr[data-id]`).each(function () {
+        try {
+            data.push(collectRowData($(this)));
+        } catch (err) {
+            Swal.fire("Alert", err, "warning");
+            hasError = true;
+            return false; // stop loop
+        }
+    });
+
+    if (!hasError && data.length) {
+        sendUpdateRequest(data);
+    }
+});
+
 
         // Common AJAX function
         function sendUpdateRequest(payload) {
