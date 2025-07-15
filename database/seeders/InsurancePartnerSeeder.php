@@ -14,10 +14,13 @@ class InsurancePartnerSeeder extends Seeder
     public function run(): void
     {
         $data=[
-          ['partner' => 'Bajaj'],	
-          ['partner' => 'Birla'],
+          ['partner' => 'ABSLI'],	
+          ['partner' => 'Bajaj'],
           ['partner' => 'HDFC'],
+          ['partner' => 'ICICI PRU'],
+          ['partner' => 'KOTAK'],
           ['partner' => 'Max Life'],
+          ['partner' => 'The New India Assurance Company Limited'],
           
         ];
 

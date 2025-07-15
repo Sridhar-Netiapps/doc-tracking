@@ -8,6 +8,8 @@ class InsuranceProduct extends Model
 {
     protected $fillable=[
     	'product',
+    	'type',
+    	'folder_name',
     	'description'
     ];
 }

@@ -35,7 +35,7 @@
             <div class="smallCard">
                 <div class="listView">
                     <h3>MB Loan Docs</h3>
-                    <div class="value">{{array_sum($loan_total)}}</div>
+                    <div class="value invert">{{array_sum($loan_total)}}</div>
                 </div>
                 <div class="listView">
                     <div class="label">Pending to Proceed</div>
@@ -63,7 +63,7 @@
             <div class="smallCard">
                 <div class="listView">
                     <h3>Gold Loan Docs</h3>
-                    <div class="value">{{array_sum($gold_loan_total)}}</div>
+                    <div class="value invert">{{array_sum($gold_loan_total)}}</div>
                 </div>
                 <div class="listView">
                     <div class="label">Pending to Proceed</div>
@@ -91,7 +91,7 @@
             <div class="smallCard">
                 <div class="listView">
                     <h3>Liablities Docs</h3>
-                    <div class="value">{{array_sum($aof_total)}}</div>
+                    <div class="value invert">{{array_sum($aof_total)}}</div>
                 </div>
                 <div class="listView">
                     <div class="label">Pending to Proceed</div>
@@ -119,7 +119,7 @@
             <div class="smallCard">
                 <div class="listView">
                     <h3>DTR Files</h3>
-                    <div class="value">{{array_sum($dtrf_total)}}</div>
+                    <div class="value invert">{{array_sum($dtrf_total)}}</div>
                 </div>
                 <div class="listView">
                     <div class="label">Pending to Proceed</div>
