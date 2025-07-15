@@ -35,23 +35,34 @@
 			</div> -->
 		</div>
 
-		@if(Session::has('success'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('success') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'success',  
-		        confirmButtonText: 'OK'
-		        }).then((result) => {
-	            if (result.isConfirmed) {
-	                // 👇 Redirect to another URL
-	                window.location.href = "{{ url('/insurance/claim_forms') }}";
-	            }
+		@if(session('success'))
+		<script>
+		    document.addEventListener('DOMContentLoaded', function () {
+		        setTimeout(function () {
+		            Swal.fire({
+		                title: 'Message',
+		                text: @json(session('success')),
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                if (result.isConfirmed) {
+		                    console.log('Redirecting...');
+		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
+		                }
+		            });
+		        }, 300); // Delay to ensure full render
 		    });
-		 </script>
-		 
+		</script>
+		@php
+		    session()->forget('success');
+		@endphp
 		@endif
+
+
+
 
 		@if(Session::has('failure'))
 		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
@@ -442,7 +453,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">NEFT Reason For Rejection</label>
+					    <label class="form-label label-bold">NEFT Reason for Rejection</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="neft_rejection_reason" value="{{ $data->neft_rejection_reason}}" placeholder="Enter Reason for NEFT Rejection">
 					    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -461,7 +472,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">UTRN  of Nominee</label>
+					    <label class="form-label label-bold">UTRN of Nominee</label>
 					    <input type="dtextte" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_nominee" value="{{ $data->utrn_nominee}}" placeholder="Enter UTRN of Nominee">
 					    @error('utrn_nominee')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -566,7 +577,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Handed over to Credit</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ $data->handed_to_credit}}" placeholder="Handed over to credit">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ $data->handed_to_credit}}" placeholder="Handed over to Credit">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>

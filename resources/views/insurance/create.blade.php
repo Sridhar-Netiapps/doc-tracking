@@ -21,25 +21,32 @@
 			</div> -->
 		</div>   
 
-		@if(Session::has('success'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('success') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'success',  
-		        confirmButtonText: 'OK'
-		        }).then((result) => {
-	            if (result.isConfirmed) {
-	                // 👇 Redirect to another URL
-	                window.location.href = "{{ url('/insurance/claim_forms') }}";
-	            }
-	        });
-		    
-		 </script>
-		 
+		@if(session('success'))
+		<script>
+		    document.addEventListener('DOMContentLoaded', function () {
+		        setTimeout(function () {
+		            Swal.fire({
+		                title: 'Message',
+		                text: @json(session('success')),
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                if (result.isConfirmed) {
+		                    console.log('Redirecting...');
+		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
+		                }
+		            });
+		        }, 300); // Delay to ensure full render
+		    });
+		</script>
+		@php
+		    session()->forget('success');
+		@endphp
 		@endif
-
+		
 		@if(Session::has('failure'))
 		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
 		  var mesage = '{{ session('failure') }}';

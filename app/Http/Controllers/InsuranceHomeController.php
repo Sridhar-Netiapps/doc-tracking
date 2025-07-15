@@ -23,6 +23,8 @@ use Excel;
 use Auth;
 use ZipArchive;
 use Smalot\PdfParser\Parser;
+use App\Mail\IntimationResponseMail;
+use Mail;
 
 
 class InsuranceHomeController extends Controller
@@ -463,6 +465,14 @@ class InsuranceHomeController extends Controller
           'deceased'=> 'required'
       ]);
 
+        $request->merge([
+          'claim_amount' => preg_replace('/[^0-9.]/', '', $request->claim_amount), 
+          'loan_amount' => preg_replace('/[^0-9.]/', '', $request->loan_amount),
+          'loan_outstanding' => preg_replace('/[^0-9.]/', '', $request->loan_outstanding),
+          'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
+          
+        ]);
+
         $claimdata = InsuranceClaimDetail::find(decrypt($id));
         $claimdata->branch = $request->branch;
         $claimdata->partner = $request->partner;
@@ -545,6 +555,10 @@ class InsuranceHomeController extends Controller
        $nomineedetail->pkt_no = $request->pkt_no;
 
        $nomineedetail->save();
+
+       $mailData=array();
+
+       //Mail::to(['druva@netiapps.com'])->queue(new IntimationResponseMail($mailData));
 
              $module = 'Insurance'; 
              $operation = 'Update';
