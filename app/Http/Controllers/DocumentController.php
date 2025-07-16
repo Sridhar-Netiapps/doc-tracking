@@ -487,7 +487,10 @@ class DocumentController extends Controller
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
 
-        $filter = function ($query) use ($type, $filters) {
+        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
+
+
+        $filter = function ($query) use ($type, $filters, $dispatchDate) {
             if ($this->user->hasRole('ro-user')) {
                 $query->where('region_id', $this->user->region_id);
             }
@@ -499,8 +502,10 @@ class DocumentController extends Controller
                 $query->where('courier_id', $filters['courier']);
             }
             
+            if ($dispatchDate != null) {
+                $query->whereDate('dispatch_date', $dispatchDate);
+            }                       
 
-            // Apply form filters
             if (!empty($filters['dispatch_no'])) {
                 $query->where('dispatch_no', 'like', '%' . $filters['dispatch_no'] . '%');
             }
