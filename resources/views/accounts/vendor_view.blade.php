@@ -88,7 +88,11 @@
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
-                                    <tr>
+                                <tr class="doc-row"
+                                            data-lot_no="{{ $row->lot_no }}"
+                                            data-work_order_no="{{ $row->work_order_no }}"
+                                            data-file_barcode="{{ $row->file_barcode }}"
+                                            data-box_barcode="{{ $row->box_barcode }}">
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
@@ -114,7 +118,10 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive">Update</button>
+                                            {{-- <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive open-retrieve-modal" data-bs-toggle="modal" data-bs-target="#retrieveModal">Update</button> --}}
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
+                                            {{-- <button type="button" class="btn btn-primary open-retrieve-modal" data-bs-toggle="modal" data-bs-target="#retrieveModal"> --}}
+
                                             @endif
                                         </td>
                                     </tr>
@@ -425,12 +432,12 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <label for="lot_no" class="form-label">Lot No.</label>
-                        <input type="text" name="lot_no" class="form-control">
+                        <input list="lot_no_list" name="lot_no" id="lot_no" class="form-control">
+                        <datalist id="lot_no_list"> </datalist>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Category of the Document.</label>
-                        {{-- <input type="text" name="category_of_document" class="form-control"> --}}
-                        <select class="form-select document_type" name="category_of_document" required>
+                        <select class="form-select document_type" name="category_of_document" id="category_of_document" required>
                             <option value="">Select Document Category</option>
                             <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
                             <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
@@ -440,12 +447,12 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
-                        <input type="text" name="work_order_no" class="form-control">
+                        <input list="work_order_no_list" id="work_order_no" name="work_order_no" class="form-control">
+                        <datalist id="work_order_no_list"> </datalist>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name</label>
-                        {{-- <input type="text" name="vendor_name" class="form-control"> --}}
-                        <select class="form-select" name="vendor_name" required>
+                        <select class="form-select" name="vendor_name" id="vendor_name" required>
                             <option value="">Select Vendor Name</option>
                             @foreach ($vendors as $vendor)
                                 <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
@@ -456,19 +463,21 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
+                        <input type="text" readonly name="vendor_movement_date" id="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
-                        <input type="text" name="file_barcode" class="form-control">
+                        <label for="file_barcode" class="form-label">File barcode.</label>
+                        <input type="text" list="file_barcode_list" name="file_barcode" id="file_barcode" class="form-control">
+                        <datalist id="file_barcode_list"> </datalist>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
-                        <input type="text" name="box_barcode" class="form-control">
+                        <input type="text" list="box_barcode_list" name="box_barcode" id="box_barcode" class="form-control">
+                        <datalist id="box_barcode_list"> </datalist>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
-                        <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
+                        <input type="text" readonly name="date_added_to_vendor" id="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Status</label>
@@ -483,22 +492,76 @@
                         </select>
                     </div>
                 </div>
-                {{-- <div class="modal-body">
-                    <label for="status" class="form-label">Status</label>
-                    <input type="hidden" name="id">
-                    <input type="hidden" name="type">
-                    <select name="remarks" class="form-control select2" required>
-                        <option value=''>Select</option>
-                        <option value='8'>In</option>
-                        <option value='9'>Out</option>
-                        <option value='10'>Permout</option>
-                        <option value='11'>Destroyed</option>
-                    </select>
-                </div> --}}
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-lg cancel-modal" data-bs-dismiss="modal">Cancel</button>
                 </div>
+                 {{-- JS starts inside the form --}}
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.querySelectorAll('.retrive').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const row = this.closest('tr');
+                                const cells = row.querySelectorAll('td');
+                    
+                                // Get text values from columns
+                                const lot = cells[14]?.textContent.trim();
+                                const work = cells[16]?.textContent.trim();
+                                const file = cells[19]?.textContent.trim();
+                                const box = cells[20]?.textContent.trim();
+                                const category = cells[15]?.textContent.trim();
+                                const vendor = cells[17]?.textContent.trim();
+                                const vendorMoveDate = cells[18]?.textContent.trim();
+                                const addedToVendorDate = cells[21]?.textContent.trim();
+                    
+                                // Fill current value into the input
+                                document.getElementById('lot_no').value = lot;
+                                document.getElementById('work_order_no').value = work;
+                                document.getElementById('file_barcode').value = file;
+                                document.getElementById('box_barcode').value = box;
+
+                                // Set date values
+                                document.getElementById('vendor_movement_date').value = vendorMoveDate;
+                                document.getElementById('date_added_to_vendor').value = addedToVendorDate;
+
+                                 // Set dropdown values
+                                setSelectValue('category_of_document', category);
+                                setSelectValue('vendor_name', vendor);
+                    
+                                // Fill datalist with just that value + others from all rows (if needed)
+                                updateDatalist('lot_no_list', lot);
+                                updateDatalist('work_order_no_list', work);
+                                updateDatalist('file_barcode_list', file);
+                                updateDatalist('box_barcode_list', box);
+                    
+                                // Set hidden fields
+                                document.querySelector('input[name="id"]').value = this.dataset.id;
+                                document.querySelector('input[name="type"]').value = this.dataset.type;
+                            });
+                        });
+                    
+                        function updateDatalist(id, selectedValue) {
+                            const datalist = document.getElementById(id);
+                            datalist.innerHTML = ''; // Clear old options
+                    
+                            if (selectedValue) {
+                                const option = document.createElement('option');
+                                option.value = selectedValue;
+                                datalist.appendChild(option);
+                            }
+                        }
+                        function setSelectValue(selectId, value) {
+                            const select = document.getElementById(selectId);
+                            if (!select) return;
+
+                            [...select.options].forEach(option => {
+                                if (option.value.toLowerCase() === value.toLowerCase()) {
+                                    option.selected = true;
+                                }
+                            });
+                        }
+                    });
+                </script>                           
             </form>
         </div>
     </div>
@@ -508,14 +571,14 @@
         $('.retrive').click(function () {
             $('input[name="id"]').val($(this).data('id'));
             $('input[name="type"]').val($(this).data('type'));
-            $('#retrive').modal('show');
+            $('#retrive').modal('show');hiddenhidden
+            });
+            flatpickr(".flatpickr-date", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",         
+            allowInput: false,         
+            clickOpens: true
         });
-        flatpickr(".flatpickr-date", {
-        dateFormat: "Y-m-d",
-        maxDate: "today",         
-        allowInput: false,         
-        clickOpens: true
-    });
         $('#doc-retrive').validate({
             rules: {
                 lot_no: {
@@ -585,6 +648,13 @@
             //         sanitize: true
             //     }
             // }
+        });
+        $(document).ready(function () {
+            $('.cancel-modal').on('click', function () {
+                $('#yourModalId').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '');
+            });
         });
     });
 </script>
