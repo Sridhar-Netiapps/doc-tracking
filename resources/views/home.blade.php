@@ -9,7 +9,7 @@
                 <p>Total Documents</p>
             </div>
             <div class="col">
-                <h2>{{$total_selected}}</h2>
+                <h2>{{$total_pending}}</h2>
                 <p>Pending to Proceed</p>
             </div>
             <div class="col">
@@ -55,7 +55,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Documents</div>
-                    <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</div>
+                    <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</div>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Documents</div>
-                    <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0)}}</div>
+                    <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0)}}</div>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Documents</div>
-                    <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0)}}</div>
+                    <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0)}}</div>
                 </div>
             </div>
         </div>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Documents</div>
-                    <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0)}}</div>
+                    <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0)}}</div>
                 </div>
             </div>
         </div>
