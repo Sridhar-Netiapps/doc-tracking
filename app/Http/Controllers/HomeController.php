@@ -73,10 +73,15 @@ class HomeController extends Controller
         $total_pending = ($loan_total[1] ?? 0) + ($gold_loan_total[1] ?? 0) + ($dtrf_total[1] ?? 0) + ($aof_total[1] ?? 0) + $total_selected;
         $total_dispatch = ($loan_total[3] ?? 0) + ($gold_loan_total[3] ?? 0) + ($dtrf_total[3] ?? 0) + ($aof_total[3] ?? 0);
         $total_transist = ($loan_total[4] ?? 0) + ($gold_loan_total[4] ?? 0) + ($dtrf_total[4] ?? 0) + ($aof_total[4] ?? 0);
-        $total_received = ($loan_total[5] ?? 0) + ($gold_loan_total[5] ?? 0) + ($dtrf_total[5] ?? 0) + ($aof_total[5] ?? 0);
         $total_received_query = ($loan_total[7] ?? 0) + ($gold_loan_total[7] ?? 0) + ($dtrf_total[7] ?? 0) + ($aof_total[7] ?? 0);
-        $total_rejected = ($loan_total[6] ?? 0) + ($gold_loan_total[6] ?? 0) + ($dtrf_total[6] ?? 0) + ($aof_total[6] ?? 0) + $total_received_query;
-
+        $total_dispatched = 
+            ($loan_total[8] ?? 0) + ($gold_loan_total[8] ?? 0) + ($dtrf_total[8] ?? 0) + ($aof_total[8] ?? 0) +
+            ($loan_total[9] ?? 0) + ($gold_loan_total[9] ?? 0) + ($dtrf_total[9] ?? 0) + ($aof_total[9] ?? 0) +
+            ($loan_total[10] ?? 0) + ($gold_loan_total[10] ?? 0) + ($dtrf_total[10] ?? 0) + ($aof_total[10] ?? 0) +
+            ($loan_total[11] ?? 0) + ($gold_loan_total[11] ?? 0) + ($dtrf_total[11] ?? 0) + ($aof_total[11] ?? 0);
+        $total_received = ($loan_total[5] ?? 0) + ($gold_loan_total[5] ?? 0) + ($dtrf_total[5] ?? 0) + ($aof_total[5] ?? 0) + $total_received_query + $total_dispatched ;
+        $total_rejected = ($loan_total[6] ?? 0) + ($gold_loan_total[6] ?? 0) + ($dtrf_total[6] ?? 0) + ($aof_total[6] ?? 0);
+// dd($total_received);
         // $loan_total = $loan_document->total();
         // $gold_loan_total = $gold_loan_document->total();
         // $dtrf_total = $dtrf_document->total();

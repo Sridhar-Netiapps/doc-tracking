@@ -183,7 +183,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -249,7 +249,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -301,7 +301,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -619,7 +619,7 @@
 
                 let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
                 let hasSelection = false;
-
+                loan_total
                 $('#doc-retrive').find('input[name$="_ids[]"]').remove();
 
                 documentTypes.forEach(function (type) {
