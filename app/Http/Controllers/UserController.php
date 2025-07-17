@@ -12,21 +12,30 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     // Constructor for middleware
-    // public function __construct()
-    // {
-    //     // Add the permission middleware as needed for each method
-    //     // Example:
-    //     // $this->middleware('permission:view-user')->only('index','show');
-    //     // $this->middleware('permission:create-user')->only(['create', 'store']);
-    //     // $this->middleware('permission:edit-user')->only(['edit', 'update']);
-    //     // $this->middleware('permission:delete-user')->only('destroy');
-    // }
+    public function __construct()
+    {
+        // Add the permission middleware as needed for each method
+        // Example:
+        // $this->middleware('permission:view-user')->only('index','show');
+        // $this->middleware('permission:create-user')->only(['create', 'store']);
+        // $this->middleware('permission:edit-user')->only(['edit', 'update']);
+        // $this->middleware('permission:delete-user')->only('destroy');
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
+        });
+    }
 
     // List all users
     public function index()
     {
-        $users = User::with('roles', 'permissions')->paginate(50);
-
+        $filter = function ($query) {
+            if (!$this->user->hasAnyRole(['master', 'super_admin'])) {
+                $query->where('status', 'active');
+            }
+            return $query;
+        };
+        $users = $filter(User::query())->paginate(100)->withQueryString();
         return view('users.index', compact('users'));
     }
 
