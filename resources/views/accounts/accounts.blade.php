@@ -879,12 +879,12 @@
             $(".dtrf:visible").prop('checked', $(this).prop('checked'));
         });
 
-    flatpickr(".flatpickr-date", {
-        dateFormat: "Y-m-d",
-        maxDate: "today",         
-        allowInput: false,         
-        clickOpens: true
-    });
+        flatpickr(".flatpickr-date", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",         
+            allowInput: false,         
+            clickOpens: true
+        });
 
         let selectedDocuments = [];
         
@@ -926,75 +926,70 @@
       
 
         $('.remove-doc').click(function (e) {
-    e.preventDefault();
+            e.preventDefault();
     
-    let selected = $('input[type=checkbox]:checked');
-    if (selected.length === 0) {
-        Swal.fire({
-                    title: "Warning!",
-                    text: "Please select at least one Document.",
-                    icon: "warning",
-                    confirmButtonText: "OK"
-                });
-        return;
-    }
+            let selected = $('input[type=checkbox]:checked');
+            if (selected.length === 0) {
+                Swal.fire({
+                            title: "Warning!",
+                            text: "Please select at least one Document.",
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        });
+                return;
+            }
 
-    let docIds = [];
-    let type = '';
-    // var doc_count = parseInt($('span.badge').text());
-    selected.each(function () {
-        docIds.push($(this).data('id'));
-        if (!type) {
-            if ($(this).hasClass('loan')) type = 'loan';
-            if ($(this).hasClass('goldloan')) type = 'goldloan';
-            if ($(this).hasClass('dtrf')) type = 'dtrf';
-            if ($(this).hasClass('aof')) type = 'aof';
-        }
-    });
-// var doc_count = $(`#${type}-tab`).closest('span.badge').text();
-var doc_count = $(`#${type}-tab`).find('span.badge').text();
-// console.log(doc_count);
-    Swal.fire({
-        title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
-        input: "text",
-        inputLabel: "Enter reason for deleting the document:",
-        inputPlaceholder: "Reason...",
-        showCancelButton: true,
-        confirmButtonText: '<b>Confirm Delete</b>',
-        cancelButtonText: "Cancel",
-        customClass: {
-            popup: 'rounded-3 shadow',
-            confirmButton: 'btn btn-primary btn-lg',
-            cancelButton: 'btn btn-secondary btn-lg',
-        },
-        inputValidator: (value) => {
-            if (!value) return "Reason is required!";
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.post(`{{ route('document.remove') }}`, {
-                _token: $('input[name="_token"]').val(),
-                doc_ids: docIds,
-                type: type,
-                reason: result.value,
-            })
-            .done(function () {
-                Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                    selected.each(function () {
-                        $(this).closest('tr').remove();
-                        $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
-                    });
-                });
-            })
-            .fail(function () {
-                Swal.fire("Error!", "Something went wrong!", "error");
+            let docIds = [];
+            let type = '';
+            // var doc_count = parseInt($('span.badge').text());
+            selected.each(function () {
+                docIds.push($(this).data('id'));
+                if (!type) {
+                    if ($(this).hasClass('loan')) type = 'loan';
+                    if ($(this).hasClass('goldloan')) type = 'goldloan';
+                    if ($(this).hasClass('dtrf')) type = 'dtrf';
+                    if ($(this).hasClass('aof')) type = 'aof';
+                }
             });
-        }
-    });
-});
-
-
-
+            var doc_count = $(`#${type}-tab`).find('span.badge').text();
+            Swal.fire({
+                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                input: "text",
+                inputLabel: "Enter reason for deleting the document:",
+                inputPlaceholder: "Reason...",
+                showCancelButton: true,
+                confirmButtonText: '<b>Confirm Delete</b>',
+                cancelButtonText: "Cancel",
+                customClass: {
+                    popup: 'rounded-3 shadow',
+                    confirmButton: 'btn btn-primary btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg',
+                },
+                inputValidator: (value) => {
+                    if (!value) return "Reason is required!";
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post(`{{ route('document.remove') }}`, {
+                        _token: $('input[name="_token"]').val(),
+                        doc_ids: docIds,
+                        type: type,
+                        reason: result.value,
+                    })
+                    .done(function () {
+                        Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                            selected.each(function () {
+                                $(this).closest('tr').remove();
+                                $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
+                            });
+                        });
+                    })
+                    .fail(function () {
+                        Swal.fire("Error!", "Something went wrong!", "error");
+                    });
+                }
+            });
+        });
 
         // Filter Form Validation
         $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {

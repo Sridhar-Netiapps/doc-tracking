@@ -441,7 +441,28 @@ class DocumentController extends Controller
         
     }
 
-
+    public function getDocumentDetails($type, $id)
+    {
+        switch ($type) {
+            case 'loan':
+                $doc = \App\Models\LoanDocument::find($id);
+                break;
+            case 'goldloan':
+                $doc = \App\Models\GoldLoanDocument::find($id);
+                break;
+            case 'aof':
+                $doc = \App\Models\AccountOpeningDocument::find($id);
+                break;
+            case 'dtrf':
+                $doc = \App\Models\DtrfDocument::find($id);
+                break;
+            default:
+                return response()->json(['error' => 'Invalid document type'], 400);
+        }
+    
+        return response()->json($doc);
+    }
+    
     public function filterDispatches(Request $request, $type)
     {
         session(['filters' => $request->except('_token')]); // Save all filters in session

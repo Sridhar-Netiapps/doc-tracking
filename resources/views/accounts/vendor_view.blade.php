@@ -118,10 +118,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            {{-- <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive open-retrieve-modal" data-bs-toggle="modal" data-bs-target="#retrieveModal">Update</button> --}}
                                             <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
-                                            {{-- <button type="button" class="btn btn-primary open-retrieve-modal" data-bs-toggle="modal" data-bs-target="#retrieveModal"> --}}
-
                                             @endif
                                         </td>
                                     </tr>
@@ -432,27 +429,25 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <label for="lot_no" class="form-label">Lot No.</label>
-                        <input list="lot_no_list" name="lot_no" id="lot_no" class="form-control">
-                        <datalist id="lot_no_list"> </datalist>
+                        <input type="text" id="lot_no_input" name="lot_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Category of the Document.</label>
-                        <select class="form-select document_type" name="category_of_document" id="category_of_document" required>
+                        <select class="form-select document_type" name="category_of_document" id="category_input" required>
                             <option value="">Select Document Category</option>
-                            <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
-                            <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
-                            <option value="cat_b"  {{ ($doc->category_of_document ?? '') == 'cat_b'  ? 'selected' : '' }}>CAT B</option>
-                            <option value="cat_c"  {{ ($doc->category_of_document ?? '') == 'cat_c'  ? 'selected' : '' }}>CAT C</option>
+                            <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
+                            <option value="CAT A2" {{ ($doc->category_of_document ?? '') == 'CAT A2' ? 'selected' : '' }}>CAT A2</option>
+                            <option value="CAT B"  {{ ($doc->category_of_document ?? '') == 'CAT B'  ? 'selected' : '' }}>CAT B</option>
+                            <option value="CAT C"  {{ ($doc->category_of_document ?? '') == 'CAT C'  ? 'selected' : '' }}>CAT C</option>
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
-                        <input list="work_order_no_list" id="work_order_no" name="work_order_no" class="form-control">
-                        <datalist id="work_order_no_list"> </datalist>
+                        <input type="text" id="work_order_input" name="work_order_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name</label>
-                        <select class="form-select" name="vendor_name" id="vendor_name" required>
+                        <select class="form-select" name="vendor_name" id="vendor_input" required>
                             <option value="">Select Vendor Name</option>
                             @foreach ($vendors as $vendor)
                                 <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
@@ -463,21 +458,19 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" id="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
+                        <input type="date" id="vendor_movement_date_input" name="vendor_movement_date" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode.</label>
-                        <input type="text" list="file_barcode_list" name="file_barcode" id="file_barcode" class="form-control">
-                        <datalist id="file_barcode_list"> </datalist>
+                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
-                        <input type="text" list="box_barcode_list" name="box_barcode" id="box_barcode" class="form-control">
-                        <datalist id="box_barcode_list"> </datalist>
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
-                        <input type="text" readonly name="date_added_to_vendor" id="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
+                        <input type="date" id="date_added_input" name="date_added_to_vendor" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Status</label>
@@ -485,8 +478,8 @@
                         <input type="hidden" name="type">
                         <select name="status" class="form-control select2" required>
                             <option value=''>Select Status</option>
-                            <option value='8'>In</option>
-                            <option value='9'>Out</option>
+                            <option value='8'>IN</option>
+                            <option value='9'>OUT</option>
                             <option value='10'>Permout</option>
                             <option value='11'>Destroyed</option>
                         </select>
@@ -496,72 +489,6 @@
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
                     <button type="button" class="btn btn-secondary btn-lg cancel-modal" data-bs-dismiss="modal">Cancel</button>
                 </div>
-                 {{-- JS starts inside the form --}}
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        document.querySelectorAll('.retrive').forEach(button => {
-                            button.addEventListener('click', function () {
-                                const row = this.closest('tr');
-                                const cells = row.querySelectorAll('td');
-                    
-                                // Get text values from columns
-                                const lot = cells[14]?.textContent.trim();
-                                const work = cells[16]?.textContent.trim();
-                                const file = cells[19]?.textContent.trim();
-                                const box = cells[20]?.textContent.trim();
-                                const category = cells[15]?.textContent.trim();
-                                const vendor = cells[17]?.textContent.trim();
-                                const vendorMoveDate = cells[18]?.textContent.trim();
-                                const addedToVendorDate = cells[21]?.textContent.trim();
-                    
-                                // Fill current value into the input
-                                document.getElementById('lot_no').value = lot;
-                                document.getElementById('work_order_no').value = work;
-                                document.getElementById('file_barcode').value = file;
-                                document.getElementById('box_barcode').value = box;
-
-                                // Set date values
-                                document.getElementById('vendor_movement_date').value = vendorMoveDate;
-                                document.getElementById('date_added_to_vendor').value = addedToVendorDate;
-
-                                 // Set dropdown values
-                                setSelectValue('category_of_document', category);
-                                setSelectValue('vendor_name', vendor);
-                    
-                                // Fill datalist with just that value + others from all rows (if needed)
-                                updateDatalist('lot_no_list', lot);
-                                updateDatalist('work_order_no_list', work);
-                                updateDatalist('file_barcode_list', file);
-                                updateDatalist('box_barcode_list', box);
-                    
-                                // Set hidden fields
-                                document.querySelector('input[name="id"]').value = this.dataset.id;
-                                document.querySelector('input[name="type"]').value = this.dataset.type;
-                            });
-                        });
-                    
-                        function updateDatalist(id, selectedValue) {
-                            const datalist = document.getElementById(id);
-                            datalist.innerHTML = ''; // Clear old options
-                    
-                            if (selectedValue) {
-                                const option = document.createElement('option');
-                                option.value = selectedValue;
-                                datalist.appendChild(option);
-                            }
-                        }
-                        function setSelectValue(selectId, value) {
-                            const select = document.getElementById(selectId);
-                            if (!select) return;
-
-                            [...select.options].forEach(option => {
-                                if (option.value.toLowerCase() === value.toLowerCase()) {
-                                    option.selected = true;
-                                }
-                            });
-                        }
-                    });
-                </script>                           
             </form>
         </div>
     </div>
@@ -649,6 +576,38 @@
             //     }
             // }
         });
+
+        $(document).on('click', '.retrive', function () {
+            const id = $(this).data('id');
+            const type = $(this).data('type');
+
+            $.ajax({
+                url: `/get-document-details/${type}/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#lot_no_input').val(data.lot_no ?? '');
+                    $('#work_order_input').val(data.work_order_no ?? '');
+                    $('#file_barcode_input').val(data.file_barcode ?? '');
+                    $('#box_barcode_input').val(data.box_barcode ?? '');
+                    if ($('#category_input option[value="' + data.category_of_document + '"]').length === 0) {
+                        $('#category_input').append(new Option(data.category_of_document, data.category_of_document));
+                    }
+                    $('#category_input').val(data.category_of_document).change();
+                    if ($('#vendor_input option[value="' + data.vendor_name + '"]').length === 0) {
+                        $('#vendor_input').append(new Option(data.vendor_name, data.vendor_name));
+                    }
+                    $('#vendor_input').val(data.vendor_name).change();
+
+                    $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
+                    $('#date_added_input').val(data.date_added_to_vendor ?? '');
+                    $('#update_id').val(data.id); 
+                },
+                error: function () {
+                    alert('Failed to fetch document data.');
+                }
+            });
+        });
+
         $(document).ready(function () {
             $('.cancel-modal').on('click', function () {
                 $('#yourModalId').modal('hide');

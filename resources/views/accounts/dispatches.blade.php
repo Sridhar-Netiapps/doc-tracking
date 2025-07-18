@@ -491,7 +491,7 @@
             }
         });
    
-    $('#applyFilter').click(function () {
+        $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
             let search = $('#search').val()?.trim();
             let dateFrom = $('#date_from').val()?.trim();
@@ -588,41 +588,6 @@
             }
         });
     }
-    
-
-    // $('.disable-update-btn').each(function () {
-    //     let button = $(this);
-    //     let dispatchId = button.data('id');
-
-    //     $.ajax({
-    //         url: '/dispatches/check-status/' + dispatchId,
-    //         method: 'GET',
-    //         success: function(response) {
-    //             if (response.disable_update) {
-    //                 button.prop('disabled', true).attr('title', 'Update disabled: one or more documents have status 4');
-    //             }
-    //         },
-    //         error: function() {
-    //             console.error('Status check failed for dispatch ID: ' + dispatchId);
-    //         }
-    //     });
-    // });
-
-    // $('.update-row').on('click', function () {
-    //     const row = $(this).closest('tr');
-    //     let data;
-    //     console.log(row);
-        
-    //     try {
-    //         data = [collectRowData(row)];
-    //     } catch (err) {
-    //         Swal.fire("Alert", err, "warning");
-    //         return;
-    //     }
-
-    //     sendUpdateRequest(data);
-    // });
-    
 
     // Handle bulk update
     $('#update-all').on('click', function () {
