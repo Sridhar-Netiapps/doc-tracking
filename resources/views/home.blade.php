@@ -163,7 +163,7 @@
                 </div>
                 <div class="listView">
                     <ul>
-                        <li>Transit
+                        <li>
                             <div class="label">Pending to Proceed <span class="value">{{($gold_loan_total[1] ?? 0)}}</span></div>
                         </li>
                         <li>
