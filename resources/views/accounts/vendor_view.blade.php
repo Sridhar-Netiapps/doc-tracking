@@ -71,7 +71,7 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
-                                <th scope="col">Type of Loan<br>Disbursement</th>
+                                <th scope="col">Loan Disbursement Type</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
                                 <th scope="col">Document Category</th>

@@ -100,7 +100,7 @@
                                 <th scope="col">Loan Amount</th>
                                 <th scope="col">Barcode</th>
                                 <th scope="col">Glow Application ID</th>
-                                <th scope="col">Type of Loan<br>Disbursement</th>
+                                <th scope="col">Loan Disbursement Type</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
