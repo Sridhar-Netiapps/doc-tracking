@@ -69,10 +69,10 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch_id ?? '' }}"> --}}
 
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
-<input type="hidden" name="doc-type" value="{{ $type }}"> --}}
+            <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
 
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="table-responsive tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -81,49 +81,49 @@
                             <tr>
                                 @hasrole('master')
                                     @if ($type !== 'rejected')
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
                                     @if (in_array($type, ['pending', 'all']))
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
                                     {{-- @if ($type === 'received') --}}
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
                                     @if (!in_array($type, ['received', 'rejected']))
-                                        <th scope="col"><input type="checkbox" class="loan_all" /> </th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /> </th>
                                     @endif
                                 @endhasanyrole
                                 @role('ro-user')
                                     @if ($type === 'received')
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @endrole --}}
-                                <th scope="col">Unique Number</th>
+                                <th scope="col" class="text-nowrap">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                                <th scope="col">Region</th>
-                                <th scope="col">Branch Name</th>
+                                <th scope="col" class="text-nowrap">Region</th>
+                                <th scope="col" class="text-nowrap">Branch Name</th>
                                 @endunless
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
-                                <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Loan Amount</th>
-                                <th scope="col">Barcode</th>
-                                <th scope="col">Glow Application ID</th>
-                                <th scope="col">Type of Loan<br>Disbursement</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Activity Date</th>
+                                <th scope="col" class="text-nowrap">Branch Code</th>
+                                <th scope="col" class="text-nowrap">CIF ID</th>
+                                <th scope="col" class="text-nowrap">Account Number</th>
+                                <th scope="col" class="text-nowrap">Loan Cycle</th>
+                                <th scope="col" class="text-nowrap">Customer Name</th>
+                                <th scope="col" class="text-nowrap">Account Creation Date</th>
+                                <th scope="col" class="text-nowrap">Channel</th>
+                                <th scope="col" class="text-nowrap">Loan Amount</th>
+                                <th scope="col" class="text-nowrap">Barcode</th>
+                                <th scope="col" class="text-nowrap">Glow Application ID</th>
+                                <th scope="col" class="text-nowrap">Type of Loan<br>Disbursement</th>
+                                <th scope="col" class="text-nowrap">Business Category</th>
+                                <th scope="col" class="text-nowrap">Status</th>
+                                <th scope="col" class="text-nowrap">Activity Date</th>
                                 @if ($type == 'received')
                                 @hasrole('ro-user')
-                                <th scope="col">Actions</th>
+                                <th scope="col" class="text-nowrap">Actions</th>
                                 @endhasrole
                                 @endif
                             </tr>
@@ -759,9 +759,6 @@
                         <input type="hidden" name="status" value="{{ $fixed_status }}">
                     @endif
                 </div>
-
-                        
-                
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
@@ -923,73 +920,76 @@
                 });
             }
         });
-      
-
         $('.remove-doc').click(function (e) {
-            e.preventDefault();
+    e.preventDefault();
     
-            let selected = $('input[type=checkbox]:checked');
-            if (selected.length === 0) {
-                Swal.fire({
-                            title: "Warning!",
-                            text: "Please select at least one Document.",
-                            icon: "warning",
-                            confirmButtonText: "OK"
-                        });
-                return;
-            }
+    let selected = $('input[type=checkbox]:checked');
+    if (selected.length === 0) {
+        Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+        return;
+    }
 
-            let docIds = [];
-            let type = '';
-            // var doc_count = parseInt($('span.badge').text());
-            selected.each(function () {
-                docIds.push($(this).data('id'));
-                if (!type) {
-                    if ($(this).hasClass('loan')) type = 'loan';
-                    if ($(this).hasClass('goldloan')) type = 'goldloan';
-                    if ($(this).hasClass('dtrf')) type = 'dtrf';
-                    if ($(this).hasClass('aof')) type = 'aof';
-                }
-            });
-            var doc_count = $(`#${type}-tab`).find('span.badge').text();
-            Swal.fire({
-                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
-                input: "text",
-                inputLabel: "Enter reason for deleting the document:",
-                inputPlaceholder: "Reason...",
-                showCancelButton: true,
-                confirmButtonText: '<b>Confirm Delete</b>',
-                cancelButtonText: "Cancel",
-                customClass: {
-                    popup: 'rounded-3 shadow',
-                    confirmButton: 'btn btn-primary btn-lg',
-                    cancelButton: 'btn btn-secondary btn-lg',
-                },
-                inputValidator: (value) => {
-                    if (!value) return "Reason is required!";
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.post(`{{ route('document.remove') }}`, {
-                        _token: $('input[name="_token"]').val(),
-                        doc_ids: docIds,
-                        type: type,
-                        reason: result.value,
-                    })
-                    .done(function () {
-                        Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                            selected.each(function () {
-                                $(this).closest('tr').remove();
-                                $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
-                            });
-                        });
-                    })
-                    .fail(function () {
-                        Swal.fire("Error!", "Something went wrong!", "error");
+    let docIds = [];
+    let type = '';
+    // var doc_count = parseInt($('span.badge').text());
+    selected.each(function () {
+        docIds.push($(this).data('id'));
+        if (!type) {
+            if ($(this).hasClass('loan')) type = 'loan';
+            if ($(this).hasClass('goldloan')) type = 'goldloan';
+            if ($(this).hasClass('dtrf')) type = 'dtrf';
+            if ($(this).hasClass('aof')) type = 'aof';
+        }
+    });
+// var doc_count = $(`#${type}-tab`).closest('span.badge').text();
+var doc_count = $(`#${type}-tab`).find('span.badge').text();
+// console.log(doc_count);
+    Swal.fire({
+        title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+        input: "text",
+        inputLabel: "Enter reason for deleting the document:",
+        inputPlaceholder: "Reason...",
+        showCancelButton: true,
+        confirmButtonText: '<b>Confirm Delete</b>',
+        cancelButtonText: "Cancel",
+        customClass: {
+            popup: 'rounded-3 shadow',
+            confirmButton: 'btn btn-primary btn-lg',
+            cancelButton: 'btn btn-secondary btn-lg',
+        },
+        inputValidator: (value) => {
+            if (!value) return "Reason is required!";
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post(`{{ route('document.remove') }}`, {
+                _token: $('input[name="_token"]').val(),
+                doc_ids: docIds,
+                type: type,
+                reason: result.value,
+            })
+            .done(function () {
+                Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                    selected.each(function () {
+                        $(this).closest('tr').remove();
+                        $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
                     });
-                }
+                });
+            })
+            .fail(function () {
+                Swal.fire("Error!", "Something went wrong!", "error");
             });
-        });
+        }
+    });
+});
+
+
+
 
         // Filter Form Validation
         $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {

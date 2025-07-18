@@ -46,56 +46,54 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
-    // public function index()
-    // {
-    //     return view('auth.login');
-    // }
-    // public function authenticate(Request $request)
-    // {
-    //     $request->validate([
-    //         'username' => 'required|string|max:50',
-    //         'password' => 'required|string|min:4|max:50',
-    //     ]);
+    public function index()
+    {
+        return view('auth.login');
+    }
+    public function authenticate(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+        
+        $username = $request->input('username');
+        $password = $request->input('password');
+        
+        /*if(env('APP_ENV') != 'local'){
+            try {
+                $ldap = Container::getDefaultConnection();
+                $ldap->connect();
+                $isValidLdap = $ldap->auth()->attempt($username,$password);
 
-    //     $username = $request->username;
-    //     $password = $request->password;
+                if ($isValidLdap) {
+                    $user = User::where('empliyee_id', $username)->first();
+                    if (!$user) {
+                        return back()->withErrors(['username' => 'You are not authorized.']);
+                    }
+                    Session::flush();
+                    Auth::logoutOtherDevices($password);
+                    Auth::login($user);
+                    return redirect()->intended('/home');
+                }
+                return back()->withErrors(['username' => 'Invalid credentials.']);
+            } catch (\Exception $e) {
+                Log::error('LDAP Login Failed', ['error' => $e->getMessage()]);
+            }
+        }*/
 
-    //     try {
-    //         $ldap = Container::getDefaultConnection();
-    //         $isValidLdap = $ldap->auth()->attempt("uid={$username},dc=example,dc=com", $password);
+        if (Auth::attempt(['email' => $username, 'password' => $password])) {
+            Auth::logoutOtherDevices($password);
+            $user = Auth::user();
+            return redirect()->intended('/home');
+        }
+        return back()->withErrors(['username' => 'LDAP server error.']);
+    }
 
-    //         if ($isValidLdap) {
-    //             $user = User::where('username', $username)->first();
-
-    //             if (!$user) {
-    //                 return back()->withErrors(['username' => 'You are not authorized.']);
-    //             }
-
-    //             // Invalidate previous sessions
-    //             Session::flush();
-    //             Auth::logoutOtherDevices($password);
-
-    //             Auth::login($user);
-
-    //             return redirect()->intended('/dashboard');
-    //         }
-
-    //         return back()->withErrors(['username' => 'Invalid credentials.']);
-    //     } catch (\Exception $e) {
-    //         Log::error('LDAP Login Failed', ['error' => $e->getMessage()]);
-    //     }
-    //         if (Auth::attempt(['username' => $username, 'password' => $password])) {
-    //             $user = Auth::user();
-    //             $this->logAudit($user, $request);
-    //             return redirect()->intended('/dashboard');
-    //         }
-    //         return back()->withErrors(['username' => 'LDAP server error.']);
-    // }
-
-    // public function logout(Request $request)
-    // {
-    //     Auth::logout();
-    //     Session::flush();
-    //     return redirect('/login');
-    // }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        Session::flush();
+        return redirect('/login');
+    }
 }

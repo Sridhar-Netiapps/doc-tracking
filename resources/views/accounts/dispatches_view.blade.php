@@ -221,7 +221,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="goldloan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -301,7 +301,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="aof">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -367,7 +367,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="dtrf">
                                             <select name="remarks" class="form-control select2 remarks" required>
