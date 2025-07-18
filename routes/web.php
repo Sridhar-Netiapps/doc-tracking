@@ -109,6 +109,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);
     Route::get('uploads/{upload}/download', [UploadController::class, 'download'])->name('uploads.download');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('users/activity', [UserController::class, 'userActivity'])->name('users.activity');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
     Route::post('users/{user}/permissions', [UserController::class, 'assignPermission'])->name('users.assignPermission');
 
