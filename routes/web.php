@@ -45,7 +45,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
-        Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
@@ -53,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
+    Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::get('document/{id}/{type}', [DocumentController::class, 'viewHistory'])->name('document.history');
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');

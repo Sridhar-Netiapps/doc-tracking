@@ -832,21 +832,19 @@ class DocumentController extends Controller
 
     public function removeDocument(Request $request)
     {
-        $type = $request->type;
         $docIds = $request->doc_ids;  // array of selected IDs
         $reason = $request->reason;
-
         try {
             DB::beginTransaction();
 
             // Store reason if needed (optional, if reason column exists)
-            foreach ($docIds as $id) {
-                $doc = $this->table[$type]::findOrFail($id);
-                $doc->reason = $reason;
-                $doc->save();
-                $doc->delete(); // Laravel soft delete
+            foreach ($docIds as $key => $value) {
+                $this->table[$key]::whereIn('id',$value)->get()->each(function ($doc) use($reason) {
+                    $doc->reason = $reason;
+                    $doc->save();
+                    $doc->delete(); // Laravel soft delete
+                });
             }
-
             DB::commit();
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
@@ -971,5 +969,59 @@ class DocumentController extends Controller
         };
 
         return Excel::download(new DocumentExport($data, $docType), "{$docType}_export.xlsx");
+    }
+
+    public function trashedDocuments()
+    {
+        $start_date = Carbon::now()->subWeek()->startOfWeek(); 
+        $end_date = Carbon::now()->subWeek()->endOfWeek();
+
+        $filter = function ($query) {
+            // if($type === 'moved'){
+            //     $query->where('status','>=',8);
+            // }
+            // elseif($type === 'received'){
+            //     $query->whereIn('status',[5,7]);
+            // }
+            // elseif($type ==='rejected'){
+            //     $query->where('status',6);
+            // }
+            // elseif($type ==='pending'){
+            //     $query->where('status',1);
+            // }
+            if ($this->user->hasRole('ro-user')) {
+                $query->where('region', $this->user->region);
+            }
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                $query->where('branch_code', $this->user->branch_id);
+            }
+            return $query->onlyTrashed()->orderBy('deleted_at', 'desc');
+        };
+        // dd($filter(LoanDocfiltersument::query())->tosql());
+        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString();
+        $loan_total = $loan_document->total();
+        $gold_loan_total = $gold_loan_document->total();
+        $dtrf_total = $dtrf_document->total();
+        $aof_total = $account_opening_document->total();
+        $process_statuses = ProcessStatus::where('status', 1)->get();
+        $vendors = Vendor::all();
+
+        $fixedStatuses = [
+            'pending' => 1,
+            'rejected' => 6,
+            'received' => [5, 7],
+        ];
+        
+        $type = 'Trashed';
+        $fixed_status = $fixedStatuses[$type] ?? null;
+        
+        if ($fixed_status) {
+            $filters['status'] = $fixed_status;
+        }
+
+        return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
     }
 }
