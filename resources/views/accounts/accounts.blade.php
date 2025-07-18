@@ -30,7 +30,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
-                        Liablities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
+                        Liabilities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -117,7 +117,7 @@
                                 <th scope="col" class="text-nowrap">Loan Amount</th>
                                 <th scope="col" class="text-nowrap">Barcode</th>
                                 <th scope="col" class="text-nowrap">Glow Application ID</th>
-                                <th scope="col" class="text-nowrap">Type of Loan<br>Disbursement</th>
+                                <th scope="col" class="text-nowrap">Loan Disbursement Type</th>
                                 <th scope="col" class="text-nowrap">Business Category</th>
                                 <th scope="col" class="text-nowrap">Status</th>
                                 <th scope="col" class="text-nowrap">Activity Date</th>
@@ -645,7 +645,7 @@
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
                         <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liabilities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div>
