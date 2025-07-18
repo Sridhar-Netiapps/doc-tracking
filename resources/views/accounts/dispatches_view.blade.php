@@ -97,6 +97,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Glow Application ID</th>
                                 <th scope="col">Type of Loan<br>Disbursement</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
@@ -121,6 +124,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
@@ -173,11 +179,13 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
                                 @if ($dispatch->status == 5)
-                                <th class="d-none goldloan" scope="col">Update Status</th>
+                                <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
                                 <th class="d-none goldloan" scope="col">Actions</th>
                                 @endif
                                 @endhasanyrole
@@ -195,6 +203,8 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->statusName->name ?? '-' }}
                                             @if (in_array($row->status, [6,7]))
@@ -211,7 +221,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="goldloan">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -245,6 +255,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Scheme</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">PGK No</th>
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
@@ -268,6 +281,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->scheme }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->pgk_no }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
@@ -285,7 +301,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="aof">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -315,6 +331,7 @@
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">Branch Name</th>
                                 <th scope="col">DTR File Date</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 @hasanyrole('ro-user')
@@ -333,6 +350,7 @@
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                        <td>{{ $row->barcode}}</td>
                                         <td>{{ $row->business_category}}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}
                                             @if (in_array($row->status, [6,7]))
@@ -349,7 +367,7 @@
                                             @endif
                                         @endhasanyrole
                                         @hasanyrole('ro-user')
-                                        @if ($dispatch->status == 5)
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="dtrf">
                                             <select name="remarks" class="form-control select2 remarks" required>
@@ -629,54 +647,54 @@
         }
 
         $('.remove-doc').click(function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    let docId = $(this).data('id');
-    let type = $(this).data('type');
-    let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
-    let row = $(this).closest('tr');
+            let docId = $(this).data('id');
+            let type = $(this).data('type');
+            let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
+            let row = $(this).closest('tr');
 
-    var doc_count = $(`#${type}-tab`).find('span.badge').text();
-    // console.log(doc_count);
+            var doc_count = $(`#${type}-tab`).find('span.badge').text();
+            // console.log(doc_count);
 
 
-    if (!docId || !type || !dispatchId) {
-        Swal.fire("Warning!", "Missing document data.", "warning");
-        return;
-    }
+            if (!docId || !type || !dispatchId) {
+                Swal.fire("Warning!", "Missing document data.", "warning");
+                return;
+            }
 
-    Swal.fire({
-        title: "Confirm Deletion",
-        text: "Are you sure you want to delete this document?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete",
-        cancelButtonText: "Cancel"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.post(`{{ route('document.dispatchremove') }}`, {
-                _token: $('input[name="_token"]').val(),
-                doc_id: docId,
-                type: type,
-                dispatch_id: dispatchId,
-            })
-            .done(function () {
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Document removed successfully.",
-                    icon: "success",
-                    timer: 1000,
-                    showConfirmButton: false
-                });
-                row.remove(); 
-                $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
-            })
-            .fail(function (xhr) {
-                Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+            Swal.fire({
+                title: "Confirm Deletion",
+                text: "Are you sure you want to delete this document?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post(`{{ route('document.dispatchremove') }}`, {
+                        _token: $('input[name="_token"]').val(),
+                        doc_id: docId,
+                        type: type,
+                        dispatch_id: dispatchId,
+                    })
+                    .done(function () {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Document removed successfully.",
+                            icon: "success",
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        row.remove(); 
+                        $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
+                    })
+                    .fail(function (xhr) {
+                        Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+                    });
+                }
             });
-        }
-    });
-});
+        });
 
 
         $('.update-row').on('click', function () {
@@ -695,45 +713,44 @@
 
         // Handle bulk update
         $('#update-all').on('click', function () {
-    const activeTab = $('.nav-link.active').attr('id'); // e.g., "loan-tab"
-    const data = [];
-    let hasError = false;
+            const activeTab = $('.nav-link.active').attr('id'); // e.g., "loan-tab"
+            const data = [];
+            let hasError = false;
 
-    let tabSelector = '';
+            let tabSelector = '';
 
-    // Map tab id to row class or pane
-    switch (activeTab) {
-        case 'loan-tab':
-            tabSelector = '#loan-tab-pane';
-            break;
-        case 'goldloan-tab':
-            tabSelector = '#goldloan-tab-pane';
-            break;
-        case 'aof-tab':
-            tabSelector = '#aof-tab-pane';
-            break;
-        case 'dtrf-tab':
-            tabSelector = '#dtrf-tab-pane';
-            break;
-    }
+            // Map tab id to row class or pane
+            switch (activeTab) {
+                case 'loan-tab':
+                    tabSelector = '#loan-tab-pane';
+                    break;
+                case 'goldloan-tab':
+                    tabSelector = '#goldloan-tab-pane';
+                    break;
+                case 'aof-tab':
+                    tabSelector = '#aof-tab-pane';
+                    break;
+                case 'dtrf-tab':
+                    tabSelector = '#dtrf-tab-pane';
+                    break;
+            }
 
-    $(`${tabSelector} tr[data-id]`).each(function () {
-        try {
-            data.push(collectRowData($(this)));
-        } catch (err) {
-            Swal.fire("Alert", err, "warning");
-            hasError = true;
-            return false; // stop loop
-        }
-    });
+            $(`${tabSelector} tr[data-id]`).each(function () {
+                try {
+                    data.push(collectRowData($(this)));
+                } catch (err) {
+                    Swal.fire("Alert", err, "warning");
+                    hasError = true;
+                    return false; // stop loop
+                }
+            });
 
-    if (!hasError && data.length) {
-        sendUpdateRequest(data);
-    }
-});
+            if (!hasError && data.length) {
+                sendUpdateRequest(data);
+            }
+        });
 
 
-        // Common AJAX function
         function sendUpdateRequest(payload) {
             $.ajax({
                 url: '{{ route("document.update") }}',

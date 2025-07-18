@@ -69,10 +69,10 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch_id ?? '' }}"> --}}
 
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
-<input type="hidden" name="doc-type" value="{{ $type }}"> --}}
+            <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
 
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="table-responsive tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -81,46 +81,49 @@
                             <tr>
                                 @hasrole('master')
                                     @if ($type !== 'rejected')
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasanyrole('bo-maker|bo-checker')
                                     @if (in_array($type, ['pending', 'all']))
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @elsehasrole('ro-user')
                                     {{-- @if ($type === 'received') --}}
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     {{-- @endif --}}
                                 @endhasrole
                                 {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
                                     @if (!in_array($type, ['received', 'rejected']))
-                                        <th scope="col"><input type="checkbox" class="loan_all" /> </th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /> </th>
                                     @endif
                                 @endhasanyrole
                                 @role('ro-user')
                                     @if ($type === 'received')
-                                        <th scope="col"><input type="checkbox" class="loan_all" /></th>
+                                        <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                     @endif
                                 @endrole --}}
-                                <th scope="col">Unique Number</th>
+                                <th scope="col" class="text-nowrap">Unique Number</th>
                                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                                <th scope="col">Region</th>
-                                <th scope="col">Branch Name</th>
+                                <th scope="col" class="text-nowrap">Region</th>
+                                <th scope="col" class="text-nowrap">Branch Name</th>
                                 @endunless
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">Account Number</th>
-                                <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Account Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Type of Loan<br>Disbursement</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Activity Date</th>
+                                <th scope="col" class="text-nowrap">Branch Code</th>
+                                <th scope="col" class="text-nowrap">CIF ID</th>
+                                <th scope="col" class="text-nowrap">Account Number</th>
+                                <th scope="col" class="text-nowrap">Loan Cycle</th>
+                                <th scope="col" class="text-nowrap">Customer Name</th>
+                                <th scope="col" class="text-nowrap">Account Creation Date</th>
+                                <th scope="col" class="text-nowrap">Channel</th>
+                                <th scope="col" class="text-nowrap">Loan Amount</th>
+                                <th scope="col" class="text-nowrap">Barcode</th>
+                                <th scope="col" class="text-nowrap">Glow Application ID</th>
+                                <th scope="col" class="text-nowrap">Type of Loan<br>Disbursement</th>
+                                <th scope="col" class="text-nowrap">Business Category</th>
+                                <th scope="col" class="text-nowrap">Status</th>
+                                <th scope="col" class="text-nowrap">Activity Date</th>
                                 @if ($type == 'received')
                                 @hasrole('ro-user')
-                                <th scope="col">Actions</th>
+                                <th scope="col" class="text-nowrap">Actions</th>
                                 @endhasrole
                                 @endif
                             </tr>
@@ -167,15 +170,38 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td> 
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         @hasrole('ro-user')
@@ -232,6 +258,8 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
@@ -282,14 +310,36 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         @hasrole('ro-user')
@@ -346,6 +396,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Account Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">PGK No</th>
+                                <th scope="col"> Scheme</th>
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
@@ -397,15 +450,38 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->pgk_no }}</td>
+                                        <td>{{ $row->scheme ?? '-' }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         @hasrole('ro-user')
@@ -458,6 +534,7 @@
                                 @endunless
                                 <th scope="col">Branch Code</th>
                                 <th scope="col">DTR File Date</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
@@ -504,14 +581,35 @@
                                         @endunless
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                        <td>{{ $row->barcode}}</td>
                                         <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'received')
                                         @hasrole('ro-user')
@@ -614,94 +712,53 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
-                {{-- <div class="col-12 mt-3">
-                    <select class="form-select" name="status" {{ isset($fixed_status) ? 'disabled' : '' }}>
-                       
-                        <option value="">Select Status</option>
-                        <option value="1" {{ ($filters['status'] ?? '') == '1' ? 'selected' : '' }}> Pending </option>
-                        <option value="2" {{ ($filters['status'] ?? '') == '2' ? 'selected' : '' }}> Selected </option>
-                        <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
-                        <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
-                        <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
-                        <option value="6" {{ ($filters['status'] ?? '') == '6' ? 'selected' : '' }}> Rejected </option>
-                        <option value="7" {{ ($filters['status'] ?? '') == '7' ? 'selected' : '' }}> Received with query </option>
-                
-                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                            <option value="8" {{ ($filters['status'] ?? '') == '8' ? 'selected' : '' }}> IN </option>
-                            <option value="9" {{ ($filters['status'] ?? '') == '9' ? 'selected' : '' }}> OUT </option>
-                            <option value="10" {{ ($filters['status'] ?? '') == '10' ? 'selected' : '' }}> Permount </option>
-                            <option value="11" {{ ($filters['status'] ?? '') == '11' ? 'selected' : '' }}> Destroyed </option>
-                        @endunless
+                    @php
+                        $statusLabels = [
+                            1 => 'Pending',
+                            2 => 'Selected',
+                            3 => 'Awaiting checker Approval',
+                            4 => 'Dispatched',
+                            5 => 'Received',
+                            6 => 'Rejected',
+                            7 => 'Received with query',
+                            8 => 'IN',
+                            9 => 'OUT',
+                            10 => 'Permount',
+                            11 => 'Destroyed',
+                        ];
 
-                    </select> 
-                    @if(isset($fixed_status))
-                        <input type="hidden" name="status" value="{{ $fixed_status }}">
-                    @endif                                     
-                </div> --}}
-               @php
-    $statusLabels = [
-        1 => 'Pending',
-        2 => 'Selected',
-        3 => 'Awaiting checker Approval',
-        4 => 'Dispatched',
-        5 => 'Received',
-        6 => 'Rejected',
-        7 => 'Received with query',
-        8 => 'IN',
-        9 => 'OUT',
-        10 => 'Permount',
-        11 => 'Destroyed',
-    ];
-
-    // $selectedStatus = $filters['status'] ?? '';
-    $selectedStatus = is_array($filters['status'] ?? '') ? null : ($filters['status'] ?? '');
-
-@endphp
-
-<div class="col-12 mt-3">
-    <select class="form-select" name="status"
-        {{ isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5 ? 'disabled' : '' }}>
-        
-        {{-- Case: Fixed status is array and it's [5, 7] --}}
-        @if(isset($fixed_status) && is_array($fixed_status) && $fixed_status === [5, 7])
-            <option value="5" {{ $selectedStatus == 5 ? 'selected' : '' }}>Received</option>
-            <option value="7" {{ $selectedStatus == 7 ? 'selected' : '' }}>Received with query</option>
-
-        {{-- Case: Fixed status is a single value like 1, 6 --}}
-        @elseif(isset($fixed_status) && !is_array($fixed_status))
-            <option value="{{ $fixed_status }}" selected>
-                {{ $statusLabels[$fixed_status] ?? 'Status' }}
-            </option>
-
-        {{-- Case: No fixed status --}}
-        @else
-            <option value="">Select Status</option>
-            @foreach ($statusLabels as $key => $label)
-                {{-- <option value="{{ $key }}" {{ $selectedStatus == $key ? 'selected' : '' }}>
-                    {{ $label }}
-                </option> --}}
-                @php
-                $hideForRoles = [8, 9, 10, 11];
-                $isRestricted = in_array($key, $hideForRoles) && auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']);
-            @endphp
-
-            @if (!$isRestricted)
-                <option value="{{ $key }}" {{ $selectedStatus == $key ? 'selected' : '' }}>
-                    {{ $label }}
-                </option>
-            @endif
-            @endforeach
-        @endif
-    </select>
-
-    {{-- Keep hidden input for fixed status if dropdown is disabled --}}
-    @if(isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5)
-        <input type="hidden" name="status" value="{{ $fixed_status }}">
-    @endif
-</div>
-
+                        $selectedStatus = is_array($filters['status'] ?? '') ? null : ($filters['status'] ?? '');
+                    @endphp
+                <div class="col-12 mt-3">
+                    <select class="form-select" name="status"
+                        {{ isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5 ? 'disabled' : '' }}>
                         
-                
+                        @if(isset($fixed_status) && is_array($fixed_status) && $fixed_status === [5, 7])
+                            <option value="5" {{ $selectedStatus == 5 ? 'selected' : '' }}>Received</option>
+                            <option value="7" {{ $selectedStatus == 7 ? 'selected' : '' }}>Received with query</option>
+                        @elseif(isset($fixed_status) && !is_array($fixed_status))
+                            <option value="{{ $fixed_status }}" selected>
+                                {{ $statusLabels[$fixed_status] ?? 'Status' }}
+                            </option>
+                        @else
+                            <option value="">Select Status</option>
+                            @foreach ($statusLabels as $key => $label)
+                                @php
+                                    $hideForRoles = [8, 9, 10, 11];
+                                    $isRestricted = in_array($key, $hideForRoles) && auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']);
+                                @endphp
+                                @if (!$isRestricted)
+                                    <option value="{{ $key }}" {{ $selectedStatus == $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        @endif
+                    </select>
+                    @if(isset($fixed_status) && !is_array($fixed_status) && $fixed_status != 5)
+                        <input type="hidden" name="status" value="{{ $fixed_status }}">
+                    @endif
+                </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
@@ -733,10 +790,10 @@
                         {{-- <input type="text" name="category_of_document" class="form-control"> --}}
                         <select class="form-select document_type" name="category_of_document" required>
                             <option value="">Select Document Category</option>
-                            <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
-                            <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
-                            <option value="cat_b"  {{ ($doc->category_of_document ?? '') == 'cat_b'  ? 'selected' : '' }}>CAT B</option>
-                            <option value="cat_c"  {{ ($doc->category_of_document ?? '') == 'cat_c'  ? 'selected' : '' }}>CAT C</option>
+                            <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
+                            <option value="CAT A2" {{ ($doc->category_of_document ?? '') == 'CAT A2' ? 'selected' : '' }}>CAT A2</option>
+                            <option value="CAT B"  {{ ($doc->category_of_document ?? '') == 'CAT B'  ? 'selected' : '' }}>CAT B</option>
+                            <option value="CAT C"  {{ ($doc->category_of_document ?? '') == 'CAT C'  ? 'selected' : '' }}>CAT C</option>
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
@@ -819,12 +876,12 @@
             $(".dtrf:visible").prop('checked', $(this).prop('checked'));
         });
 
-    flatpickr(".flatpickr-date", {
-        dateFormat: "Y-m-d",
-        maxDate: "today",         
-        allowInput: false,         
-        clickOpens: true
-    });
+        flatpickr(".flatpickr-date", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",         
+            allowInput: false,         
+            clickOpens: true
+        });
 
         let selectedDocuments = [];
         
@@ -863,8 +920,6 @@
                 });
             }
         });
-      
-
         $('.remove-doc').click(function (e) {
     e.preventDefault();
     

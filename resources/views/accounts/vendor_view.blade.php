@@ -65,6 +65,9 @@
                                 <th scope="col">CIF ID</th>
                                 <th scope="col">A/C No</th>
                                 <th scope="col">Loan Cycle</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Glow Application ID</th>
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
@@ -85,13 +88,20 @@
                         <tbody>
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
-                                    <tr>
+                                <tr class="doc-row"
+                                            data-lot_no="{{ $row->lot_no }}"
+                                            data-work_order_no="{{ $row->work_order_no }}"
+                                            data-file_barcode="{{ $row->file_barcode }}"
+                                            data-box_barcode="{{ $row->box_barcode }}">
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
                                         <td>{{ $row->cif_id }}</td>
                                         <td>{{ $row->account_number }}</td>
                                         <td>{{ $row->loan_cycle }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
@@ -108,7 +118,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -129,6 +139,8 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Loan Amount</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
                                 <th scope="col">Document Category</th>
@@ -154,6 +166,8 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->loan_amount }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
                                         <td>{{ $row->lot_no }}</td>
                                         <td>{{ $row->category_of_document }}</td>
@@ -166,7 +180,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -187,6 +201,9 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Creation Date</th>
                                 <th scope="col">Channel</th>
+                                <th scope="col">Scheme</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">PGK No</th>
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
@@ -213,6 +230,9 @@
                                         <td>{{ $row->customer_name }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
+                                        <td>{{ $row->scheme }}</td>
+                                        <td>{{ $row->barcode }}</td>
+                                        <td>{{ $row->pgk_no }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
                                         <td>{{ $row->lot_no }}</td>
@@ -226,7 +246,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -245,6 +265,7 @@
                                 <th scope="col">DTR File Date</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Lot No</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Document Category</th>
                                 <th scope="col">Work Order No</th>
                                 <th scope="col">Vendor Name</th>
@@ -266,6 +287,7 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->business_category}}</td>
                                         <td>{{ $row->lot_no }}</td>
+                                        <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->category_of_document }}</td>
                                         <td>{{ $row->work_order_no }}</td>
                                         <td>{{ $row->vendor_name }}</td>
@@ -276,7 +298,7 @@
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
                                         <td>
                                             @if ($row->status != 11)
-                                            <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive">Update</button>
+                                            <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                             @endif
                                         </td>
                                     </tr>
@@ -407,27 +429,25 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <label for="lot_no" class="form-label">Lot No.</label>
-                        <input type="text" name="lot_no" class="form-control">
+                        <input type="text" id="lot_no_input" name="lot_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Category of the Document.</label>
-                        {{-- <input type="text" name="category_of_document" class="form-control"> --}}
-                        <select class="form-select document_type" name="category_of_document" required>
+                        <select class="form-select document_type" name="category_of_document" id="category_input" required>
                             <option value="">Select Document Category</option>
-                            <option value="cat_a1" {{ ($doc->category_of_document ?? '') == 'cat_a1' ? 'selected' : '' }}>CAT A1</option>
-                            <option value="cat_a2" {{ ($doc->category_of_document ?? '') == 'cat_a2' ? 'selected' : '' }}>CAT A2</option>
-                            <option value="cat_b"  {{ ($doc->category_of_document ?? '') == 'cat_b'  ? 'selected' : '' }}>CAT B</option>
-                            <option value="cat_c"  {{ ($doc->category_of_document ?? '') == 'cat_c'  ? 'selected' : '' }}>CAT C</option>
+                            <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
+                            <option value="CAT A2" {{ ($doc->category_of_document ?? '') == 'CAT A2' ? 'selected' : '' }}>CAT A2</option>
+                            <option value="CAT B"  {{ ($doc->category_of_document ?? '') == 'CAT B'  ? 'selected' : '' }}>CAT B</option>
+                            <option value="CAT C"  {{ ($doc->category_of_document ?? '') == 'CAT C'  ? 'selected' : '' }}>CAT C</option>
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
-                        <input type="text" name="work_order_no" class="form-control">
+                        <input type="text" id="work_order_input" name="work_order_no" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name</label>
-                        {{-- <input type="text" name="vendor_name" class="form-control"> --}}
-                        <select class="form-select" name="vendor_name" required>
+                        <select class="form-select" name="vendor_name" id="vendor_input" required>
                             <option value="">Select Vendor Name</option>
                             @foreach ($vendors as $vendor)
                                 <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
@@ -438,19 +458,19 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
+                        <input type="date" id="vendor_movement_date_input" name="vendor_movement_date" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
-                        <input type="text" name="file_barcode" class="form-control">
+                        <label for="file_barcode" class="form-label">File barcode.</label>
+                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
-                        <input type="text" name="box_barcode" class="form-control">
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
-                        <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
+                        <input type="date" id="date_added_input" name="date_added_to_vendor" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Status</label>
@@ -458,28 +478,16 @@
                         <input type="hidden" name="type">
                         <select name="status" class="form-control select2" required>
                             <option value=''>Select Status</option>
-                            <option value='8'>In</option>
-                            <option value='9'>Out</option>
+                            <option value='8'>IN</option>
+                            <option value='9'>OUT</option>
                             <option value='10'>Permout</option>
                             <option value='11'>Destroyed</option>
                         </select>
                     </div>
                 </div>
-                {{-- <div class="modal-body">
-                    <label for="status" class="form-label">Status</label>
-                    <input type="hidden" name="id">
-                    <input type="hidden" name="type">
-                    <select name="remarks" class="form-control select2" required>
-                        <option value=''>Select</option>
-                        <option value='8'>In</option>
-                        <option value='9'>Out</option>
-                        <option value='10'>Permout</option>
-                        <option value='11'>Destroyed</option>
-                    </select>
-                </div> --}}
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-lg cancel-modal" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -490,14 +498,14 @@
         $('.retrive').click(function () {
             $('input[name="id"]').val($(this).data('id'));
             $('input[name="type"]').val($(this).data('type'));
-            $('#retrive').modal('show');
+            $('#retrive').modal('show');hiddenhidden
+            });
+            flatpickr(".flatpickr-date", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",         
+            allowInput: false,         
+            clickOpens: true
         });
-        flatpickr(".flatpickr-date", {
-        dateFormat: "Y-m-d",
-        maxDate: "today",         
-        allowInput: false,         
-        clickOpens: true
-    });
         $('#doc-retrive').validate({
             rules: {
                 lot_no: {
@@ -538,7 +546,7 @@
 
                 let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
                 let hasSelection = false;
-
+                loan_total
                 $('#doc-retrive').find('input[name$="_ids[]"]').remove();
 
                 documentTypes.forEach(function (type) {
@@ -567,6 +575,45 @@
             //         sanitize: true
             //     }
             // }
+        });
+
+        $(document).on('click', '.retrive', function () {
+            const id = $(this).data('id');
+            const type = $(this).data('type');
+
+            $.ajax({
+                url: `/get-document-details/${type}/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#lot_no_input').val(data.lot_no ?? '');
+                    $('#work_order_input').val(data.work_order_no ?? '');
+                    $('#file_barcode_input').val(data.file_barcode ?? '');
+                    $('#box_barcode_input').val(data.box_barcode ?? '');
+                    if ($('#category_input option[value="' + data.category_of_document + '"]').length === 0) {
+                        $('#category_input').append(new Option(data.category_of_document, data.category_of_document));
+                    }
+                    $('#category_input').val(data.category_of_document).change();
+                    if ($('#vendor_input option[value="' + data.vendor_name + '"]').length === 0) {
+                        $('#vendor_input').append(new Option(data.vendor_name, data.vendor_name));
+                    }
+                    $('#vendor_input').val(data.vendor_name).change();
+
+                    $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
+                    $('#date_added_input').val(data.date_added_to_vendor ?? '');
+                    $('#update_id').val(data.id); 
+                },
+                error: function () {
+                    alert('Failed to fetch document data.');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('.cancel-modal').on('click', function () {
+                $('#yourModalId').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '');
+            });
         });
     });
 </script>

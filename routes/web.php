@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProcessStatusController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
@@ -15,13 +15,13 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
 
-// Route::middleware('guest')->group(function () {
-//     Route::get('login', [LoginController::class, 'insex'])->name('login');
-//     Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
-// });
+Route::middleware('guest')->group(function () {
+    Route::get('login', [LoginController::class, 'index'])->name('login');
+    Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
+});
 
-// Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-Auth::routes();
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+// Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/reports', function () {
         return view('accounts.delivered');
@@ -45,7 +45,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
         Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
-        Route::get('/create', [DocumentController::class, 'create'])->name('accounts.create');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
@@ -53,9 +52,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
     
+    Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::get('document/{id}/{type}', [DocumentController::class, 'viewHistory'])->name('document.history');
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
+    Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
     Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
     Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');

@@ -156,7 +156,7 @@
                                     {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
                                     <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
                                     <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
-                                    <td>{{ $row->dispatch_date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($row->dispatch_date))}}</td>
                                     <td>{{ $row->creator->first_name }}</td>
                                     <td>{{ $row->statusName->name ?? '-' }}
                                         @if ($row->status == 6 || $row->status == 7 )
@@ -282,6 +282,9 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                 </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control datepicker" placeholder="Dispatch Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
+                </div>
                 {{-- <div class="col-12 mt-3">mmrp_code
                     <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div> --}}
@@ -297,8 +300,8 @@
                 </div> --}}
                 {{-- <div class="col-12 mt-3 d-none">
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
-                </div>
-                <div class="col-12 mt-3">
+                </div> --}}
+                {{-- <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                 </div>
                 <div class="col-12 mt-3">
@@ -488,7 +491,7 @@
             }
         });
    
-    $('#applyFilter').click(function () {
+        $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
             let search = $('#search').val()?.trim();
             let dateFrom = $('#date_from').val()?.trim();
@@ -585,41 +588,6 @@
             }
         });
     }
-    
-
-    // $('.disable-update-btn').each(function () {
-    //     let button = $(this);
-    //     let dispatchId = button.data('id');
-
-    //     $.ajax({
-    //         url: '/dispatches/check-status/' + dispatchId,
-    //         method: 'GET',
-    //         success: function(response) {
-    //             if (response.disable_update) {
-    //                 button.prop('disabled', true).attr('title', 'Update disabled: one or more documents have status 4');
-    //             }
-    //         },
-    //         error: function() {
-    //             console.error('Status check failed for dispatch ID: ' + dispatchId);
-    //         }
-    //     });
-    // });
-
-    // $('.update-row').on('click', function () {
-    //     const row = $(this).closest('tr');
-    //     let data;
-    //     console.log(row);
-        
-    //     try {
-    //         data = [collectRowData(row)];
-    //     } catch (err) {
-    //         Swal.fire("Alert", err, "warning");
-    //         return;
-    //     }
-
-    //     sendUpdateRequest(data);
-    // });
-    
 
     // Handle bulk update
     $('#update-all').on('click', function () {
