@@ -48,6 +48,9 @@
 
                 <select class="form-control form-select border-0 ms-3" name="branch">
                     <option value="">All Branch</option>
+                    @foreach($branches as $key=>$val)
+                       <option {{ ($branch == ($val->code."-".$val->name) ) ? 'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
+                    @endforeach
                     
                 </select>
 

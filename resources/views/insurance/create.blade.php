@@ -93,7 +93,13 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Branch ID-Name</label>
-				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="branch" value="1100-Koramangala" >
+				   
+				    <select class="form-control form-control-design form-select" name="branch" required>
+				    	<option value="">Select</option>
+				    	@foreach($branch as $key=>$val)
+                          <option value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
+				    	@endforeach
+				    </select>
 				    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -127,19 +133,19 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Number</label>
-				    <input type="text" class="form-control form-control-design  numbersonly" name="policy_number" value="{{ old('policy_number')}}" placeholder="Enter Policy Number">
+				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="policy_number" value="{{ old('policy_number')}}" placeholder="Enter Policy Number">
 				    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Covered Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date')}}" min="{{ date('Y-m-d')}}">
+				    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
 				    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Expired Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}" min="{{ date('Y-m-d')}}">
+				    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}" >
 				    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
