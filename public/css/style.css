@@ -520,4 +520,31 @@ table p{
     color: #fff !important;
 }
 
+.listView ul{
+    padding-left: 0px;
+    margin-left: 0px;
+    list-style: none;
+    
+}
+
+.listView ul li{
+    width: 100%;
+    list-style: none;
+    display: inline-block;
+}
+
+.listView ul li .value{
+    float: right;
+    background: #229e82 !important;
+    color: #fff !important;
+}
+.listView ul li .label{
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+.listView .label{
+    font-weight: 600;
+    font-size: 16px;
+}
 

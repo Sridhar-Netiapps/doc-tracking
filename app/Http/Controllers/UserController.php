@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
+use App\Models\ActivityLog;
 
 class UserController extends Controller
 {
@@ -166,5 +167,17 @@ class UserController extends Controller
         $user->givePermissionTo($request->input('permission'));
 
         return redirect()->back()->with('success', 'Permission assigned successfully.');
+    }
+
+    public function userActivity()
+    {
+        $filter = function ($query) {
+            // if (!$this->user->hasAnyRole(['master', 'super_admin'])) {
+            //     $query->where('status', 'active');
+            // }
+            return $query;
+        };
+        $users = $filter(ActivityLog::query())->paginate(100)->withQueryString();
+        return view('users.activity', compact('users'));
     }
 }
