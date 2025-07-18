@@ -150,7 +150,7 @@
                                     {{-- <td>{{ $row->region }}</td> --}}
                                     <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
                                         <p>Gold Loan - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
-                                        <p>Liablities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
+                                        <p>Liabilities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
                                         <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
                                     </td>
                                     {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
