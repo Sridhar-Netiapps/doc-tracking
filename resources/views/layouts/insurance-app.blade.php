@@ -36,7 +36,6 @@
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ asset('js/flatpickr.min.js') }}"></script>
     
     <script src="{{ env('APP_URL') }}/js/apexchart.js"></script>
