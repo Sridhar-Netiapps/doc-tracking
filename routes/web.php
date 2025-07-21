@@ -94,9 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
     Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
     Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
-    //  Route::post('/ProcessStatus/store', function ()
-    //  {
-    // Route::post('process_status',RoleController::class);
+    Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
     Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
     Route::resource('vendor', VendorController::class);
@@ -127,8 +125,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
     Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
     Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
-    Route::get('insurance/edit_claim_details/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
-
     Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
     Route::get('insurance/download_checklist/{id}',[InsuranceHomeController::class,'download_checklist'])->name('download_checklist');
     Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
