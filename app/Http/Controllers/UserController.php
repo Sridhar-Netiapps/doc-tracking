@@ -175,9 +175,9 @@ class UserController extends Controller
             // if (!$this->user->hasAnyRole(['master', 'super_admin'])) {
             //     $query->where('status', 'active');
             // }
-            return $query;
+            return $query->orderBy('created_at', 'desc');
         };
-        $users = $filter(ActivityLog::query())->paginate(100)->withQueryString();
-        return view('users.activity', compact('users'));
+        $activites = $filter(ActivityLog::query())->paginate(100)->withQueryString();
+        return view('users.activity', compact('activites'));
     }
 }
