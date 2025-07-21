@@ -80,7 +80,7 @@
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
-				<th>Intimation Date</th>
+				<th class="text-table-head">Intimation Date</th>
 				<th class="text-table-head">Lead ID</th>
 				<th class="text-table-head">Product</th>
 				<th class="text-table-head">CIF ID</th>
@@ -90,8 +90,8 @@
 				<th class="text-table-head">Claim Status</th>
 				<th class="text-table-head">Amount</th>
 				<th class="text-table-head">Policy Covered</th>
-				<th class="text-table-head">Date of Document Received</th>
-				<th class="text-table-head">Date of Submision to Partner</th>
+				<th class="text-table-head">Document Received </th>
+				<th class="text-table-head">Submision to Partner</th>
 				<th class="text-table-head">Action</th>
 			</thead>
 
