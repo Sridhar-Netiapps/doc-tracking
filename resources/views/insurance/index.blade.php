@@ -80,6 +80,7 @@
 	<div class="py-4">
 		<table class="table table-resnponsive table-bordered table-striped">
 			<thead class="table-dark">
+				<th>Intimation Date</th>
 				<th class="text-table-head">Lead ID</th>
 				<th class="text-table-head">Product</th>
 				<th class="text-table-head">CIF ID</th>
@@ -97,6 +98,7 @@
 			<tbody>
 				@foreach($data as $key=>$value)
 				<tr>
+					<td>{{ ($value->intimation_date !='')?date('d M,Y',strtotime($value->intimation_date)):''}}</td>
 					<td class="text-table">{{ $value->utrn}}</td>
 					<td class="text-table">{{ $value->product}}</td>
 					<td class="text-table">{{ $value->cust_id}}</td>
@@ -108,7 +110,12 @@
 					<td class="text-table">{{ ($value->policy_covered_date !='')?date('d M,Y',strtotime($value->policy_covered_date)):''}}</td>
 					<td class="text-table">{{  ($value->doc_rec_date !='')?date('d M,Y',strtotime($value->doc_rec_date)):''}}</td>
 					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
-					<td><a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-outline-secondary">View</button></a></td>
+					<td>
+						<div class="d-flex">
+						<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-warning me-2">View</button></a>
+						<a class="nav-link" href="{{ route('edit_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-danger">Edit</button></a>
+					</div>
+					</td>
 				</tr>
 				@endforeach
 			</tbody>

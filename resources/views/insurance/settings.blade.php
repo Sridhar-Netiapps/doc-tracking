@@ -16,104 +16,44 @@
 
 	</div>
 
+  @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                Swal.fire({
+                    title: 'Message',
+                    text: @json(session('success')),
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((result) => {
+                   
+                });
+            }, 300); // Delay to ensure full render
+        });
+    </script>
+    @php
+        session()->forget('success');
+    @endphp
+    @endif
+    
+    @if(Session::has('failure'))
+     <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+      var mesage = '{{ session('failure') }}';
+      Swal.fire({
+            title: 'Message',
+            text: mesage,
+            icon: 'error',  
+            confirmButtonText: 'OK'
+        });
+     </script>
+     
+    @endif
+
 
 <div class="mt-3 p-4">
 
-<!-- <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button bg-card-header text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-        <strong>Partners</strong>
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-      	<div class="d-flex">
-      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Partner">Add New Partner</button>
-      	</div>
-      	<div class="row py-4">
-          @foreach($partners as $key => $val)
-             <div class="col-3  mb-3">
-             	<div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-             	  <h2 class="card-header text-center">{{$val->partner}}</h2>
-             	</div>
-             </div>
-          @endforeach
-        </div>  
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed bg-card-header text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        <strong>Products</strong>
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-       <div class="d-flex">
-      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Product">Add New Product</button>
-      	</div>
-      	<div class="row py-4">
-          @foreach($products as $key => $val)
-             <div class="col-3  mb-3">
-             	<div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-             	  <h2 class="card-header text-center">{{$val->product}}</h2>
-             	</div>
-             </div>
-          @endforeach
-        </div> 
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed bg-card-header text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        <strong>Place Of Death</strong>
-      </button>
-    </h2>
-    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <div class="d-flex">
-      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Place Of Death">Add New Place of Death</button>
-      	</div>
-      	<div class="row py-4">
-          @foreach($placeofdeath as $key => $val)
-             <div class="col-3  mb-3">
-             	<div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-             	  <h2 class="card-header text-center">{{$val->place}}</h2>
-             	</div>
-             </div>
-          @endforeach
-        </div> 
-      </div>
-    </div>
-  </div>
-
-   <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed bg-card-header text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-        <strong>Cause Of Death</strong>
-      </button>
-    </h2>
-    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <div class="d-flex">
-      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Cause of Death">Add New Cause of Death</button>
-      	</div>
-      	<div class="row py-4">
-          @foreach($deathcause as $key => $val)
-             <div class="col-3  mb-3">
-             	<div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-             	  <h2 class="card-header text-center">{{$val->cause}}</h2>
-             	</div>
-             </div>
-          @endforeach
-        </div> 
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <div class="accordion-item">
@@ -227,12 +167,7 @@
           </div>
 
           <div class="form-group d-none mt-4" id="product">
-            <label>Partner Type</label>
-            <select name="partner_type" class="form-control form-select form-control-design">
-              <option value="MB">Micro Banking</option>
-              <option value="NMB">Non-Micro Banking</option>
-            </select>
-
+           
             <input class="form-control mt-4" type="file" name="files[]" multiple>
           </div>
         </div>

@@ -3,13 +3,21 @@
 
 <div class="container">
 	<div class="d-flex py-4">
-		<label class="label-font-header">Update Lead Details - {{ $data->utrn }}</label>
+		<label class="label-font-header">Insurance Lead Details- {{ $data->utrn }}</label>
 
         
 		<div class="ms-auto">
-			<a href="{{ route('view_claim_details',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2" >View Details</button> </a>
+			@if($data->products->type == 'MB')
+			<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
+			@else
+			  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button>        
+			@endif
+            
+			<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
 
-			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >View Lead List</button> </a>
+			<a href="{{route('edit_claim_details',encrypt($data->id)) }}"><button class="btn btn-sm btn-warning btn-text p-2" >Edit</button> </a>
+			
+			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
 	</div>
 
@@ -42,10 +50,10 @@
 		                allowEscapeKey: false
 		            }).then((result) => {
 		                console.log('result:', result);
-		               /* if (result.isConfirmed) {
+		                if (result.isConfirmed) {
 		                    console.log('Redirecting...');
 		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
-		                }*/
+		                }
 		            });
 		        }, 300); // Delay to ensure full render
 		    });
@@ -75,7 +83,7 @@
 		<div class="py-3 d-block" id="head_off">
 	    <form method="POST" action="{{route('update_claim_details',encrypt($data->id))}}" disabled>	
 	    @csrf	
-	    <fieldset {{ (Auth::user()->branch_id == '1100')?'':'disabled'}}>
+	    <fieldset disabled>
 
 	    <div class="card mt-3">
         	<div class="card-header label-font-header border-dark bg-card-header text-white">Lead Information</div>
@@ -115,7 +123,7 @@
         	    </div>
         	</div>    		
         </div>
-1100-Koramangala
+
 		<div class="card mt-3">
         	<div class="card-header label-font-header bg-card-header text-white">Policy Imformation</div>
         	<div class="card-body bg-card-branch">
@@ -135,12 +143,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Branch ID-Name</label>
-					    <select class="form-control form-control-design form-select" name="branch" required>
-				    	<option value="">Select</option>
-				    	@foreach($branch as $key=>$val)
-                          <option {{ ($data->branch==($val->code.'-'.$val->name))? 'selected':'' }} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}- {{ $val->name}}</option>
-				    	@endforeach
-				    </select>
+					    <input type="text" class="form-control form-control-design " name="branch" value="{{ $data->branch }}" >
 					    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -585,14 +588,6 @@
         
         </fieldset>
 
-        @if(auth::user()->branch_id == '1100')
-		<div class="d-flex mt-3">
-			<div class="ms-auto">
-				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
-			</div>
-	    </div>
-	    @endif
-
         </form>
         
 		</div>
@@ -603,7 +598,7 @@
 		<div class="py-3 d-none" id="branch_off">
 			<form method="POST" action="{{route('save_nominee_details')}}">
 			@csrf
-			
+			<fieldset disabled>
 		    <div class="card mt-3">
         	<div class="card-header label-font-header bg-card-header-branch text-white">Nominee Details</div>
         	<div class="card-body bg-card-branch">		
@@ -682,17 +677,11 @@
 				</div>
 
 			</div>
-		    </div></div>
+		    </div>
+		    </div>
+		    </fieldset>
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 
-           
-		
-			<div class="d-flex py-4">
-				<div class="ms-auto">
-					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
-				</div>
-		    </div>
-		    
         </form>
 		</div>
 
