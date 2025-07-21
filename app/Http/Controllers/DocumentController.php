@@ -766,55 +766,6 @@ class DocumentController extends Controller
         }
     }
 
-
-    // public function removeDispatchesDocument(Request $request)
-    // {
-    //     $tables = [
-    //         'loan' => LoanDocument::class,
-    //         'goldloan' => GoldLoanDocument::class,
-    //         'dtrf' => DtrfDocument::class,
-    //         'aof' => AccountOpeningDocument::class,
-    //     ];
-    //     // dd($request->all());
-    //     $columns = [
-    //         'loan' => 'loan_ids',
-    //         'goldloan' => 'goldloan_ids',
-    //         'dtrf' => 'dtrf_ids',
-    //         'aof' => 'aof_ids',
-    //     ];
-    
-    //     $type = $request->type;
-    //     $docId = $request->doc_id;
-    //     $dispatchId = $request->dispatch_id;
-    
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $dispatch = CourierDispatch::find($dispatchId);
-    //         $columnName = $columns[$request->type];
-
-    //         $values = collect(explode(',', $dispatch->$columnName))
-    //             ->map(fn($v) => trim($v))
-    //             ->filter(fn($v) => $v !== $docId)
-    //             ->values()
-    //             ->implode(',');
-            
-    //         $dispatch->$columnName = $values;
-    //         $dispatch->updated_by = $this->user->id;
-    //         $dispatch->save();
-    
-    //         // $this->table[$type]::where('id', $docId)->update(['status' => 1]);
-    //         $tables[$type]::where('id', $docId)->update(['status' => 1]);
-
-    
-    //         DB::commit();
-    //         return response()->json(['success' => true]);
-    
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json(['error' => $e->getMessage()], 500);
-    //     }
-    // }
     
     public function removeDispatchesDocument(Request $request)
     {
@@ -844,7 +795,8 @@ class DocumentController extends Controller
             $dispatch->updated_by = $this->user->id;
             $dispatch->save();
     
-            $doc = $this->table[$type]::find('id', $docId);
+            // $doc = $this->table[$type]::find('id', $docId);
+            $doc = $this->table[$type]::find($docId);
             $doc->status = 1;
             $doc->updated_by = $this->user->id;
             $doc->save();

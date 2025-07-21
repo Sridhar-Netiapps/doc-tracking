@@ -140,7 +140,7 @@
                                             @if ($row->status == 3)
                                                 <td class="border-start">
                                                     <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -216,7 +216,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -296,7 +296,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -362,7 +362,7 @@
                                         @hasanyrole('bo-checker')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> <img src="/images/delete_icon_w.svg"/> </button>
+                                                    <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
@@ -664,11 +664,11 @@
             }
 
             Swal.fire({
-                title: "Confirm Deletion",
-                text: "Are you sure you want to delete this document?",
+                title: "Confirm Removal",
+                text: "Are you sure you want to remove this document?",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Yes, delete",
+                confirmButtonText: "Yes, remove",
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -680,7 +680,7 @@
                     })
                     .done(function () {
                         Swal.fire({
-                            title: "Deleted!",
+                            title: "Removed!",
                             text: "Document removed successfully.",
                             icon: "success",
                             timer: 1000,
