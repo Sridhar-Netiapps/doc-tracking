@@ -928,35 +928,32 @@
                 });
             }
         });
+      
         $('.remove-doc').click(function (e) {
             e.preventDefault();
-    
-            let selected = $('input[type=checkbox]:checked');
-            if (selected.length === 0) {
+            const $selected = $('input[type=checkbox]:checked');
+            if ($selected.length === 0) {
                 Swal.fire({
-                            title: "Warning!",
-                            text: "Please select at least one Document.",
-                            icon: "warning",
-                            confirmButtonText: "OK"
-                        });
+                    title: "Warning!",
+                    text: "Please select at least one Document.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
                 return;
             }
-
             let docIds = [];
             let type = '';
-            // var doc_count = parseInt($('span.badge').text());
-            selected.each(function () {
-                docIds.push($(this).data('id'));
-                if (!type) {
-                    if ($(this).hasClass('loan')) type = 'loan';
-                    if ($(this).hasClass('goldloan')) type = 'goldloan';
-                    if ($(this).hasClass('dtrf')) type = 'dtrf';
-                    if ($(this).hasClass('aof')) type = 'aof';
+            let docMap = {};
+            $selected.each(function () {
+                let $el = $(this);
+                let docId = $el.data('id');
+                let className = ['loan', 'goldloan', 'dtrf', 'aof'].find(c => $el.hasClass(c));
+                if (className) {
+                    (docMap[className] ||= []).push(docId);
                 }
             });
-            // var doc_count = $(`#${type}-tab`).closest('span.badge').text();
-            var doc_count = $(`#${type}-tab`).find('span.badge').text();
-            // console.log(doc_count);
+            const $badge = $(`#${type}-tab`).find('span.badge');
+            let doc_count = parseInt($badge.text()) || 0;
             Swal.fire({
                 title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
                 input: "text",
@@ -970,26 +967,28 @@
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
                 },
-                inputValidator: (value) => {
-                    if (!value) return "Reason is required!";
-                }
-            }).then((result) => {
+                inputValidator: value => !value && "Reason is required!"
+            }).then(result => {
                 if (result.isConfirmed) {
                     $.post(`{{ route('document.remove') }}`, {
                         _token: $('input[name="_token"]').val(),
-                        doc_ids: docIds,
+                        doc_ids: docMap,
                         type: type,
                         reason: result.value,
                     })
-                    .done(function () {
+                    .done(() => {
                         Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                            selected.each(function () {
-                                $(this).closest('tr').remove();
-                                $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
+                            $selected.closest('tr').remove();
+                            // $badge.text(doc_count - $selected.length);
+                            Object.entries(docMap).forEach(([type, ids]) => {
+                                const $badge = $(`#${type}-tab`).find('span.badge');
+                                const current = parseInt($badge.text()) || 0;
+                                const newCount = Math.max(current - ids.length, 0);
+                                $badge.text(newCount);
                             });
                         });
                     })
-                    .fail(function () {
+                    .fail(() => {
                         Swal.fire("Error!", "Something went wrong!", "error");
                     });
                 }
