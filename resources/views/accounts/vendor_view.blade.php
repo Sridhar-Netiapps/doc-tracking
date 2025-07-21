@@ -69,7 +69,7 @@
                                 <th scope="col">Barcode</th>
                                 <th scope="col">Glow Application ID</th>
                                 <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
+                                <th scope="col">Disbursement Date</th>
                                 <th scope="col">Channel</th>
                                 <th scope="col">Loan Disbursement Type</th>
                                 <th scope="col">Business Category</th>
@@ -383,10 +383,10 @@
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select" name="type">
@@ -498,9 +498,13 @@
         $('.retrive').click(function () {
             $('input[name="id"]').val($(this).data('id'));
             $('input[name="type"]').val($(this).data('type'));
-            $('#retrive').modal('show');hiddenhidden
-            });
-            flatpickr(".flatpickr-date", {
+
+            $('#retrive').modal({
+                backdrop: 'static',
+                keyboard: false
+            }).modal('show');;
+        });
+        flatpickr(".flatpickr-date", {
             dateFormat: "Y-m-d",
             maxDate: "today",         
             allowInput: false,         

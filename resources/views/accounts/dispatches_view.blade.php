@@ -95,7 +95,7 @@
                                 <th scope="col">A/C No</th>
                                 <th scope="col">Loan Cycle</th>
                                 <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
+                                <th scope="col">Disbursement Date</th>
                                 <th scope="col">Channel</th>
                                 <th scope="col">Loan Amount</th>
                                 <th scope="col">Barcode</th>

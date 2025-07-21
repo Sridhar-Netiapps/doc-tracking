@@ -47,9 +47,20 @@ class DocumentController extends Controller
             if($type === 'moved'){
                 $query->where('status','>=',8);
             }
-            elseif($type === 'received'){
-                $query->whereIn('status',[5,7]);
-            }
+            // elseif($type === 'received'){
+            //     if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            //         $query->where('status','>=',8);
+            //     }
+            //     $query->whereIn('status',[5,7]);
+            // }
+
+            elseif($type === 'received') {
+                if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                    $query->whereIn('status', [5, 7, 8, 9, 10, 11]);
+                } else {
+                    $query->whereIn('status', [5, 7]);
+                }
+            }            
             elseif($type ==='rejected'){
                 $query->where('status',6);
             }
@@ -116,16 +127,18 @@ class DocumentController extends Controller
         // dd($filters);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
-        // $fromDate = $filters['from_date'] ?? null;
-        // $toDate = $filters['to_date'] ?? null;
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
 
-        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // dd($toDate);
+
         $cifId = $filters['cif_id'] ?? null;
         $accountNumber = $filters['account_number'] ?? null;
 
 
-        unset($filters['from_date'], $filters['to_date']);
+        // unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
@@ -273,11 +286,13 @@ class DocumentController extends Controller
         $filters = session('filters', []);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
     
-        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
     
-        unset($filters['from_date'], $filters['to_date']);
+        // unset($filters['from_date'], $filters['to_date']);
     
         $allDocuments = collect();
     
