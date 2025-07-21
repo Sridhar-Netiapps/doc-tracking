@@ -19,7 +19,25 @@
 			<!-- <div class="col-3">
 				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
 			</div> -->
-		</div>   
+		</div> 
+
+		@if ($errors->any())
+
+		     <script nonce="wUDPhZ1Z60inspnMCukimCi">
+		        document.addEventListener('DOMContentLoaded', function () {
+		            let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $field => $messages)
+		                <li><strong>{{ ucfirst(str_replace('_', ' ', $field)) }}</strong>: {{ $messages[0] }}</li>
+		            @endforeach</ul>`;
+
+		            Swal.fire({
+		                title: 'Validation Errors',
+		                html: errorList,
+		                icon: 'error',
+		                confirmButtonText: 'OK'
+		            });
+		        });
+		    </script>
+		@endif  
 
 		@if(session('success'))
 		<script>
@@ -94,10 +112,10 @@
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Branch ID-Name</label>
 				   
-				    <select class="form-control form-control-design form-select" name="branch" required>
+				    <select class="form-control form-control-design form-select" name="branch">
 				    	<option value="">Select</option>
 				    	@foreach($branch as $key=>$val)
-                          <option value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
+                          <option  {{ (old('branch') == ($val->code.'-'.$val->name) )?'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
 				    	@endforeach
 				    </select>
 				    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
@@ -105,7 +123,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Partner</label>
-				    <select class="form-control form-control-design   form-select" name="partner"  >
+				    <select class="form-control form-control-design form-select" name="partner"  >
 				    	<option value="">Select</option>
 				    	@foreach($partners as $key=>$value)
 				    	   <option {{(old('partner') == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
@@ -127,7 +145,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Member Code</label>
-				    <input type="text" class="form-control form-control-design " name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
+				    <input type="text" class="form-control form-control-design numbersonly" name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
 				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -151,7 +169,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Customer ID</label>
-				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="cust_id" value="{{ old('cust_id')}}" placeholder="Enter Customer ID">
+				    <input type="text" class="form-control form-control-design  " name="cust_id" value="{{ old('cust_id')}}" placeholder="Enter Customer ID">
 				    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -196,7 +214,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Deceased</label>
-				    <select class="form-control form-control-design  form-select" name="deceased" >
+				    <select class="form-control form-control-design  form-select clsAlphaNoOnly" name="deceased" >
 				    	<option value="">Select</option>
 				    	@foreach($deceased as $key=>$value)
 				    	   <option {{ ( old('deceased')==$value)?'selected':''}} 
