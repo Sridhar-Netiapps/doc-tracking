@@ -127,7 +127,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Member Code</label>
-				    <input type="text" class="form-control form-control-design numbersonly" name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
+				    <input type="text" class="form-control form-control-design " name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
 				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 

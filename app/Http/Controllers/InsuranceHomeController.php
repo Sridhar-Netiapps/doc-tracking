@@ -298,6 +298,17 @@ class InsuranceHomeController extends Controller
     {
        // print_r($request->input()); die();
 
+     /* $request->validate([
+          'your_input_field' => [
+              'required',
+              'not_regex:/<script\b[^>]*>(.*?)<\/script>/i',
+              'regex:/^[a-zA-Z0-9\s,.\-]+$/'
+          ],
+      ], [
+          'your_input_field.not_regex' => 'Script tags are not allowed.',
+          'your_input_field.regex' => 'Only letters, numbers, spaces, and the characters , . - are allowed.'
+      ]);*/
+
     $request->validate([
         'region' => 'required',
         'branch' => 'required',
