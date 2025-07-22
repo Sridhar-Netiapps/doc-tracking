@@ -532,19 +532,19 @@
         		<div class="row">
         			
 					<div class="col-3 mb-3">
-					    <label class="form-label">Acknowledgement Received Date</label>
+					    <label class="form-label label-bold">Acknowledgement Received Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ $nomineedata->ack_rec_date}}">
 					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">SPDC Received Date</label>
+					    <label class="form-label label-bold">SPDC Received Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ $nomineedata->spdc_rec_date}}">
 					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Packet Number</label>
+					    <label class="form-label label-bold">Packet Number</label>
 					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ $nomineedata->pkt_no}}" placeholder="Enter Packet Number">
 					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>

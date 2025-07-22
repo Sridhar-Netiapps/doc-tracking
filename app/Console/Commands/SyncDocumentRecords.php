@@ -19,10 +19,10 @@ class SyncDocumentRecords extends Command
 
     public function handle(): void
     {
-        $this->syncLoanType(HrmLoanDocument::class, LoanDocument::class, 'MB', 'added_at');
-        $this->syncLoanType(HrmGoldLoanDocument::class, GoldLoanDocument::class, 'GL', 'added_at');
-        $this->syncLoanType(HrmAccountOpeningDocument::class, AccountOpeningDocument::class, 'LD', 'added_at');
-        $this->syncLoanType(HrmDtrfDocument::class, DtrfDocument::class, 'DT', 'added_at');
+        $this->syncLoanType(HrmLoanDocument::class, LoanDocument::class, 'MB', 'etl_date');
+        $this->syncLoanType(HrmGoldLoanDocument::class, GoldLoanDocument::class, 'GL', 'etl_date');
+        $this->syncLoanType(HrmAccountOpeningDocument::class, AccountOpeningDocument::class, 'LD', 'etl_date');
+        $this->syncLoanType(HrmDtrfDocument::class, DtrfDocument::class, 'DT', 'etl_date');
 
         $this->info('All document records synced successfully with unique references.');
     }
@@ -32,32 +32,30 @@ class SyncDocumentRecords extends Command
         $today = now()->toDateString();
         $formattedMonthYear = now()->format('my');
 
-        $sourceModel::whereDate($dateColumn, $today)
-            ->chunk(100, function ($records) use ($targetModel, $prefix, $formattedMonthYear) {
-                $grouped = $records->groupBy('branch_code');
+        $sourceModel::whereDate($dateColumn, $today)->chunk(100, function ($records) use ($targetModel, $prefix, $formattedMonthYear) {
+            $grouped = $records->groupBy('branch_code');
+            foreach ($grouped as $branchCode => $branchRecords) {
+                $existingCount = $targetModel::where('branch_code', $branchCode)
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->count();
 
-                foreach ($grouped as $branchCode => $branchRecords) {
-                    $existingCount = $targetModel::where('branch_code', $branchCode)
-                        ->whereMonth('created_at', now()->month)
-                        ->whereYear('created_at', now()->year)
-                        ->count();
+                $sequence = $existingCount;
 
-                    $sequence = $existingCount;
+                foreach ($branchRecords as $record) {
+                    $sequence++;
+                    $uniqueRefNo = $prefix .
+                        str_pad($branchCode, 4, '0', STR_PAD_LEFT) .
+                        $formattedMonthYear .
+                        str_pad($sequence, 4, '0', STR_PAD_LEFT);
 
-                    foreach ($branchRecords as $record) {
-                        $sequence++;
-                        $uniqueRefNo = $prefix .
-                            str_pad($branchCode, 4, '0', STR_PAD_LEFT) .
-                            $formattedMonthYear .
-                            str_pad($sequence, 4, '0', STR_PAD_LEFT);
-
-                        $data = $record->toArray();
-                        $data['unique_ref_no'] = $uniqueRefNo;
-                        $data['status'] = 1;
-                        $targetModel::create($data);
-                        // dd($targetModel);
-                    }
+                    $data = $record->toArray();
+                    $data['unique_ref_no'] = $uniqueRefNo;
+                    $data['status'] = 1;
+                    $targetModel::create($data);
+                    // dd($targetModel);
                 }
-            });
+            }
+        });
     }
 }

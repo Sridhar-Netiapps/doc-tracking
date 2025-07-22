@@ -298,30 +298,31 @@ class InsuranceHomeController extends Controller
     {
        // print_r($request->input()); die();
 
-     /* $request->validate([
-          'your_input_field' => [
-              'required',
-              'not_regex:/<script\b[^>]*>(.*?)<\/script>/i',
-              'regex:/^[a-zA-Z0-9\s,.\-]+$/'
-          ],
-      ], [
-          'your_input_field.not_regex' => 'Script tags are not allowed.',
-          'your_input_field.regex' => 'Only letters, numbers, spaces, and the characters , . - are allowed.'
-      ]);*/
+      $inputdata = $request->all();
+      $errors = [];
+ 
 
-    $request->validate([
-        'region' => 'required',
-        'branch' => 'required',
-        'partner' => 'required',
-        'product' => 'required',
-        /*'region' => 'required',
-        'policy_number' => 'required',
-        'cust_id' => 'required',
-        'actual_id' => 'required',
-        'cliam_status' => 'required',
-        'cause_of_death' => 'required',
-        'deceased'=> 'required',*/
-    ]);
+      $request->validate([
+          'region' => 'required',
+          'branch' => 'required',
+          'partner' => 'required',
+          'product' => 'required',
+         
+      ]);
+
+     foreach ($inputdata as $key => $value) {
+          if (is_string($value)) {
+              if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+                  $errors[$key] = 'Script tags are not allowed.';
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                  $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
+              }
+          }
+      }
+
+      if (!empty($errors)) {
+          return redirect()->back()->withErrors($errors)->withInput();
+      }
 
         $utrn = rand('000000','999999');
         $claimdata = new InsuranceClaimDetail;
@@ -519,6 +520,23 @@ class InsuranceHomeController extends Controller
           'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
           
         ]);
+
+        $inputdata = $request->all();
+        $errors = [];
+
+        foreach ($inputdata as $key => $value) {
+          if (is_string($value)) {
+              if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+                  $errors[$key] = 'Script tags are not allowed.';
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                  $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
+              }
+          }
+        }
+
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors)->withInput();
+        }
 
         $claimdata = InsuranceClaimDetail::find(decrypt($id));
         $claimdata->branch = $request->branch;
@@ -795,6 +813,29 @@ class InsuranceHomeController extends Controller
 
     public function save_nominee_details(Request $request){
       // print_r($request->input());die();
+      $inputdata = $request->all();
+      $errors = [];
+
+       $request->validate([
+          'nominee_name_bank' => 'required',
+          'bank_name' => 'required'
+          
+      ]);
+
+      foreach ($inputdata as $key => $value) {
+          if (is_string($value)) {
+              if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+                  $errors[$key] = 'Script tags are not allowed.';
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                  $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
+              }
+          }
+      }
+
+      if (!empty($errors)) {
+          return redirect()->back()->withErrors($errors)->withInput();
+      }
+
        $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($request->lead_id))->first();
        if($insurancenomineedata) {
            $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
@@ -842,6 +883,22 @@ class InsuranceHomeController extends Controller
 
     public function save_claim_checklist(Request $request){
         // print_r(json_encode($request->name));die();
+        $inputdata = $request->all();
+        $errors = [];
+
+        foreach ($inputdata as $key => $value) {
+            if (is_string($value)) {
+                if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+                    $errors[$key] = 'Script tags are not allowed.';
+                } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                    $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors)->withInput();
+        }
           $checklistDetails = InsuranceChecklist::where('insurance_claim_details_id',decrypt($request->claim_id))->first();
             if($checklistDetails){
              $checklist = InsuranceChecklist::find($checklistDetails->id);
@@ -1108,6 +1165,23 @@ class InsuranceHomeController extends Controller
     public function add_new_insurance_item(Request $request){
       $module = $request->modulename;
 
+      $inputdata = $request->all();
+      $errors = [];
+
+      foreach ($inputdata as $key => $value) {
+          if (is_string($value)) {
+              if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+                  $errors[$key] = 'Script tags are not allowed.';
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                  $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
+              }
+          }
+      }
+
+      if (!empty($errors)) {
+          return redirect()->back()->withErrors($errors)->withInput();
+      }
+
       //print_r($request->input());die();
 
       if($module == 'Partner'){
@@ -1123,19 +1197,21 @@ class InsuranceHomeController extends Controller
         if ($request->hasFile('files')) {
 
             foreach ($request->file('files') as $file) {
-
+            // print_r("kkk");die();
                 // 🔍 Validate each file
                 $result = $this->validateFileWhileSaving($file);
+               // print_r($result);die();
                 if (strpos($result, 'Malicious content detected') !== false || 
                     strpos($result, 'Invalid file type') !== false || 
                     strpos($result, 'File size exceeds') !== false) {
                     $errors[] = $result;
                     continue; // skip saving this file
                 }
-                
-                //print_r($result);die();
-                // ✅ Save the valid file
+              
+            }
 
+            if(sizeof($errors)>0){
+              return redirect()->back()->with('failure',implode(',', $errors));
             }
         }
         else{
@@ -1173,6 +1249,13 @@ class InsuranceHomeController extends Controller
       if($module == 'Place Of Death'){
         InsurancePlaceofDeath::create(['place'=> $request->title]);
       }
+
+        $module = 'Insurance';
+        $operation = $module;
+        $note = 'New '.$request->modulename.' added';
+        $link = url('/insurance/settings/');
+
+         $this->auditlogs($module, $operation, $note, $link);
 
       return redirect()->back()->with('success', "Added Successfully");
 
@@ -1217,6 +1300,7 @@ class InsuranceHomeController extends Controller
         } 
 
         if ($extension === 'pdf') {
+
             try {
                 $parser = new \Smalot\PdfParser\Parser();
                 $pdf = $parser->parseFile($file->getPathname());
@@ -1229,6 +1313,7 @@ class InsuranceHomeController extends Controller
                 $fileContent = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 foreach ($maliciousPatterns as $pattern) {
                     if (preg_match($pattern, $fileContent)) {
+
                         return "$fileName: Malicious content detected.";
                     }
                 }
@@ -1252,6 +1337,7 @@ class InsuranceHomeController extends Controller
             $fileContent = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             foreach ($maliciousPatterns as $pattern) {
                 if (preg_match($pattern, $fileContent)) {
+
                     return "$fileName: Malicious content detected.";
                 }
             }

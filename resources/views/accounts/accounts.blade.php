@@ -113,7 +113,7 @@
                                     <th scope="col" class="text-nowrap">Account Number</th>
                                     <th scope="col" class="text-nowrap">Loan Cycle</th>
                                     <th scope="col" class="text-nowrap">Customer Name</th>
-                                    <th scope="col" class="text-nowrap">Account Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Disbursement Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
                                     <th scope="col" class="text-nowrap">Loan Amount</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
@@ -670,11 +670,11 @@
                         <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                     </select>
                 </div>
-                @endunless
+                {{-- @endunless --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
@@ -699,10 +699,10 @@
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
@@ -830,7 +830,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
-                        <input type="text" name="box_barcode" class="form-control">
+                        <input type="number" name="box_barcode" class="form-control length_15" min="0">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
@@ -928,76 +928,72 @@
                 });
             }
         });
+      
         $('.remove-doc').click(function (e) {
-    e.preventDefault();
-    
-    let selected = $('input[type=checkbox]:checked');
-    if (selected.length === 0) {
-        Swal.fire({
+            e.preventDefault();
+            const $selected = $('input[type=checkbox]:checked');
+            if ($selected.length === 0) {
+                Swal.fire({
                     title: "Warning!",
                     text: "Please select at least one Document.",
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
-        return;
-    }
-
-    let docIds = [];
-    let type = '';
-    // var doc_count = parseInt($('span.badge').text());
-    selected.each(function () {
-        docIds.push($(this).data('id'));
-        if (!type) {
-            if ($(this).hasClass('loan')) type = 'loan';
-            if ($(this).hasClass('goldloan')) type = 'goldloan';
-            if ($(this).hasClass('dtrf')) type = 'dtrf';
-            if ($(this).hasClass('aof')) type = 'aof';
-        }
-    });
-// var doc_count = $(`#${type}-tab`).closest('span.badge').text();
-var doc_count = $(`#${type}-tab`).find('span.badge').text();
-// console.log(doc_count);
-    Swal.fire({
-        title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
-        input: "text",
-        inputLabel: "Enter reason for deleting the document:",
-        inputPlaceholder: "Reason...",
-        showCancelButton: true,
-        confirmButtonText: '<b>Confirm Delete</b>',
-        cancelButtonText: "Cancel",
-        customClass: {
-            popup: 'rounded-3 shadow',
-            confirmButton: 'btn btn-primary btn-lg',
-            cancelButton: 'btn btn-secondary btn-lg',
-        },
-        inputValidator: (value) => {
-            if (!value) return "Reason is required!";
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.post(`{{ route('document.remove') }}`, {
-                _token: $('input[name="_token"]').val(),
-                doc_ids: docIds,
-                type: type,
-                reason: result.value,
-            })
-            .done(function () {
-                Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
-                    selected.each(function () {
-                        $(this).closest('tr').remove();
-                        $(`#${type}-tab`).find('span.badge').text(doc_count - selected.length);
-                    });
-                });
-            })
-            .fail(function () {
-                Swal.fire("Error!", "Something went wrong!", "error");
+                return;
+            }
+            let docIds = [];
+            let type = '';
+            let docMap = {};
+            $selected.each(function () {
+                let $el = $(this);
+                let docId = $el.data('id');
+                let className = ['loan', 'goldloan', 'dtrf', 'aof'].find(c => $el.hasClass(c));
+                if (className) {
+                    (docMap[className] ||= []).push(docId);
+                }
             });
-        }
-    });
-});
-
-
-
+            const $badge = $(`#${type}-tab`).find('span.badge');
+            let doc_count = parseInt($badge.text()) || 0;
+            Swal.fire({
+                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                input: "text",
+                inputLabel: "Enter reason for deleting the document:",
+                inputPlaceholder: "Reason...",
+                showCancelButton: true,
+                confirmButtonText: '<b>Confirm Delete</b>',
+                cancelButtonText: "Cancel",
+                customClass: {
+                    popup: 'rounded-3 shadow',
+                    confirmButton: 'btn btn-primary btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg',
+                },
+                inputValidator: value => !value && "Reason is required!"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $.post(`{{ route('document.remove') }}`, {
+                        _token: $('input[name="_token"]').val(),
+                        doc_ids: docMap,
+                        type: type,
+                        reason: result.value,
+                    })
+                    .done(() => {
+                        Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                            $selected.closest('tr').remove();
+                            // $badge.text(doc_count - $selected.length);
+                            Object.entries(docMap).forEach(([type, ids]) => {
+                                const $badge = $(`#${type}-tab`).find('span.badge');
+                                const current = parseInt($badge.text()) || 0;
+                                const newCount = Math.max(current - ids.length, 0);
+                                $badge.text(newCount);
+                            });
+                        });
+                    })
+                    .fail(() => {
+                        Swal.fire("Error!", "Something went wrong!", "error");
+                    });
+                }
+            });
+        });
 
         // Filter Form Validation
         $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {

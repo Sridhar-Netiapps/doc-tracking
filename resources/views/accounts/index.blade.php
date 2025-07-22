@@ -52,7 +52,7 @@
                                 <th scope="col"> Glow Application ID</th>
                                 <th scope="col"> Scheme</th>
                                 <th scope="col"> Customer Name</th>
-                                <th scope="col"> Account Creation Date</th>
+                                <th scope="col"> Disbursement Date / Account Creation Date</th>
                                 <th scope="col"> Channel</th>
                                 <th scope="col"> Loan Disbursement Type / Account Opening</th>
                                 <th scope="col"> Business Category</th>
@@ -139,11 +139,11 @@
                         <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                     </select>
                 </div>
-                @endunless
+                {{-- @endunless --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
@@ -175,10 +175,10 @@
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                     <div class="col-12 mt-3">
-                        <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                        <input type="text" readonly class="form-control flatpickr-date" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                     </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
@@ -225,8 +225,8 @@
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control">
+                        <label for="status" class="form-label">AWB/POD *</label>
+                        <input type="text" name="awb_pod" class="form-control" required>
                     </div>
                     {{-- <div class="w-100"></div> 
                     <div class="col-4 pb-2">
@@ -248,6 +248,12 @@
 </div>
 <script>
     $(document).ready(function () {
+        flatpickr(".flatpickr-date", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",         
+            allowInput: false,         
+            clickOpens: true
+        });
         $(".select_all").click(function () {
             $(".select").prop('checked', $(this).prop('checked'));
         });
@@ -278,6 +284,7 @@
             rules: {
                 awb_pod: {
                     alphanumeric: true,
+                    required: true,
                     sanitize: true
                 },
                 courier_name: {

@@ -438,7 +438,9 @@ table p{
 }
 
 .bigCard{
-    background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%);
+    /* background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%); */
+    background: linear-gradient(180deg, #FFF 84.44%, #bebebd 100%);
+    /* background: #FFF;    */
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
@@ -460,21 +462,34 @@ table p{
 .bigCard p{
     margin-bottom: 0px;
     padding-bottom: 0px;
-    font-size: 13px;
+    font-size: 15px;
+    font-style: bold;
     color: #051b11;
     transition: 0.5s ease all;
 }
 
-.bigCard .col{
+.bigCard .cardBox{
     border-right: 1px solid #937424;
     padding: 20px 2px;
     transition: 0.5s ease all;
 }
 
-.bigCard .col:last-child{
+.bigCard .cardBox:last-child{
     border: none;
 }
-
+.bigCard .Yellow{
+    h2{
+        color: #f78f35 !important;
+    }
+}
+.bigCard .col-6{
+    h2{
+        color: #229E82 !important;
+    }
+    p{
+        font-size: 13px;
+    }
+}
 .smallCard{
     background: #fff;
     width: 100%;

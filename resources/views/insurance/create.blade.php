@@ -19,7 +19,25 @@
 			<!-- <div class="col-3">
 				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
 			</div> -->
-		</div>   
+		</div> 
+
+		@if ($errors->any())
+
+		     <script nonce="wUDPhZ1Z60inspnMCukimCi">
+		        document.addEventListener('DOMContentLoaded', function () {
+		            let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $field => $messages)
+		                <li><strong>Error - {{$loop->iteration}} </strong>: {{ $messages[0] }}</li>
+		            @endforeach</ul>`;
+
+		            Swal.fire({
+		                title: 'Validation Errors',
+		                html: errorList,
+		                icon: 'error',
+		                confirmButtonText: 'OK'
+		            });
+		        });
+		    </script>
+		@endif  
 
 		@if(session('success'))
 		<script>
@@ -94,10 +112,10 @@
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Branch ID-Name</label>
 				   
-				    <select class="form-control form-control-design form-select" name="branch" required>
+				    <select class="form-control form-control-design" name="branch" id="branch">
 				    	<option value="">Select</option>
 				    	@foreach($branch as $key=>$val)
-                          <option value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
+                          <option  {{ (old('branch') == ($val->code.'-'.$val->name) )?'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
 				    	@endforeach
 				    </select>
 				    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
@@ -105,7 +123,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Partner</label>
-				    <select class="form-control form-control-design   form-select" name="partner"  >
+				    <select class="form-control form-control-design form-select" name="partner"  >
 				    	<option value="">Select</option>
 				    	@foreach($partners as $key=>$value)
 				    	   <option {{(old('partner') == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
@@ -127,7 +145,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Member Code</label>
-				    <input type="text" class="form-control form-control-design " name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
+				    <input type="text" class="form-control form-control-design numbersonly" name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
 				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -196,7 +214,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Deceased</label>
-				    <select class="form-control form-control-design  form-select" name="deceased" >
+				    <select class="form-control form-control-design  form-select clsAlphaNoOnly" name="deceased" >
 				    	<option value="">Select</option>
 				    	@foreach($deceased as $key=>$value)
 				    	   <option {{ ( old('deceased')==$value)?'selected':''}} 
@@ -483,19 +501,19 @@
         		<div class="row">
         			
 					<div class="col-3 mb-3">
-					    <label class="form-label">Acknowledgement Received Date</label>
+					    <label class="form-label label-bold">Acknowledgement Received Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ old('ack_rec_date')}}">
 					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">SPDC Received Date</label>
+					    <label class="form-label label-bold">SPDC Received Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ old('spdc_rec_date')}}">
 					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Packet Number</label>
+					    <label class="form-label label-bold">Packet Number</label>
 					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ old('pkt_no')}}" placeholder="Enter Packet Number">
 					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -664,6 +682,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
  });
+
+
 </script>
 
 
