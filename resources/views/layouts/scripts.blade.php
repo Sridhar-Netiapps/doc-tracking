@@ -5,6 +5,7 @@
             dateFormat: "d-m-Y",
             allowInput: true
         });
+        $('.select2').select2();
         @if(session('success'))
             Swal.fire({
                 title: "Success!",
