@@ -54,7 +54,24 @@
 		    session()->forget('success');
 		@endphp
 		@endif
+        
+        @if ($errors->any())
 
+		     <script nonce="wUDPhZ1Z60inspnMCukimCi">
+		        document.addEventListener('DOMContentLoaded', function () {
+		            let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $key => $messages)
+		                <li><strong>Error - {{$loop->iteration}} </strong> : {{ $messages[0] }}</li>
+		            @endforeach</ul>`;
+
+		            Swal.fire({
+		                title: 'Validation Errors',
+		                html: errorList,
+		                icon: 'error',
+		                confirmButtonText: 'OK'
+		            });
+		        });
+		    </script>
+		@endif  
 
 
 
@@ -115,7 +132,7 @@
         	    </div>
         	</div>    		
         </div>
-1100-Koramangala
+
 		<div class="card mt-3">
         	<div class="card-header label-font-header bg-card-header text-white">Policy Imformation</div>
         	<div class="card-body bg-card-branch">
@@ -125,20 +142,20 @@
 					    <label class="form-label label-bold">Region</label>
 					    <select class="form-control form-control-design  form-select" name="region"  >
 					    	<option value="">Select</option>
-					    	<option {{($data->region == 'South')?'selected':''}} value="South" >South</option>
-					    	<option {{($data->region == 'North')?'selected':''}} value="North">North</option>
-					    	<option {{($data->region == 'East')?'selected':''}} value="East">East</option>
-					    	<option {{($data->region == 'West')?'selected':''}} value="West">West</option>	
+					    	<option {{(old('region', $data->region )== 'South')?'selected':''}} value="South" >South</option>
+					    	<option {{(old('region', $data->region) == 'North')?'selected':''}} value="North">North</option>
+					    	<option {{(old('region', $data->region )== 'East')?'selected':''}} value="East">East</option>
+					    	<option {{(old('region', $data->region) == 'West')?'selected':''}} value="West">West</option>	
 					    </select>
 					    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Branch ID-Name</label>
-					    <select class="form-control form-control-design form-select" name="branch" required>
+					    <select class="form-control form-control-design form-select" name="branch" >
 				    	<option value="">Select</option>
 				    	@foreach($branch as $key=>$val)
-                          <option {{ ($data->branch==($val->code.'-'.$val->name))? 'selected':'' }} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}- {{ $val->name}}</option>
+                          <option {{ (old('branch',$data->branch )==($val->code.'-'.$val->name))? 'selected':'' }} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}- {{ $val->name}}</option>
 				    	@endforeach
 				    </select>
 					    @error('branch')<div class="text-error">{{ $message }}</div>@enderror
@@ -149,7 +166,7 @@
 					    <select class="form-control form-control-design  form-select" name="partner"  >
 					    	<option value="">Select</option>
 					    	@foreach($partners as $key=>$value)
-					    	   <option {{($data->partner == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
+					    	   <option {{( (old('partner',$data->partner )== $value->partner))?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
 					    	@endforeach
 					    </select>
 					    @error('partner')<div class="text-error">{{ $message }}</div>@enderror
@@ -160,7 +177,7 @@
 					    <select class="form-control form-control-design  form-select" name="product"  >
 					    	<option value="">Select</option>
 					    	@foreach($products as $key=>$value)
-					    	   <option {{($data->product== $value->product)?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
+					    	   <option {{((old('product',$data->product )== $value->product))?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
 					    	@endforeach
 					    </select>
 					    @error('product')<div class="text-error">{{ $message }}</div>@enderror
@@ -168,55 +185,55 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Member Code</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="mp_no" value="{{ $data->mp_no}}" placeholder="Enter Member Code">
+					    <input type="text" class="form-control form-control-design  numbersonly" name="mp_no" value="{{ old('mp_no', $data->mp_no)}}" placeholder="Enter Member Code">
 					    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Policy Number</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="policy_number" value="{{ $data->policy_number}}" placeholder="Enter Policy Number">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="policy_number" value="{{ old('policy_number', $data->policy_number)}}" placeholder="Enter Policy Number">
 					    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Policy Covered</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ $data->policy_covered_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date', $data->policy_covered_date)}}">
 					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Policy Expired Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ $data->policy_expiry_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date', $data->policy_expiry_date)}}">
 					    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Customer ID</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="cust_id" value="{{ $data->cust_id}}" placeholder="Enter Customer ID">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="cust_id" value="{{ old('cust_id', $data->cust_id)}}" placeholder="Enter Customer ID">
 					    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">ACTUAL ID</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="actual_id" value="{{ $data->actual_id}}" placeholder="Enter Actual ID">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="actual_id" value="{{ old('actual_id', $data->actual_id )}}" placeholder="Enter Actual ID">
 					    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Deceased Name</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="deceased_name" value="{{ $data->deceased_name}}" placeholder="Enter Deceased Name">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="deceased_name" value="{{ old('deceased_name',  $data->deceased_name )}}" placeholder="Enter Deceased Name">
 					    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Birth</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="dob" value="{{ $data->dob}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="dob" value="{{ old('dob', $data->dob)}}">
 					    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Death</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="date_of_death" value="{{ $data->date_of_death}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="date_of_death" value="{{ old('date_of_death', $data->date_of_death )}}">
 					    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -224,14 +241,14 @@
 					    <label class="form-label label-bold">Gender</label>
 					    <select class="form-control form-control-design  form-select" name="gender">
 					    	<option value="">Select</option>
-					    	<option {{ ( $data->gender=='Male')?'selected':''}}  value="Male">Male</option>
-					    	<option {{ ( $data->gender=='Female')?'selected':''}}  value="Female">Female</option>
+					    	<option {{ ( (old('gender',$data->gender)=='Male'))?'selected':''}}  value="Male">Male</option>
+					    	<option {{ ( (old('gender',$data->gender)=='Female'))?'selected':''}}  value="Female">Female</option>
 					    </select>
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Age</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="age" value="{{ $data->age}}" maxlength="3" placeholder="Enter Age">
+					    <input type="text" class="form-control form-control-design  numbersonly" name="age" value="{{ old('age', $data->age )}}" maxlength="3" placeholder="Enter Age">
 					    @error('age')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -240,7 +257,7 @@
 					    <select class="form-control form-control-design  form-select" name="deceased" >
 					    	<option value="">Select</option>
 					    	@foreach($deceased as $key=>$value)
-					    	   <option {{ ( $data->deceased==$value)?'selected':''}} 
+					    	   <option {{ ( (old('deceased',$data->deceased)==$value))?'selected':''}} 
 					    	    value="{{$value}}">{{$value}}</option>
 					    	@endforeach
 					    </select>
@@ -250,7 +267,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date Of Death Intimation</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ $data->intimation_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ old('intimation_date', $data->intimation_date )}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -261,7 +278,7 @@
 					    <select class="form-control form-control-design  form-select" name="place_of_death">
 					    	<option>Select</option>
 					    	@foreach($placeofdeath as $key=>$value)
-					    	   <option {{ ( $data->place_of_death==$value->place)?'selected':''}}  value="{{$value->place}}">{{$value->place}}</option>
+					    	   <option {{ ( (old('place_of_death',$data->place_of_death)==$value->place))?'selected':''}}  value="{{$value->place}}">{{$value->place}}</option>
 					    	@endforeach
 					    </select>
 					    @error('place_of_death')<div class="text-error">{{ $message }}</div>@enderror
@@ -272,7 +289,7 @@
 					    <select class="form-control form-control-design  form-select" name="cause_of_death" >
 					    	<option>Select</option>
 					    	@foreach($deathcause as $key=>$value)
-					    	   <option  {{ ( $data->cause_of_death==$value->cause)?'selected':''}}  value="{{$value->cause}}">{{$value->cause}}</option>
+					    	   <option  {{ ((old('cause_of_death', $data->cause_of_death)==$value->cause))?'selected':''}}  value="{{$value->cause}}">{{$value->cause}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cause_of_death')<div class="text-error">{{ $message }}</div>@enderror
@@ -280,25 +297,25 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Account ID</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="load_acc_id" value="{{ $data->load_acc_id}}" placeholder="Enter Loan Account ID">
+					    <input type="text" class="form-control form-control-design numbersonly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID">
 					    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Tenure</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="loan_tenure" value="{{ $data->loan_tenure}}" maxlength="3" placeholder="Enter Loan Tenure">
+					    <input type="text" class="form-control form-control-design  numbersonly" name="loan_tenure" value="{{ old('loan_tenure', $data->loan_tenure)}}" maxlength="3" placeholder="Enter Loan Tenure">
 					    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Claim Amount</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="claim_amount" value="{{ $data->claim_amount}}" placeholder="Enter Claim Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="claim_amount" value="{{ old('claim_amount', $data->claim_amount)}}" placeholder="Enter Claim Amount">
 					    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Nominee Name</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="nominee_name" value="{{ $data->nominee_name}}" placeholder="Enter Nominee Name">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="nominee_name" value="{{ old('nominee_name', $data->nominee_name)}}" placeholder="Enter Nominee Name">
 					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -307,7 +324,7 @@
 					    <select class="form-control form-control-design  form-select" name="relationship" >
 					    	<option value="">Select</option>
 					    	@foreach($relationship as $key=>$value)
-					    	   <option {{ ( $data->relationship==$value->relationship)?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
+					    	   <option {{ ( (old('relationship',$data->relationship) ==$value->relationship))?'selected':''}} value="{{$value->relationship}}">{{$value->relationship}}</option>
 					    	@endforeach
 					    </select>
 					    @error('relationship')<div class="text-error">{{ $message }}</div>@enderror
@@ -327,7 +344,7 @@
         			
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Document Received</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="doc_rec_date" value="{{ $data->doc_rec_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="doc_rec_date" value="{{ old('doc_rec_date', $data->doc_rec_date)}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -337,7 +354,7 @@
 					    <select class="form-control form-control-design  form-select" name="processed_by">
 					    	<option value="">Select</option>
 					    	@foreach($procesedby as $proc)
-					    	  <option {{ ($data->processed_by==$proc)?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
+					    	  <option {{ ( (old('processed_by',$data->processed_by)==$proc))?'selected':'' }} value="{{$proc}}">{{$proc}}</option>
 		                    @endforeach
 		                    @error('processed_by')<div class="text-error">{{ $message }}</div>@enderror
 					    </select>
@@ -345,7 +362,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Submision to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="submit_to_partner_date" value="{{ $data->submit_to_partner_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="submit_to_partner_date" value="{{ old('submit_to_partner_date', $data->submit_to_partner_date)}}">
 					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -353,21 +370,21 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Re-submision to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date', $data->re_submit_to_partner_date)}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					
                     <div class="col-6 mb-3">
 					    <label class="form-label label-bold">HO Remarks</label>
-					    <textarea class="form-control form-control-design  clsAlphaNoOnly" name="ho_remark" placeholder="Remarks...">{{ $data->ho_remark}}</textarea>
+					    <textarea class="form-control form-control-design  clsAlphaNoOnly" name="ho_remark" placeholder="Remarks...">{{ old('ho_remark', $data->ho_remark)}}</textarea>
 					    @error('ho_remark')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					
 					<div class="col-6 mb-3">
 					    <label class="form-label label-bold">Remarks</label>
-					    <textarea type="text" class="form-control form-control-design  clsAlphaNoOnly" name="ho_remark2" placeholder="Remarks...">{{ $data->ho_remark2}}</textarea>
+					    <textarea type="text" class="form-control form-control-design  clsAlphaNoOnly" name="ho_remark2" placeholder="Remarks...">{{ old('ho_remark2', $data->ho_remark2) }}</textarea>
 					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -376,7 +393,7 @@
 					    <select class="form-control form-control-design  form-select" name="cliam_status" >
 					    	<option value="">Select</option>
 					    	@foreach($claimstatus as $key=>$value)
-					    	   <option {{ ( $data->cliam_status==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+					    	   <option {{ ( (old('cliam_status',$data->cliam_status )==$value->claim_status))?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
@@ -386,7 +403,7 @@
 					    <label class="form-label label-bold">CAS Status</label>
 					    <select class="form-control form-control-design  form-select" name="cas_status">
 					    	<option value="">Select</option>
-					    	<option {{ ( $data->cas_status=='CAS Process')?'selected':''}} value="CAS Process">CAS Process</option>
+					    	<option {{ ( (old('cas_status',$data->cas_status)=='CAS Process'))?'selected':''}} value="CAS Process">CAS Process</option>
 					    	
 					    </select>
 					    @error('cas_status')<div class="text-error">{{ $message }}</div>@enderror
@@ -397,7 +414,7 @@
 					    <select class="form-control form-control-design  form-select" name="rl_status" >
 					    	<option value="">Select</option>
 					    	@foreach($rlStat as $key=>$stat)
-					    	  <option {{ ($data->rl_status==$stat->rl_status)?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
+					    	  <option {{ ((old('rl_status',$data->rl_status)==$stat->rl_status))?'selected':'' }} value="{{$stat->rl_status}}">{{$stat->rl_status}}</option>
 		                    @endforeach
 		                    @error('rl_status')<div class="text-error">{{ $message }}</div>@enderror
 					    </select>
@@ -405,7 +422,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Notification Number</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="notification_number" value="{{ $data->notification_number}}" placeholder="Enter Notification Number">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="notification_number" value="{{ old('notification_number', $data->notification_number)}}" placeholder="Enter Notification Number">
 					    @error('notification_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -423,56 +440,56 @@
 
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Amount</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_amount" value="{{ $data->loan_amount}}" placeholder="Enter Loan Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_amount" value="{{ old('loan_amount', $data->loan_amount)}}" placeholder="Enter Loan Amount">
 					    @error('loan_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Outstanding Amount</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_outstanding" value="{{ $data->loan_outstanding}}" placeholder="Enter Loan Outstanding Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_outstanding" value="{{ old('loan_outstanding', $data->loan_outstanding)}}" placeholder="Enter Loan Outstanding Amount">
 					    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Payable to Nominee</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}" placeholder="Enter the Amount Payable to Nominee">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ old('payable_to_nominee', $data->payable_to_nominee)}}" placeholder="Enter the Amount Payable to Nominee">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Settlement</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="settlement_date" value="{{ $data->settlement_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="settlement_date" value="{{ old('settlement_date', $data->settlement_date)}}">
 					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">NEFT Rejection Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="neft_rejection_date" value="{{ $data->neft_rejection_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="neft_rejection_date" value="{{ old('neft_rejection_date', $data->neft_rejection_date)}}">
 					    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">NEFT Reason for Rejection</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="neft_rejection_reason" value="{{ $data->neft_rejection_reason}}" placeholder="Enter Reason for NEFT Rejection">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="neft_rejection_reason" value="{{ old('neft_rejection_reason', $data->neft_rejection_reason )}}" placeholder="Enter Reason for NEFT Rejection">
 					    @error('neft_rejection_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Final Settlement Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="final_settlement_date" value="{{ old('final_settlement_date', $data->final_settlement_date)}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 					<div class="col-3"></div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">UTRN of MPH</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_mph" value="{{ $data->utrn_mph}}" placeholder="Enter UTRN of MPH">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_mph" value="{{ old('utrn_mph', $data->utrn_mph)}}" placeholder="Enter UTRN of MPH">
 					    @error('utrn_mph')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">UTRN of Nominee</label>
-					    <input type="dtextte" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_nominee" value="{{ $data->utrn_nominee}}" placeholder="Enter UTRN of Nominee">
+					    <input type="dtextte" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_nominee" value="{{ old('utrn_nominee', $data->utrn_nominee)}}" placeholder="Enter UTRN of Nominee">
 					    @error('utrn_nominee')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -486,37 +503,37 @@
         		<div class="row">
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Recovery Status</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recovery_status" value="{{ $data->recovery_status}}" placeholder="Enter Recovery Status">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recovery_status" value="{{ old('recovery_status', $data->recovery_status)}}" placeholder="Enter Recovery Status">
 					    @error('recovery_status')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Bounced SPDC No</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_no" value="{{ $data->bounced_chq_no}}" placeholder="Enter Bounced SPDC Number">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_no" value="{{ old('bounced_chq_no', $data->bounced_chq_no)}}" placeholder="Enter Bounced SPDC Number">
 					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Deposit Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="chq_deposit_date" value="{{ $data->chq_deposit_date}}" max="{{ date('Y-m-d')}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="chq_deposit_date" value="{{ old('chq_deposit_date', $data->chq_deposit_date)}}" max="{{ date('Y-m-d')}}">
 					    @error('chq_deposit_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Bounced Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="bounced_chq_date" value="{{ $data->bounced_chq_date}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="bounced_chq_date" value="{{ old('bounced_chq_date', $data->bounced_chq_date)}}">
 					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Bounced Reason</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_reason" value="{{ $data->bounced_chq_reason}}" placeholder="Enter reason for SPDC Bounce">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_reason" value="{{ old('bounced_chq_reason', $data->bounced_chq_reason)}}" placeholder="Enter reason for SPDC Bounce">
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Recovered Amount</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}" placeholder="Enter Rcovered Amount">
+					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ old('recovered_amount', $data->recovered_amount)}}" placeholder="Enter Rcovered Amount">
 					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
@@ -529,20 +546,20 @@
         		<div class="row">
         			
 					<div class="col-3 mb-3">
-					    <label class="form-label">Acknowledgement Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ $nomineedata->ack_rec_date}}">
+					    <label class="form-label label-bold">Acknowledgement Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ old('ack_rec_date', $nomineedata->ack_rec_date)}}">
 					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">SPDC Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ $nomineedata->spdc_rec_date}}">
+					    <label class="form-label label-bold">SPDC Received Date</label>
+					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ old('spdc_rec_date', $nomineedata->spdc_rec_date )}}">
 					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label">Packet Number</label>
-					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ $nomineedata->pkt_no}}" placeholder="Enter Packet Number">
+					    <label class="form-label label-bold">Packet Number</label>
+					    <input type="text" class="form-control form-control-design numbersonly" name="pkt_no" value="{{ old('pkt_no', $nomineedata->pkt_no )}}" placeholder="Enter Packet Number">
 					    @error('pkt_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -558,25 +575,25 @@
         		<div class="row">
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Write off Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="write_off_rec" value="{{ $data->write_off_rec}}">
+					    <input type="date" class="form-control form-control-design  valid-date" name="write_off_rec" value="{{ old('write_off_rec', $data->write_off_rec)}}">
 					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Write off Status</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="write_off_status" value="{{ $data->write_off_status}}" placeholder="Enter Write off status">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="write_off_status" value="{{ old('write_off_status', $data->write_off_status)}}" placeholder="Enter Write off status">
 					    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Handed over to Business Head</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_bh" value="{{ $data->handed_to_bh}}" placeholder="Handed over to Business Head">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_bh" value="{{ old('handed_to_bh', $data->handed_to_bh)}}" placeholder="Handed over to Business Head">
 					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Handed over to Credit</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ $data->handed_to_credit}}" placeholder="Handed over to Credit">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ old('handed_to_credit', $data->handed_to_credit)}}" placeholder="Handed over to Credit">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
         	    </div>
@@ -609,53 +626,62 @@
         	<div class="card-body bg-card-branch">		
 			<div class="row">
 				<div class="col-3 mb-3">
-				    <label class="form-label">Nominee Name as per Bank Records</label>
-				    <input type="text" class="form-control form-control-design2 clsAlphaNoOnly" name="nominee_name_bank" value="{{$nomineedata->nominee_name_bank ?? ''}}" placeholder="Enter Nominee Name">
+				    <label class="form-label label-bold">Nominee Name as per Bank Records</label>
+				    <input type="text" class="form-control form-control-design2 clsAlphaNoOnly" name="nominee_name_bank" value="{{ old('nominee_name_bank',$nomineedata->nominee_name_bank) ?? ''}}" placeholder="Enter Nominee Name">
+				    @error('nominee_name_bank')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">Name of the Bank</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bank_name"  value="{{$nomineedata->bank_name ?? ''}}" placeholder="Enter Bank Name">
+				    <label class="form-label label-bold">Name of the Bank</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bank_name"  value="{{ old('bank_name',$nomineedata->bank_name ) ?? ''}}" placeholder="Enter Bank Name">
+				    @error('bank_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label ">Bank Account Number</label>
-				    <input type="text" class="form-control form-control-design2  numbersonly" name="acc_number"  value="{{$nomineedata->acc_number ?? ''}}" placeholder="Enter acoount Number">
+				    <label class="form-label label-bold">Bank Account Number</label>
+				    <input type="text" class="form-control form-control-design2  numbersonly" name="acc_number"  value="{{ old('acc_number',$nomineedata->acc_number ) ?? ''}}" placeholder="Enter acoount Number">
+				    @error('acc_number')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">IFSC Code</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{$nomineedata->ifsc ?? ''}}" placeholder="Enter IFSC">
+				    <label class="form-label label-bold">IFSC Code</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC">
+				    @error('ifsc')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">Bank Branch Name</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="branch_name"  value="{{$nomineedata->branch_name ?? ''}}" placeholder="Enter Branch Name">
+				    <label class="form-label label-bold">Bank Branch Name</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="branch_name"  value="{{ old('branch_name',$nomineedata->branch_name ) ?? ''}}" placeholder="Enter Branch Name">
+				    @error('branch_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">SPDC-Bank Name</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_bank_name"  value="{{$nomineedata->spdc_bank_name ?? ''}}" placeholder="Enter Bank Name">
+				    <label class="form-label label-bold">SPDC-Bank Name</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_bank_name"  value="{{ old('spdc_bank_name',$nomineedata->spdc_bank_name )?? ''}}" placeholder="Enter Bank Name">
+				    @error('spdc_bank_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">SPDC-Chq Number</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_chk_no"  value="{{$nomineedata->spdc_chk_no ?? ''}}" placeholder="Enter Chq Number">
+				    <label class="form-label label-bold">SPDC-Chq Number</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_chk_no"  value="{{ old('spdc_chk_no',$nomineedata->spdc_chk_no )?? ''}}" placeholder="Enter Chq Number">
+				    @error('spdc_chk_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">Courier Name</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="courier_name"  value="{{$nomineedata->courier_name ?? ''}}" placeholder="Enter Courier Name">
+				    <label class="form-label label-bold">Courier Name</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="courier_name"  value="{{ old('courier_name',$nomineedata->courier_name )?? ''}}" placeholder="Enter Courier Name">
+				    @error('courier_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label">POD Number</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{$nomineedata->pod_no ?? ''}}" placeholder="Enter POD Number">
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{ old('pod_no',$nomineedata->pod_no) ?? ''}}" placeholder="Enter POD Number">
+				    @error('pod_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-					    <label class="form-label">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+					    <label class="form-label label-bold">Nominee Contact No</label>
+					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -665,20 +691,23 @@
 				</div>
  -->
 				<div class="col-3 mb-3">
-				    <label class="form-label">Remarks</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{$nomineedata->bo_remarks ?? ''}}" placeholder="Remarks...">
+				    <label class="form-label label-bold">Remarks</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{ old('bo_remarks',$nomineedata->bo_remarks) ?? ''}}" placeholder="Remarks...">
+				    @error('bo_remarks')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3"></div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">Maker at Branch</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{$nomineedata->bo_maker ?? ''}}" placeholder="Enter Maker EMP ID and Name">
+				    <label class="form-label label-bold">Maker at Branch</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{ old('bo_maker',$nomineedata->bo_maker )?? ''}}" placeholder="Enter Maker EMP ID and Name">
+				    @error('bo_maker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">Checker at Branch</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{$nomineedata->bo_checker ?? ''}}" placeholder="Enter Checker EMP ID and Name">
+				    <label class="form-label label-bold">Checker at Branch</label>
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{ old('bo_checker',$nomineedata->bo_checker) ?? ''}}" placeholder="Enter Checker EMP ID and Name">
+				    @error('bo_checker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 			</div>

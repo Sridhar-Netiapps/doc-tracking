@@ -16,10 +16,10 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="{{ env('APP_URL') }}/css/fonts.css"/>
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}"/>
 
-    <link rel="stylesheet" href="{{ env('APP_URL') }}/fontawesome/css/all.min.css"/>
+    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}"/>
    
    
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
@@ -27,26 +27,28 @@
     <link href="{{ asset('css/insurance_style.css') }}" rel="stylesheet">
    
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+   <!--  <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css"> -->
     <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
-    <script src="{{ asset('js/select2.min.js') }}"></script>
+
+    <!-- <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}"/>
+    <script src="{{ asset('js/select2.min.js') }}"></script> -->
+
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/flatpickr.min.js') }}"></script>
     
-    <script src="{{ env('APP_URL') }}/js/apexchart.js"></script>
-    <script src="{{ env('APP_URL') }}/js/apextree.js"></script>
-    <script src="{{ env('APP_URL') }}/js/custom_insurance_script.js"></script>
+    <script src="{{ asset('js/apexchart.js') }}"></script>
+    <script src="{{ asset('js/apextree.js') }}"></script>
+    <script src="{{ asset('js/custom_insurance_script.js') }}"></script>
 
-    
-
-    <script rel="stylesheet" src="{{ env('APP_URL') }}/datepicker/moment.min.js"></script>
-    <link rel="stylesheet" href="{{ env('APP_URL') }}/datepicker/daterangepicker.css"/>
-    <script rel="stylesheet" src="{{ env('APP_URL') }}/datepicker/daterangepicker.js"></script>
+   
+    <script rel="stylesheet" src="{{  asset('datepicker/moment.min.js') }}"></script>
+    <link rel="stylesheet" href="{{  asset('datepicker/daterangepicker.css') }}"/>
+    <script rel="stylesheet" src="{{  asset('datepicker/daterangepicker.js ') }}"></script>
 
 </head>
 <body>

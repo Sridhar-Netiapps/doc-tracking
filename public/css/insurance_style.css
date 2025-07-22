@@ -101,6 +101,17 @@ input::placeholder {
 	
 }
 
+select.form-control-design {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 2rem; /* space for arrow */
+}
+
+
 .card2{
 	border-radius: 10px;
 	border-top: 1px solid green; 
