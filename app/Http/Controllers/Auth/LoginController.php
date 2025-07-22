@@ -82,12 +82,12 @@ class LoginController extends Controller
             }
         }*/
 
-        if (Auth::attempt(['email' => $username, 'password' => $password])) {
+        if (Auth::attempt(['employee_id' => $username, 'password' => $password])) {
             Auth::logoutOtherDevices($password);
             $user = Auth::user();
             return redirect()->intended('/home');
         }
-        return back()->withErrors(['username' => 'LDAP server error.']);
+        return back()->withErrors(['username' => 'Invalid credentials']);
     }
 
     public function logout(Request $request)

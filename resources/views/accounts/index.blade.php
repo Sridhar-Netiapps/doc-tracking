@@ -139,11 +139,11 @@
                         <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                     </select>
                 </div>
-                @endunless
+                {{-- @endunless --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
@@ -225,8 +225,8 @@
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control">
+                        <label for="status" class="form-label">AWB/POD *</label>
+                        <input type="text" name="awb_pod" class="form-control" required>
                     </div>
                     {{-- <div class="w-100"></div> 
                     <div class="col-4 pb-2">
@@ -284,6 +284,7 @@
             rules: {
                 awb_pod: {
                     alphanumeric: true,
+                    required: true,
                     sanitize: true
                 },
                 courier_name: {
