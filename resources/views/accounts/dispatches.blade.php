@@ -279,9 +279,11 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode">
                 </div>
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
                 </div>
+                @endunless
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="Dispatch Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
                 </div>
