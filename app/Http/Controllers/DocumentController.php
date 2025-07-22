@@ -20,8 +20,9 @@ use App\Models\ProcessStatus;
 use App\Models\DocumentHistory;
 use Illuminate\Support\Str;
 use App\Models\Vendor;
+use App\Models\User;
 use App\Exports\DocumentExport;
-
+use Illuminate\Support\Facades\Mail;
 
 class DocumentController extends Controller
 {
@@ -47,9 +48,20 @@ class DocumentController extends Controller
             if($type === 'moved'){
                 $query->where('status','>=',8);
             }
-            elseif($type === 'received'){
-                $query->whereIn('status',[5,7]);
-            }
+            // elseif($type === 'received'){
+            //     if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            //         $query->where('status','>=',8);
+            //     }
+            //     $query->whereIn('status',[5,7]);
+            // }
+
+            elseif($type === 'received') {
+                if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+                    $query->whereIn('status', [5, 7, 8, 9, 10, 11]);
+                } else {
+                    $query->whereIn('status', [5, 7]);
+                }
+            }            
             elseif($type ==='rejected'){
                 $query->where('status',6);
             }
@@ -116,16 +128,18 @@ class DocumentController extends Controller
         // dd($filters);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
-        // $fromDate = $filters['from_date'] ?? null;
-        // $toDate = $filters['to_date'] ?? null;
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
 
-        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // dd($toDate);
+
         $cifId = $filters['cif_id'] ?? null;
         $accountNumber = $filters['account_number'] ?? null;
 
 
-        unset($filters['from_date'], $filters['to_date']);
+        // unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
@@ -273,11 +287,13 @@ class DocumentController extends Controller
         $filters = session('filters', []);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
     
-        $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
+        // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
+        // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
     
-        unset($filters['from_date'], $filters['to_date']);
+        // unset($filters['from_date'], $filters['to_date']);
     
         $allDocuments = collect();
     
@@ -751,55 +767,6 @@ class DocumentController extends Controller
         }
     }
 
-
-    // public function removeDispatchesDocument(Request $request)
-    // {
-    //     $tables = [
-    //         'loan' => LoanDocument::class,
-    //         'goldloan' => GoldLoanDocument::class,
-    //         'dtrf' => DtrfDocument::class,
-    //         'aof' => AccountOpeningDocument::class,
-    //     ];
-    //     // dd($request->all());
-    //     $columns = [
-    //         'loan' => 'loan_ids',
-    //         'goldloan' => 'goldloan_ids',
-    //         'dtrf' => 'dtrf_ids',
-    //         'aof' => 'aof_ids',
-    //     ];
-    
-    //     $type = $request->type;
-    //     $docId = $request->doc_id;
-    //     $dispatchId = $request->dispatch_id;
-    
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $dispatch = CourierDispatch::find($dispatchId);
-    //         $columnName = $columns[$request->type];
-
-    //         $values = collect(explode(',', $dispatch->$columnName))
-    //             ->map(fn($v) => trim($v))
-    //             ->filter(fn($v) => $v !== $docId)
-    //             ->values()
-    //             ->implode(',');
-            
-    //         $dispatch->$columnName = $values;
-    //         $dispatch->updated_by = $this->user->id;
-    //         $dispatch->save();
-    
-    //         // $this->table[$type]::where('id', $docId)->update(['status' => 1]);
-    //         $tables[$type]::where('id', $docId)->update(['status' => 1]);
-
-    
-    //         DB::commit();
-    //         return response()->json(['success' => true]);
-    
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json(['error' => $e->getMessage()], 500);
-    //     }
-    // }
     
     public function removeDispatchesDocument(Request $request)
     {
@@ -829,7 +796,8 @@ class DocumentController extends Controller
             $dispatch->updated_by = $this->user->id;
             $dispatch->save();
     
-            $doc = $this->table[$type]::find('id', $docId);
+            // $doc = $this->table[$type]::find('id', $docId);
+            $doc = $this->table[$type]::find($docId);
             $doc->status = 1;
             $doc->updated_by = $this->user->id;
             $doc->save();
@@ -1044,5 +1012,10 @@ class DocumentController extends Controller
         }
 
         return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
+    }
+
+    public function test()
+    {
+        
     }
 }

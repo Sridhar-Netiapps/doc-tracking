@@ -52,7 +52,7 @@ $(document).ready(function(){
         let billAmount = parseFloat(value);
 
         // Return true if valid; false otherwise
-        return this.optional(element) || (billAmount > units);
+        return this.optional(element) || (billAmount > units); 
     }, "Bill Amount must be greater than Units."); // Custom error message
 
     $('input[type="number"]').on('keypress', function (e) {
@@ -82,8 +82,8 @@ $(document).ready(function(){
         }
     });
 
-    $('.length_10').on('input', function () {
-        var maxLength = 10;
+    $('.length_15').on('input', function () {
+        var maxLength = 15;
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().slice(0, maxLength));
         }
