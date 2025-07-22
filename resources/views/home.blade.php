@@ -4,27 +4,35 @@
 <div class="container mt-3 ">
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
-            <div class="col">
+            <div class="col-2 cardBox">
                 <h2>{{$total_doc}}</h2>
                 <p>Total Documents</p>
             </div>
-            <div class="col">
-                <h2>{{$total_pending}}</h2>
-                <p>Pending to Proceed</p>
+            <div class="col-2 cardBox Yellow">
+                <h2>{{($total_pending) + ($total_dispatch) + ($total_transist) + ($total_rejected)}}</h2>
+                <p>Total Pending</p>
             </div>
-            <div class="col">
-                <h2>{{$total_dispatch}}</h2>
-                <p>Awaiting Checker Approval</p>
+            <div class="col-6 cardBox">
+                <div class="row justify-content-center align-items-center text-center">
+                    <div class="col-3">
+                        <h2 class="badge">{{$total_pending}}</h2>
+                        <p>Pending to Proceed</p>
+                    </div>
+                    <div class="col-4">
+                        <h2 class="badge">{{$total_dispatch}}</h2>
+                        <p>Awaiting Checker Approval</p>
+                    </div>
+                    <div class="col-2">
+                        <h2 class="badge">{{$total_transist}}</h2>
+                        <p>In Transit</p>
+                    </div>
+                    <div class="col-3">
+                        <h2 class="badge">{{$total_rejected}}</h2>
+                        <p>Rejected By RO</p>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-                <h2>{{$total_transist}}</h2>
-                <p>In Transit</p>
-            </div>
-            <div class="col">
-                <h2>{{$total_rejected}}</h2>
-                <p>Rejected By RO</p>
-            </div>
-            <div class="col">
+            <div class="col-2 cardBox Yellow">
                 <h2>{{$total_received}}</h2>
                 <p>Received Documents</p>
             </div>
