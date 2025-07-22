@@ -816,6 +816,12 @@ class InsuranceHomeController extends Controller
       $inputdata = $request->all();
       $errors = [];
 
+       $request->validate([
+          'nominee_name_bank' => 'required',
+          'bank_name' => 'required'
+          
+      ]);
+
       foreach ($inputdata as $key => $value) {
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
