@@ -633,7 +633,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Name of the Bank</label>
-				    <input type="text" class="form-control form-control-design2  " name="bank_name"  value="{{ old('bank_name',$nomineedata->bank_name ) ?? ''}}" placeholder="Enter Bank Name">
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bank_name"  value="{{ old('bank_name',$nomineedata->bank_name ) ?? ''}}" placeholder="Enter Bank Name">
 				    @error('bank_name')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 

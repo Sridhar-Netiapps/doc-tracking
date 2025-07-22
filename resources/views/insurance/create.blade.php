@@ -109,17 +109,10 @@
 				    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-				<select class="form-select" name="courier" id="courierSelect">
-                        <option value="">Courier Name</option>
-                       @foreach($branch as $key=>$val)
-                          <option  {{ (old('branch') == ($val->code.'-'.$val->name) )?'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
-				    	@endforeach
-                    </select>
-
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Branch ID-Name</label>
 				   
-				    <select class="form-control form-control-design form-select" name="branch" id="branch">
+				    <select class="form-control form-control-design" name="branch" id="branch">
 				    	<option value="">Select</option>
 				    	@foreach($branch as $key=>$val)
                           <option  {{ (old('branch') == ($val->code.'-'.$val->name) )?'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
@@ -176,7 +169,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Customer ID</label>
-				    <input type="text" class="form-control form-control-design  " name="cust_id" value="{{ old('cust_id')}}" placeholder="Enter Customer ID">
+				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="cust_id" value="{{ old('cust_id')}}" placeholder="Enter Customer ID">
 				    @error('cust_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -690,11 +683,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
  });
 
-$('#courierSelect').select2({
-            placeholder: "Courier Name",
-            width: '100%',
-            dropdownAutoWidth: true
-        });
+
 </script>
 
 
