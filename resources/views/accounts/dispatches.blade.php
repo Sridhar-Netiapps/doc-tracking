@@ -435,11 +435,11 @@
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
-        $('#courierSelect').select2({
-            placeholder: "Courier Name",
-            width: '100%',
-            dropdownAutoWidth: true
-        });
+        // $('#courierSelect').select2({
+        //     placeholder: "Courier Name",
+        //     width: '100%',
+        //     dropdownAutoWidth: true
+        // });
         $('select[name="remarks"]').change(function () {
             const row = $(this).closest('tr');
             const reasonField = row.find('textarea[name="reason_for_rejection"]');
