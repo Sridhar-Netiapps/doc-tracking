@@ -50,7 +50,7 @@
                 @endhasanyrole
                 @hasanyrole('master')
                 @if (!in_array($type, ['received', 'rejected']))
-                    <li style="margin-left: 41%;">
+                    <li style="margin-left: 38%;">
                         <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                             @csrf
                             <button class="btn btn-primary proceed" type="button">Proceed</button>
