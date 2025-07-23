@@ -159,7 +159,7 @@
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id, 'type' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -302,7 +302,7 @@
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id, 'type' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -444,7 +444,7 @@
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id, 'type' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -581,7 +581,7 @@
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id, 'type' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>

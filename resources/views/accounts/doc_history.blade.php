@@ -7,7 +7,7 @@
         <div class="col-10">
             <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
-                <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Back</a>
             </div>
         </div>
         <div class="col-1"></div>
@@ -59,13 +59,13 @@
                         <div class="p-2 border-bottom">
                             <label>Document Type</label>
                             <h6><b>
-                                @if ($type == 'loan')
+                                @if ($dtype == 'loan')
                                     MB Loan
-                                @elseif ($type == 'goldloan')
+                                @elseif ($dtype == 'goldloan')
                                     Gold Loan
-                                @elseif ($type == 'aof')
+                                @elseif ($dtype == 'aof')
                                     Liablities
-                                @elseif ($type == 'dtrf')
+                                @elseif ($dtype == 'dtrf')
                                     DTR File
                                 @endif
                             </b></h6>
