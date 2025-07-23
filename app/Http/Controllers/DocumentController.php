@@ -688,6 +688,17 @@ class DocumentController extends Controller
                     });
                 }
                 $dispatchNumbers[] = '#'.$dispatch->dispatch_no;
+                // dd($dispatch);
+                $data = [
+                    'dispatch_no' => $dispatch->dispatch_no,
+                    'awb_pod' => $dispatch->awb_pod,
+                    'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
+                    'branch_code' => $dispatch->branch_code,
+                ];
+                $html = view('emails.dispatches_mail', ['data' => $data])->render();
+                $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
+                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
             DB::commit();
             return redirect()->route('dispatches', 'list')->with('success', implode(', ', $dispatchNumbers) . ' Couriers Dispatched Successfully.');
@@ -830,6 +841,7 @@ class DocumentController extends Controller
             foreach ($docIds as $key => $value) {
                 $this->table[$key]::whereIn('id',$value)->get()->each(function ($doc) use($reason) {
                     $doc->reason = $reason;
+                    $doc->deleted_by = $this->user->id;
                     $doc->save();
                     $doc->delete(); // Laravel soft delete
                 });
@@ -933,12 +945,12 @@ class DocumentController extends Controller
         
         return redirect()->back()->with('success', 'Excel uploaded successfully!');
     }
-    public function viewHistory($id,$type)
+    public function viewHistory($id,$type,$dtype)
     {
-        $document = $this->table[$type]::find($id);
-        $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$type]))->get();
+        $document = $this->table[$dtype]::find($id);
+        $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$dtype]))->get();
 
-        return view('accounts.doc_history', compact('document','history','type'));    
+        return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 
     public function export(Request $request)
@@ -1012,6 +1024,25 @@ class DocumentController extends Controller
         }
 
         return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
+    }
+
+    public function restoreDocument(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $doc = $this->table[$request->type]::withTrashed()->find($request->id);
+            $doc->reason = $request->reason;
+            $doc->updated_by = $this->user->id;
+            $doc->save();
+            $doc->restore();
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function test()

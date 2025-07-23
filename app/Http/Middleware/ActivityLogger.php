@@ -15,6 +15,7 @@ class ActivityLogger
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // dd($request->all());
         if (auth()->check()) {
             \App\Models\ActivityLog::create([
                 'user_id' => auth()->id(),

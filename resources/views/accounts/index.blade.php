@@ -31,77 +31,79 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr> 
-                                @hasanyrole('master|bo-maker|bo-checker')
-                                <th scope="col"><input type="checkbox" class="select_all"/> </th>
-                                @endhasanyrole  
-                                <th scope="col"> Document Type</th>
-                                <th scope="col"> Unique Number</th>
-                                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                                <th scope="col"> Region</th>
-                                <th scope="col"> Branch Name</th>
-                                @endunless
-                                <th scope="col"> Branch Code</th>
-                                <th scope="col"> CIF ID</th>
-                                <th scope="col"> Account Number</th>
-                                <th scope="col"> Loan Cycle</th>
-                                <th scope="col"> Loan Amount</th>
-                                <th scope="col"> Barcode</th>
-                                <th scope="col"> Glow Application ID</th>
-                                <th scope="col"> Scheme</th>
-                                <th scope="col"> Customer Name</th>
-                                <th scope="col"> Disbursement Date / Account Creation Date</th>
-                                <th scope="col"> Channel</th>
-                                <th scope="col"> Loan Disbursement Type / Account Opening</th>
-                                <th scope="col"> Business Category</th>
-                                <th scope="col"> Status</th>
-                                <th scope="col"> Activity Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($allDocuments as $doc)
-                                <tr>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr> 
                                     @hasanyrole('master|bo-maker|bo-checker')
-                                    <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
-                                    @endhasanyrole
-                                    <td>
-                                        @if ($doc->doc_type == 'loan')
-                                            MB Loan
-                                        @elseif ($doc->doc_type == 'goldloan')
-                                            Gold Loan
-                                        @elseif ($doc->doc_type == 'aof')
-                                            Liablities
-                                        @elseif ($doc->doc_type == 'dtrf')
-                                            DTR File
-                                        @endif
-                                    </td>
-                                    <td>{{ $doc->unique_ref_no ?? '-' }}</td>
+                                    <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
+                                    @endhasanyrole  
+                                    <th scope="col" class="text-nowrap"> Document Type</th>
+                                    <th scope="col" class="text-nowrap"> Unique Number</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                                    <td>{{ $doc->region ?? '-' }}</td>
-                                    <td>{{ $doc->branch_name ?? '-' }}</td>
+                                    <th scope="col" class="text-nowrap"> Region</th>
+                                    <th scope="col" class="text-nowrap"> Branch Name</th>
                                     @endunless
-                                    <td>{{ $doc->branch_code ?? '-' }}</td>
-                                    <td>{{ $doc->cif_id ?? '-' }}</td>
-                                    <td>{{ $doc->account_number ?? '-' }}</td>
-                                    <td>{{ $doc->loan_cycle ?? '-' }}</td>
-                                    <td>{{ $doc->loan_amount ?? '-' }}</td>
-                                    <td>{{ $doc->barcode ?? '-' }}</td>
-                                    <td>{{ $doc->glow_application_id ?? '-' }}</td>
-                                    <td>{{ $doc->scheme ?? '-' }}</td>
-                                    <td>{{ $doc->customer_name ?? '-' }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
-                                    <td>{{ $doc->channel ?? '-' }}</td>
-                                    <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
-                                    {{-- <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td> --}}
-                                    <td>{{ $doc->business_category ?? '-' }}</td>
-                                    <td>{{ $doc->statusName->name ?? '-' }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($doc->updated_at)) ?? '-' }}</td>
+                                    <th scope="col" class="text-nowrap"> Branch Code</th>
+                                    <th scope="col" class="text-nowrap"> CIF ID</th>
+                                    <th scope="col" class="text-nowrap"> Account Number</th>
+                                    <th scope="col" class="text-nowrap"> Loan Cycle</th>
+                                    <th scope="col" class="text-nowrap"> Loan Amount</th>
+                                    <th scope="col" class="text-nowrap"> Barcode</th>
+                                    <th scope="col" class="text-nowrap"> Glow Application ID</th>
+                                    <th scope="col" class="text-nowrap"> Scheme</th>
+                                    <th scope="col" class="text-nowrap"> Customer Name</th>
+                                    <th scope="col" class="text-nowrap"> Disbursement Date /<br> Account Creation Date</th>
+                                    <th scope="col" class="text-nowrap"> Channel</th>
+                                    <th scope="col" class="text-nowrap"> Loan Disbursement Type <br>/ Account Opening Type</th>
+                                    <th scope="col" class="text-nowrap"> Business Category</th>
+                                    <th scope="col" class="text-nowrap"> Status</th>
+                                    <th scope="col" class="text-nowrap"> Activity Date</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($allDocuments as $doc)
+                                    <tr>
+                                        @hasanyrole('master|bo-maker|bo-checker')
+                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                        @endhasanyrole
+                                        <td>
+                                            @if ($doc->doc_type == 'loan')
+                                                MB Loan
+                                            @elseif ($doc->doc_type == 'goldloan')
+                                                Gold Loan
+                                            @elseif ($doc->doc_type == 'aof')
+                                                Liablities
+                                            @elseif ($doc->doc_type == 'dtrf')
+                                                DTR File
+                                            @endif
+                                        </td>
+                                        <td>{{ $doc->unique_ref_no ?? '-' }}</td>
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        <td>{{ $doc->region ?? '-' }}</td>
+                                        <td>{{ $doc->branch_name ?? '-' }}</td>
+                                        @endunless
+                                        <td>{{ $doc->branch_code ?? '-' }}</td>
+                                        <td>{{ $doc->cif_id ?? '-' }}</td>
+                                        <td>{{ $doc->account_number ?? '-' }}</td>
+                                        <td>{{ $doc->loan_cycle ?? '-' }}</td>
+                                        <td>{{ $doc->loan_amount ?? '-' }}</td>
+                                        <td>{{ $doc->barcode ?? '-' }}</td>
+                                        <td>{{ $doc->glow_application_id ?? '-' }}</td>
+                                        <td>{{ $doc->scheme ?? '-' }}</td>
+                                        <td>{{ $doc->customer_name ?? '-' }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
+                                        <td>{{ $doc->channel ?? '-' }}</td>
+                                        <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
+                                        {{-- <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td> --}}
+                                        <td>{{ $doc->business_category ?? '-' }}</td>
+                                        <td>{{ $doc->statusName->name ?? '-' }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($doc->updated_at)) ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,7 +131,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>

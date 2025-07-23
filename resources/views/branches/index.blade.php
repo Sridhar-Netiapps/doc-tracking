@@ -17,7 +17,9 @@
             </div>
 
         </div>
+        @role('super_admin|master')
        <div><a href="{{ route('branches.create') }}" class="btn btn-primary">Create New Branch</a></div> 
+       @endrole
     </div>
     @if (session('success'))
         <div class="alert alert-success mt-3">

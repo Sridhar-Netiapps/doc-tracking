@@ -13,23 +13,24 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    {{-- <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> --}}
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> --}}
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    {{-- <script src="{{ asset('js/select2.min.js') }}"></script> --}}
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/material_green.css') }}">
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
-    <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="{{ asset('js/apexchart.js') }}"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> --}}
     <script src="{{ asset('js/flatpickr.min.js') }}"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     {{-- <link href="{{ asset('accordin/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ asset('accordin/bootstrap.bundle.min.js') }}"></script> --}}
@@ -102,7 +103,9 @@
                                          <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
                                         </a>
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
+                                        @endunless
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

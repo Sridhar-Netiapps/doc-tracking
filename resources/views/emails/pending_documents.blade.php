@@ -10,4 +10,4 @@
 </table>
 
 <p>Pls click on below link to dispatch</p>
-<p><a href="#">Click Here</a></p>
+<p><a href={{ url('/')}}>Click Here</a></p>

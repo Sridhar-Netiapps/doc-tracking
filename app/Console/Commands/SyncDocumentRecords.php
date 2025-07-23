@@ -53,7 +53,6 @@ class SyncDocumentRecords extends Command
                     $data['unique_ref_no'] = $uniqueRefNo;
                     $data['status'] = 1;
                     $targetModel::create($data);
-                    // dd($targetModel);
                 }
             }
         });
