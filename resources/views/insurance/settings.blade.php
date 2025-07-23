@@ -58,7 +58,7 @@
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <div class="accordion-item">
     <h2 class="accordion-header">
-      <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+      <button class="accordion-button collapsed settings-bg text-white label-bold " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
         Partners
       </button>
     </h2>
@@ -211,6 +211,13 @@
 	  	$('#product').addClass('d-none');
 	  }
 	})
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var myCollapse = document.getElementById('collapseOne');
+    var bsCollapse = new bootstrap.Collapse(myCollapse, {
+        toggle: true
+    });
+});
 </script>
 
 

@@ -46,7 +46,7 @@
                     <option {{($region == 'West')?'selected':''}} value="West">West</option>
                 </select>
 
-                <select class="form-control form-select border-0 ms-3" name="branch">
+                <select class="form-control border-0 ms-3" name="branch" id="branch2">
                     <option value="">All Branch</option>
                     @foreach($branches as $key=>$val)
                        <option {{ ($branch == ($val->code."-".$val->name) ) ? 'selected':''}} value="{{ $val->code}}-{{ $val->name}}">{{ $val->code}}-{{ $val->name}}</option>
@@ -212,6 +212,8 @@ $(function() {
     });
     
 });
+
+$('#branch').select2();
 </script>
 
 @endsection
