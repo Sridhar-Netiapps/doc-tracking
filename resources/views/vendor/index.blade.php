@@ -13,9 +13,11 @@
                 </nav>
             </div>
         </div>
+        @role('super_admin|master')
         <div>
             <a href="{{ route('vendor.create') }}" class="btn btn-primary">Add Vendor</a>
         </div>
+        @endrole
     </div>
 
     @if (session('success'))
@@ -33,7 +35,9 @@
                         <tr>
                         <th>Name</th>
                         <th>Location</th>
+                        @role('admin|super_admin|master')
                         <th>Actions</th>
+                        @endrole
                     </tr>
                 </thead>
                 <tbody>
@@ -43,12 +47,16 @@
                             <td>{{ $vendor->name }}</td>
                             <td>{{ $vendor->location }}</td>
                             <td>
+                                @role('admin|super_admin|master')
                                 <a href="{{ route('vendor.edit', $vendor->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                @endrole
+                                {{-- @role('super_admin|master')
                                 <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
                                 </form>
+                                @endrole --}}
                             </td>
                         </tr>
                     @endforeach

@@ -38,7 +38,7 @@
                         DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
                     </button>
                 </li>
-                @hasanyrole('master|bo-maker|bo-checker')
+                @hasanyrole('bo-maker|bo-checker')
                     @if (!in_array($type, ['received', 'rejected']))
                         <li class="ms-auto">
                             <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
@@ -48,6 +48,16 @@
                         </li>
                     @endif
                 @endhasanyrole
+                @hasanyrole('master')
+                @if (!in_array($type, ['received', 'rejected']))
+                    <li style="margin-left: 41%;">
+                        <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                            @csrf
+                            <button class="btn btn-primary proceed" type="button">Proceed</button>
+                        </form>
+                    </li>
+                @endif
+            @endhasanyrole
 
                 @role('ro-user|super_admin|master')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
@@ -660,7 +670,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>

@@ -15,11 +15,6 @@
                 </nav>
             </div>
         </div>
-        @if(auth()->user()->can('create-user'))
-        <div>
-            <a href="{{ route('users.create') }}" class="btn btn-primary">Create User</a>
-        </div>
-        @endif
     </div>
 
 

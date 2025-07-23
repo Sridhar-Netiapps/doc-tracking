@@ -39,7 +39,9 @@
             </div>
 
         </div>
+        @role('master')
         <div><a href="{{ route('emails.create') }}" class="btn btn-primary">Create New Email</a></div>
+        @endrole
     </div>
     <div class="row">
         <div class="col-12">
@@ -52,7 +54,9 @@
                 <th>Subject</th>
                 <th>Status</th>
                 <th>Sent At</th>
+                @role('super_admin|master')
                 <th>Actions</th>
+                @endrole
             </tr>
         </thead>
         <tbody>
@@ -63,6 +67,7 @@
                 <td>{{ $email->subject }}</td>
                 <td>{{ $email->status }}</td>
                 <td>{{ $email->sent_at ?? '—' }}</td>
+                @role('super_admin|master')
                 <td>
                     <a href="{{ route('emails.edit', $email->id) }}" class="btn btn-sm btn-warning">Edit</a>
                     {{-- <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">
@@ -71,6 +76,7 @@
                         <button onclick="return confirm('Delete this email?')" class="btn btn-sm btn-danger">Delete</button>
                     </form> --}}
                 </td>
+                @endrole
             </tr>
             @empty
             <tr><td colspan="6" class="text-center">No emails found.</td></tr>

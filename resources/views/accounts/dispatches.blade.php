@@ -122,7 +122,7 @@
                                 <th scope="col">No of DTRF Documents</th>
                                 <th scope="col">No of AOF Documents</th> --}}
                                 <th scope="col">Dispatch Date</th>
-                                <th scope="col">Dispatch By</th>
+                                <th scope="col">Dispatched By</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'list' || $type == 'tracking')

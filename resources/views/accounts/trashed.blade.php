@@ -68,7 +68,9 @@
                                 <th scope="col">Box Barcode</th>
                                 <th scope="col">Date of addition to Vendor Data</th>
                                 <th scope="col">Status</th>
+                                @role('super_admin|master')
                                 <th scope="col">Action</th>
+                                @endrole
                             </tr>
                         </thead>
                         <tbody>
@@ -98,7 +100,9 @@
                                         <td>{{ $row->box_barcode }}</td>
                                         <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                         <td>{{ $row->statusName->name ?? '-' }}</td>
+                                        @role('super_admin|master')
                                         <td><button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Restore</button></td>
+                                        @endrole
                                     </tr>
                                 @endforeach
                             @endif
