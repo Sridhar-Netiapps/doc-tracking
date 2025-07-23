@@ -64,7 +64,7 @@
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
                                 {{-- @csrf --}}
-                                <button class="btn btn-danger btn-sm remove-doc" type="button">Delete</button>
+                                <button class="btn btn-danger btn-sm remove-doc" type="button">Move to Trash</button>
                             {{-- </form> --}}
                         </li>
                     {{-- @endif --}}
