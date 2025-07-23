@@ -16,7 +16,9 @@
             </div>
 
         </div>
+        @role('super_admin|master')
         <div><a href="{{ route('couriers.create') }}" class="btn btn-primary">Add New Courier</a></div>
+        @endrole
     </div>{{-- @extends('layouts.app')
 
 @section('content')
@@ -40,7 +42,9 @@
                         <th>Name</th>
                         <th>Mobile Number</th>
                         <th>Status</th>
+                        @role('admin|super_admin|master')
                         <th>Actions</th>
+                        @endrole
                     </tr>
         @foreach($couriers as $courier)
         <tr>
@@ -49,6 +53,7 @@
             <td>{{ $courier->name }}</td>
             <td>{{ $courier->number }}</td>
             <td>{{ $courier->status }}</td>
+            @role('admin|super_admin|master')
             <td>
                 <a href="{{ route('couriers.edit', $courier->id) }}" class="btn btn-sm btn-warning">Edit</a>
                 {{-- <form action="{{ route('couriers.destroy', $courier->id) }}" method="POST" style="display:inline">
@@ -56,6 +61,7 @@
                     <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this courier?')">Delete</button>
                 </form> --}}
             </td>
+            @endrole
         </tr>
         @endforeach
     </table>

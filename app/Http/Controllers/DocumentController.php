@@ -688,6 +688,17 @@ class DocumentController extends Controller
                     });
                 }
                 $dispatchNumbers[] = '#'.$dispatch->dispatch_no;
+                // dd($dispatch);
+                $data = [
+                    'dispatch_no' => $dispatch->dispatch_no,
+                    'awb_pod' => $dispatch->awb_pod,
+                    'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
+                    'branch_code' => $dispatch->branch_code,
+                ];
+                $html = view('emails.dispatches_mail', ['data' => $data])->render();
+                $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
+                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
             DB::commit();
             return redirect()->route('dispatches', 'list')->with('success', implode(', ', $dispatchNumbers) . ' Couriers Dispatched Successfully.');

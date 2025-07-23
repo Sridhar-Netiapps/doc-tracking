@@ -122,7 +122,7 @@
                                 <th scope="col">No of DTRF Documents</th>
                                 <th scope="col">No of AOF Documents</th> --}}
                                 <th scope="col">Dispatch Date</th>
-                                <th scope="col">Dispatch By</th>
+                                <th scope="col">Dispatched By</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'list' || $type == 'tracking')
@@ -285,7 +285,7 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="Dispatch Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Dispatch Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
                 </div>
                 {{-- <div class="col-12 mt-3">mmrp_code
                     <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">

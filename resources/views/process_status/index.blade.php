@@ -17,7 +17,9 @@
             </div>
 
         </div>
+        @role('master')
         <div><a href="{{ route('process_status.create') }}" class="btn btn-primary">Create New Status</a></div>
+        @endrole
     </div>
 
     <div class="row">
@@ -32,7 +34,9 @@
                             <th>Status</th>
                             {{-- <th>Created By</th> --}}
                             <!-- <th>Updated By</th> -->
+                            @role('admin|super_admin|master')
                             <th>Actions</th>
+                            @endrole
                         </tr>
                         </thead>
                         <tbody>
@@ -55,6 +59,7 @@
                                     {{ $status->updated_by == 1 ? __('Person 1') : __('Person 2') }}
                                 </span>
                                 </td> -->
+                                @role('admin|super_admin|master')
                                 <td>
                                     <div class="btn-actions">
                                         <a href="{{ route('process_status.edit', $status->id) }}" class="btn btn-primary btn-sm">Edit</a>
@@ -65,6 +70,7 @@
                                         </form> --}}
                                     </div>
                                 </td>
+                                @endrole
                             </tr>
                         @endforeach
                         </tbody>
