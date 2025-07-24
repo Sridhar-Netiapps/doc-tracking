@@ -1054,6 +1054,14 @@ class InsuranceHomeController extends Controller
               })
               ->when($search,function($q)use($search){
                  $q->where('utrn','LIKE','%'.$search.'%');
+                 $q->orWhere('policy_number','LIKE','%'.$search.'%');
+                 $q->orWhere('cust_id','LIKE','%'.$search.'%');
+                 $q->orWhere('load_acc_id','LIKE','%'.$search.'%');
+                 $q->orWhere('mp_no','LIKE','%'.$search.'%');
+                 $q->orWhere('intimation_date','LIKE','%'.$search.'%');
+                 $q->orWhere('notification_number','LIKE','%'.$search.'%');
+                 $q->orWhere('load_acc_id','LIKE','%'.$search.'%');
+                 $q->orWhere('mp_no','LIKE','%'.$search.'%');
               })
               ->when($product,function($q)use($product){
                  $q->where('product',$product);
