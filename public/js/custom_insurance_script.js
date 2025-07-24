@@ -18,6 +18,137 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+
+  let numberonlyInputs = document.querySelectorAll(".numbersonly");
+
+    numberonlyInputs.forEach(function (input) {
+      
+        input.addEventListener("keypress", function (event) {
+            numbersonly(event);
+        });
+
+ 
+    });
+
+    let alphaInputs = document.querySelectorAll(".clsAlphaNoOnly");
+
+    alphaInputs.forEach(function (input) {
+      
+       
+        input.addEventListener("keypress", function (event) {
+            clsAlphaNoOnly(event);
+        });
+
+    });
+
+     let numberInputs = document.querySelectorAll(".number-with-format");
+
+    numberInputs.forEach(function (input) {
+      // Restrict input to numbers and a single decimal point
+        input.addEventListener("keypress", function (event) {
+           numbersonly(event);
+        });
+
+        // Format input on change
+        input.addEventListener("input", function () {
+            formatNumber(this);
+        });
+    });
+
+    let datesInputs = document.querySelectorAll(".valid-date");
+
+    datesInputs.forEach(function (input) {
+      
+       
+        input.addEventListener("keypress", function (event) {
+            event.preventDefault();
+        });
+
+    });
+
+    document.querySelectorAll(".number-input").forEach(inputElement => {
+      // Format and display existing value on load
+      inputElement.value = transformation(inputElement.value);
+
+      inputElement.addEventListener("input", function(event) {
+        const cursorPosition = inputElement.selectionStart;
+
+        // Remove commas and get raw value
+        const rawValue = inputElement.value.replace(/,/g, "");
+        const formattedValue = transformation(rawValue);
+
+        // Update the input value with the formatted number
+        inputElement.value = formattedValue;
+
+        // Restore cursor position based on digits before the cursor
+        const digitsBeforeCursor = rawValue.slice(0, cursorPosition).replace(/[^0-9]/g, "").length;
+        let newCursorPosition = 0;
+        let digitCount = 0;
+
+        for (let i = 0; i < formattedValue.length; i++) {
+          if (/\d/.test(formattedValue[i])) {
+            digitCount++;
+          }
+          if (digitCount === digitsBeforeCursor) {
+            newCursorPosition = i + 1;
+            break;
+          }
+        }
+
+        inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
+      });
+    });
+
+    function transformation(input) {
+      input = input.replace(/,/g, ""); // Remove existing commas
+      const lastThreeDigits = input.slice(-3); // Extract the last 3 digits
+      const restOfTheNumber = input.slice(0, -3); // Extract the remaining part
+      
+      if (restOfTheNumber !== "") {
+        return restOfTheNumber.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThreeDigits;
+      }
+      return lastThreeDigits;
+    }
+
+
+     const scrollTopBtn = document.getElementById("scrollTopBtn");
+    const scrollBottomBtn = document.getElementById("scrollBottomBtn");
+
+    // Scroll to Top
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    // Scroll to Bottom
+    if (scrollBottomBtn) {
+        scrollBottomBtn.addEventListener("click", function () {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        });
+    }
+
+    // Show/hide top button on scroll
+    window.addEventListener("scroll", function () {
+        if (scrollTopBtn) {
+            if (window.scrollY > 200) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        }
+    });
+
+    // Start with hidden top button
+    if (scrollTopBtn) {
+        scrollTopBtn.style.display = "none";
+    }
+
+
+
+ });
+
 
 
 function formatNumberIndianStyle(number) {
@@ -107,7 +238,9 @@ function formatNumber(input) {
     }
 
  function clsAlphaNoOnly (e) {  // Accept only alpha numerics, no special characters 
-       var regex = new RegExp("^[a-zA-Z0-9 ]+$");
+ // alert("ll");
+       var regex = new RegExp("^[a-zA-Z0-9 ,.-]+$");
+
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
         if (regex.test(str)) {
             return true;
@@ -117,4 +250,16 @@ function formatNumber(input) {
         return false;
     }
 
-  
+ document.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.ctrlKey && (event.key === "u" || event.key === "U" || 
+                             // event.key === "i" || event.key === "I" || 
+                              event.key === "j" || event.key === "J" || 
+                              event.key === "s" || event.key === "S" || 
+                              event.key === "h" || event.key === "H")) {
+            event.preventDefault();
+        }
+    }); 

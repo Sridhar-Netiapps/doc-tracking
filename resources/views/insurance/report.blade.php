@@ -36,7 +36,7 @@
                <input type="hidden" id="end" name="end" value="{{ $end}}">
                
                <div class="input-group mb-3">
-                <input class="form-control " type="text" name="search" placeholder="Search" value="{{ $search}}">
+                <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search" value="{{ $search}}">
 
                 <select class="form-control form-select border-0 p-2 ms-3" name="region">
                     <option value=""> All Regions</option>
@@ -158,7 +158,7 @@
 
 </div>
 
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 $(function() {  
    
     var startdate = $('#start').val();

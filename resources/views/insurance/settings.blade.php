@@ -17,7 +17,7 @@
 	</div>
 
   @if(session('success'))
-    <script>
+    <script nonce='{{ env("CSP_NONCE") }}'>
         document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
                 Swal.fire({
@@ -39,7 +39,7 @@
     @endif
     
     @if(Session::has('failure'))
-     <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+     <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
       var mesage = '{{ session('failure') }}';
       Swal.fire({
             title: 'Message',
@@ -185,7 +185,7 @@
 
 
 
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 	var exampleModal = document.getElementById('exampleModal')
 	exampleModal.addEventListener('show.bs.modal', function (event) {
 	  // Button that triggered the modal

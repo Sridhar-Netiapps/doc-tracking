@@ -14,8 +14,10 @@
 			@endif
             
 			<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
-
+            
+            @if($data->cliam_status !='Completed')
 			<a href="{{route('edit_claim_details',encrypt($data->id)) }}"><button class="btn btn-sm btn-warning btn-text p-2" >Edit</button> </a>
+			@endif
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
@@ -37,48 +39,7 @@
 			</div> -->
 		</div>
 
-		@if(session('success'))
-		<script>
-		    document.addEventListener('DOMContentLoaded', function () {
-		        setTimeout(function () {
-		            Swal.fire({
-		                title: 'Message',
-		                text: @json(session('success')),
-		                icon: 'success',
-		                confirmButtonText: 'OK',
-		                allowOutsideClick: false,
-		                allowEscapeKey: false
-		            }).then((result) => {
-		                console.log('result:', result);
-		                if (result.isConfirmed) {
-		                    console.log('Redirecting...');
-		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
-		                }
-		            });
-		        }, 300); // Delay to ensure full render
-		    });
-		</script>
-		@php
-		    session()->forget('success');
-		@endphp
-		@endif
-
-
-
-
-		@if(Session::has('failure'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-		  var mesage = '{{ session('failure') }}';
-		  Swal.fire({
-		        title: 'Message',
-		        text: mesage,
-		        icon: 'failure',  
-		        confirmButtonText: 'OK'
-		    });
-		 </script>
-		 
-		@endif 
-        
+		
         
 		<div class="py-3 d-block" id="head_off">
 	    <form method="POST" action="{{route('update_claim_details',encrypt($data->id))}}" disabled>	
@@ -683,17 +644,19 @@
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 
         </form>
+
 		</div>
 
-		
-      <!-- BO -->
-
-       
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
+	</div>
+
+	 <div class="floating-buttons">
+	    <button id="scrollTopBtn" title="Go to top">↑</button>
+	    <button id="scrollBottomBtn" title="Go to bottom">↓</button>
 	</div>
 </div>
 
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 
 	document.querySelectorAll(".btn-toggle").forEach(button => {
         button.addEventListener("click", function () {
@@ -782,117 +745,7 @@
 
       }
    	});
-
-document.addEventListener("DOMContentLoaded", function () {
-    let numberInputs = document.querySelectorAll(".number-with-format");
-
-    numberInputs.forEach(function (input) {
-        // Restrict input to numbers and a single decimal point
-        input.addEventListener("keypress", function (event) {
-            numbersonly(event);
-        });
-
-        // Format input on change
-        input.addEventListener("input", function () {
-            formatNumber(this);
-        });
-    });
-
-
-     let nameInputs = document.querySelectorAll(".nameonly");
-
-    nameInputs.forEach(function (input) {
-    	
-        // Restrict input to numbers and a single decimal point
-       input.addEventListener("input", function (event) {
-            validateLength(event);
-        });
-        // Restrict input to alphanumeric characters
-        input.addEventListener("keypress", function (event) {
-            //validateName(event);
-            validateNamewithNumber(event);
-        });
-
-    });
-
-    let numberonlyInputs = document.querySelectorAll(".numbersonly");
-
-    numberonlyInputs.forEach(function (input) {
-    	
-       
-        input.addEventListener("keypress", function (event) {
-            numbersonly(event);
-        });
-
-    });
-
-    let datesInputs = document.querySelectorAll(".valid-date");
-
-    datesInputs.forEach(function (input) {
-    	
-       
-        input.addEventListener("keypress", function (event) {
-            event.preventDefault();
-        });
-
-    });
-
-    let alphaInputs = document.querySelectorAll(".clsAlphaNoOnly");
-
-        alphaInputs.forEach(function (input) {
-      
-       
-        input.addEventListener("keypress", function (event) {
-            clsAlphaNoOnly(event);
-        });
-
-    });
-});
-
-document.querySelectorAll(".number-input").forEach(inputElement => {
-      // Format and display existing value on load
-      inputElement.value = transformation(inputElement.value);
-
-      inputElement.addEventListener("input", function(event) {
-        const cursorPosition = inputElement.selectionStart;
-
-        // Remove commas and get raw value
-        const rawValue = inputElement.value.replace(/,/g, "");
-        const formattedValue = transformation(rawValue);
-
-        // Update the input value with the formatted number
-        inputElement.value = formattedValue;
-
-        // Restore cursor position based on digits before the cursor
-        const digitsBeforeCursor = rawValue.slice(0, cursorPosition).replace(/[^0-9]/g, "").length;
-        let newCursorPosition = 0;
-        let digitCount = 0;
-
-        for (let i = 0; i < formattedValue.length; i++) {
-          if (/\d/.test(formattedValue[i])) {
-            digitCount++;
-          }
-          if (digitCount === digitsBeforeCursor) {
-            newCursorPosition = i + 1;
-            break;
-          }
-        }
-
-        inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
-      });
-    });
-
-    function transformation(input) {
-      input = input.replace(/,/g, ""); // Remove existing commas
-      const lastThreeDigits = input.slice(-3); // Extract the last 3 digits
-      const restOfTheNumber = input.slice(0, -3); // Extract the remaining part
-      
-      if (restOfTheNumber !== "") {
-        return restOfTheNumber.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThreeDigits;
-      }
-      return lastThreeDigits;
-    }
-    
+ 
     document.addEventListener("DOMContentLoaded", function () {
     	const fileUrls = @json(array_map(fn($file) => asset($file), $formArray));
     	const claimId = @json($data->id);

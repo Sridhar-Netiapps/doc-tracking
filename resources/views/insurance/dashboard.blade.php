@@ -156,7 +156,7 @@
 
 </div>
 
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 	var options = {
       series: @json($partnerChart['counts']),
       chart: {
