@@ -74,7 +74,7 @@
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 <li class="ms-auto">
-                    @hasanyrole('ro-user')
+                    @hasanyrole('ro-user|master|super_admin|admin')
                     @if ($dispatch->status == 5)
                         <button id="update-all" class="btn btn-primary d-none">Update All</button>
                     @endif 
@@ -103,7 +103,7 @@
                                 <th scope="col">Loan Disbursement Type</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
+                                @hasanyrole('ro-user|master|super_admin|admin')
                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                 <th class="d-none loan" scope="col">Update Status</th>
                                 <th class="d-none loan" scope="col">Actions</th>
@@ -136,7 +136,7 @@
                                               </span>
                                             @endif
                                         </td>
-                                        @hasanyrole('bo-checker')
+                                        @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
                                                     <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
@@ -144,7 +144,7 @@
                                                 </td>
                                             @endif
                                         @endhasanyrole
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="loan">
@@ -183,7 +183,7 @@
                                 <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
+                                @hasanyrole('ro-user|master|super_admin|admin')
                                 @if ($dispatch->status == 5)
                                 <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
                                 <th class="d-none goldloan" scope="col">Actions</th>
@@ -213,14 +213,14 @@
                                               </span>
                                             @endif
                                         </td>
-                                        @hasanyrole('bo-checker')
+                                        @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
                                                     <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="goldloan">
@@ -261,7 +261,7 @@
                                 <th scope="col">Type of Account Opening</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
+                                @hasanyrole('ro-user|master|super_admin|admin')
                                 @if ($dispatch->status == 5)
                                 <th class="d-none aof" scope="col">Update Status</th>
                                 <th class="d-none aof" scope="col">Actions</th> 
@@ -293,14 +293,14 @@
                                               </span>
                                             @endif
                                         </td>
-                                        @hasanyrole('bo-checker')
+                                        @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
                                                     <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="aof">
@@ -334,7 +334,7 @@
                                 <th scope="col">Barcode</th>
                                 <th scope="col">Business Category</th>
                                 <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
+                                @hasanyrole('ro-user|master|super_admin|admin')
                                 @if ($dispatch->status == 5)
                                 <th class="d-none dtrf" scope="col">Update Status</th>
                                 <th class="d-none dtrf" scope="col">Actions</th>
@@ -359,14 +359,14 @@
                                               </span>
                                             @endif
                                         </td>
-                                        @hasanyrole('bo-checker')
+                                        @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
                                                     <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                 </td>
                                             @endif
                                         @endhasanyrole
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                         @if ($row->status == 4)
                                         <td class="dtrf">
