@@ -162,6 +162,16 @@
       chart: {
       width: 600,
       type: 'pie',
+      events: {
+      dataPointSelection: function(event, chartContext, config) {
+        // Get clicked label or value
+        var label = config.w.config.labels[config.dataPointIndex];
+        var value = config.w.config.series[config.dataPointIndex];
+
+        // Redirect to another page (you can modify the URL)
+        window.location.href = '/insurance/claim_forms?search=' + encodeURIComponent(label);
+      }
+    },
 
     },
     title: {
@@ -220,6 +230,9 @@
         height: 280,
         type: 'line',
         stacked: false,
+        toolbar:{
+          show:false,
+        }
       },
        title: {
           text: 'Claimed vs Settled Amount ',
@@ -310,6 +323,9 @@
         chart: {
           height: 250,
           type: 'bar',
+           toolbar:{
+          show:false,
+        }
         },
         title: {
           text: 'Cause of Death',
@@ -407,7 +423,7 @@
           stacked: true,
 
           toolbar: {
-            show: true
+            show: false
           },
           zoom: {
             enabled: true
@@ -492,6 +508,7 @@
             autoScaleYaxis: true
           },
           toolbar: {
+            show:false,
             autoSelected: 'zoom'
           },
         },
