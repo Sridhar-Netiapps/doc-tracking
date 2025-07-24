@@ -532,8 +532,9 @@ class DocumentController extends Controller
         
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-
-        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
+        // dd($filters);
+        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::parse($filters['dispatch_date'])->format('Y-m-d') : null;
+        // $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
