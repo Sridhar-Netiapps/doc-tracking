@@ -33,9 +33,6 @@
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
 
-    <!-- <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}"/>
-    <script src="{{ asset('js/select2.min.js') }}"></script> -->
-
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
@@ -49,6 +46,9 @@
     <script rel="stylesheet" src="{{  asset('datepicker/moment.min.js') }}"></script>
     <link rel="stylesheet" href="{{  asset('datepicker/daterangepicker.css') }}"/>
     <script rel="stylesheet" src="{{  asset('datepicker/daterangepicker.js ') }}"></script>
+
+    <link rel="stylesheet" href="{{  asset('css/select2.min.css') }}"/>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
 
 </head>
 <body>

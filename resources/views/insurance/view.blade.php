@@ -7,16 +7,16 @@
 
         
 		<div class="ms-auto">
-			@if($data->products->type == 'MB')
-			<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
-			@else
-			  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button>        
-			@endif
-            
-			<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
-            
-            @if($data->cliam_status !='Completed')
-			<a href="{{route('edit_claim_details',encrypt($data->id)) }}"><button class="btn btn-sm btn-warning btn-text p-2" >Edit</button> </a>
+			@if($data->cliam_status !='Completed')
+				@if($data->products->type == 'MB')
+				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
+				@else
+				  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button>        
+				@endif
+	            
+				<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
+
+				<a href="{{route('edit_claim_details',encrypt($data->id)) }}"><button class="btn btn-sm btn-warning btn-text p-2" >Edit</button> </a>
 			@endif
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>

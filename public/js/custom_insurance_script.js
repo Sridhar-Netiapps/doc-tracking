@@ -263,3 +263,7 @@ function formatNumber(input) {
             event.preventDefault();
         }
     }); 
+
+$(document).ready(function () {
+  $(".select2").select2();
+});  
