@@ -48,7 +48,7 @@
                         </li>
                     @endif
                 @endhasanyrole
-                @hasanyrole('master')
+                @hasanyrole('master|super_admin|admin')
                 @if (!in_array($type, ['received', 'rejected']))
                     <li style="margin-left: 38%;">
                         <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
@@ -59,7 +59,7 @@
                 @endif
             @endhasanyrole
 
-                @role('ro-user|super_admin|master')
+                @role('ro-user|master|super_admin|admin')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
@@ -90,7 +90,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    @hasrole('master')
+                                    @hasrole('master|super_admin|admin')
                                         @if ($type !== 'rejected')
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         @endif
@@ -143,7 +143,7 @@
                                 @if ($loan_document)
                                     @foreach ($loan_document as $row)
                                         <tr>
-                                            @hasrole('master')
+                                            @hasrole('master|super_admin|admin')
                                                 @if ($type !== 'rejected')
                                                     <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
@@ -215,7 +215,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user')
+                                            @hasrole('ro-user|master|super_admin|admin')
                                             <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endhasrole
                                             @endif
@@ -237,7 +237,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    @hasrole('master')
+                                    @hasrole('master|super_admin|admin')
                                         @if ($type !== 'rejected')
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all" /></th>
                                         @endif
@@ -287,7 +287,7 @@
                                 @if ($gold_loan_document)
                                     @foreach ($gold_loan_document as $row)
                                         <tr>
-                                            @hasrole('master')
+                                            @hasrole('master|super_admin|admin')
                                                 @if ($type !== 'rejected')
                                                     <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
@@ -355,7 +355,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user')
+                                            @hasrole('ro-user|master|super_admin|admin')
                                             <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endhasrole
                                             @endif
@@ -377,7 +377,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    @hasrole('master')
+                                    @hasrole('master|super_admin|admin')
                                         @if ($type !== 'rejected')
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /></th>
                                         @endif
@@ -429,7 +429,7 @@
                                 @if ($account_opening_document)
                                     @foreach ($account_opening_document as $row)
                                         <tr>
-                                            @hasrole('master')
+                                            @hasrole('master|super_admin|admin')
                                                 @if ($type !== 'rejected')
                                                     <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
@@ -499,7 +499,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user')
+                                            @hasrole('ro-user|master|super_admin|admin')
                                             <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endhasrole
                                             @endif
@@ -521,7 +521,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    @hasrole('master')
+                                    @hasrole('master|super_admin|admin')
                                         @if ($type !== 'rejected')
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all" /></th>
                                         @endif
@@ -566,7 +566,7 @@
                                 @if ($dtrf_document)
                                     @foreach ($dtrf_document as $row)
                                         <tr>
-                                            @hasrole('master')
+                                            @hasrole('master|super_admin|admin')
                                                 @if ($type !== 'rejected')
                                                     <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
@@ -629,7 +629,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user')
+                                            @hasrole('ro-user|master|super_admin|admin')
                                             <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endhasrole
                                             @endif

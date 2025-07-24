@@ -36,13 +36,13 @@
                     <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index','received') }}">Received</a>
                 </li>
 
-                @hasanyrole('master|ro-user')
+                @hasanyrole('master|super_admin|admin|ro-user')
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
                 </li>
-                {{-- <li class="nav-item px-4">
-                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
-                </li> --}}
+                <li class="nav-item px-4">
+                    <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
+                </li>
                 @endhasanyrole
             </ul>
         </div>

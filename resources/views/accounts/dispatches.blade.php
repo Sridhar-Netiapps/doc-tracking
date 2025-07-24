@@ -83,7 +83,7 @@
                     <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
-                @hasanyrole('bo-checker')
+                @hasanyrole('bo-checker|master|super_admin|admin')
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
@@ -93,7 +93,7 @@
                 @endhasanyrole
                 @endif
                 @if ($type == 'list')
-                @hasanyrole('ro-user')
+                @hasanyrole('ro-user|master|super_admin|admin')
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -106,7 +106,7 @@
                         <thead>
                             <tr>
                                 @if ($type == 'ready')
-                                @hasanyrole('master|bo-checker')
+                                @hasanyrole('master|super_admin|admin|bo-checker')
                                 <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                 @endhasanyrole
                                 @else
@@ -121,12 +121,12 @@
                                 {{-- <th scope="col">No of Gold Loan Documents</th>
                                 <th scope="col">No of DTRF Documents</th>
                                 <th scope="col">No of AOF Documents</th> --}}
-                                <th scope="col">Dispatch Date</th>
+                                <th scope="col">Dispatched Date</th>
                                 <th scope="col">Dispatched By</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Activity Date</th>
                                 @if ($type == 'list' || $type == 'tracking')
-                                    @hasanyrole('ro-user')
+                                    @hasanyrole('ro-user|master|super_admin|admin')
                                         <th scope="col">Update Status</th>
                                     @endhasanyrole
                                 @endif
@@ -137,7 +137,7 @@
                             @foreach ($records as $row)
                                 <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                     @if ($type == 'ready')
-                                    @hasanyrole('master|bo-checker')
+                                    @hasanyrole('master|super_admin|admin|bo-checker')
                                     <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                     @endhasanyrole
                                     @else
@@ -173,7 +173,7 @@
                                     </td>
                                     <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                     @if ($type == 'list')
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         <td>
                                             <select name="remarks" class="form-control select2 remarks" required>
                                                 <option selected value=5>Received</option>
@@ -185,7 +185,7 @@
                                         @endhasanyrole
                                     @endif
                                     @if ($type == 'tracking')
-                                        @hasanyrole('ro-user')
+                                        @hasanyrole('ro-user|master|super_admin|admin')
                                         <td>
                                             <select name="remarks" class="form-control select2 remarks" required>
                                                 <option selected value=12>Tracking Completed</option>
@@ -199,12 +199,12 @@
                                         <div class="">
                                             <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                             @if ($type == 'tracking')
-                                                @hasanyrole('ro-user')
+                                                @hasanyrole('ro-user|master|super_admin|admin')
                                                     <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                 @endhasanyrole
                                             @endif
                                             @if ($type == 'list')
-                                                @hasanyrole('ro-user')
+                                                @hasanyrole('ro-user|master|super_admin|admin')
                                                     <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                 @endhasanyrole
                                             @endif
@@ -285,7 +285,7 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Dispatch Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Dispatched Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
                 </div>
                 {{-- <div class="col-12 mt-3">mmrp_code
                     <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
@@ -384,7 +384,7 @@
                         <input type="text" name="vendor_name" class="form-control" required>
                     </div>
                      <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Dispatch Date</label>
+                        <label for="vendor_movement_date" class="form-label">Dispatched Date</label>
                         <input type="text" readonly class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}" name="vendor_movement_date" id="vendor_movement_date" required>
                     </div>
                     <div class="col-4 pb-2">
