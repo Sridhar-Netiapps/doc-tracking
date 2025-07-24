@@ -102,118 +102,120 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                @if ($type == 'ready')
-                                @hasanyrole('master|super_admin|admin|bo-checker')
-                                <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
-                                @endhasanyrole
-                                @else
-                                <th scope="col">Dispatch No</th>
-                                @endif
-                                <th scope="col">AWB/POD No</th>
-                                <th scope="col">Courier Name</th>
-                                <th scope="col">MMRP Code</th>
-                                <th scope="col">Branch code</th>
-                                {{-- <th scope="col">Region</th> --}}
-                                <th scope="col">No of Documents</th>
-                                {{-- <th scope="col">No of Gold Loan Documents</th>
-                                <th scope="col">No of DTRF Documents</th>
-                                <th scope="col">No of AOF Documents</th> --}}
-                                <th scope="col">Dispatched Date</th>
-                                <th scope="col">Dispatched By</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Activity Date</th>
-                                @if ($type == 'list' || $type == 'tracking')
-                                    @hasanyrole('ro-user|master|super_admin|admin')
-                                        <th scope="col">Update Status</th>
-                                    @endhasanyrole
-                                @endif
-                                <th scope="col" class="border-start">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($records as $row)
-                                <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
                                     @if ($type == 'ready')
                                     @hasanyrole('master|super_admin|admin|bo-checker')
-                                    <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
+                                    <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                     @endhasanyrole
                                     @else
-                                    <td>{{ $row->dispatch_no }}</td>
+                                    <th scope="col">Dispatch No</th>
                                     @endif
-                                    <td>{{ $row->awb_pod }}</td>
-                                    <td>{{ $row->courierName->name }}</td>
-                                    <td>{{ $row->mmrp_barcode }}</td>
-                                    <td>{{ $row->branch_code }}</td>
-                                    {{-- <td>{{ $row->region }}</td> --}}
-                                    <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
-                                        <p>Gold Loan - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
-                                        <p>Liabilities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
-                                        <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
-                                    </td>
-                                    {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
-                                    <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
-                                    <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
-                                    <td>{{ date('d-m-Y', strtotime($row->dispatch_date))}}</td>
-                                    <td>{{ $row->creator->first_name }}</td>
-                                    <td>{{ $row->statusName->name ?? '-' }}
-                                        @if ($row->status == 6 || $row->status == 7 )
-                                            <small><p>Reason : </p><img src="/images/info_icon.svg"/></small>
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->comments }}">
-                                            <i>{{ \Illuminate\Support\Str::words($row->comments, 2, '...') }}</i>
-                                            </span>
-                                        @endif
-                                        {{-- @if (in_array($row->status, [6,7]))
-                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                            <img src="/images/info_icon.svg"/>
-                                          </span>
-                                        @endif --}}
-                                    </td>
-                                    <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
-                                    @if ($type == 'list')
+                                    <th scope="col">AWB/POD No</th>
+                                    <th scope="col">Courier Name</th>
+                                    <th scope="col">MMRP Code</th>
+                                    <th scope="col">Branch code</th>
+                                    {{-- <th scope="col">Region</th> --}}
+                                    <th scope="col">No of Documents</th>
+                                    {{-- <th scope="col">No of Gold Loan Documents</th>
+                                    <th scope="col">No of DTRF Documents</th>
+                                    <th scope="col">No of AOF Documents</th> --}}
+                                    <th scope="col">Dispatched Date</th>
+                                    <th scope="col">Dispatched By</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Activity Date</th>
+                                    @if ($type == 'list' || $type == 'tracking')
                                         @hasanyrole('ro-user|master|super_admin|admin')
-                                        <td>
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
+                                            <th scope="col">Update Status</th>
                                         @endhasanyrole
                                     @endif
-                                    @if ($type == 'tracking')
-                                        @hasanyrole('ro-user|master|super_admin|admin')
-                                        <td>
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=12>Tracking Completed</option>
-                                            </select>
-                                            <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        @endhasanyrole
-                                    @endif
-                                    <td class="border-start">
-                                        {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
-                                        <div class="">
-                                            <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
-                                            @if ($type == 'tracking')
-                                                @hasanyrole('ro-user|master|super_admin|admin')
-                                                    <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
-                                                @endhasanyrole
-                                            @endif
-                                            @if ($type == 'list')
-                                                @hasanyrole('ro-user|master|super_admin|admin')
-                                                    <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
-                                                @endhasanyrole
-                                            @endif
-                                        </div>
-                                    </td>
+                                    <th scope="col" class="border-start">Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($records as $row)
+                                    <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
+                                        @if ($type == 'ready')
+                                        @hasanyrole('master|super_admin|admin|bo-checker')
+                                        <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
+                                        @endhasanyrole
+                                        @else
+                                        <td>{{ $row->dispatch_no }}</td>
+                                        @endif
+                                        <td>{{ $row->awb_pod }}</td>
+                                        <td>{{ $row->courierName->name }}</td>
+                                        <td>{{ $row->mmrp_barcode }}</td>
+                                        <td>{{ $row->branch_code }}</td>
+                                        {{-- <td>{{ $row->region }}</td> --}}
+                                        <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
+                                            <p>Gold Loan - {{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</p>
+                                            <p>Liabilities - {{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</p>
+                                            <p>DTR Files - {{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</p>
+                                        </td>
+                                        {{-- <td>{{ $row->goldloan_ids!= null ? count(explode(',',$row->goldloan_ids)):0 }}</td>
+                                        <td>{{ $row->dtrf_ids!= null ? count(explode(',',$row->dtrf_ids)):0 }}</td>
+                                        <td>{{ $row->aof_ids!= null ? count(explode(',',$row->aof_ids)):0 }}</td> --}}
+                                        <td>{{ $row->dispatch_date != null ? date('d-m-Y', strtotime($row->dispatch_date)): '-' }}</td>
+                                        <td>{{ $row->creator->first_name }}</td>
+                                        <td>{{ $row->statusName->name ?? '-' }}
+                                            @if ($row->status == 6 || $row->status == 7 )
+                                                <small><p>Reason : </p><img src="/images/info_icon.svg"/></small>
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->comments }}">
+                                                <i>{{ \Illuminate\Support\Str::words($row->comments, 2, '...') }}</i>
+                                                </span>
+                                            @endif
+                                            {{-- @if (in_array($row->status, [6,7]))
+                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                <img src="/images/info_icon.svg"/>
+                                            </span>
+                                            @endif --}}
+                                        </td>
+                                        <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
+                                        @if ($type == 'list')
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            <td>
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=5>Received</option>
+                                                    <option value=7>Received with Query</option>
+                                                    <option value=6>Rejected</option>
+                                                </select>
+                                                <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            @endhasanyrole
+                                        @endif
+                                        @if ($type == 'tracking')
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            <td>
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=12>Tracking Completed</option>
+                                                </select>
+                                                <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            @endhasanyrole
+                                        @endif
+                                        <td class="border-start">
+                                            {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
+                                            <div class="">
+                                                <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                @if ($type == 'tracking')
+                                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
+                                                    @endhasanyrole
+                                                @endif
+                                                @if ($type == 'list')
+                                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                                        <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
+                                                    @endhasanyrole
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

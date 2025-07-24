@@ -128,7 +128,8 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        // dd($filters);
+        if(empty($filters))
+            return redirect()->route('accounts.index','all');
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         $fromDate = $filters['from_date'] ?? null;
@@ -229,7 +230,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
-        $type = isset($filters['doc_type']) ?? $filters['doc_type'];
+        $type = $filters['doc_type'];
         $fixedStatuses = [
             'pending' => 1,
             'rejected' => 6,
