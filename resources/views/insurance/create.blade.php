@@ -2,8 +2,11 @@
 @section('content')
 
 <div class="container">
-	<div class="py-4">
+	<div class=" d-flex">
 		<label class="label-font-header">Create New Lead</label>
+		<a class="ms-auto nav-link" href="{{ route('insurance_list')}}">
+		  <button class="btn btn-sm btn-secondary btn-text p-2 me-4">Back to List</button>
+	   </a>
 	</div>
 
 	<div class="py-2">
@@ -23,7 +26,7 @@
 
 		@if ($errors->any())
 
-		     <script nonce="wUDPhZ1Z60inspnMCukimCi">
+		     <script nonce='{{ env("CSP_NONCE") }}'>
 		        document.addEventListener('DOMContentLoaded', function () {
 		            let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $field => $messages)
 		                <li><strong>Error - {{$loop->iteration}} </strong>: {{ $messages[0] }}</li>
@@ -40,7 +43,7 @@
 		@endif  
 
 		@if(session('success'))
-		<script>
+		<script nonce='{{ env("CSP_NONCE") }}'>
 		    document.addEventListener('DOMContentLoaded', function () {
 		        setTimeout(function () {
 		            Swal.fire({
@@ -62,11 +65,12 @@
 		</script>
 		@php
 		    session()->forget('success');
+		    session()->forget('errors');
 		@endphp
 		@endif
 		
 		@if(Session::has('failure'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+		 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 		  var mesage = '{{ session('failure') }}';
 		  Swal.fire({
 		        title: 'Message',
@@ -559,132 +563,21 @@
 
 		<div class="d-flex mt-3">
 			<div class="ms-auto">
+				
 				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
+
 			</div>
 	    </div>
 
-        </form>
-        
+       </form>
+
+       <div class="floating-buttons">
+		    <button id="scrollTopBtn" title="Go to top">↑</button>
+		    <button id="scrollBottomBtn" title="Go to bottom">↓</button>
 		</div>
+
+		</div>
+
+	
     
-
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
-
-	document.querySelectorAll(".btn-toggle").forEach(button => {
-        button.addEventListener("click", function () {
-            showdata(this); // Call your function
-        });
-    });
-
-
-   function showdata(button) {
-	 // alert('ll');
-	    // Remove active class from all buttons
-	 document.querySelectorAll('.btn-toggle').forEach(function(btn) {
-	    btn.classList.remove('active');
-	 });
-
-	  // Add active class to the clicked button
-	 button.classList.add('active');
-	 var btn_val = button.value.trim();
-	 //alert(btn_val)
-
-		if(btn_val == 'ho'){
-	      $('#head_off').removeClass('d-none');
-	      $('#head_off').addClass('d-block');
-
-	      $('#branch_off').removeClass('d-block');
-	      $('#branch_off').addClass('d-none');
-
-	      $('#checklist').removeClass('d-block');
-	      $('#checklist').addClass('d-none');
-     
-	    }
-
-	    if(btn_val == 'bo'){
-	      $('#head_off').removeClass('d-block');
-	      $('#head_off').addClass('d-none');
-
-	      $('#branch_off').removeClass('d-none');
-	      $('#branch_off').addClass('d-block');
-
-	      $('#checklist').removeClass('d-block');
-	      $('#checklist').addClass('d-none');
-     
-	    }
-
-	    if(btn_val == 'cl'){
-	      $('#head_off').removeClass('d-blocl');
-	      $('#head_off').addClass('d-none');
-
-	      $('#branch_off').removeClass('d-block');
-	      $('#branch_off').addClass('d-none');
-
-	      $('#checklist').removeClass('d-none');
-	      $('#checklist').addClass('d-block');
-     
-	    }
-    
-   }	
-
-</script>
-
-<script nonce="wUDPhZ1Z60inspnMCukimCi">
-document.addEventListener("DOMContentLoaded", function () {
-
-  let numberonlyInputs = document.querySelectorAll(".numbersonly");
-
-    numberonlyInputs.forEach(function (input) {
-      
-        input.addEventListener("keypress", function (event) {
-            numbersonly(event);
-        });
-
- 
-    });
-
-    let alphaInputs = document.querySelectorAll(".clsAlphaNoOnly");
-
-    alphaInputs.forEach(function (input) {
-      
-       
-        input.addEventListener("keypress", function (event) {
-            clsAlphaNoOnly(event);
-        });
-
-    });
-
-     let numberInputs = document.querySelectorAll(".number-with-format");
-
-    numberInputs.forEach(function (input) {
-    	// Restrict input to numbers and a single decimal point
-        input.addEventListener("keypress", function (event) {
-        	 numbersonly(event);
-        });
-
-        // Format input on change
-        input.addEventListener("input", function () {
-            formatNumber(this);
-        });
-    });
-
-    let datesInputs = document.querySelectorAll(".valid-date");
-
-    datesInputs.forEach(function (input) {
-      
-       
-        input.addEventListener("keypress", function (event) {
-            event.preventDefault();
-        });
-
-    });
-
-
-
- });
-
-
-</script>
-
-
 @endsection

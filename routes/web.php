@@ -24,7 +24,7 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/reports', function () {
-        return view('accounts.delivered');
+        return view('accounts.reports');
     });
     Route::get('/accounts-index', function () {
         return view('sample.index');
@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
     Route::get('home', [HomeController::class, 'index'])->name('home');
+    Route::post('reports', [DocumentController::class,'export'])->name('reports');
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController

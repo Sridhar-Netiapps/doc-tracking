@@ -233,6 +233,7 @@ class InsuranceHomeController extends Controller
                $query->orWhere('cliam_status','LIKE','%'.$search.'%');
                $query->orWhere('claim_amount','LIKE','%'.$search.'%');
           })
+          ->orderByRaw("CASE WHEN cliam_status != 'completed' THEN 0 ELSE 1 END")
           ->orderBy('id','DESC')->paginate(25);
         
         }else{
@@ -251,7 +252,8 @@ class InsuranceHomeController extends Controller
                    $query->orWhere('claim_amount','LIKE','%'.$search.'%');
                   });
               })
-                  ->orderBy('id','DESC')->paginate(25); 
+              ->orderByRaw("CASE WHEN cliam_status != 'completed' THEN 0 ELSE 1 END")
+              ->orderBy('id','DESC')->paginate(25); 
         }
         
         return view('insurance.index',compact('data','search'));
@@ -658,22 +660,25 @@ class InsuranceHomeController extends Controller
               $formname='bajaj';
           }
 
-          if($claimdata->partner == 'ABSLI'){
+          elseif($claimdata->partner == 'ABSLI'){
               $path = public_path('insurance_images/birlalogo.png');
               $partner = 'BIRLA';
               $formname='birlagroup';
           }
 
-          if($claimdata->partner == 'HDFC'){
+          elseif($claimdata->partner == 'HDFC'){
               $path = public_path('insurance_images/hdfc.png');
               $partner = 'HDFC';
               $formname='hdfc';
           }
 
-          if($claimdata->partner == 'Max Life'){
+          elseif($claimdata->partner == 'Max Life'){
               $path = public_path('insurance_images/maxlife.png');
               $partner = 'MAXLIFE';
               $formname='maxlife';
+          }
+          else{
+            return redirect()->back()->with('error', 'No claim form available');
           }
 
 
@@ -1049,6 +1054,14 @@ class InsuranceHomeController extends Controller
               })
               ->when($search,function($q)use($search){
                  $q->where('utrn','LIKE','%'.$search.'%');
+                 $q->orWhere('policy_number','LIKE','%'.$search.'%');
+                 $q->orWhere('cust_id','LIKE','%'.$search.'%');
+                 $q->orWhere('load_acc_id','LIKE','%'.$search.'%');
+                 $q->orWhere('mp_no','LIKE','%'.$search.'%');
+                 $q->orWhere('intimation_date','LIKE','%'.$search.'%');
+                 $q->orWhere('notification_number','LIKE','%'.$search.'%');
+                 $q->orWhere('load_acc_id','LIKE','%'.$search.'%');
+                 $q->orWhere('mp_no','LIKE','%'.$search.'%');
               })
               ->when($product,function($q)use($product){
                  $q->where('product',$product);

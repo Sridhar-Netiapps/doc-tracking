@@ -16,7 +16,8 @@
 				<div class="d-flex">
 					<form method="GET" action="{{ route('insurance_list')}}">
 	                 <div class="input-group mb-3">
-	                  <input class="form-control" type="text" name="search" placeholder="Search" value="{{$search}}">	                 
+	                  <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search" value="{{$search}}">
+	                  <button class="btn btn-secondary">GO</button>	                 
 	                 </div>
 	               </form>
 				</div>
@@ -59,7 +60,7 @@
 <!-- Modal -->
 
        @if(Session::has('message'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+		 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 		  var mesage = '{{ session('message') }}';
 		  Swal.fire({
 		        title: 'Import Result',
@@ -112,9 +113,11 @@
 					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td>
 						<div class="d-flex">
-						<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-warning me-2">View</button></a>
-						<a class="nav-link" href="{{ route('edit_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-danger">Edit</button></a>
-					</div>
+							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-warning me-2">View</button></a>
+							@if($value->cliam_status !='Completed')
+							<a class="nav-link" href="{{ route('edit_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-danger">Edit</button></a>
+							@endif
+						</div>
 					</td>
 				</tr>
 				@endforeach
