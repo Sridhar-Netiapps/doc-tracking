@@ -12,10 +12,8 @@
             <div class="ms-auto">
              <form method="GET" action="{{route('audit')}}">
                <div class="input-group mb-3">
-                <input class="form-control" type="text" name="search" placeholder="Search here" value="{{$search}}">
-                <div class="input-group-prepend">
-                   <button class="btn btn-dark rounded-0 d-none" type="submit" >Search</button>
-                </div>
+                <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
+                <button class="btn btn btn-secondary" type="submit" >GO</button>
                </div>
              </form>
         </div>
