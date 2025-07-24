@@ -40,9 +40,9 @@
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
                 </li>
-                {{-- <li class="nav-item px-4">
-                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
-                </li> --}}
+                <li class="nav-item px-4">
+                    <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
+                </li>
                 @endhasanyrole
             </ul>
         </div>
