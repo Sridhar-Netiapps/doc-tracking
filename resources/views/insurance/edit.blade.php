@@ -30,7 +30,7 @@
 		</div>
 
 		@if(session('success'))
-		<script>
+		<script nonce='{{ env("CSP_NONCE") }}'>
 		    document.addEventListener('DOMContentLoaded', function () {
 		        setTimeout(function () {
 		            Swal.fire({
@@ -57,7 +57,7 @@
         
         @if ($errors->any())
 
-		     <script nonce="wUDPhZ1Z60inspnMCukimCi">
+		     <script nonce='{{ env("CSP_NONCE") }}'>
 		        document.addEventListener('DOMContentLoaded', function () {
 		            let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $key => $messages)
 		                <li><strong>Error - {{$loop->iteration}} </strong> : {{ $messages[0] }}</li>
@@ -76,7 +76,7 @@
 
 
 		@if(Session::has('failure'))
-		 <script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+		 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 		  var mesage = '{{ session('failure') }}';
 		  Swal.fire({
 		        title: 'Message',
@@ -723,6 +723,8 @@
 		    </div>
 		    
         </form>
+
+
 		</div>
 
 		
@@ -731,9 +733,15 @@
        
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
 	</div>
+
+	 <div class="floating-buttons">
+	    <button id="scrollTopBtn" title="Go to top">↑</button>
+	    <button id="scrollBottomBtn" title="Go to bottom">↓</button>
+	</div>
+
 </div>
 
-<script type="text/javascript" nonce="wUDPhZ1Z60inspnMCukimCi">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 
 	document.querySelectorAll(".btn-toggle").forEach(button => {
         button.addEventListener("click", function () {
@@ -823,173 +831,6 @@
       }
    	});
 
-document.addEventListener("DOMContentLoaded", function () {
-    let numberInputs = document.querySelectorAll(".number-with-format");
-
-    numberInputs.forEach(function (input) {
-        // Restrict input to numbers and a single decimal point
-        input.addEventListener("keypress", function (event) {
-            numbersonly(event);
-        });
-
-        // Format input on change
-        input.addEventListener("input", function () {
-            formatNumber(this);
-        });
-    });
-
-
-     let nameInputs = document.querySelectorAll(".nameonly");
-
-    nameInputs.forEach(function (input) {
-    	
-        // Restrict input to numbers and a single decimal point
-       input.addEventListener("input", function (event) {
-            validateLength(event);
-        });
-        // Restrict input to alphanumeric characters
-        input.addEventListener("keypress", function (event) {
-            //validateName(event);
-            validateNamewithNumber(event);
-        });
-
-    });
-
-    let numberonlyInputs = document.querySelectorAll(".numbersonly");
-
-    numberonlyInputs.forEach(function (input) {
-    	
-       
-        input.addEventListener("keypress", function (event) {
-            numbersonly(event);
-        });
-
-    });
-
-    let datesInputs = document.querySelectorAll(".valid-date");
-
-    datesInputs.forEach(function (input) {
-    	
-       
-        input.addEventListener("keypress", function (event) {
-            event.preventDefault();
-        });
-
-    });
-
-    let alphaInputs = document.querySelectorAll(".clsAlphaNoOnly");
-
-        alphaInputs.forEach(function (input) {
-      
-       
-        input.addEventListener("keypress", function (event) {
-            clsAlphaNoOnly(event);
-        });
-
-    });
-});
-
-document.querySelectorAll(".number-input").forEach(inputElement => {
-      // Format and display existing value on load
-      inputElement.value = transformation(inputElement.value);
-
-      inputElement.addEventListener("input", function(event) {
-        const cursorPosition = inputElement.selectionStart;
-
-        // Remove commas and get raw value
-        const rawValue = inputElement.value.replace(/,/g, "");
-        const formattedValue = transformation(rawValue);
-
-        // Update the input value with the formatted number
-        inputElement.value = formattedValue;
-
-        // Restore cursor position based on digits before the cursor
-        const digitsBeforeCursor = rawValue.slice(0, cursorPosition).replace(/[^0-9]/g, "").length;
-        let newCursorPosition = 0;
-        let digitCount = 0;
-
-        for (let i = 0; i < formattedValue.length; i++) {
-          if (/\d/.test(formattedValue[i])) {
-            digitCount++;
-          }
-          if (digitCount === digitsBeforeCursor) {
-            newCursorPosition = i + 1;
-            break;
-          }
-        }
-
-        inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
-      });
-    });
-
-    function transformation(input) {
-      input = input.replace(/,/g, ""); // Remove existing commas
-      const lastThreeDigits = input.slice(-3); // Extract the last 3 digits
-      const restOfTheNumber = input.slice(0, -3); // Extract the remaining part
-      
-      if (restOfTheNumber !== "") {
-        return restOfTheNumber.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThreeDigits;
-      }
-      return lastThreeDigits;
-    }
-    
-    document.addEventListener("DOMContentLoaded", function () {
-    	const fileUrls = @json(array_map(fn($file) => asset($file), $formArray));
-    	const claimId = @json($data->id);
-    	 
-        document.getElementById("openFilesBtn").addEventListener("click", function () {
-        	
-            fileUrls.forEach(url => {
-                window.open(url, "_blank");
-               /* const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", ""); // triggers download
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);*/
-            });
-
-            fetch("{{ route('audit.download.claim') }}", {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json",
-	                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-	            },
-	            body: JSON.stringify({ claim_id: claimId })
-	        })
-	        .then(response => response.json())
-	        .then(data => {
-	            console.log("Audit log saved:", data);
-	        })
-	        .catch(error => {
-	            console.error("Error saving audit log:", error);
-	        });
-
-        });
-
-
-        document.getElementById("btnChecklist").addEventListener("click", function () {
-        	  fetch("{{ route('audit.download.checklist') }}", {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json",
-	                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-	            },
-	            body: JSON.stringify({ claim_id: claimId })
-	        })
-	        .then(response => response.json())
-	        .then(data => {
-	            console.log("Audit log saved:", data);
-	        })
-	        .catch(error => {
-	            console.error("Error saving audit log:", error);
-	        });
-
-        });
-    });
-
-
-
-
+   
 </script>
 @endsection
