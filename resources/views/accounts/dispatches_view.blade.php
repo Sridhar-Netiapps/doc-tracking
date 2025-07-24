@@ -129,13 +129,33 @@
                                         <td>{{ $row->glow_application_id }}</td>
                                         <td>{{ $row->loan_disbursement_type }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
@@ -206,13 +226,33 @@
                                         <td>{{ $row->loan_amount }}</td>
                                         <td>{{ $row->barcode }}</td>
                                         <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
@@ -286,13 +326,33 @@
                                         <td>{{ $row->pgk_no }}</td>
                                         <td>{{ $row->type_of_account_opening }}</td>
                                         <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">
@@ -352,13 +412,33 @@
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                         <td>{{ $row->barcode}}</td>
                                         <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
+                                        @hasrole('bo-maker|bo-checker')
+                                            @if ($row->status > 7)
+                                                <td> Received
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                        @endif
+                                                    </td>
                                             @endif
-                                        </td>
+                                        @else
+                                            <td>{{ $row->statusName->name ?? '-' }}
+                                                @if (in_array($row->status, [6,7]))
+                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <img src="/images/info_icon.svg"/>
+                                                </span>
+                                                @endif
+                                            </td> 
+                                        @endhasrole
                                         @hasanyrole('bo-checker|master|super_admin|admin')
                                             @if ($row->status == 3)
                                                 <td class="border-start">

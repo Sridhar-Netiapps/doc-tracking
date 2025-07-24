@@ -177,12 +177,12 @@
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                     <div class="col-12 mt-3">
-                        <input type="text" readonly class="form-control flatpickr-date" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                        <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                     </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control flatpickr-date" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
-                <div class="col-12 mt-3 d-none">
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
                 <div class="col-12 mt-3 d-none">

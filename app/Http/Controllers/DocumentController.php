@@ -151,11 +151,11 @@ class DocumentController extends Controller
                 $query->where('branch_code', $user->branch_id);
             }
             if ($fromDate != null && $toDate != null) {
-                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+                $query->whereDateBetween('updated_at', [$fromDate, $toDate]);
             } elseif ($fromDate != null) {
-                $query->whereDate('created_at', '>=', $fromDate);
+                $query->whereDate('updated_at', '>=', $fromDate);
             } elseif ($toDate != null) {
-                $query->whereDate('created_at', '<=', $toDate);
+                $query->whereDate('updated_at', '<=', $toDate);
             }
             if ($filters['doc_type'] === 'moved') {
                 $query->whereIn('status', [8, 9, 10, 11]);

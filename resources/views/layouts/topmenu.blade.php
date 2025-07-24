@@ -36,7 +36,7 @@
                     <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index','received') }}">Received</a>
                 </li>
 
-                @hasanyrole('master|super_admin|admin|ro-user')
+                @hasanyrole('master|super_admin|admin|ro-user|ro-supervisor')
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
                 </li>

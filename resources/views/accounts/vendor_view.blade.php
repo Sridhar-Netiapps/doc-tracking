@@ -374,6 +374,7 @@
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min=0>
                 </div>
+                
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control category_of_document" placeholder="Document Category" value="{{ old('category_of_document', $filters['category_of_document'] ?? '') }}" name="category_of_document">
                 </div>
@@ -484,8 +485,8 @@
                         <label for="status" class="form-label">Status</label>
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
-                        <select name="status" class="form-control select2" required>
-                            <option value=''>Select Status</option>
+                        <select name="status" class="form-control select2" id="status_input" required>
+                            {{-- <option value=''>Select Status</option> --}}
                             <option value='8'>IN</option>
                             <option value='9'>OUT</option>
                             <option value='10'>Permout</option>
@@ -612,6 +613,10 @@
 
                     $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
                     $('#date_added_input').val(data.date_added_to_vendor ?? '');
+                    if ($('#status_input option[value="' + data.status + '"]').length === 0) {
+                        $('#status_input').append(new Option(data.status, data.status));
+                    }
+                    $('#status_input').val(data.status).change();
                     $('#update_id').val(data.id); 
                 },
                 error: function () {

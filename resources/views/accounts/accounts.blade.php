@@ -59,7 +59,7 @@
                 @endif
             @endhasanyrole
 
-                @role('ro-user|master|super_admin|admin')
+                @role('ro-supervisor|master|super_admin|admin')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
@@ -98,7 +98,7 @@
                                         @if (in_array($type, ['pending', 'all']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         @endif
-                                    @elsehasrole('ro-user')
+                                    @elsehasrole('ro-supervisor')
                                         {{-- @if ($type === 'received') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         {{-- @endif --}}
@@ -151,7 +151,7 @@
                                                 @if (in_array($type, ['pending', 'all']))
                                                     <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
-                                            @elsehasrole('ro-user')
+                                            @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                 {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
@@ -245,7 +245,7 @@
                                         @if (in_array($type, ['pending', 'all']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all" /></th>
                                         @endif
-                                    @elsehasrole('ro-user')
+                                    @elsehasrole('ro-supervisor')
                                         {{-- @if ($type === 'received') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all" /></th>
                                         {{-- @endif --}}
@@ -295,7 +295,7 @@
                                                 @if (in_array($type, ['pending', 'all']))
                                                     <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
-                                            @elsehasrole('ro-user')
+                                            @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                     <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
@@ -385,7 +385,7 @@
                                         @if (in_array($type, ['pending', 'all']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /></th>
                                         @endif
-                                    @elsehasrole('ro-user')
+                                    @elsehasrole('ro-supervisor')
                                         {{-- @if ($type === 'received') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /></th>
                                         {{-- @endif --}}
@@ -437,7 +437,7 @@
                                                 @if (in_array($type, ['pending', 'all']))
                                                     <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
-                                            @elsehasrole('ro-user')
+                                            @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                     <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
@@ -529,7 +529,7 @@
                                         @if (in_array($type, ['pending', 'all']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all" /></th>
                                         @endif
-                                    @elsehasrole('ro-user')
+                                    @elsehasrole('ro-supervisor')
                                         {{-- @if ($type === 'received') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all" /></th>
                                         {{-- @endif --}}
@@ -574,7 +574,7 @@
                                                 @if (in_array($type, ['pending', 'all']))
                                                     <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
-                                            @elsehasrole('ro-user')
+                                            @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                     <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
@@ -709,12 +709,12 @@
                     <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control flatpickr-date" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control flatpickr-date" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
-                <div class="col-12 mt-3 d-none">
+                <div class="col-12 mt-3">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
                 <div class="col-12 mt-3 d-none">
