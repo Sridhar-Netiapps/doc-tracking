@@ -155,11 +155,11 @@ class DocumentController extends Controller
                 $query->where('branch_code', $user->branch_id);
             }
             if ($fromDate != null && $toDate != null) {
-                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+                $query->whereDateBetween('updated_at', [$fromDate, $toDate]);
             } elseif ($fromDate != null) {
-                $query->whereDate('created_at', '>=', $fromDate);
+                $query->whereDate('updated_at', '>=', $fromDate);
             } elseif ($toDate != null) {
-                $query->whereDate('created_at', '<=', $toDate);
+                $query->whereDate('updated_at', '<=', $toDate);
             }
             if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
                 $query->whereIn('status', [8, 9, 10, 11]);
@@ -532,8 +532,9 @@ class DocumentController extends Controller
         
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-
-        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
+        // dd($filters);
+        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::parse($filters['dispatch_date'])->format('Y-m-d') : null;
+        // $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {

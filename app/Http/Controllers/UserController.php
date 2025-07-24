@@ -65,6 +65,8 @@ class UserController extends Controller
             'mobile_number' => 'required|string|max:15',
             'doj' => 'required|date',
             'dor' => 'nullable|date',
+            'designation_id' => 'required|string|max:255',
+            'department_id' => 'required|string|max:255',
         ]);
 
         // Creating the new user
@@ -82,6 +84,8 @@ class UserController extends Controller
             'mobile_number' => $request->input('mobile_number'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
+            'designation_id' => $request->input('designation_id'),
+            'department_id' => $request->input('department_id'),
         ]);
 
         // Redirecting back with success message

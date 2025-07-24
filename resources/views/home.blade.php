@@ -74,6 +74,16 @@
                             <div class="label">Received Docs</div>
                             <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</div>
                         </div>
+                        <div class="listView">
+                            <ul>
+                                <li>
+                                    <div class="label">Received with Query<span class="value">{{($loan_total[7] ?? 0)}}</span></div>
+                                </li>
+                                <li>
+                                    <div class="label">Received <span class="value">{{($loan_total[5] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</span></div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="col">
@@ -105,6 +115,16 @@
                         <div class="listView">
                             <div class="label">Received Docs</div>
                             <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0)}}</div>
+                        </div>
+                        <div class="listView">
+                            <ul>
+                                <li>
+                                    <div class="label">Received with Query<span class="value">{{($gold_loan_total[7] ?? 0)}}</span></div>
+                                </li>
+                                <li>
+                                    <div class="label">Received <span class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0)}}</span></div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -138,6 +158,16 @@
                             <div class="label">Received Docs</div>
                             <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0)}}</div>
                         </div>
+                        <div class="listView">
+                            <ul>
+                                <li>
+                                    <div class="label">Received with Query<span class="value">{{($aof_total[7] ?? 0)}}</span></div>
+                                </li>
+                                <li>
+                                    <div class="label">Received <span class="value">{{($aof_total[5] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0)}}</span></div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="col">
@@ -169,6 +199,16 @@
                         <div class="listView">
                             <div class="label">Received Docs</div>
                             <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0)}}</div>
+                        </div>
+                        <div class="listView">
+                            <ul>
+                                <li>
+                                    <div class="label">Received with Query<span class="value">{{($dtrf_total[7] ?? 0)}}</span></div>
+                                </li>
+                                <li>
+                                    <div class="label">Received <span class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0)}}</span></div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
