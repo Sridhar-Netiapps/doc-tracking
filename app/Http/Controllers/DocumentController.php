@@ -154,17 +154,22 @@ class DocumentController extends Controller
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
             }
-            if ($fromDate != null && $toDate != null) {
-                $query->whereDateBetween('updated_at', [$fromDate, $toDate]);
-            } elseif ($fromDate != null) {
-                $query->whereDate('updated_at', '>=', $fromDate);
-            } elseif ($toDate != null) {
-                $query->whereDate('updated_at', '<=', $toDate);
+            if ($fromDate !== null && $toDate !== null) {
+                $start = Carbon::parse($fromDate)->startOfDay();
+                $end   = Carbon::parse($toDate)->endOfDay();
+                $query->whereBetween('updated_at', [$start, $end]);
+            }
+            elseif ($fromDate !== null) {
+                $start = Carbon::parse($fromDate)->startOfDay();
+                $query->where('updated_at', '>=', $start);
+            }
+            elseif ($toDate !== null) {
+                $end = Carbon::parse($toDate)->endOfDay();
+                $query->where('updated_at', '<=', $end);
             }
             if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
                 $query->whereIn('status', [8, 9, 10, 11]);
             }
-            
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
@@ -310,12 +315,18 @@ class DocumentController extends Controller
                 $query->where('branch_code', $user->branch_id);
             }
     
-            if ($fromDate && $toDate) {
-                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
-            } elseif ($fromDate) {
-                $query->whereDate('account_creation_date', '>=', $fromDate);
-            } elseif ($toDate) {
-                $query->whereDate('account_creation_date', '<=', $toDate);
+            if ($fromDate !== null && $toDate !== null) {
+                $start = Carbon::parse($fromDate)->startOfDay();
+                $end   = Carbon::parse($toDate)->endOfDay();
+                $query->whereBetween('updated_at', [$start, $end]);
+            }
+            elseif ($fromDate !== null) {
+                $start = Carbon::parse($fromDate)->startOfDay();
+                $query->where('updated_at', '>=', $start);
+            }
+            elseif ($toDate !== null) {
+                $end = Carbon::parse($toDate)->endOfDay();
+                $query->where('updated_at', '<=', $end);
             }
     
             if ($hasFilters) {
@@ -532,8 +543,9 @@ class DocumentController extends Controller
         
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        // dd($filters);
-        $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::parse($filters['dispatch_date'])->format('Y-m-d') : null;
+        $dispatchDate = $filters['dispatch_date'] ?? null;
+
+
         // $dispatchDate = !empty($filters['dispatch_date']) ? Carbon::createFromFormat('d-m-Y', $filters['dispatch_date'])->format('Y-m-d') : null;
 
 

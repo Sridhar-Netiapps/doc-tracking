@@ -1018,7 +1018,7 @@
             });
 
             if (!hasFilter) {
-                e.preventDefault(); 
+                e.preventDefault(); /^\d+$/
                 Swal.fire({
                     title: "Warning!",
                     text: "Please select at least one filter option.",
@@ -1067,7 +1067,6 @@
                 },
                 box_barcode: {
                     required: true,
-                    alphanumeric: true,
                     sanitize: true
                 }
             },

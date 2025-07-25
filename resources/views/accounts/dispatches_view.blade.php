@@ -85,389 +85,397 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Disbursement Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Loan Amount</th>
-                                <th scope="col">Barcode</th>
-                                <th scope="col">Glow Application ID</th>
-                                <th scope="col">Loan Disbursement Type</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user|master|super_admin|admin')
-                                @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                <th class="d-none loan" scope="col">Update Status</th>
-                                <th class="d-none loan" scope="col">Actions</th>
-                                @endif
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($loan_document)
-                                @foreach ($loan_document as $row)
-                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->loan_cycle }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->loan_amount }}</td>
-                                        <td>{{ $row->barcode }}</td>
-                                        <td>{{ $row->glow_application_id }}</td>
-                                        <td>{{ $row->loan_disbursement_type }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        @hasrole('bo-maker|bo-checker')
-                                            @if ($row->status > 7)
-                                                <td> Received
-                                                    @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
-                                                    @endif
-                                                </td>
-                                                @else
-                                                    <td>{{ $row->statusName->name ?? '-' }}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Loan Cycle</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Disbursement Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Glow Application ID</th>
+                                    <th scope="col" class="text-nowrap">Loan Disbursement Type</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                    @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                    <th class="d-none loan" scope="col">Update Status</th>
+                                    <th class="d-none loan" scope="col">Actions</th>
+                                    @endif
+                                    @endhasanyrole
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($loan_document)
+                                    @foreach ($loan_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
+                                            <td>{{ $row->unique_ref_no }}</td>
+                                            <td>{{ $row->branch_code }}</td>
+                                            <td>{{ $row->branch_name }}</td>
+                                            <td>{{ $row->cif_id }}</td>
+                                            <td>{{ $row->account_number }}</td>
+                                            <td>{{ $row->loan_cycle }}</td>
+                                            <td>{{ $row->customer_name }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td>{{ $row->channel }}</td>
+                                            <td>{{ $row->loan_amount }}</td>
+                                            <td>{{ $row->barcode }}</td>
+                                            <td>{{ $row->glow_application_id }}</td>
+                                            <td>{{ $row->loan_disbursement_type }}</td>
+                                            <td>{{ $row->business_category }}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
                                                     </td>
-                                            @endif
-                                        @else
-                                            <td>{{ $row->statusName->name ?? '-' }}
-                                                @if (in_array($row->status, [6,7]))
-                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                    <img src="/images/info_icon.svg"/>
-                                                </span>
+                                                    @else
+                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                            @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                            @endif
+                                                        </td>
                                                 @endif
-                                            </td> 
-                                        @endhasrole
-                                        @hasanyrole('bo-checker|master|super_admin|admin')
-                                            @if ($row->status == 3)
-                                                <td class="border-start">
-                                                    <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                    <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
-                                                </td>
+                                            @else
+                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                                @if ($row->status == 3)
+                                                    <td class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
+                                                        <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endhasanyrole
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            @if ($row->status == 4)
+                                            <td class="loan">
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=5>Received</option>
+                                                    <option value=7>Received with Query</option>
+                                                    <option value=6>Rejected</option>
+                                                </select>
+                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            <td class="border-start">
+                                                    <button type="button" class="btn btn-primary update-row">Update</button>
+                                            </td>
                                             @endif
-                                        @endhasanyrole
-                                        @hasanyrole('ro-user|master|super_admin|admin')
-                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                        @if ($row->status == 4)
-                                        <td class="loan">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
-                                        @endif
-                                        @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                            @endif
+                                            @endhasanyrole
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Loan Amount</th>
-                                <th scope="col">Barcode</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user|master|super_admin|admin')
-                                @if ($dispatch->status == 5)
-                                <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
-                                <th class="d-none goldloan" scope="col">Actions</th>
-                                @endif
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($gold_loan_document)
-                                @foreach ($gold_loan_document as $row)
-                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
-                                        <td>{{ $row->unique_ref_no }}</td>  
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->loan_amount }}</td>
-                                        <td>{{ $row->barcode }}</td>
-                                        <td>{{ $row->business_category }}</td> 
-                                        @hasrole('bo-maker|bo-checker')
-                                            @if ($row->status > 7)
-                                                <td> Received
-                                                    @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
-                                                    @endif
-                                                </td>
-                                                @else
-                                                    <td>{{ $row->statusName->name ?? '-' }}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                    @if ($dispatch->status == 5)
+                                    <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
+                                    <th class="d-none goldloan" scope="col">Actions</th>
+                                    @endif
+                                    @endhasanyrole
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($gold_loan_document)
+                                    @foreach ($gold_loan_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
+                                            <td>{{ $row->unique_ref_no }}</td>  
+                                            <td>{{ $row->branch_code }}</td>
+                                            <td>{{ $row->branch_name }}</td>
+                                            <td>{{ $row->cif_id }}</td>
+                                            <td>{{ $row->account_number }}</td>
+                                            <td>{{ $row->customer_name }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td>{{ $row->channel }}</td>
+                                            <td>{{ $row->loan_amount }}</td>
+                                            <td>{{ $row->barcode }}</td>
+                                            <td>{{ $row->business_category }}</td> 
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
                                                     </td>
-                                            @endif
-                                        @else
-                                            <td>{{ $row->statusName->name ?? '-' }}
-                                                @if (in_array($row->status, [6,7]))
-                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                    <img src="/images/info_icon.svg"/>
-                                                </span>
+                                                    @else
+                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                            @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                            @endif
+                                                        </td>
                                                 @endif
-                                            </td> 
-                                        @endhasrole
-                                        @hasanyrole('bo-checker|master|super_admin|admin')
-                                            @if ($row->status == 3)
-                                                <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
-                                                </td>
+                                            @else
+                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                                @if ($row->status == 3)
+                                                    <td class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endhasanyrole
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            @if ($row->status == 4)
+                                            <td class="goldloan">
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=5>Received</option>
+                                                    <option value=7>Received with Query</option>
+                                                    <option value=6>Rejected</option>
+                                                </select>
+                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            <td class="border-start">
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            </td>
                                             @endif
-                                        @endhasanyrole
-                                        @hasanyrole('ro-user|master|super_admin|admin')
-                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                        @if ($row->status == 4)
-                                        <td class="goldloan">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
-                                        @endif
-                                        @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                            @endif
+                                            @endhasanyrole
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Scheme</th>
-                                <th scope="col">Barcode</th>
-                                <th scope="col">PGK No</th>
-                                <th scope="col">Type of Account Opening</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user|master|super_admin|admin')
-                                @if ($dispatch->status == 5)
-                                <th class="d-none aof" scope="col">Update Status</th>
-                                <th class="d-none aof" scope="col">Actions</th> 
-                                @endif                           
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($account_opening_document)
-                                @foreach ($account_opening_document as $row)
-                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->scheme }}</td>
-                                        <td>{{ $row->barcode }}</td>
-                                        <td>{{ $row->pgk_no }}</td>
-                                        <td>{{ $row->type_of_account_opening }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        @hasrole('bo-maker|bo-checker')
-                                            @if ($row->status > 7)
-                                                <td> Received
-                                                    @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
-                                                    @endif
-                                                </td>
-                                                @else
-                                                    <td>{{ $row->statusName->name ?? '-' }}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Scheme</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">PGK No</th>
+                                    <th scope="col" class="text-nowrap">Type of Account Opening</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                    @if ($dispatch->status == 5)
+                                    <th class="d-none aof" scope="col">Update Status</th>
+                                    <th class="d-none aof" scope="col">Actions</th> 
+                                    @endif                           
+                                    @endhasanyrole
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($account_opening_document)
+                                    @foreach ($account_opening_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
+                                            <td>{{ $row->unique_ref_no }}</td>
+                                            <td>{{ $row->branch_code }}</td>
+                                            <td>{{ $row->branch_name }}</td>
+                                            <td>{{ $row->cif_id }}</td>
+                                            <td>{{ $row->account_number }}</td>
+                                            <td>{{ $row->customer_name }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td>{{ $row->channel }}</td>
+                                            <td>{{ $row->scheme }}</td>
+                                            <td>{{ $row->barcode }}</td>
+                                            <td>{{ $row->pgk_no }}</td>
+                                            <td>{{ $row->type_of_account_opening }}</td>
+                                            <td>{{ $row->business_category }}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
                                                     </td>
-                                            @endif
-                                        @else
-                                            <td>{{ $row->statusName->name ?? '-' }}
-                                                @if (in_array($row->status, [6,7]))
-                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                    <img src="/images/info_icon.svg"/>
-                                                </span>
+                                                    @else
+                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                            @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                            @endif
+                                                        </td>
                                                 @endif
-                                            </td> 
-                                        @endhasrole
-                                        @hasanyrole('bo-checker|master|super_admin|admin')
-                                            @if ($row->status == 3)
-                                                <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
-                                                </td>
+                                            @else
+                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                                @if ($row->status == 3)
+                                                    <td class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endhasanyrole
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            @if ($row->status == 4)
+                                            <td class="aof">
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=5>Received</option>
+                                                    <option value=7>Received with Query</option>
+                                                    <option value=6>Rejected</option>
+                                                </select>
+                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            <td class="border-start">
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            </td>
                                             @endif
-                                        @endhasanyrole
-                                        @hasanyrole('ro-user|master|super_admin|admin')
-                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                        @if ($row->status == 4)
-                                        <td class="aof">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
-                                        @endif
-                                        @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                            @endif
+                                            @endhasanyrole
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">DTR File Date</th>
-                                <th scope="col">Barcode</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user|master|super_admin|admin')
-                                @if ($dispatch->status == 5)
-                                <th class="d-none dtrf" scope="col">Update Status</th>
-                                <th class="d-none dtrf" scope="col">Actions</th>
-                                @endif
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($dtrf_document)
-                                @foreach ($dtrf_document as $row)
-                                    <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
-                                        <td>{{ $row->barcode}}</td>
-                                        <td>{{ $row->business_category}}</td>
-                                        @hasrole('bo-maker|bo-checker')
-                                            @if ($row->status > 7)
-                                                <td> Received
-                                                    @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
-                                                    @endif
-                                                </td>
-                                                @else
-                                                    <td>{{ $row->statusName->name ?? '-' }}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">DTR File Date</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                    @if ($dispatch->status == 5)
+                                    <th class="d-none dtrf" scope="col">Update Status</th>
+                                    <th class="d-none dtrf" scope="col">Actions</th>
+                                    @endif
+                                    @endhasanyrole
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($dtrf_document)
+                                    @foreach ($dtrf_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
+                                            <td>{{ $row->unique_ref_no }}</td>
+                                            <td>{{ $row->branch_code }}</td>
+                                            <td>{{ $row->branch_name }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                            <td>{{ $row->barcode}}</td>
+                                            <td>{{ $row->business_category}}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
                                                     </td>
-                                            @endif
-                                        @else
-                                            <td>{{ $row->statusName->name ?? '-' }}
-                                                @if (in_array($row->status, [6,7]))
-                                                <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                    <img src="/images/info_icon.svg"/>
-                                                </span>
+                                                    @else
+                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                            @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                            @endif
+                                                        </td>
                                                 @endif
-                                            </td> 
-                                        @endhasrole
-                                        @hasanyrole('bo-checker|master|super_admin|admin')
-                                            @if ($row->status == 3)
-                                                <td class="border-start">
-                                                    <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
-                                                </td>
+                                            @else
+                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <img src="/images/info_icon.svg"/>
+                                                    </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                                @if ($row->status == 3)
+                                                    <td class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endhasanyrole
+                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            @if ($row->status == 4)
+                                            <td class="dtrf">
+                                                <select name="remarks" class="form-control select2 remarks" required>
+                                                    <option selected value=5>Received</option>
+                                                    <option value=7>Received with Query</option>
+                                                    <option value=6>Rejected</option>
+                                                </select>
+                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                            </td>
+                                            <td class="border-start">
+                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                            </td>
                                             @endif
-                                        @endhasanyrole
-                                        @hasanyrole('ro-user|master|super_admin|admin')
-                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                        @if ($row->status == 4)
-                                        <td class="dtrf">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
-                                        @endif
-                                        @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                            @endif
+                                            @endhasanyrole
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
