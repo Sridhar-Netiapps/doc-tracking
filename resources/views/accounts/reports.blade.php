@@ -21,7 +21,7 @@
                 <form method="POST" action="{{ route('reports') }}">
                     @csrf
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-3 mt-2">
                             <label for="doc_type">Document Type</label>
                             <select id="doc_type" name="doc_type" class="form-select">
                                 <option value="">-- Select --</option>
@@ -31,7 +31,15 @@
                                 <option value="dtrf">DTR Files</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 mt-2">
+                            <label for="search_type">Search Criteria</label>
+                            <select id="search_type" name="search_type" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="courier">Courier</option>
+                                <option value="vendor">Vendor</option>
+                            </select>
+                        </div>
+                        <div class="col-3 mt-2">
                             <label>Region</label>
                             <select id="region" name="region" class="form-select">
                                 <option value="">-- Select --</option>
@@ -41,11 +49,11 @@
                                 <option value="4">West</option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 mt-2">
                             <label>Branch Code</label>
                             <input type="text" name="branch_code" class="form-control">
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 mt-2">
                             <label>Branch Name</label>
                             <input type="text" name="branch_name" class="form-control">
                         </div>
@@ -53,99 +61,134 @@
                     <div id="dynamic-fields">
                         <div class="row">
                             {{-- CIF / Account --}}
-                            <div class="col-3 doc-fields loan goldloan aof">
+                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>CIF ID</label>
                                 <input type="text" name="cif_id" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan goldloan aof">
+                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Account Number</label>
                                 <input type="text" name="account_number" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan goldloan aof">
+                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Customer Name</label>
                                 <input type="text" name="customer_name" class="form-control">
                             </div>
-                
-                            <div class="col-3 doc-fields loan goldloan aof">
-                                <label>Account Creation Date</label>
-                                <input type="date" name="account_creation_date" class="form-control">
-                            </div>
-                
                             {{-- DTRF Fields --}}
-                            <div class="col-3 doc-fields dtrf">
-                                <label>DTR File Date</label>
-                                <input type="date" name="dtr_file_date" class="form-control">
-                            </div>
-                            <div class="col-3 doc-fields dtrf">
+                            <div class="col-3 mt-2 doc-fields dtrf">
                                 <label>Barcode</label>
                                 <input type="text" name="barcode" class="form-control">
                             </div>
-                
+
                             {{-- Unique Fields --}}
-                            <div class="col-3 doc-fields goldloan loan">
+                            <div class="col-3 mt-2 doc-fields goldloan loan">
                                 <label>Loan Amount</label>
                                 <input type="text" name="loan_amount" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields goldloan">
+                            <div class="col-3 mt-2 doc-fields goldloan">
                                 <label>Channel (Gold Loan)</label>
                                 <input type="text" name="channel_goldloan" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan">
+                            <div class="col-3 mt-2 doc-fields loan">
                                 <label>Channel (GL/IL)</label>
                                 <input type="text" name="channel_loan" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan">
+                            <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Cycle</label>
                                 <input type="text" name="loan_cycle" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan">
+                            <div class="col-3 mt-2 doc-fields loan">
                                 <label>Glow Application ID</label>
                                 <input type="text" name="glow_app_id" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields loan">
+                            <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Disbursement Type</label>
                                 <input type="text" name="loan_disbursement_type" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields aof">
+                            <div class="col-3 mt-2 doc-fields aof">
                                 <label>Scheme</label>
                                 <input type="text" name="scheme" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields aof">
+                            <div class="col-3 mt-2 doc-fields aof">
                                 <label>Channel (Swagat/HHD/CRM)</label>
                                 <input type="text" name="channel_aof" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields aof">
+                            <div class="col-3 mt-2 doc-fields aof">
                                 <label>PGK No</label>
                                 <input type="text" name="pgk_no" class="form-control">
                             </div>
-                            <div class="col-3 doc-fields aof">
+                            <div class="col-3 mt-2 doc-fields aof">
                                 <label>Account Opening Type</label>
                                 <input type="text" name="aof_type" class="form-control">
                             </div>
-                            {{-- @foreach ([
+                            @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
-                                'dispatch_date' => 'Dispatch Date',
+                                // 'dispatch_date' => 'Dispatch Date',
                                 'dispatched_by' => 'Dispatched By (User ID)',
-                                'courier_received_date' => 'Courier Received Date @ Mail Room',
+                                // 'courier_received_date' => 'Courier Received Date @ Mail Room',
                                 'tracked_by' => 'Tracked By (User ID)',
-                                'remarks' => 'Remarks (Received / Rejected)',
-                                'rejection_reason' => 'Reason for Rejection',
+                                ] as $field => $label)
+                                <div class="col-3 mt-2">
+                                    <label>{{ $label }}</label>
+                                    <input type="text" name="{{ $field }}" class="form-control courier">
+                                </div>
+                            @endforeach
+                            @foreach ([
                                 'lot_no' => 'Lot No',
                                 'category' => 'Document Category',
                                 'work_order_no' => 'Work Order No.',
                                 'vendor_name' => 'Vendor Name',
-                                'vendor_movement_date' => 'Date of Vendor Movement',
+                                // 'vendor_movement_date' => 'Date of Vendor Movement',
                                 'file_barcode' => 'File Barcode Against Lot',
                                 'box_barcode' => 'Box Barcode No.',
-                                'addition_date' => 'Date of Addition to Vendor Data',
-                                'status' => 'Status (In / Out / Permout / Destroyed)'
+                                // 'addition_date' => 'Date of Addition to Vendor Data',
+                                // 'status' => 'Status (In / Out / Permout / Destroyed)'
                             ] as $field => $label)
-                                <div class="col-3">
+                                <div class="col-3 mt-2">
                                     <label>{{ $label }}</label>
-                                    <input type="text" name="{{ $field }}" class="form-control">
+                                    <input type="text" name="{{ $field }}" class="form-control vendor">
                                 </div>
-                            @endforeach --}}
+                            @endforeach
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mt-2">
+                                <label>From Date</label>
+                                <input type="text" readonly class="form-control datepicker" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label>To Date</label>
+                                <input type="text" readonly class="form-control datepicker" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label for="date_field">Date Criteria</label>
+                                <select id="date_field" name="date_field" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="creation_date">Account Creation / DTR File Date</option>
+                                    <option value="dispatch_date">Dispatch Date</option>
+                                    <option value="received_date">Courier Received Date</option>
+                                    <option value="movement_date">Vendor Movement Date</option>
+                                    <option value="addition_date">Addition to Vendor Data</option>
+                                    <option value="creation_date">Sync Date</option>
+                                    <option value="activity_date">Activity Date</option>
+                                </select>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label>Status</label>
+                                <select id="status" name="status" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="1">Pending</option>
+                                    <option value="2">In Draft</option>
+                                    <option value="3">Awaiting checker Approval</option>
+                                    <option value="4">Dispatched</option>
+                                    <option value="5">Received</option>
+                                    <option value="6">Rejected</option>
+                                    <option value="7">Received with query</option>
+                                    <option value="8">IN</option>
+                                    <option value="9">OUT</option>
+                                    <option value="10">Permount</option>
+                                    <option value="11">Destroyed</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <button class="btn btn-primary mt-3">Download Report</button>
@@ -156,7 +199,7 @@
     </div>
 </div>
 <script>
-    function toggleFields() {
+    function docfields() {
         var docType = $('#doc_type').val();
         $('.doc-fields').hide();
         if (docType) {
@@ -165,8 +208,8 @@
     }
 
     $(document).ready(function () {
-        toggleFields(); // trigger on page load
-        $('#doc_type').on('change', toggleFields); // re-trigger on change
+        docfields(); // trigger on page load
+        $('#doc_type').on('change', docfields); // re-trigger on change
     });
 </script>
 @endsection

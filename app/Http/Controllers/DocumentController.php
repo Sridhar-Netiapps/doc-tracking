@@ -1123,8 +1123,13 @@ class DocumentController extends Controller
         }
     }
 
-    public function test()
+
+    public function reports(Request $request)
     {
+        $users = User::pluck('first_name', 'id');
+        $couriers = Courier::pluck('name', 'id');
         
+        return view('accounts.reports');        
     }
+
 }

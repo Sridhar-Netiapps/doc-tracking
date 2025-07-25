@@ -116,31 +116,31 @@
                                 @if ($loan_document)
                                     @foreach ($loan_document as $row)
                                         <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
-                                            <td>{{ $row->unique_ref_no }}</td>
-                                            <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->loan_cycle }}</td>
-                                            <td>{{ $row->customer_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                            <td>{{ $row->channel }}</td>
-                                            <td>{{ $row->loan_amount }}</td>
-                                            <td>{{ $row->barcode }}</td>
-                                            <td>{{ $row->glow_application_id }}</td>
-                                            <td>{{ $row->loan_disbursement_type }}</td>
-                                            <td>{{ $row->business_category }}</td>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_cycle }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_amount }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->glow_application_id }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_disbursement_type }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td>
                                             @hasrole('bo-maker|bo-checker')
                                                 @if ($row->status > 7)
-                                                    <td> Received
-                                                        @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                            <img src="/images/info_icon.svg"/>
-                                                        </span>
-                                                        @endif
-                                                    </td>
+                                                        <td class="text-nowrap"> Received
+                                                            @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                            @endif
+                                                        </td>
                                                     @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                        <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
@@ -149,7 +149,7 @@
                                                         </td>
                                                 @endif
                                             @else
-                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
                                                     <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                         <img src="/images/info_icon.svg"/>
@@ -159,7 +159,7 @@
                                             @endhasrole
                                             @hasanyrole('bo-checker|master|super_admin|admin')
                                                 @if ($row->status == 3)
-                                                    <td class="border-start">
+                                                    <td class="text-nowrap" class="border-start">
                                                         <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
@@ -168,7 +168,7 @@
                                             @hasanyrole('ro-user|master|super_admin|admin')
                                             @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             @if ($row->status == 4)
-                                            <td class="loan">
+                                            <td class="text-nowrap" class="loan">
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
                                                     <option value=7>Received with Query</option>
@@ -176,7 +176,7 @@
                                                 </select>
                                                 <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            <td class="border-start">
+                                            <td class="text-nowrap" class="border-start">
                                                     <button type="button" class="btn btn-primary update-row">Update</button>
                                             </td>
                                             @endif
@@ -218,20 +218,20 @@
                                 @if ($gold_loan_document)
                                     @foreach ($gold_loan_document as $row)
                                         <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
-                                            <td>{{ $row->unique_ref_no }}</td>  
-                                            <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                            <td>{{ $row->channel }}</td>
-                                            <td>{{ $row->loan_amount }}</td>
-                                            <td>{{ $row->barcode }}</td>
-                                            <td>{{ $row->business_category }}</td> 
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>  
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_amount }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td> 
                                             @hasrole('bo-maker|bo-checker')
                                                 @if ($row->status > 7)
-                                                    <td> Received
+                                                    <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
@@ -239,7 +239,7 @@
                                                         @endif
                                                     </td>
                                                     @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                        <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
@@ -248,7 +248,7 @@
                                                         </td>
                                                 @endif
                                             @else
-                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
                                                     <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                         <img src="/images/info_icon.svg"/>
@@ -258,7 +258,7 @@
                                             @endhasrole
                                             @hasanyrole('bo-checker|master|super_admin|admin')
                                                 @if ($row->status == 3)
-                                                    <td class="border-start">
+                                                    <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -266,7 +266,7 @@
                                             @hasanyrole('ro-user|master|super_admin|admin')
                                             @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             @if ($row->status == 4)
-                                            <td class="goldloan">
+                                            <td class="text-nowrap" class="goldloan">
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
                                                     <option value=7>Received with Query</option>
@@ -274,7 +274,7 @@
                                                 </select>
                                                 <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            <td class="border-start">
+                                            <td class="text-nowrap" class="border-start">
                                                 <button type="button" class="btn btn-primary update-row">Update</button>
                                             </td>
                                             @endif
@@ -318,22 +318,22 @@
                                 @if ($account_opening_document)
                                     @foreach ($account_opening_document as $row)
                                         <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
-                                            <td>{{ $row->unique_ref_no }}</td>
-                                            <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                            <td>{{ $row->channel }}</td>
-                                            <td>{{ $row->scheme }}</td>
-                                            <td>{{ $row->barcode }}</td>
-                                            <td>{{ $row->pgk_no }}</td>
-                                            <td>{{ $row->type_of_account_opening }}</td>
-                                            <td>{{ $row->business_category }}</td>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->scheme }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->pgk_no }}</td>
+                                            <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td>
                                             @hasrole('bo-maker|bo-checker')
                                                 @if ($row->status > 7)
-                                                    <td> Received
+                                                    <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
@@ -341,7 +341,7 @@
                                                         @endif
                                                     </td>
                                                     @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                        <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
@@ -350,7 +350,7 @@
                                                         </td>
                                                 @endif
                                             @else
-                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
                                                     <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                         <img src="/images/info_icon.svg"/>
@@ -360,7 +360,7 @@
                                             @endhasrole
                                             @hasanyrole('bo-checker|master|super_admin|admin')
                                                 @if ($row->status == 3)
-                                                    <td class="border-start">
+                                                    <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -368,7 +368,7 @@
                                             @hasanyrole('ro-user|master|super_admin|admin')
                                             @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             @if ($row->status == 4)
-                                            <td class="aof">
+                                            <td class="text-nowrap" class="aof">
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
                                                     <option value=7>Received with Query</option>
@@ -376,7 +376,7 @@
                                                 </select>
                                                 <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            <td class="border-start">
+                                            <td class="text-nowrap" class="border-start">
                                                 <button type="button" class="btn btn-primary update-row">Update</button>
                                             </td>
                                             @endif
@@ -413,15 +413,15 @@
                                 @if ($dtrf_document)
                                     @foreach ($dtrf_document as $row)
                                         <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
-                                            <td>{{ $row->unique_ref_no }}</td>
-                                            <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->branch_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
-                                            <td>{{ $row->barcode}}</td>
-                                            <td>{{ $row->business_category}}</td>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                            <td class="text-nowrap">{{ $row->barcode}}</td>
+                                            <td class="text-nowrap">{{ $row->business_category}}</td>
                                             @hasrole('bo-maker|bo-checker')
                                                 @if ($row->status > 7)
-                                                    <td> Received
+                                                    <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
                                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                             <img src="/images/info_icon.svg"/>
@@ -429,7 +429,7 @@
                                                         @endif
                                                     </td>
                                                     @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
+                                                        <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
@@ -438,7 +438,7 @@
                                                         </td>
                                                 @endif
                                             @else
-                                                <td>{{ $row->statusName->name ?? '-' }}
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
                                                     <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                         <img src="/images/info_icon.svg"/>
@@ -448,7 +448,7 @@
                                             @endhasrole
                                             @hasanyrole('bo-checker|master|super_admin|admin')
                                                 @if ($row->status == 3)
-                                                    <td class="border-start">
+                                                    <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -456,7 +456,7 @@
                                             @hasanyrole('ro-user|master|super_admin|admin')
                                             @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             @if ($row->status == 4)
-                                            <td class="dtrf">
+                                            <td class="text-nowrap" class="dtrf">
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
                                                     <option value=7>Received with Query</option>
@@ -464,7 +464,7 @@
                                                 </select>
                                                 <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            <td class="border-start">
+                                            <td class="text-nowrap" class="border-start">
                                                 <button type="button" class="btn btn-primary update-row">Update</button>
                                             </td>
                                             @endif
