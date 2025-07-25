@@ -79,7 +79,7 @@ class DocumentController extends Controller
             }
             return $query->orderBy('updated_at', 'desc');
         };
-        // dd($filter(LoanDocfiltersument::query())->tosql());
+        // dd($filter(GoldLoanDocument::query())->get());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
         $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();

@@ -154,7 +154,7 @@
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                 {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -297,7 +297,7 @@
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -439,7 +439,7 @@
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -576,7 +576,7 @@
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -668,7 +668,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
                 <div class="col-12 mt-3">
@@ -682,18 +682,18 @@
                 </div>
                 {{-- @endunless --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                    <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
                 {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
+                    <input type="text" class="form-control branch_name alphanumeric" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="search" class="form-control cif_id alphanumeric" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="search" class="form-control account_number alphanumeric" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
@@ -801,7 +801,7 @@
                         <input type="hidden" name="type">
                         <input type="hidden" name="status" value="8">
                         <label for="lot_no" class="form-label">Lot No.</label>
-                        <input type="text" name="lot_no" class="form-control">
+                        <input type="text" name="lot_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Category of the Document.</label>
@@ -816,7 +816,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No.</label>
-                        <input type="text" name="work_order_no" class="form-control">
+                        <input type="text" name="work_order_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name</label>
@@ -836,7 +836,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
-                        <input type="text" name="file_barcode" class="form-control">
+                        <input type="text" name="file_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>

@@ -74,11 +74,11 @@
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 <li class="ms-auto">
-                    @hasanyrole('ro-user|master|super_admin|admin')
-                    @if ($dispatch->status == 5)
-                        <button id="update-all" class="btn btn-primary d-none">Update All</button>
-                    @endif 
-                    @endhasanyrole
+                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                        @if ($dispatch->status == 5)
+                            <button id="update-all" class="btn btn-primary d-none">Update All</button>
+                        @endif 
+                    @endunless
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
                     {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
@@ -104,12 +104,12 @@
                                     <th scope="col" class="text-nowrap">Loan Disbursement Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @hasanyrole('ro-user|master|super_admin|admin')
-                                    @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                    <th class="d-none loan" scope="col">Update Status</th>
-                                    <th class="d-none loan" scope="col">Actions</th>
-                                    @endif
-                                    @endhasanyrole
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                    
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none loan" scope="col">Update Status</th>
+                                            <th class="d-none loan" scope="col">Actions</th>
+                                        @endif
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,54 +134,54 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                            <img src="/images/info_icon.svg"/>
-                                                        </span>
-                                                        @endif
-                                                    </td>
-                                                    @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
-                                                            @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
-                                                            @endif
-                                                        </td>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
                                                 @endif
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                                                 @if ($row->status == 3)
                                                     <td class="border-start">
                                                         <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
-                                            @endhasanyrole
-                                            @hasanyrole('ro-user|master|super_admin|admin')
-                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            @if ($row->status == 4)
-                                            <td class="loan">
-                                                <select name="remarks" class="form-control select2 remarks" required>
-                                                    <option selected value=5>Received</option>
-                                                    <option value=7>Received with Query</option>
-                                                    <option value=6>Rejected</option>
-                                                </select>
-                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                            </td>
-                                            <td class="border-start">
-                                                    <button type="button" class="btn btn-primary update-row">Update</button>
-                                            </td>
-                                            @endif
-                                            @endif
-                                            @endhasanyrole
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="loan">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -206,12 +206,12 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @hasanyrole('ro-user|master|super_admin|admin')
-                                    @if ($dispatch->status == 5)
-                                    <th class="d-none goldloan" scope="cobarcodel">Update Status</th>
-                                    <th class="d-none goldloan" scope="col">Actions</th>
-                                    @endif
-                                    @endhasanyrole
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none goldloan" scope="col">Update Status</th>
+                                            <th class="d-none goldloan" scope="col">Actions</th>
+                                        @endif
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -233,53 +233,53 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                            <img src="/images/info_icon.svg"/>
-                                                        </span>
-                                                        @endif
-                                                    </td>
-                                                    @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
-                                                            @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
-                                                            @endif
-                                                        </td>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
                                                 @endif
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                                                 @if ($row->status == 3)
                                                     <td class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
-                                            @endhasanyrole
-                                            @hasanyrole('ro-user|master|super_admin|admin')
-                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            @if ($row->status == 4)
-                                            <td class="goldloan">
-                                                <select name="remarks" class="form-control select2 remarks" required>
-                                                    <option selected value=5>Received</option>
-                                                    <option value=7>Received with Query</option>
-                                                    <option value=6>Rejected</option>
-                                                </select>
-                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                            </td>
-                                            <td class="border-start">
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            </td>
-                                            @endif
-                                            @endif
-                                            @endhasanyrole
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="goldloan">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -306,12 +306,12 @@
                                     <th scope="col" class="text-nowrap">Type of Account Opening</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @hasanyrole('ro-user|master|super_admin|admin')
-                                    @if ($dispatch->status == 5)
-                                    <th class="d-none aof" scope="col">Update Status</th>
-                                    <th class="d-none aof" scope="col">Actions</th> 
-                                    @endif                           
-                                    @endhasanyrole
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none aof" scope="col">Update Status</th>
+                                            <th class="d-none aof" scope="col">Actions</th>
+                                        @endif
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -335,53 +335,53 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                            <img src="/images/info_icon.svg"/>
-                                                        </span>
-                                                        @endif
-                                                    </td>
-                                                    @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
-                                                            @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
-                                                            @endif
-                                                        </td>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
                                                 @endif
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                                                 @if ($row->status == 3)
                                                     <td class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
-                                            @endhasanyrole
-                                            @hasanyrole('ro-user|master|super_admin|admin')
-                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            @if ($row->status == 4)
-                                            <td class="aof">
-                                                <select name="remarks" class="form-control select2 remarks" required>
-                                                    <option selected value=5>Received</option>
-                                                    <option value=7>Received with Query</option>
-                                                    <option value=6>Rejected</option>
-                                                </select>
-                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                            </td>
-                                            <td class="border-start">
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            </td>
-                                            @endif
-                                            @endif
-                                            @endhasanyrole
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="aof">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -401,12 +401,12 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @hasanyrole('ro-user|master|super_admin|admin')
-                                    @if ($dispatch->status == 5)
-                                    <th class="d-none dtrf" scope="col">Update Status</th>
-                                    <th class="d-none dtrf" scope="col">Actions</th>
-                                    @endif
-                                    @endhasanyrole
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none dtrf" scope="col">Update Status</th>
+                                            <th class="d-none dtrf" scope="col">Actions</th>
+                                        @endif
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -423,53 +423,53 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                            <img src="/images/info_icon.svg"/>
-                                                        </span>
-                                                        @endif
-                                                    </td>
-                                                    @else
-                                                        <td>{{ $row->statusName->name ?? '-' }}
-                                                            @if (in_array($row->status, [6,7]))
                                                             <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
-                                                            @endif
-                                                        </td>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
                                                 @endif
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                        <img src="/images/info_icon.svg"/>
-                                                    </span>
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @hasanyrole('bo-checker|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
-                                            @endhasanyrole
-                                            @hasanyrole('ro-user|master|super_admin|admin')
-                                            @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            @if ($row->status == 4)
-                                            <td class="dtrf">
-                                                <select name="remarks" class="form-control select2 remarks" required>
-                                                    <option selected value=5>Received</option>
-                                                    <option value=7>Received with Query</option>
-                                                    <option value=6>Rejected</option>
-                                                </select>
-                                                <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                            </td>
-                                            <td class="border-start">
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                            </td>
-                                            @endif
-                                            @endif
-                                            @endhasanyrole
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="dtrf">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
