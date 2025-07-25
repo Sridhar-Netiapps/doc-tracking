@@ -23,9 +23,7 @@ Route::middleware('guest')->group(function () {
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/reports', function () {
-        return view('accounts.reports');
-    });
+    Route::get('/reports',[DocumentController::class, 'reports']);
     Route::get('/accounts-index', function () {
         return view('sample.index');
     });
