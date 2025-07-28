@@ -976,80 +976,6 @@ class DocumentController extends Controller
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 
-    public function export(Request $request)
-    {
-        $filters = $request->all();
-        // dd($filters);
-        $user = auth()->user();
-        $docType = $filters['doc_type'] ?? null;
-
-        // Format dates
-        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
-
-        // Common filter logic closure
-        $filterFunction = function ($query, $table) use ($user, $filters, $fromDate, $toDate) {
-            if ($fromDate && $toDate) {
-                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
-            } elseif ($fromDate) {
-                $query->whereDate('created_at', '>=', $fromDate);
-            } elseif ($toDate) {
-                $query->whereDate('created_at', '<=', $toDate);
-            }
-
-            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
-                $query->whereIn('status', [8, 9, 10, 11]);
-            }
-
-            foreach ($filters as $field => $value) {
-                if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                    if ($filters['doc_type'] === 'moved' && $field === 'status') {
-                        continue;
-                    }
-                    if (in_array($field, ['cif_id', 'account_number'])) {
-                        $query->where($field, 'like', '%' . $value . '%');
-                    } else {
-                        $query->where($field, $value);
-                    }
-                }
-            }
-        };
-
-        switch ($docType) {
-            case 'loan':
-                return Excel::download(new LoanDocumentExport($filterFunction), 'loan_documents.xlsx');
-
-            case 'goldloan':
-                return Excel::download(new GoldLoanDocumentExport($filterFunction), 'gold_loan_documents.xlsx');
-
-            case 'dtrf':
-                return Excel::download(new DtrfExport($filterFunction), 'dtrf_documents.xlsx');
-
-            case 'aof':
-                return Excel::download(new AccountOpeningDocumentExport($filterFunction), 'account_opening_documents.xlsx');
-
-            default:
-                return redirect()->back()->with('error', 'Invalid document type selected.');
-        }
-
-
-        // $docType = $request->doc_type; // 'loan', 'gold', 'aof', 'dtrf'
-
-        // $data = match ($docType) {
-        //     'loan' => LoanDocument::get(),
-        //     // with('yourRelations')->
-        //     'goldloan' => GoldLoanDocument::get(),
-        //     // with('yourRelations')->
-        //     'aof'  => AccountOpeningDocument::get(),
-        //     // with('yourRelations')->
-        //     'dtrf' => DtrfDocument::get(),
-        //     // with('yourRelations')->
-        //     default => collect(),
-        // };
-        
-        // return Excel::download(new DocumentExport($data, $docType), "{$docType}_export.xlsx");
-    }
-
     public function trashedDocuments()
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
@@ -1126,10 +1052,68 @@ class DocumentController extends Controller
 
     public function reports(Request $request)
     {
-        $users = User::pluck('first_name', 'id');
-        $couriers = Courier::pluck('name', 'id');
+        $users = User::where('status','active')->pluck('first_name', 'id');
+        $couriers = Courier::where('status','active')->pluck('name', 'id');
         
         return view('accounts.reports');        
+    }
+
+
+    public function export(Request $request)
+    {
+        $filters = $request->all();
+        
+        $user = auth()->user();
+        $docType = $filters['doc_type'] ?? null;
+
+        // Format dates
+        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
+        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
+
+        // Common filter logic closure
+        $filterFunction = function ($query, $table) use ($user, $filters, $fromDate, $toDate) {
+            if ($fromDate && $toDate) {
+                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
+            } elseif ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            } elseif ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
+            }
+
+            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
+                $query->whereIn('status', [8, 9, 10, 11]);
+            }
+
+            foreach ($filters as $field => $value) {
+                if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                    if ($filters['doc_type'] === 'moved' && $field === 'status') {
+                        continue;
+                    }
+                    if (in_array($field, ['cif_id', 'account_number'])) {
+                        $query->where($field, 'like', '%' . $value . '%');
+                    } else {
+                        $query->where($field, $value);
+                    }
+                }
+            }
+        };
+
+        switch ($docType) {
+            case 'loan':
+                return Excel::download(new LoanDocumentExport($filterFunction), 'loan_documents.xlsx');
+
+            case 'goldloan':
+                return Excel::download(new GoldLoanDocumentExport($filterFunction), 'gold_loan_documents.xlsx');
+
+            case 'dtrf':
+                return Excel::download(new DtrfExport($filterFunction), 'dtrf_documents.xlsx');
+
+            case 'aof':
+                return Excel::download(new AccountOpeningDocumentExport($filterFunction), 'account_opening_documents.xlsx');
+
+            default:
+                return redirect()->back()->with('error', 'Invalid document type selected.');
+        }
     }
 
 }
