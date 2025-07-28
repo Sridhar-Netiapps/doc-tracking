@@ -83,21 +83,21 @@
                     <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
-                @hasanyrole('bo-checker|master|super_admin|admin')
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     </form>
                 </li> 
-                @endhasanyrole
+                @endunless
                 @endif
                 @if ($type == 'list')
-                @hasanyrole('ro-user|master|super_admin|admin')
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
-                @endhasanyrole
+                @endunless
                 @endif
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -107,9 +107,9 @@
                             <thead>
                                 <tr>
                                     @if ($type == 'ready')
-                                    @hasanyrole('master|super_admin|admin|bo-checker')
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                                     <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
-                                    @endhasanyrole
+                                    @endunless
                                     @else
                                     <th scope="col">Dispatch No</th>
                                     @endif
@@ -127,9 +127,9 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @hasanyrole('ro-user|master|super_admin|admin')
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <th scope="col">Update Status</th>
-                                        @endhasanyrole
+                                        @endunless
                                     @endif
                                     <th scope="col" class="border-start">Action</th>
                                 </tr>
@@ -138,9 +138,9 @@
                                 @foreach ($records as $row)
                                     <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                         @if ($type == 'ready')
-                                        @hasanyrole('master|super_admin|admin|bo-checker')
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
                                         <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                        @endhasanyrole
+                                        @endunless
                                         @else
                                         <td>{{ $row->dispatch_no }}</td>
                                         @endif
@@ -174,7 +174,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -183,31 +183,31 @@
                                                 </select>
                                                 <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            @endhasanyrole
+                                            @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @hasanyrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
                                                 </select>
                                                 <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
                                             </td>
-                                            @endhasanyrole
+                                            @endunless
                                         @endif
                                         <td class="border-start">
                                             {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             <div class="">
                                                 <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'tracking')
-                                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
-                                                    @endhasanyrole
+                                                    @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @hasanyrole('ro-user|master|super_admin|admin')
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
-                                                    @endhasanyrole
+                                                    @endunless
                                                 @endif
                                             </div>
                                         </td>
@@ -241,34 +241,12 @@
                     </select>
                 </div> --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no">
+                    <input type="number" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no" min="0">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control awb_pod" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
+                    <input type="text" class="form-control awb_pod alphanumeric" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
                 </div>
-                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <div class="col-12 mt-3">
-                    <select class="form-select region" name="region">
-                        <option value="">Select Region</option>
-                        <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
-                        <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
-                        <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
-                        <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
-                    </select>
-                </div>
-                @endunless --}}
-                {{-- <div class="col-12 mt-3">
-                    <input type="text" class="form-control courier_name" placeholder="Courier Name" value="{{ old('courier_name', $filters['courier_name'] ?? '') }}" name="courier_name">
-                </div> --}}
-                <div class="col-12 mt-3">
-                    {{-- <select class="form-select" name="courier">
-                        <option value="">Courier Name</option>
-                        @foreach ($couriers as $courier)
-                            <option value="{{ $courier->id }}" {{ ($filters['courier'] ?? '') == $courier->id ? 'selected' : '' }}>
-                                {{ $courier->name }}
-                            </option>
-                        @endforeach
-                    </select> --}}
                     <select class="form-select" name="courier" id="courierSelect">
                         <option value="">Courier Name</option>
                         @foreach ($couriers as $courier)
@@ -279,11 +257,11 @@
                     </select>                  
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode">
+                    <input type="number" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode" min="0">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                    <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
                 @endunless
                 <div class="col-12 mt-3">

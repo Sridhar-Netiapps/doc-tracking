@@ -82,6 +82,12 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on('keypress','.alphanumeric', function (e) {
+        if (!/^[\w\s]+$/.test(String.fromCharCode(e.which))) {
+            e.preventDefault();
+        }
+    });
+
     $('.length_15').on('input', function () {
         var maxLength = 15;
         if ($(this).val().length > maxLength) {

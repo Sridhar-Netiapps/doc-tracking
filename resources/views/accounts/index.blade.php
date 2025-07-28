@@ -129,7 +129,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
                 <div class="col-12 mt-3">
@@ -143,28 +143,28 @@
                 </div>
                 {{-- @endunless --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                    <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
                 {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
+                    <input type="text" class="form-control branch_name lettersonly" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id" 
+                    <input type="search" class="form-control cif_id alphanumeric" 
                            placeholder="CIF ID" 
                            value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" 
                            name="cif_id">
                 </div>
                 
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number" 
+                    <input type="search" class="form-control account_number alphanumeric" 
                            placeholder=" Account Number" 
                            value="{{ old('account_number', $filters['account_number'] ?? '') }}" 
                            name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
+                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min="0">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select scheme" name="scheme">
@@ -174,7 +174,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                     <div class="col-12 mt-3">
                         <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
@@ -183,7 +183,7 @@
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
+                    <input type="text" class="form-control channel lettersonly" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select" name="type">
@@ -196,7 +196,7 @@
                     <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                    <input type="text" class="form-control lettersonly" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
@@ -228,7 +228,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD *</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
+                        <input type="text" name="awb_pod" class="form-control alphanumeric" required>
                     </div>
                     {{-- <div class="w-100"></div> 
                     <div class="col-4 pb-2">
@@ -237,7 +237,7 @@
                     </div> --}}
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No. *</label>
-                        <input type="text" name="mmrp_barcode" class="form-control" required>
+                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
