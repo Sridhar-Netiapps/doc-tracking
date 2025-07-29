@@ -351,7 +351,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user', 'ro-supervisor']))
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>

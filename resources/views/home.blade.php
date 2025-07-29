@@ -339,16 +339,16 @@
         <div class="dashboardCards mt-4">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="smallCard border-0 shadow-sm">
+                    <div class="smallCard border-0 shadow-sm h-100">
                         <div class="card-body">
                             <div class="listView">
-                                <h3>Today Docs</h3>
+                                <h3>Today's Activity</h3>
                                 <div class="value invert">{{$total_doc_today}}</div>
                             </div>
-                            <div class="listView">
+                            {{-- <div class="listView">
                                 <div class="label">Pending Docs</div>
                                 <div class="value">{{($total_pending_today) + ($total_dispatch_today) + ($total_transist_today) + ($total_rejected_today)}}</div>
-                            </div>
+                            </div> --}}
                             <div class="listView">
                                 <ul>
                                     <li>
@@ -363,34 +363,43 @@
                                     <li>
                                         <div class="label">Rejected By RO <span class="value">{{$total_rejected_today}}</span></div>
                                     </li>
+                                    @hasrole('bo-maker|bo-checker')
+                                    <li>
+                                        <div class="label">Received <span class="value text-end">{{$total_received_today}}</span></div>
+                                    </li>
+                                    @else
+                                    <li>
+                                        <div class="label">Received <span class="value text-end">{{($loan_today[5] ?? 0) + ($gold_loan_today[5] ?? 0) + ($aof_today[5] ?? 0) + ($dtrf_today[5] ?? 0)}}</span></div>
+                                    </li>
+                                    @endhasrole
+                                    <li>
+                                        <div class="label">Received with Query<span class="value">{{$total_received_query_today}}</span></div>
+                                    </li>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    <li>
+                                        <div class="label">IN <span class="value text-end">{{($loan_today[8] ?? 0) + ($gold_loan_today[8] ?? 0) + ($aof_today[8] ?? 0) + ($dtrf_today[8] ?? 0)}}</span></div>
+                                    </li>
+                                    <li>
+                                        <div class="label">OUT <span class="value">{{($loan_today[9] ?? 0) + ($gold_loan_today[9] ?? 0) + ($aof_today[9] ?? 0) + ($dtrf_today[9] ?? 0)}}</span></div>
+                                    <li>
+                                        <div class="label">Permout <span class="value">{{($loan_today[10] ?? 0) + ($gold_loan_today[10] ?? 0) + ($aof_today[10] ?? 0) + ($dtrf_today[10] ?? 0)}}</span></div>
+                                    </li>
+                                    <li>
+                                        <div class="label">Destroyed <span class="value">{{($loan_today[11] ?? 0) + ($gold_loan_today[11] ?? 0) + ($aof_today[11] ?? 0) + ($dtrf_today[11] ?? 0)}}</span></div>
+                                    </li>
+                                    @endunless
                                 </ul>
-                            </div>
-                            <div class="listView">
-                                <div class="label">Received Docs</div>
-                                <div class="value">{{$total_received_today}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Doughnut Chart -->
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Category Breakdown</h5>
-                            <div style="height: 300px; margin: auto">
-                                <canvas id="doughnutChart" style="width: 100%; height: 100% !important;"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Bar Chart -->
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Monthly Verifications</h5>
-                            <div style="height: 300px;">
+                            <h5 class="card-title">Today's Activity</h5>
+                            <div style="height: 100%;">
                                 <canvas id="barChart" style="width: 100%; height: 100% !important;"></canvas>
                             </div>
                         </div>
@@ -407,85 +416,91 @@
     </footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> --}}
 
-    {{-- Chart.js CDN --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('barChart').getContext('2d');
 
-    {{-- Chart Scripts --}}
-    <script>
-        // Line Chart
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                datasets: [{
-                    label: 'Submissions',
-                    data: [1200, 1900, 3000, 2500, 2800],
+    const labels = [
+        "Pending to Proceed",
+        "Awaiting Checker Approval",
+        "In Transit",
+        "Rejected By RO",
+        "Received",
+        "Received with Query"
+        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+            ,"IN",
+            "OUT",
+            "Permout",
+            "Destroyed"
+        @endunless
+    ];
 
-                    tension: 0.3,
-                    fill: true
-                }]
+    const data = [
+        {{ $total_pending_today }},
+        {{ $total_dispatch_today }},
+        {{ $total_transist_today }},
+        {{ $total_rejected_today }},
+        @hasrole('bo-maker|bo-checker')
+            {{ $total_received_today }},
+        @else
+            {{ ($loan_today[5] ?? 0) + ($gold_loan_today[5] ?? 0) + ($aof_today[5] ?? 0) + ($dtrf_today[5] ?? 0) }},
+        @endhasrole
+        {{ $total_received_query_today }}
+        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+            ,{{ ($loan_today[8] ?? 0) + ($gold_loan_today[8] ?? 0) + ($aof_today[8] ?? 0) + ($dtrf_today[8] ?? 0) }},
+            {{ ($loan_today[9] ?? 0) + ($gold_loan_today[9] ?? 0) + ($aof_today[9] ?? 0) + ($dtrf_today[9] ?? 0) }},
+            {{ ($loan_today[10] ?? 0) + ($gold_loan_today[10] ?? 0) + ($aof_today[10] ?? 0) + ($dtrf_today[10] ?? 0) }},
+            {{ ($loan_today[11] ?? 0) + ($gold_loan_today[11] ?? 0) + ($aof_today[11] ?? 0) + ($dtrf_today[11] ?? 0) }}
+        @endunless
+    ];
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Today Docs',
+                data: data,
+                backgroundColor: [
+                    '#ff4d4d','#ff944d','#ffcc66','#66cc66','#3399ff',
+                    '#9966ff','#20c997','#fd7e14','#6c757d','#343a40'
+                ],
+                borderRadius: 10, // rounded bars
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true },
+                // datalabels: {
+                //     color: '#fff',
+                //     borderRadius: 12,
+                //     font: { weight: 'bold', size: 12 },
+                //     padding: 4,
+                //     formatter: (value) => value // show only integer
+                // }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-
-        // Doughnut Chart
-        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-        new Chart(doughnutCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Account Creation', 'Voucher', 'Insurance'],
-                datasets: [{
-                    label: 'Categories',
-                    data: [55, 25, 20],
-
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-
-                // Bar Chart
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                datasets: [{
-                    label: 'Verified',
-                    data: [300, 500, 800, 600, 900],
-
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0 // removes decimal values
+                    },
+                    grid: { color: '#e0e0e0' }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                x: {
+                    grid: { display: false }
                 }
             }
-        });
+        },
+        // plugins: [ChartDataLabels]
+    });
+</script>
 
-    </script>
-    </div>
-</div>
+
+
 @endsection
