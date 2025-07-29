@@ -82,7 +82,7 @@ class HomeController extends Controller
             ($loan_today[9] ?? 0) + ($gold_loan_today[9] ?? 0) + ($dtrf_today[9] ?? 0) + ($aof_today[9] ?? 0) +
             ($loan_today[10] ?? 0) + ($gold_loan_today[10] ?? 0) + ($dtrf_today[10] ?? 0) + ($aof_today[10] ?? 0) +
             ($loan_today[11] ?? 0) + ($gold_loan_today[11] ?? 0) + ($dtrf_today[11] ?? 0) + ($aof_today[11] ?? 0);
-        $total_received_today = ($loan_today[5] ?? 0) + ($gold_loan_today[5] ?? 0) + ($dtrf_today[5] ?? 0) + ($aof_today[5] ?? 0) + $total_dispatched_today ;
+        $total_received_today = ($loan_today[5] ?? 0) + ($gold_loan_today[5] ?? 0) + ($dtrf_today[5] ?? 0) + ($aof_today[5] ?? 0) + $total_received_query_today + $total_dispatched_today ;
         $total_rejected_today = ($loan_today[6] ?? 0) + ($gold_loan_today[6] ?? 0) + ($dtrf_today[6] ?? 0) + ($aof_today[6] ?? 0);
 
     
