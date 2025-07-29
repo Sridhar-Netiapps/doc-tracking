@@ -21,7 +21,7 @@
                 <form method="POST" action="{{ route('reports') }}">
                     @csrf
                     <div class="row">
-                        <div class="col-3 mt-2">
+                        <div class="col mt-2">
                             <label for="doc_type">Document Type</label>
                             <select id="doc_type" name="doc_type" class="form-select">
                                 <option value="">-- Select --</option>
@@ -31,7 +31,7 @@
                                 <option value="dtrf">DTR Files</option>
                             </select>
                         </div>
-                        <div class="col-3 mt-2">
+                        <div class="col mt-2">
                             <label for="search_type">Search Criteria</label>
                             <select id="search_type" name="search_type" class="form-select">
                                 <option value="">-- Select --</option>
@@ -39,21 +39,21 @@
                                 <option value="vendor">Vendor</option>
                             </select>
                         </div>
-                        <div class="col-3 mt-2">
+                        <div class="col mt-2">
                             <label>Region</label>
                             <select id="region" name="region" class="form-select">
                                 <option value="">-- Select --</option>
-                                <option value="1">South</option>
-                                <option value="2">North</option>
-                                <option value="3">East</option>
-                                <option value="4">West</option>
+                                <option value="South">South</option>
+                                <option value="North">North</option>
+                                <option value="East">East</option>
+                                <option value="West">West</option>
                             </select>
                         </div>
-                        <div class="col-3 mt-2">
+                        <div class="col mt-2">
                             <label>Branch Code</label>
                             <input type="text" name="branch_code" class="form-control">
                         </div>
-                        <div class="col-3 mt-2">
+                        <div class="col mt-2">
                             <label>Branch Name</label>
                             <input type="text" name="branch_name" class="form-control">
                         </div>
@@ -123,14 +123,12 @@
                             @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
-                                // 'dispatch_date' => 'Dispatch Date',
                                 'dispatched_by' => 'Dispatched By (User ID)',
-                                // 'courier_received_date' => 'Courier Received Date @ Mail Room',
                                 'tracked_by' => 'Tracked By (User ID)',
                                 ] as $field => $label)
-                                <div class="col-3 mt-2">
+                                <div class="col-3 mt-2 courier">
                                     <label>{{ $label }}</label>
-                                    <input type="text" name="{{ $field }}" class="form-control courier">
+                                    <input type="text" name="{{ $field }}" class="form-control">
                                 </div>
                             @endforeach
                             @foreach ([
@@ -138,15 +136,12 @@
                                 'category' => 'Document Category',
                                 'work_order_no' => 'Work Order No.',
                                 'vendor_name' => 'Vendor Name',
-                                // 'vendor_movement_date' => 'Date of Vendor Movement',
                                 'file_barcode' => 'File Barcode Against Lot',
                                 'box_barcode' => 'Box Barcode No.',
-                                // 'addition_date' => 'Date of Addition to Vendor Data',
-                                // 'status' => 'Status (In / Out / Permout / Destroyed)'
                             ] as $field => $label)
-                                <div class="col-3 mt-2">
+                                <div class="col-3 mt-2 vendor">
                                     <label>{{ $label }}</label>
-                                    <input type="text" name="{{ $field }}" class="form-control vendor">
+                                    <input type="text" name="{{ $field }}" class="form-control">
                                 </div>
                             @endforeach
                         </div>
@@ -201,15 +196,22 @@
 <script>
     function docfields() {
         var docType = $('#doc_type').val();
+        var search_type = $('#search_type').val();
         $('.doc-fields').hide();
+        $('.courier').hide();
+        $('.vendor').hide();
         if (docType) {
             $('.' + docType).show();
+        }
+        if (search_type) {
+            $('.' + search_type).show();
         }
     }
 
     $(document).ready(function () {
-        docfields(); // trigger on page load
-        $('#doc_type').on('change', docfields); // re-trigger on change
+        docfields();
+        $('#doc_type').on('change', docfields);
+        $('#search_type').on('change', docfields);
     });
 </script>
 @endsection
