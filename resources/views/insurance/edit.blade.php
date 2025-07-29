@@ -24,9 +24,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			<!--  <div class="col-3">
-				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
-			</div> -->
+			 <div class="col-3">
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="cl">Claim Documents </button>
+			</div>
 		</div>
 
 		@if(session('success'))
@@ -618,7 +618,7 @@
 
        
 		<div class="py-3 d-none" id="branch_off">
-			<form method="POST" action="{{route('save_nominee_details')}}">
+			<form method="POST" action="{{route('save_nominee_details')}}" enctype="multipart/form-data" >
 			@csrf
 			
 		    <div class="card mt-3">
@@ -674,7 +674,7 @@
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">POD Number</label>
+				    <label class="form-label label-bold">POD Number</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{ old('pod_no',$nomineedata->pod_no) ?? ''}}" placeholder="Enter POD Number">
 				    @error('pod_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
@@ -685,11 +685,6 @@
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-				<!-- <div class="col-3 mb-3">
-				    <label class="form-label label-bold">Cheque Sent Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="cheq_sent_date"  value="{{$nomineedata->cheq_sent_date ?? ''}}">
-				</div>
- -->
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Remarks</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{ old('bo_remarks',$nomineedata->bo_remarks) ?? ''}}" placeholder="Remarks...">
@@ -698,23 +693,24 @@
 
 				<div class="col-3"></div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label label-bold">Maker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{ old('bo_maker',$nomineedata->bo_maker )?? ''}}" placeholder="Enter Maker EMP ID and Name">
 				    @error('bo_maker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label label-bold">Checker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{ old('bo_checker',$nomineedata->bo_checker) ?? ''}}" placeholder="Enter Checker EMP ID and Name">
 				    @error('bo_checker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-			</div>
-		    </div></div>
+			  </div>
+		     </div>
+		   </div>
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 
-           
+            
 		
 			<div class="d-flex py-4">
 				<div class="ms-auto">
@@ -729,6 +725,54 @@
 
 		
       <!-- BO -->
+
+      <!-- Documents -->
+      <div class="py-3 d-none" id="checklist">
+      <form action="{{ route('save_documents') }} " id="pdfForm" >
+      	@csrf
+      <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header-branch text-white">Documents</div>
+        	<div class="card-body bg-card-branch">
+        		<div class="row">
+        			<div class="col-6 mb-3">
+				    <label class="form-label label-bold">Upload (Please name the documents properly before upload )</label>
+				    <input type="file" class="form-control form-control-design2  clsAlphaNoOnly"  id="pdfInput" name="files" multiple accept="application/pdf">
+				    
+				</div>
+
+
+	        		<div class="row">
+	                    @foreach($documentdata as $key=>$val)
+		        	     <div class="col-md-3 m-2">
+                            <a class="" target="_blank" href="{{ URL::to('/')}}{{$val->filepath}}/{{$val->stored_name}}">
+                                 <div class="card align-items-center">
+                                      <div class="card-body">
+                                           <i class="pdflogo fa-solid fa-file "></i>
+                                      </div>
+                                      <div class="form-label maxline2 p-1" title="{{ $val->original_name }}">{{ $val->original_name }}</div>
+                                     
+                                  </div>
+                            </a>
+
+                        </div>
+		        	    
+		        	    @endforeach
+	        	    </div>
+	        	
+
+        	    <div class="preview-container" id="previewContainer"></div>
+        	</div>    		
+        </div>
+        </div>
+         <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
+			<div class="d-flex py-4">
+				<div class="ms-auto">
+					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
+				</div>
+		    </div>
+
+        </form>
+        </div>
 
        
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
@@ -830,6 +874,109 @@
 
       }
    	});
+
+ let selectedFiles = [];
+
+    const input = document.getElementById('pdfInput');
+    const previewContainer = document.getElementById('previewContainer');
+
+    input.addEventListener('change', function (e) {
+        const newFiles = Array.from(e.target.files);
+
+        newFiles.forEach(file => {
+            if (file.type === 'application/pdf') {
+                selectedFiles.push(file);
+                showPreview(file);
+            }
+        });
+
+        input.value = ''; // allow same file again
+    });
+
+    function showPreview(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const box = document.createElement('div');
+            box.classList.add('preview-box');
+
+            // Show file name
+            const fileName = document.createElement('span');
+            fileName.classList.add('file-name');
+            fileName.textContent = file.name;
+
+            // Show PDF preview
+            const iframe = document.createElement('iframe');
+            iframe.src = e.target.result;
+
+            // Remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'X';
+            removeBtn.classList.add('remove-btn');
+
+            removeBtn.onclick = function () {
+                selectedFiles = selectedFiles.filter(f => f !== file);
+                box.remove();
+            };
+
+            box.appendChild(removeBtn);
+            box.appendChild(fileName);
+            box.appendChild(iframe);
+            previewContainer.appendChild(box);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    document.getElementById('pdfForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData();
+
+        // Add PDF files
+        selectedFiles.forEach(file => {
+            formData.append('pdfs[]', file);
+        });
+
+        // Add all other inputs in the form
+        form.querySelectorAll('input, textarea, select').forEach(input => {
+            if (input.type !== 'file') {
+                formData.append(input.name, input.value);
+            }
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+           // alert(data.message || 'Upload successful.');
+
+		            Swal.fire({
+		                title: 'Message',
+		                text: data.message || 'Upload successful',
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                if (result.isConfirmed) {
+		                    console.log('Redirecting...');
+		                   // window.location.href = "{{ url('/insurance/claim_forms') }}";
+		                }
+		            });
+            previewContainer.innerHTML = '';
+            selectedFiles = [];
+            form.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Upload failed.');
+        });
+    });
 
    
 </script>

@@ -410,3 +410,62 @@ select.form-control-design {
 .floating-buttons button:hover {
     background-color: #1b846c;
 }  
+
+ #previewContainer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .preview-box {
+        flex: 1 1 calc(33.333% - 10px); /* 3 per row with gap */
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .file-name {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    iframe {
+        width: 100%;
+        height: 200px;
+        border: 1px solid #aaa;
+    }
+
+    @media (max-width: 768px) {
+        .preview-box {
+            flex: 1 1 100%; /* Stack on small screens */
+        }
+    }
+  .pdflogo{
+      font-size: 50px;
+      color: blue ;
+      text-decoration: none;
+  }
+
+  .maxline2 {
+    display: -webkit-box;
+    -webkit-line-clamp: ;
+    -webkit-box-orient: vertical;
+     overflow: hidden;
+  }

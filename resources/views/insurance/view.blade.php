@@ -34,9 +34,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			<!--  <div class="col-3">
-				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
-			</div> -->
+			 <div class="col-3">
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="cl">Claim Documents </button>
+			</div>
 		</div>
 
 		
@@ -648,6 +648,35 @@
 		</div>
 
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
+
+       <div class="py-3 d-none" id="checklist">
+	     
+	      <div class="card mt-3">
+	        	<div class="card-header label-font-header bg-card-header-branch text-white">Documents</div>
+	        	<div class="card-body bg-card-branch">
+	        		<div class="row">
+	                    @foreach($documentdata as $key=>$val)
+		        	     <div class="col-md-3">
+                            <a class="" target="_blank" href="{{ URL::to('/')}}{{$val->filepath}}/{{$val->stored_name}}">
+                                 <div class="card align-items-center">
+                                      <div class="card-body">
+                                           <i class="pdflogo fa-solid fa-file"></i>
+                                      </div>
+                                      <div class="form-label maxline2 p-1" title="{{ $val->original_name }}">{{ $val->original_name }}</div>
+                                     
+                                  </div>
+                            </a>
+
+                        </div>
+		        	    
+		        	    @endforeach
+	        	    </div>
+	        	</div>    		 
+	        </div>
+
+	       
+        </div>
+
 	</div>
 
 	 <div class="floating-buttons">
