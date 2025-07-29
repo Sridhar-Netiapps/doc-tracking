@@ -106,8 +106,8 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                    
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            <th class="d-none loan" scope="col">Update Status</th>
-                                            <th class="d-none loan" scope="col">Actions</th>
+                                            <th class="d-none loan text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none loan text-nowrap" scope="col">Actions</th>
                                         @endif
                                     @endunless
                                 </tr>
@@ -168,7 +168,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
-                                                        <td class="loan">
+                                                        <td class="loan text-nowrap">
                                                             <select name="remarks" class="form-control select2 remarks" required>
                                                                 <option selected value=5>Received</option>
                                                                 <option value=7>Received with Query</option>
@@ -208,8 +208,8 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            <th class="d-none goldloan" scope="col">Update Status</th>
-                                            <th class="d-none goldloan" scope="col">Actions</th>
+                                            <th class="d-none goldloan text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none goldloan text-nowrap" scope="col">Actions</th>
                                         @endif
                                     @endunless
                                 </tr>
@@ -266,13 +266,13 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
-                                                        <td class="goldloan">
+                                                        <td class="goldloan text-nowrap">
                                                             <select name="remarks" class="form-control select2 remarks" required>
                                                                 <option selected value=5>Received</option>
                                                                 <option value=7>Received with Query</option>
                                                                 <option value=6>Rejected</option>
                                                             </select>
-                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control text-nowrap reason d-none" rows="2"></textarea>
                                                         </td>
                                                         <td class="border-start">
                                                             <button type="button" class="btn btn-primary update-row">Update</button>
@@ -308,8 +308,8 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            <th class="d-none aof" scope="col">Update Status</th>
-                                            <th class="d-none aof" scope="col">Actions</th>
+                                            <th class="d-none aof text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none aof text-nowrap" scope="col">Actions</th>
                                         @endif
                                     @endunless
                                 </tr>
@@ -368,7 +368,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
-                                                        <td class="aof">
+                                                        <td class="aof text-nowrap">
                                                             <select name="remarks" class="form-control select2 remarks" required>
                                                                 <option selected value=5>Received</option>
                                                                 <option value=7>Received with Query</option>
@@ -403,8 +403,8 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
-                                            <th class="d-none dtrf" scope="col">Update Status</th>
-                                            <th class="d-none dtrf" scope="col">Actions</th>
+                                            <th class="d-none dtrf text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none dtrf text-nowrap" scope="col">Actions</th>
                                         @endif
                                     @endunless
                                 </tr>
@@ -456,7 +456,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
-                                                        <td class="dtrf">
+                                                        <td class="dtrf text-nowrap">
                                                             <select name="remarks" class="form-control select2 remarks" required>
                                                                 <option selected value=5>Received</option>
                                                                 <option value=7>Received with Query</option>

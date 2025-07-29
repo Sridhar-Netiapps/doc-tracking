@@ -22,12 +22,12 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
-                @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
                     {{-- <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a> --}}
                 </li>
-                @endhasanyrole
+                @endunless
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
@@ -35,9 +35,9 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr> 
-                                    @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
-                                    @endhasanyrole  
+                                    @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
                                     <th scope="col" class="text-nowrap"> Unique Number</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -64,9 +64,9 @@
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
-                                        @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                                         <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
-                                        @endhasanyrole
+                                        @endunless
                                         <td>
                                             @if ($doc->doc_type == 'loan')
                                                 MB Loan
@@ -131,7 +131,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user', 'ro-supervisor']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
@@ -228,15 +228,10 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD *</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric" required>
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod" required>
                     </div>
-                    {{-- <div class="w-100"></div> 
                     <div class="col-4 pb-2">
-                        <label for="dispatch_date" class="form-label">Dispatch Date</label>
-                        <input type="text" class="form-control datepicker dispatch_date" value="{{ request('dispatch_date') }}" name="dispatch_date" id="dispatch_date" required>
-                    </div> --}}
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No. *</label>
+                        <label for="status" class="form-label">MMRP Barcode No *</label>
                         <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
                     </div>
                 </div>
@@ -282,6 +277,43 @@
             }
         });
 
+        $('.awb_pod').on('change', function () {
+            let awbPod = $(this).val().trim();
+            let $input = $(this);
+
+            $('#awb-error').remove(); // remove old error message
+
+            if (awbPod !== '') {
+                $.ajax({
+                    url: "{{ route('courier.checkAwb') }}",
+                    type: "POST",
+                    data: {
+                        awb_pod: awbPod,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.exists) {
+                            // Show error
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            
+                            // Clear input
+                            $input.val('');
+
+                            // Add red border
+                            $input.addClass('is-invalid');
+
+                            // Disable submit
+                            $('button[type="submit"]').prop('disabled', true);
+                        } else {
+                            $('#awb-error').remove();
+                            $input.removeClass('is-invalid');
+                            $('button[type="submit"]').prop('disabled', false);
+                        }
+                    }
+                });
+            }
+        });
+
         $('#update-courier').validate({
             rules: {
                 awb_pod: {
@@ -292,10 +324,6 @@
                 courier_name: {
                     required: true,
                     sanitize: true
-                // },
-                // dispatch_date: {
-                //     required: true,account_creation_date
-                //     sanitize: true
                 },
                 mmrp_barcode: {
                     alphanumeric: true,

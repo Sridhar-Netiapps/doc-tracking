@@ -839,7 +839,9 @@ class DocumentController extends Controller
             $allEmpty = empty($dispatch->loan_ids) && empty($dispatch->goldloan_ids) && empty($dispatch->aof_ids) && empty($dispatch->dtrf_ids);
     
             if ($allEmpty) {
-                $dispatch->delete(); 
+                $dispatch->deleted_by = $this->user->id;
+                $dispatch->save();
+                $dispatch->delete(); // Laravel soft delete
             }
     
             DB::commit();
@@ -1049,7 +1051,12 @@ class DocumentController extends Controller
         }
     }
 
-
+    public function checkAwb(Request $request)
+    {
+        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+    
     public function reports(Request $request)
     {
         $users = User::where('status','active')->pluck('first_name', 'id');

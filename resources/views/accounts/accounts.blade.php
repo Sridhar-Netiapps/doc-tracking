@@ -133,9 +133,9 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @hasrole('ro-user')
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <th scope="col" class="text-nowrap">Actions</th>
-                                    @endhasrole
+                                    @endunless
                                     @endif
                                 </tr>
                             </thead>
@@ -215,9 +215,9 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
-                                            @endhasrole
+                                            @endunless
                                             @endif
                                         </tr>
                                     @endforeach
@@ -277,9 +277,9 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @hasrole('ro-user')
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <th scope="col" class="text-nowrap">Actions</th>
-                                    @endhasrole
+                                    @endunless
                                     @endif
                                 </tr>
                             </thead>
@@ -355,9 +355,9 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
-                                            @endhasrole
+                                            @endunless
                                             @endif
                                         </tr>
                                     @endforeach
@@ -419,9 +419,9 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @hasrole('ro-user')
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <th scope="col" class="text-nowrap">Actions</th>
-                                    @endhasrole
+                                    @endunless
                                     @endif
                                 </tr>
                             </thead>
@@ -499,9 +499,9 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
-                                            @endhasrole
+                                            @endunless
                                             @endif
                                         </tr>
                                     @endforeach
@@ -556,9 +556,9 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @hasrole('ro-user')
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                     <th scope="col" class="text-nowrap">Actions</th>
-                                    @endhasrole
+                                    @endunless
                                     @endif
                                 </tr>
                             </thead>
@@ -629,9 +629,9 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @hasrole('ro-user|master|super_admin|admin')
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                             <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
-                                            @endhasrole
+                                            @endunless
                                             @endif
                                         </tr>
                                         @endforeach
