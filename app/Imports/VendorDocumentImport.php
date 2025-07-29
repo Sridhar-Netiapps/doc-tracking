@@ -24,6 +24,7 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
 {
@@ -36,35 +37,39 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
     public function collection(Collection $rows)
     {
         $table = [
-            'MB Loan' => LoanDocument::class,
-            'Gold Loan' => GoldLoanDocument::class,
+            'MB LOAN' => LoanDocument::class,
+            'GOLD LOAN' => GoldLoanDocument::class,
             'DTRF' => DtrfDocument::class,
             'AOF' => AccountOpeningDocument::class,
         ];
         $status = [
-            'In' => 8,
-            'Out' => 9,
-            'Permount' => 10,
-            'Destroyed' => 11,
+            'IN' => 8,
+            'OUT' => 9,
+            'PERMOUNT' => 10,
+            'DESTROYED' => 11,
         ];
 
         foreach ($rows as $row) {
-            // dd($row);
             $this->total++;
             try {
+                $doc_type = Str::upper(trim($row['document_type']));
+                $doc_unique_no = Str::upper(trim($row['document_unique_no']));
+                $doc_status = $status[Str::upper(trim($row['status']))];
+                
                 DB::beginTransaction();
-                if (empty($row['document_unique_no']) || empty($row['document_type'])) {
+                if (empty($doc_unique_no) || empty($doc_type)) {
                     throw new \Exception("Missing required fields.");
                 }
 
-                if (!isset($table[$row['document_type']])) {
+                if (!isset($table[$doc_type])) {
                     throw new \Exception("Invalid document type.");
                 }
 
-                // VendorDocument::where('document_unique_no', $row['document_unique_no'])
-                $document = $table[$row['document_type']]::where('unique_ref_no', $row['document_unique_no'])->where('status','>',5)->first();
+                // VendorDocument::where('document_unique_no', $doc_unique_no)
+                $document = $table[$doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
+                // dd($document);
                 if (!$document) {
-                    throw new \Exception($row['document_unique_no']." Document not found");
+                    throw new \Exception($doc_unique_no." Document not found");
                 }
 
                 $document->lot_no = $row['lot_no'] ?? null;
@@ -75,9 +80,8 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->file_barcode = $row['file_barcode_against_lot_no'];
                 $document->box_barcode = $row['box_barcode_no'];
                 $document->date_added_to_vendor = Carbon::parse($row['date_of_addition_to_vendor_data'])->format('Y-m-d');
-                $document->status = $status[$row['status']] ?? null;
+                $document->status = $doc_status;
                 
-                // dd($document);
                 if ($document->isDirty()) {
                     $document->updated_by = auth()->user()->id;
                     $document->save();
@@ -120,51 +124,4 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
     {
         \Log::error('Excel Import Error: ' . $e->getMessage());
     }
-
-    // public function onRow(Row $row)
-    // {
-    //     $table = [
-    //         'MB Loan' => LoanDocument::class,
-    //         'Gold Loan' => GoldLoanDocument::class,
-    //         'DTRF' => DtrfDocument::class,
-    //         'AOF' => AccountOpeningDocument::class,
-    //     ];
-    //     $status = [
-    //         'In' => 8,
-    //         'Out' => 9,
-    //         'Permount' => 10,
-    //         'Destroyed' => 11,
-    //     ];
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $update = $row->toArray();
-
-    //         $table[$update['document_type']]::where('unique_ref_no', $update['document_unique_no'])->whereIn('status',[5,7])->update([
-    //             'lot_no' => $update['lot_no'],
-    //             'category_of_document' => $update['category_of_the_document'],
-    //             'work_order_no' => $update['work_order_no'],
-    //             'vendor_name' => $update['vendor_name'],
-    //             'vendor_movement_date' => Carbon::parse($update['date_of_vendor_movement'])->format('Y-m-d'),
-    //             'file_barcode' => $update['file_barcode_against_lot_no'],
-    //             'box_barcode' => $update['box_barcode_no'],
-    //             'date_added_to_vendor' => Carbon::parse($update['date_of_addition_to_vendor_data'])->format('Y-m-d'), 
-    //             'status' => $status[$update['status']],
-    //             'updated_by' => auth()->user()->id,
-    //         ]);
-
-    //         DB::commit();
-
-    //         return response()->json(['success' => true]);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         // return response()->json(['error' => $e->getMessage()], 500);
-    //         $this->failures[] = new Failure($row->getIndex(), 'unknown', [$e->getMessage()], $data);
-    //     }
-    // }
-
-    // public function onFailure(Failure ...$failures)
-    // {
-    //     $this->failures = array_merge($this->failures, $failures);
-    // }
 }

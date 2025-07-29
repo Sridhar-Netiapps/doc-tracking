@@ -24,4 +24,9 @@ class GoldLoanDocument extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function courier()
+    {
+        return $this->belongsTo(Courier::class);
+    }
 }

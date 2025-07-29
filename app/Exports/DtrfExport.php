@@ -9,18 +9,16 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class DtrfExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $filterCallback;
+    protected $data;
 
-    public function __construct($filterCallback)
+    public function __construct($data)
     {
-        $this->filterCallback = $filterCallback;
+        $this->data = $data;
     }
 
     public function collection()
     {
-        return DtrfDocument::where(function ($query) {
-            ($this->filterCallback)($query, 'dtrf_documents');
-        })->get();
+        return $data;
     }
 
     public function headings(): array

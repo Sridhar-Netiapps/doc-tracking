@@ -22,12 +22,12 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
-                @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
                     {{-- <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a> --}}
                 </li>
-                @endhasanyrole
+                @endunless
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
@@ -35,9 +35,9 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr> 
-                                    @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
-                                    @endhasanyrole  
+                                    @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
                                     <th scope="col" class="text-nowrap"> Unique Number</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
@@ -64,9 +64,9 @@
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
-                                        @hasanyrole('master|super_admin|admin|bo-maker|bo-checker')
+                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
                                         <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
-                                        @endhasanyrole
+                                        @endunless
                                         <td>
                                             @if ($doc->doc_type == 'loan')
                                                 MB Loan
@@ -129,9 +129,9 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user', 'ro-supervisor']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
@@ -143,28 +143,28 @@
                 </div>
                 {{-- @endunless --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code">
+                    <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
                 {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control branch_name" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
+                    <input type="text" class="form-control branch_name lettersonly" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id" 
+                    <input type="search" class="form-control cif_id alphanumeric" 
                            placeholder="CIF ID" 
                            value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" 
                            name="cif_id">
                 </div>
                 
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number" 
+                    <input type="search" class="form-control account_number alphanumeric" 
                            placeholder=" Account Number" 
                            value="{{ old('account_number', $filters['account_number'] ?? '') }}" 
                            name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
+                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min="0">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select scheme" name="scheme">
@@ -174,7 +174,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
                 </div>
                     <div class="col-12 mt-3">
                         <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
@@ -183,7 +183,7 @@
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
+                    <input type="text" class="form-control channel lettersonly" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select" name="type">
@@ -196,7 +196,7 @@
                     <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                    <input type="text" class="form-control lettersonly" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
@@ -228,16 +228,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD *</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod" required>
                     </div>
-                    {{-- <div class="w-100"></div> 
                     <div class="col-4 pb-2">
-                        <label for="dispatch_date" class="form-label">Dispatch Date</label>
-                        <input type="text" class="form-control datepicker dispatch_date" value="{{ request('dispatch_date') }}" name="dispatch_date" id="dispatch_date" required>
-                    </div> --}}
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No. *</label>
-                        <input type="text" name="mmrp_barcode" class="form-control" required>
+                        <label for="status" class="form-label">MMRP Barcode No *</label>
+                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -282,6 +277,43 @@
             }
         });
 
+        $('.awb_pod').on('change', function () {
+            let awbPod = $(this).val().trim();
+            let $input = $(this);
+
+            $('#awb-error').remove(); // remove old error message
+
+            if (awbPod !== '') {
+                $.ajax({
+                    url: "{{ route('courier.checkAwb') }}",
+                    type: "POST",
+                    data: {
+                        awb_pod: awbPod,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.exists) {
+                            // Show error
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            
+                            // Clear input
+                            $input.val('');
+
+                            // Add red border
+                            $input.addClass('is-invalid');
+
+                            // Disable submit
+                            $('button[type="submit"]').prop('disabled', true);
+                        } else {
+                            $('#awb-error').remove();
+                            $input.removeClass('is-invalid');
+                            $('button[type="submit"]').prop('disabled', false);
+                        }
+                    }
+                });
+            }
+        });
+
         $('#update-courier').validate({
             rules: {
                 awb_pod: {
@@ -292,10 +324,6 @@
                 courier_name: {
                     required: true,
                     sanitize: true
-                // },
-                // dispatch_date: {
-                //     required: true,account_creation_date
-                //     sanitize: true
                 },
                 mmrp_barcode: {
                     alphanumeric: true,

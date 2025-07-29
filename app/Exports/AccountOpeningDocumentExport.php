@@ -9,18 +9,16 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class AccountOpeningDocumentExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $filterCallback;
+    protected $data;
 
-    public function __construct($filterCallback)
+    public function __construct($data)
     {
-        $this->filterCallback = $filterCallback;
+        $this->data = $data;
     }
 
     public function collection()
     {
-        return AccountOpeningDocument::where(function ($query) {
-            ($this->filterCallback)($query, 'account_opening_documents');
-        })->get();
+        return $data;
     }
 
     public function headings(): array

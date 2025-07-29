@@ -23,9 +23,7 @@ Route::middleware('guest')->group(function () {
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/reports', function () {
-        return view('accounts.reports');
-    });
+    Route::get('/reports',[DocumentController::class, 'reports']);
     Route::get('/accounts-index', function () {
         return view('sample.index');
     });
@@ -58,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
     Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
     Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
+    Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
     Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
     Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');

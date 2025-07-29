@@ -79,7 +79,7 @@ class DocumentController extends Controller
             }
             return $query->orderBy('updated_at', 'desc');
         };
-        // dd($filter(LoanDocfiltersument::query())->tosql());
+        // dd($filter(GoldLoanDocument::query())->get());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
         $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
@@ -839,7 +839,9 @@ class DocumentController extends Controller
             $allEmpty = empty($dispatch->loan_ids) && empty($dispatch->goldloan_ids) && empty($dispatch->aof_ids) && empty($dispatch->dtrf_ids);
     
             if ($allEmpty) {
-                $dispatch->delete(); 
+                $dispatch->deleted_by = $this->user->id;
+                $dispatch->save();
+                $dispatch->delete(); // Laravel soft delete
             }
     
             DB::commit();
@@ -976,80 +978,6 @@ class DocumentController extends Controller
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 
-    public function export(Request $request)
-    {
-        $filters = $request->all();
-        // dd($filters);
-        $user = auth()->user();
-        $docType = $filters['doc_type'] ?? null;
-
-        // Format dates
-        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
-
-        // Common filter logic closure
-        $filterFunction = function ($query, $table) use ($user, $filters, $fromDate, $toDate) {
-            if ($fromDate && $toDate) {
-                $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
-            } elseif ($fromDate) {
-                $query->whereDate('created_at', '>=', $fromDate);
-            } elseif ($toDate) {
-                $query->whereDate('created_at', '<=', $toDate);
-            }
-
-            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
-                $query->whereIn('status', [8, 9, 10, 11]);
-            }
-
-            foreach ($filters as $field => $value) {
-                if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                    if ($filters['doc_type'] === 'moved' && $field === 'status') {
-                        continue;
-                    }
-                    if (in_array($field, ['cif_id', 'account_number'])) {
-                        $query->where($field, 'like', '%' . $value . '%');
-                    } else {
-                        $query->where($field, $value);
-                    }
-                }
-            }
-        };
-
-        switch ($docType) {
-            case 'loan':
-                return Excel::download(new LoanDocumentExport($filterFunction), 'loan_documents.xlsx');
-
-            case 'goldloan':
-                return Excel::download(new GoldLoanDocumentExport($filterFunction), 'gold_loan_documents.xlsx');
-
-            case 'dtrf':
-                return Excel::download(new DtrfExport($filterFunction), 'dtrf_documents.xlsx');
-
-            case 'aof':
-                return Excel::download(new AccountOpeningDocumentExport($filterFunction), 'account_opening_documents.xlsx');
-
-            default:
-                return redirect()->back()->with('error', 'Invalid document type selected.');
-        }
-
-
-        // $docType = $request->doc_type; // 'loan', 'gold', 'aof', 'dtrf'
-
-        // $data = match ($docType) {
-        //     'loan' => LoanDocument::get(),
-        //     // with('yourRelations')->
-        //     'goldloan' => GoldLoanDocument::get(),
-        //     // with('yourRelations')->
-        //     'aof'  => AccountOpeningDocument::get(),
-        //     // with('yourRelations')->
-        //     'dtrf' => DtrfDocument::get(),
-        //     // with('yourRelations')->
-        //     default => collect(),
-        // };
-        
-        // return Excel::download(new DocumentExport($data, $docType), "{$docType}_export.xlsx");
-    }
-
     public function trashedDocuments()
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
@@ -1123,8 +1051,97 @@ class DocumentController extends Controller
         }
     }
 
-    public function test()
+    public function checkAwb(Request $request)
     {
+        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+    
+    public function reports(Request $request)
+    {
+        $users = User::where('status','active')->pluck('first_name', 'id');
+        $couriers = Courier::where('status','active')->pluck('name', 'id');
         
+        return view('accounts.reports');        
+    }
+
+
+    public function export(Request $request)
+    {
+        $user = $this->user;
+        $filter = function ($query, $table) use ($user, $request) {
+            $filters = $request->all();
+            $docType = $filters['doc_type'] ?? null;
+            
+            $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
+            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
+
+            foreach ($filters as $field => $value) {
+                if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                    if (in_array($field, ['cif_id', 'account_number'])) {
+                        $query->where($field, 'like', '%' . $value . '%');
+                    } else {
+                        $query->where($field, $value);
+                    }
+                }
+            }
+
+            if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+                
+                $query->whereHas('courier', function ($q) use ($fromDate, $toDate, $request) {
+                    $field = match ($request->input('date_field')) {
+                        'dispatch_date' => 'dispatch_date',
+                        'received_date' => 'updated_at',
+                        default         => null,
+                    };
+                    if ($fromDate && $toDate) {
+                        $q->whereBetween($field, [$fromDate, $toDate]);
+                    } elseif ($fromDate) {
+                        $q->whereDate($field, '>=', $fromDate);
+                    } elseif ($toDate) {
+                        $q->whereDate($field, '<=', $toDate);
+                    }
+                });
+
+                $field = match ($request->input('date_field')) {
+                    'creation_date' => 'account_creation_date',
+                    'movement_date' => 'vendor_movement_date',
+                    'addition_date' => 'date_added_to_vendor',
+                    'activity_date' => 'updated_at',
+                    'sync_date'     => 'created_at',
+                    default         => null,
+                };
+            
+                if ($field) {
+                    if ($fromDate && $toDate) {
+                        $query->whereBetween($field, [$fromDate, $toDate]);
+                    } elseif ($fromDate) {
+                        $query->whereDate($field, '>=', $fromDate);
+                    } elseif ($toDate) {
+                        $query->whereDate($field, '<=', $toDate);
+                    }
+                }
+            }
+        };
+
+        if ($request->doc_type === 'loan') {
+            $data = LoanDocument::query();
+            $filter($data, 'loan_documents');
+            return Excel::download(new LoanDocumentExport($data->get()), 'loan_documents.xlsx');
+        } elseif ($request->doc_type === 'goldloan') {
+            $data = GoldLoanDocument::query();
+            $filter($data, 'gold_loan_documents');
+            return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
+        } elseif ($request->doc_type === 'dtrf') {
+            $data = DtrfDocument::query();
+            $filter($data, 'dtrf_documents');
+            return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
+        } elseif ($request->doc_type === 'aof') {
+            $data = AccountOpeningDocument::query();
+            $filter($data, 'account_opening_documents');
+            return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
+        } else {
+            return redirect()->back()->with('error', 'Invalid document type selected.');
+        }
     }
 }
