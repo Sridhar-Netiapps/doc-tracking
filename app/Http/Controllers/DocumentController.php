@@ -1068,17 +1068,14 @@ class DocumentController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->all();
-        // dd($filters);
-        $user = auth()->user();
-        $docType = $filters['doc_type'] ?? null;
+        $user = $this->user;
+        $filter = function ($query, $table) use ($user, $request) {
+            $filters = $request->all();
+            $docType = $filters['doc_type'] ?? null;
+            
+            $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
+            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
 
-        // Format dates
-        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
-
-        // Common filter logic closure
-        $filterFunction = function ($query, $table) use ($user, $filters, $fromDate, $toDate) {
             foreach ($filters as $field => $value) {
                 if (!empty($value) && \Schema::hasColumn($table, $field)) {
                     if (in_array($field, ['cif_id', 'account_number'])) {
@@ -1090,176 +1087,61 @@ class DocumentController extends Controller
             }
 
             if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+                
+                $query->whereHas('courier', function ($q) use ($fromDate, $toDate, $request) {
+                    $field = match ($request->input('date_field')) {
+                        'dispatch_date' => 'dispatch_date',
+                        'received_date' => 'updated_at',
+                        default         => null,
+                    };
+                    if ($fromDate && $toDate) {
+                        $q->whereBetween($field, [$fromDate, $toDate]);
+                    } elseif ($fromDate) {
+                        $q->whereDate($field, '>=', $fromDate);
+                    } elseif ($toDate) {
+                        $q->whereDate($field, '<=', $toDate);
+                    }
+                });
+
                 $field = match ($request->input('date_field')) {
-                    'creation_date' => 'account_creation_date', // DATE type
-                    'activity_date' => 'updated_at',            // TIMESTAMP
-                    'sync_date'     => 'created_at',            // TIMESTAMP
+                    'creation_date' => 'account_creation_date',
+                    'movement_date' => 'vendor_movement_date',
+                    'addition_date' => 'date_added_to_vendor',
+                    'activity_date' => 'updated_at',
+                    'sync_date'     => 'created_at',
                     default         => null,
                 };
             
                 if ($field) {
-                    $fromDate = $request->input('from_date');
-                    $toDate = $request->input('to_date');
-            
-                    // Handle date field (no time) and timestamp fields differently
-                    $isDateField = ($field === 'account_creation_date');
-            
                     if ($fromDate && $toDate) {
-                        if ($isDateField) {
-                            $query->whereBetween($field, [$fromDate, $toDate]);
-                        } else {
-                            $query->whereBetween($field, [
-                                Carbon\Carbon::parse($fromDate)->startOfDay(),
-                                Carbon\Carbon::parse($toDate)->endOfDay()
-                            ]);
-                        }
+                        $query->whereBetween($field, [$fromDate, $toDate]);
                     } elseif ($fromDate) {
-                        if ($isDateField) {
-                            $query->whereDate($field, '>=', $fromDate);
-                        } else {
-                            $query->where($field, '>=', Carbon\Carbon::parse($fromDate)->startOfDay());
-                        }
+                        $query->whereDate($field, '>=', $fromDate);
                     } elseif ($toDate) {
-                        if ($isDateField) {
-                            $query->whereDate($field, '<=', $toDate);
-                        } else {
-                            $query->where($field, '<=', Carbon\Carbon::parse($toDate)->endOfDay());
-                        }
+                        $query->whereDate($field, '<=', $toDate);
                     }
                 }
-            }            
+            }
         };
 
-        if ($docType === 'loan') {
-            return Excel::download(new LoanDocumentExport($filterFunction), 'loan_documents.xlsx');
-        } elseif ($docType === 'goldloan') {
-            $goldQuery = GoldLoanDocument::query();
-            $filterFunction($goldQuery, 'gold_loan_documents');
-            dd($goldQuery->get());
-            // $goldloans = $statusFilter($goldQuery)->get();
-            return Excel::download(new GoldLoanDocumentExport($goldQuery->get()), 'gold_loan_documents.xlsx');
-        } elseif ($docType === 'dtrf') {
-            return Excel::download(new DtrfExport($filterFunction), 'dtrf_documents.xlsx');
-        } elseif ($docType === 'aof') {
-            return Excel::download(new AccountOpeningDocumentExport($filterFunction), 'account_opening_documents.xlsx');
+        if ($request->doc_type === 'loan') {
+            $data = LoanDocument::query();
+            $filter($data, 'loan_documents');
+            return Excel::download(new LoanDocumentExport($data->get()), 'loan_documents.xlsx');
+        } elseif ($request->doc_type === 'goldloan') {
+            $data = GoldLoanDocument::query();
+            $filter($data, 'gold_loan_documents');
+            return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
+        } elseif ($request->doc_type === 'dtrf') {
+            $data = DtrfDocument::query();
+            $filter($data, 'dtrf_documents');
+            return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
+        } elseif ($request->doc_type === 'aof') {
+            $data = AccountOpeningDocument::query();
+            $filter($data, 'account_opening_documents');
+            return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
         } else {
             return redirect()->back()->with('error', 'Invalid document type selected.');
         }
     }
-
-    public function ex(Request $request)
-    {
-        $filters = $request->all();
-        $user = auth()->user();
-        $docType = $filters['doc_type'] ?? null;
-
-        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
-
-        $filterMap = [
-            'region' => 'region',
-            'branch_code' => 'branch_code',
-            'branch_name' => 'branch_name',
-            'cif_id' => 'cif_id',
-            'account_number' => 'account_number',
-            'customer_name' => 'customer_name',
-            'barcode' => 'barcode',
-            'loan_amount' => 'loan_amount',
-            'channel' => 'channel',
-            // 'channel_loan' => 'channel',
-            'loan_cycle' => 'loan_cycle',
-            'glow_app_id' => 'glow_application_id',
-            'loan_disbursement_type' => 'loan_disbursement_type',
-            'scheme' => 'scheme',
-            // 'channel_aof' => 'channel_aof',
-            'pgk_no' => 'pgk_no',
-            'type_of_account_opening' => 'type_of_account_opening',
-            'awb_pod' => 'awb_pod',
-            'courier_name' => 'courier_name',
-            'dispatched_by' => 'dispatched_by',
-            'tracked_by' => 'tracked_by',
-            'lot_no' => 'lot_no',
-            'category' => 'category',
-            'work_order_no' => 'work_order_no',
-            'vendor_name' => 'vendor_name',
-            'file_barcode' => 'file_barcode',
-            'box_barcode' => 'box_barcode',
-            'status' => 'status',
-        ];
-        
-        foreach ($filterMap as $input => $column) {
-            if ($request->filled($input)) {
-                $query->where($column, $request->input($input));
-            }
-        }
-
-        $models = [
-            'loan' => LoanDocumentExport::class,
-            'goldloan' => GoldLoanDocumentExport::class,
-            'dtrf' => DtrfExport::class,
-            'aof' => AccountOpeningDocumentExport::class,
-        ];
-
-        if ($docType === 'all') {
-            $sheets = [];
-            foreach ($models as $key => $exportClass) {
-                $sheets[] = new $exportClass($filterFunction);
-            }
-            return Excel::download(new \App\Exports\MultipleSheetExport($sheets), 'all_documents.xlsx');
-        } elseif (isset($models[$docType])) {
-            return Excel::download(new $models[$docType]($filterFunction), "{$docType}_documents.xlsx");
-        }
-
-        return redirect()->back()->with('error', 'Invalid document type selected.');
-    }
-
-
 }
-
-// if ($request->filled(['from_date', 'to_date', 'date_field'])) {
-//     if($request->input('date_field') == 'creation_date'){
-//         if ($fromDate && $toDate) {
-//             $query->whereBetween('account_creation_date', [$fromDate, $toDate]);
-//         } elseif ($fromDate) {
-//             $query->whereDate('account_creation_date', '>=', $fromDate);
-//         } elseif ($toDate) {
-//             $query->whereDate('account_creation_date', '<=', $toDate);
-//         }
-//     }
-//     if($request->input('date_field') == 'activity_date'){
-//         if ($fromDate && $toDate) {
-//             $query->whereBetween('updated_at', [$fromDate, $toDate]);
-//         } elseif ($fromDate) {
-//             $query->whereDate('updated_at', '>=', $fromDate);
-//         } elseif ($toDate) {
-//             $query->whereDate('updated_at', '<=', $toDate);
-//         }
-//     }
-//     if($request->input('date_field') == 'sync_date'){
-//         if ($fromDate && $toDate) {
-//             $query->whereBetween('created_at', [$fromDate, $toDate]);
-//         } elseif ($fromDate) {
-//             $query->whereDate('created_at', '>=', $fromDate);
-//         } elseif ($toDate) {
-//             $query->whereDate('created_at', '<=', $toDate);
-//         }
-//     }
-// }
-
-// if ($docType === 'all') {
-//     return Excel::download(new \App\Exports\AllDocumentExport($filterFunction), 'all_documents.xlsx');
-// }
-
-// // Export single document type
-// switch ($docType) {
-//     case 'loan':
-//         return Excel::download(new \App\Exports\LoanDocumentExport($filterFunction), 'loan_documents.xlsx');
-//     case 'goldloan':
-//         return Excel::download(new \App\Exports\GoldLoanDocumentExport($filterFunction), 'gold_loan_documents.xlsx');
-//     case 'dtrf':
-//         return Excel::download(new \App\Exports\DtrfExport($filterFunction), 'dtrf_documents.xlsx');
-//     case 'aof':
-//         return Excel::download(new \App\Exports\AccountOpeningDocumentExport($filterFunction), 'account_opening_documents.xlsx');
-//     default:
-//         return redirect()->back()->with('error', 'Invalid document type selected.');
-// }

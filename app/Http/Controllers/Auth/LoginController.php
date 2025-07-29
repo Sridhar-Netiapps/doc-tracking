@@ -60,7 +60,7 @@ class LoginController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
         
-        /*if(env('APP_ENV') != 'local'){
+        if(env('APP_ENV') != 'local'){
             try {
                 $ldap = Container::getDefaultConnection();
                 $ldap->connect();
@@ -80,13 +80,15 @@ class LoginController extends Controller
             } catch (\Exception $e) {
                 Log::error('LDAP Login Failed', ['error' => $e->getMessage()]);
             }
-        }*/
-
-        if (Auth::attempt(['employee_id' => $username, 'password' => $password])) {
-            Auth::logoutOtherDevices($password);
-            $user = Auth::user();
-            return redirect()->intended('/home');
         }
+        else{
+            if (Auth::attempt(['employee_id' => $username, 'password' => $password])) {
+                Auth::logoutOtherDevices($password);
+                $user = Auth::user();
+                return redirect()->intended('/home');
+            }
+        }
+
         return back()->withErrors(['username' => 'Invalid credentials']);
     }
 
