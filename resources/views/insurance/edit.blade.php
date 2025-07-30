@@ -25,7 +25,7 @@
 			</div>
 
 			 <div class="col-3">
-				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="cl">Claim Documents </button>
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="cl"  value="cl">Claim Documents </button>
 			</div>
 		</div>
 
@@ -42,10 +42,7 @@
 		                allowEscapeKey: false
 		            }).then((result) => {
 		                console.log('result:', result);
-		               /* if (result.isConfirmed) {
-		                    console.log('Redirecting...');
-		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
-		                }*/
+		                
 		            });
 		        }, 300); // Delay to ensure full render
 		    });
@@ -728,39 +725,42 @@
 
       <!-- Documents -->
       <div class="py-3 d-none" id="checklist">
-      <form action="{{ route('save_documents') }} " id="pdfForm" >
+      <form action=" {{ route('update_documents')}} " id="pdfForm" >
       	@csrf
       <div class="card mt-3">
-        	<div class="card-header label-font-header bg-card-header-branch text-white">Documents</div>
+        	<div class="card-header label-font-header bg-card-header-doc text-black">Documents</div>
         	<div class="card-body bg-card-branch">
         		<div class="row">
-        			<div class="col-6 mb-3">
-				    <label class="form-label label-bold">Upload (Please name the documents properly before upload )</label>
-				    <input type="file" class="form-control form-control-design2  clsAlphaNoOnly"  id="pdfInput" name="files" multiple accept="application/pdf">
+        			<label class="form-label label-bold text-black">Upload (Please name the documents properly before upload )</label>
+        			<div class="col-4 mb-3">
+				    
+				    <input type="file" class="form-control form-control-design3 clsAlphaNoOnly"  id="pdfInput" name="files" multiple accept="application/pdf">
 				    
 				</div>
 
-
-	        		<div class="row">
-	                    @foreach($documentdata as $key=>$val)
-		        	     <div class="col-md-3 m-2">
-                            <a class="" target="_blank" href="{{ URL::to('/')}}{{$val->filepath}}/{{$val->stored_name}}">
-                                 <div class="card align-items-center">
+                     <div class="preview-container" id="previewContainer"></div>
+	        		<div class="row mt-4">
+	                  
+                       <label class="label-bold text-black">Saved Documents</label>
+		        	   @foreach($documentdata as $doc)
+					    <div class="preview-box" id="doc-{{ $doc->id }}">
+					        <div class="card align-items-center cardcl2">
                                       <div class="card-body">
-                                           <i class="pdflogo fa-solid fa-file "></i>
+                                           <a target="_blank" href="{{ URL::to('/')}}{{$doc->filepath}}/{{$doc->stored_name}}"><img class="pdflogo" src="/insurance_images/pdf_icon.png"></a>
                                       </div>
-                                      <div class="form-label maxline2 p-1" title="{{ $val->original_name }}">{{ $val->original_name }}</div>
-                                     
+                                      <div class="form-label maxline2 maxwidth p-1" title="{{ $doc->original_name }}">{{ $doc->original_name }}</div>
+                                     <button type="button" class="remove-existing-btn mb-2" data-id="{{ $doc->id }}">Remove</button>
                                   </div>
-                            </a>
+					        
+					    </div>
+					@endforeach
+					<input type="hidden" name="delete_doc_ids[]" id="delete_doc_ids">
 
-                        </div>
-		        	    
-		        	    @endforeach
+
 	        	    </div>
 	        	
 
-        	    <div class="preview-container" id="previewContainer"></div>
+        	   
         	</div>    		
         </div>
         </div>
@@ -848,7 +848,7 @@
    $(document).ready(function() {
       const userbranch = $('#usertype').val();
      
-      if(userbranch == '1100'){
+     /* if(userbranch == '1100'){
       	$('#head_off').removeClass('d-none');
 	      $('#head_off').addClass('d-block');
           $('#ho').addClass('active');
@@ -872,7 +872,7 @@
 	      $('#checklist').addClass('d-none');
           
 
-      }
+      }*/
    	});
 
  let selectedFiles = [];
@@ -899,20 +899,29 @@
         reader.onload = function (e) {
             const box = document.createElement('div');
             box.classList.add('preview-box');
+            box.classList.add('border');
+            box.classList.add('cardcl2');
 
             // Show file name
             const fileName = document.createElement('span');
             fileName.classList.add('file-name');
+            fileName.classList.add('maxline2');
+            fileName.classList.add('form-label');
+            fileName.classList.add('mt-2');
             fileName.textContent = file.name;
 
             // Show PDF preview
-            const iframe = document.createElement('iframe');
-            iframe.src = e.target.result;
+            const icon = document.createElement('img');
+			icon.src = '/insurance_images/pdf_icon.png'; // <- load from Laravel public/images
+			icon.alt = 'PDF';
+			icon.classList.add('pdf-icon');
+			icon.classList.add('pdflogo');
 
             // Remove button
             const removeBtn = document.createElement('button');
             removeBtn.textContent = 'X';
             removeBtn.classList.add('remove-btn');
+            
 
             removeBtn.onclick = function () {
                 selectedFiles = selectedFiles.filter(f => f !== file);
@@ -920,8 +929,9 @@
             };
 
             box.appendChild(removeBtn);
+            
+            box.appendChild(icon);
             box.appendChild(fileName);
-            box.appendChild(iframe);
             previewContainer.appendChild(box);
         };
 
@@ -965,7 +975,7 @@
 		                console.log('result:', result);
 		                if (result.isConfirmed) {
 		                    console.log('Redirecting...');
-		                   // window.location.href = "{{ url('/insurance/claim_forms') }}";
+		                    location.reload();
 		                }
 		            });
             previewContainer.innerHTML = '';
@@ -978,6 +988,68 @@
         });
     });
 
-   
+  let deleteDocIds = [];
+
+document.querySelectorAll('.remove-existing-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const docId = this.getAttribute('data-id');
+
+        if (!deleteDocIds.includes(docId)) {
+            deleteDocIds.push(docId);
+            document.getElementById('delete_doc_ids').value = JSON.stringify(deleteDocIds);
+
+            // Grey out the doc preview
+            const previewBox = document.getElementById('doc-' + docId);
+            previewBox.classList.add('marked-for-delete');
+        }
+    });
+});
+
+$(document).ready(function() {
+  const opentab = '{{ $spec}}';
+  
+  if(opentab == 'ho'){
+      $('#head_off').removeClass('d-none');
+      $('#head_off').addClass('d-block');
+      $('#ho').addClass('active');
+
+      $('#branch_off').removeClass('d-block');
+      $('#branch_off').addClass('d-none');
+
+      $('#checklist').removeClass('d-block');
+      $('#checklist').addClass('d-none');
+ 
+    }
+
+    if(opentab == 'bo'){
+      $('#head_off').removeClass('d-block');
+      $('#head_off').addClass('d-none');
+
+      $('#branch_off').removeClass('d-none');
+      $('#branch_off').addClass('d-block');
+      $('#bo').addClass('active');
+
+      $('#checklist').removeClass('d-block');
+      $('#checklist').addClass('d-none');
+ 
+    }
+
+    if(opentab == 'cl'){
+      $('#head_off').removeClass('d-block');
+      $('#head_off').addClass('d-none');
+
+      $('#branch_off').removeClass('d-block');
+      $('#branch_off').addClass('d-none');
+      
+      $('#checklist').removeClass('d-none');
+      $('#checklist').addClass('d-block');
+      $('#cl').addClass('active');
+
+ 
+    }
+
+});
+
+
 </script>
 @endsection
