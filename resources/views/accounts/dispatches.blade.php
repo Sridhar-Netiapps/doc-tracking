@@ -1,70 +1,19 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
-<div class="container-fluid mt-3">
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
-            {{-- <div class="filter-bg">
-                <form method="POST" action="{{ route('accounts.index',$type) }}">
-                    <div class="row">
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="unique_ref_no" placeholder="Unique Ref No" value="{{ request('unique_ref_no') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="branch_name" placeholder="Branch Name" value="{{ request('branch_name') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="branch_code" placeholder="Branch Code" value="{{ request('branch_code') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="cif_id" placeholder="CIF ID" value="{{ request('cif_id') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="text" name="account_number" placeholder="Account Number" value="{{ request('account_number') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <select class="form-control select2" name="region">
-                                <option value="">Select Region</option>
-                                <option value="South" {{ request('region') == 'South' ? 'selected' : '' }}>South</option>
-                                <option value="North" {{ request('region') == 'North' ? 'selected' : '' }}>North</option>
-                                <option value="East" {{ request('region') == 'East' ? 'selected' : '' }}>East</option>
-                                <option value="West" {{ request('region') == 'West' ? 'selected' : '' }}>West</option>
-                            </select>
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="date" placeholder="Unique Ref No" name="from_date" value="{{ request('from_date') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <input class="form-control" type="date" placeholder="Unique Ref No" name="to_date" value="{{ request('to_date') }}">
-                        </div>
-                        <div class="col-2 mt-3">
-                            <button class="btn btn-secondary" type="reset">Clear</button>
-                            <button class="btn btn-primary" type="submit">Filter</button>
-                        </div>
-                    </div>
-                </form>
-            </div> --}}
-        </div>
-        <div class="col-1"></div>
-    </div>
-</div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="d-flex page-heading">
                 <h3>Dispatches</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>  
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a href="{{ route('dispatches','ready') }}" class="nav-link {{$type == 'ready' ? 'active':''}}" id="ready-tab" role="tab" aria-controls="ready-tab-pane"  aria-selected="{{ $type == 'ready' ? 'true' : 'false' }}">Ready to Dispatch  @if ($type == 'ready' && $ready_to_dispatch_count != 0)<span class="badge text-bg-warning">{{$ready_to_dispatch_count}}</span>@endif</a>
@@ -219,7 +168,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">

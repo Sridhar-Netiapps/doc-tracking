@@ -3,21 +3,18 @@
 @include('layouts.topmenu')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="d-flex page-heading">
                 <h3>In Draft</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>  
 </div>
 
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
@@ -50,12 +47,12 @@
                                     <th scope="col" class="text-nowrap"> Loan Cycle</th>
                                     <th scope="col" class="text-nowrap"> Loan Amount</th>
                                     <th scope="col" class="text-nowrap"> Barcode</th>
-                                    <th scope="col" class="text-nowrap"> Glow Application ID</th>
+                                    <th scope="col" class="text-nowrap"> Glow App ID</th>
                                     <th scope="col" class="text-nowrap"> Scheme</th>
                                     <th scope="col" class="text-nowrap"> Customer Name</th>
-                                    <th scope="col" class="text-nowrap"> Disbursement Date /<br> Account Creation Date</th>
+                                    <th scope="col" class="text-nowrap"> Disb Date /<br> Creation Date</th>
                                     <th scope="col" class="text-nowrap"> Channel</th>
-                                    <th scope="col" class="text-nowrap"> Loan Disbursement Type <br>/ Account Opening Type</th>
+                                    <th scope="col" class="text-nowrap"> Disb Type <br>/ Type</th>
                                     <th scope="col" class="text-nowrap"> Business Category</th>
                                     <th scope="col" class="text-nowrap"> Status</th>
                                     <th scope="col" class="text-nowrap"> Activity Date</th>
