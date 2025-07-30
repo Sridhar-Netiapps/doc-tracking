@@ -16,7 +16,7 @@
 	            
 				<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
 
-				<a href="{{route('edit_claim_details',encrypt($data->id)) }}"><button class="btn btn-sm btn-warning btn-text p-2" >Edit</button> </a>
+				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			@endif
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
@@ -34,9 +34,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			<!--  <div class="col-3">
-				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
-			</div> -->
+			 <div class="col-3">
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-black" id="cl"  value="cl">Claim Documents </button>
+			</div>
 		</div>
 
 		
@@ -648,6 +648,36 @@
 		</div>
 
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
+       <input type="hidden" id="landingTab" value="{{ $landingTab }}">
+
+       <div class="py-3 d-none" id="checklist">
+	     
+	      <div class="card mt-3">
+	        	<div class="card-header label-font-header bg-card-header-doc text-black">Documents</div>
+	        	<div class="card-body bg-card-branch">
+	        		<div class="row">
+	                    @foreach($documentdata as $key=>$val)
+		        	     <div class="col-md-2 mt-4 ">
+                            <a class="" target="_blank" href="{{ URL::to('/')}}{{$val->filepath}}/{{$val->stored_name}}">
+                                 <div class="card align-items-center cardcl2">
+                                      <div class="card-body ">
+                                           <img class="pdflogo" src="/insurance_images/pdf_icon.png">
+                                      </div>
+                                      <div class="form-label maxline2 p-1" title="{{ $val->original_name }}">{{ $val->original_name }}</div>
+                                     
+                                  </div>
+                            </a>
+
+                        </div>
+		        	    
+		        	    @endforeach
+	        	    </div>
+	        	</div>    		 
+	        </div>
+
+	       
+        </div>
+
 	</div>
 
 	 <div class="floating-buttons">
@@ -677,6 +707,8 @@
 	 button.classList.add('active');
 	 var btn_val = button.value.trim();
 	 //alert(btn_val)
+     $('#landingTab').val(btn_val);
+     
 
 		if(btn_val == 'ho'){
 	      $('#head_off').removeClass('d-none');
@@ -714,7 +746,9 @@
      
 	    }
     
-   }	
+   }
+
+   
 
    $(document).ready(function() {
       const userbranch = $('#usertype').val();
@@ -798,6 +832,21 @@
 	            console.error("Error saving audit log:", error);
 	        });
 
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const editBtn = document.getElementById('editBtn');
+       
+        editBtn.addEventListener('click', function () {
+            const landingTab = document.getElementById('landingTab').value;
+            const encryptedId = '{{ encrypt($data->id) }}'; // Server-side Laravel Blade
+
+            // Construct the redirect URL
+             const baseUrl = '{{ url("/") }}';
+
+            // Redirect to absolute path
+            window.location.href = `${baseUrl}/insurance/edit_claim_details/${landingTab}/${encryptedId}`;
         });
     });
 

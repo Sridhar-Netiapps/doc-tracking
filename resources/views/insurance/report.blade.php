@@ -119,7 +119,7 @@
                 <th class="text-nowrap">Loan Tenure</th>
                 <th class="text-nowrap">Date of Death</th>
                 <th class="text-nowrap">Claim Status</th>
-                <th class="text-nowrap">Recovery Status</th>
+                <th class="text-nowrap">Processed By</th>
                 <th class="text-nowrap">CAS Status</th>
                 <th class="text-nowrap">RL Status</th>
                 <th class="text-nowrap">Recovery Status</th>
