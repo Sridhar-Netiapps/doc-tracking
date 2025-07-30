@@ -25,8 +25,8 @@ class AccountOpeningDocument extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function courier()
+    public function dispatch()
     {
-        return $this->belongsTo(Courier::class);
+        return $this->belongsTo(CourierDispatch::class,'dispatch_id');
     }
 }

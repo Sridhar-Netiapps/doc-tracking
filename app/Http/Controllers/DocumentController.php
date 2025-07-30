@@ -1086,6 +1086,7 @@ class DocumentController extends Controller
         $user = $this->user;
         $filter = function ($query, $table) use ($user, $request) {
             $filters = $request->all();
+            // dd($filters);
             $docType = $filters['doc_type'] ?? null;
             
             $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
@@ -1103,18 +1104,20 @@ class DocumentController extends Controller
 
             if ($request->filled(['from_date', 'to_date', 'date_field'])) {
                 
-                $query->whereHas('courier', function ($q) use ($fromDate, $toDate, $request) {
+                $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
                     $field = match ($request->input('date_field')) {
                         'dispatch_date' => 'dispatch_date',
                         'received_date' => 'updated_at',
                         default         => null,
                     };
-                    if ($fromDate && $toDate) {
-                        $q->whereBetween($field, [$fromDate, $toDate]);
-                    } elseif ($fromDate) {
-                        $q->whereDate($field, '>=', $fromDate);
-                    } elseif ($toDate) {
-                        $q->whereDate($field, '<=', $toDate);
+                    if ($field) {
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween($field, [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate($field, '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate($field, '<=', $toDate);
+                        }
                     }
                 });
 
@@ -1142,18 +1145,22 @@ class DocumentController extends Controller
         if ($request->doc_type === 'loan') {
             $data = LoanDocument::query();
             $filter($data, 'loan_documents');
+            // dd($data->get());
             return Excel::download(new LoanDocumentExport($data->get()), 'loan_documents.xlsx');
         } elseif ($request->doc_type === 'goldloan') {
             $data = GoldLoanDocument::query();
             $filter($data, 'gold_loan_documents');
+            // dd($data->get());
             return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
         } elseif ($request->doc_type === 'dtrf') {
             $data = DtrfDocument::query();
             $filter($data, 'dtrf_documents');
+            // dd($data->get());
             return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();
             $filter($data, 'account_opening_documents');
+            // dd($data->get());
             return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
         } else {
             return redirect()->back()->with('error', 'Invalid document type selected.');

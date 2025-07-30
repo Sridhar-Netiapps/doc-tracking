@@ -47,6 +47,11 @@ class CourierDispatch extends Model
 
     public function courierName()
     {
-        return $this->belongsTo(Courier::class, 'courier_name');
+        return $this->belongsTo(Courier::class, 'courier_id');
+    }
+
+    public function dispatcher()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }
