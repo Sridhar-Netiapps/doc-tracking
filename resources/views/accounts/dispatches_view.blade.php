@@ -3,20 +3,17 @@
 @include('layouts.topmenu')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
                 {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="filter-bg">
                 <div class="row">
                     <div class="col border-end">
@@ -50,13 +47,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-            <div class="col-10">
+        <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
@@ -96,12 +91,12 @@
                                     <th scope="col" class="text-nowrap">A/C No</th>
                                     <th scope="col" class="text-nowrap">Loan Cycle</th>
                                     <th scope="col" class="text-nowrap">Customer Name</th>
-                                    <th scope="col" class="text-nowrap">Disbursement Date</th>
+                                    <th scope="col" class="text-nowrap">Disb Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
                                     <th scope="col" class="text-nowrap">Loan Amount</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">Glow Application ID</th>
-                                    <th scope="col" class="text-nowrap">Loan Disbursement Type</th>
+                                    <th scope="col" class="text-nowrap">Glow App ID</th>
+                                    <th scope="col" class="text-nowrap">Disb Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                    
@@ -303,7 +298,7 @@
                                     <th scope="col" class="text-nowrap">Scheme</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">PGK No</th>
-                                    <th scope="col" class="text-nowrap">Type of Account Opening</th>
+                                    <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
@@ -479,7 +474,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 

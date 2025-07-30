@@ -3,8 +3,7 @@
 @include('layouts.topmenu')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="d-flex page-heading">
                 <h3 > Moved to RMA</h3>
                 <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
@@ -20,13 +19,11 @@
                 </div>
             @endif
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-            <div class="col-10">
+        <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
@@ -68,11 +65,11 @@
                                     <th scope="col" class="text-nowrap">Loan Cycle</th>
                                     <th scope="col" class="text-nowrap">Loan Amount</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">Glow Application ID</th>
+                                    <th scope="col" class="text-nowrap">Glow App ID</th>
                                     <th scope="col" class="text-nowrap">Customer Name</th>
-                                    <th scope="col" class="text-nowrap">Disbursement Date</th>
+                                    <th scope="col" class="text-nowrap">Disb Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
-                                    <th scope="col" class="text-nowrap">Loan Disbursement Type</th>
+                                    <th scope="col" class="text-nowrap">Disb Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
                                     <th scope="col" class="text-nowrap">Document Category</th>
@@ -179,7 +176,7 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            Opening                   <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
@@ -213,13 +210,13 @@
                                     <th scope="col" class="text-nowrap">Scheme</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">PGK No</th>
-                                    <th scope="col" class="text-nowrap">Type of Account Opening</th>
+                                    <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
                                     <th scope="col" class="text-nowrap">Document Category</th>
                                     <th scope="col" class="text-nowrap">Work Order No</th>
                                     <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">Date of Vendor Movement</th>
                                     <th scope="col" class="text-nowrap">File Barcode</th>
                                     <th scope="col" class="text-nowrap">Box Barcode</th>
                                     <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
@@ -325,7 +322,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 

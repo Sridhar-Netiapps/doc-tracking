@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
-<div class="container mt-3 ">
+
+<div class="container-fluid mt-3 ">
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
@@ -335,7 +336,7 @@
     </div>
 </div>
 
-<div class="container mt-3 ">
+<div class="container-fluid mt-3 ">
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
@@ -671,7 +672,6 @@
 
 <div class="container">
     <footer class="py-3 my-4">
-
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>

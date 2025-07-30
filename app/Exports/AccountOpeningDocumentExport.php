@@ -18,7 +18,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
 
     public function collection()
     {
-        return $data;
+        return $this->data;
     }
 
     public function headings(): array
@@ -34,18 +34,17 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             'Creation Date',
             'Scheme',
             'Channel',
-            'Loan Amount',
             'PGK No',
-            'Barcode',
             'Account Opening Type',
             'Business Category',
+            'Barcode',
             'AWB/POD',
             'Courier name',
             'Dispatch Date',
             'Dispatched By (User ID)',
             'Courier Received date @ Mail Room',
             'Tracked by (User ID)',
-            'Remarks (Received / Rejected)',
+            'Remarks',
             'Reason for Rejection',
             'Lot No',
             'Document Category',
@@ -70,28 +69,29 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             $doc->account_number,
             $doc->customer_name,
             $doc->account_creation_date,
+            $doc->scheme,
             $doc->channel,
-            $doc->loan_cycle,
             $doc->pgk_no,
-            $doc->loan_disbursement_type,
+            $doc->type_of_account_opening,
             $doc->business_category,
-            $doc->awb_pod,
-            $doc->courier_name,
-            $doc->dispatch_date,
-            $doc->dispatched_by,
-            $doc->courier_received_date,
-            $doc->tracked_by,
-            $doc->remarks,
-            $doc->rejection_reason,
+            $doc->barcode,
+            $doc->dispatch->awb_pod,
+            $doc->dispatch->courierName->name,
+            $doc->dispatch->dispatch_date,
+            $doc->dispatch->dispatcher->first_name,
+            $doc->dispatch->courier_received_date,
+            $doc->dispatch->status == '12' ? $doc->modifier->first_name : '-' ,
+            $doc->dispatch->statusName->name,
+            $doc->dispatch->comments == null ? $doc->dispatch->comments : '-',
             $doc->lot_no,
-            $doc->document_category,
+            $doc->category_of_document,
             $doc->work_order_no,
             $doc->vendor_name,
             $doc->vendor_movement_date,
             $doc->file_barcode,
             $doc->box_barcode,
             $doc->date_added_to_vendor,
-            $doc->status,
+            $doc->statusName->name,
         ];
     }
 }
