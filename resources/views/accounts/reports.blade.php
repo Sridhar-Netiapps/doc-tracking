@@ -84,21 +84,21 @@
                                 <label>Loan Amount</label>
                                 <input type="text" name="loan_amount" class="form-control">
                             </div>
-                            <div class="col-3 mt-2 doc-fields goldloan">
-                                <label>Channel (Gold Loan)</label>
-                                <input type="text" name="channel_goldloan" class="form-control">
+                            <div class="col-3 mt-2 doc-fields goldloan loan aof">
+                                <label>Channel</label>
+                                <input type="text" name="channel" class="form-control">
                             </div>
-                            <div class="col-3 mt-2 doc-fields loan">
-                                <label>Channel (GL/IL)</label>
+                            {{-- <div class="col-3 mt-2 doc-fields ">
+                                <label>Channel</label>
                                 <input type="text" name="channel_loan" class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Cycle</label>
                                 <input type="text" name="loan_cycle" class="form-control">
                             </div>
                             <div class="col-3 mt-2 doc-fields loan">
                                 <label>Glow Application ID</label>
-                                <input type="text" name="glow_app_id" class="form-control">
+                                <input type="text" name="glow_application_id" class="form-control">
                             </div>
                             <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Disbursement Type</label>
@@ -108,23 +108,23 @@
                                 <label>Scheme</label>
                                 <input type="text" name="scheme" class="form-control">
                             </div>
-                            <div class="col-3 mt-2 doc-fields aof">
+                            {{-- <div class="col-3 mt-2 doc-fields ">
                                 <label>Channel (Swagat/HHD/CRM)</label>
                                 <input type="text" name="channel_aof" class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="col-3 mt-2 doc-fields aof">
                                 <label>PGK No</label>
                                 <input type="text" name="pgk_no" class="form-control">
                             </div>
                             <div class="col-3 mt-2 doc-fields aof">
                                 <label>Account Opening Type</label>
-                                <input type="text" name="aof_type" class="form-control">
+                                <input type="text" name="type_of_account_opening" class="form-control">
                             </div>
                             @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
-                                'dispatched_by' => 'Dispatched By (User ID)',
-                                'tracked_by' => 'Tracked By (User ID)',
+                                // 'dispatched_by' => 'Dispatched By (User ID)',
+                                // 'tracked_by' => 'Tracked By (User ID)',
                                 ] as $field => $label)
                                 <div class="col-3 mt-2 courier">
                                     <label>{{ $label }}</label>
@@ -163,7 +163,7 @@
                                     <option value="received_date">Courier Received Date</option>
                                     <option value="movement_date">Vendor Movement Date</option>
                                     <option value="addition_date">Addition to Vendor Data</option>
-                                    <option value="creation_date">Sync Date</option>
+                                    <option value="sync_date">Sync Date</option> 
                                     <option value="activity_date">Activity Date</option>
                                 </select>
                             </div>

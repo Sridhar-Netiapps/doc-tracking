@@ -9,18 +9,16 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
 {
-    protected $filterCallback;
+    protected $data;
 
-    public function __construct($filterCallback)
+    public function __construct($data)
     {
-        $this->filterCallback = $filterCallback;
+        $this->data = $data;
     }
 
     public function collection()
     {
-        return LoanDocument::where(function ($query) {
-            ($this->filterCallback)($query, 'loan_documents');
-        })->get();
+        return $data;
     }
 
 
