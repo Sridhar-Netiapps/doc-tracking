@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
     Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
     Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
-    Route::get('insurance/edit_claim_details/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
+    Route::get('insurance/edit_claim_details/{spec}/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
 
 
     Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
@@ -137,6 +137,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('save_claim_checklist',[InsuranceHomeController::class,'save_claim_checklist'])->name('save_claim_checklist');
     Route::post('save_nominee_details',[InsuranceHomeController::class,'save_nominee_details'])->name('save_nominee_details');
+
+    Route::post('save_documents',[InsuranceHomeController::class,'save_documents'])->name('save_documents');
+    Route::post('update_documents',[InsuranceHomeController::class,'update_documents'])->name('update_documents');
 
 
     Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');

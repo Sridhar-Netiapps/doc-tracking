@@ -24,9 +24,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			<!--  <div class="col-3">
-				<button class="form-control form-control-design  btn-secondary btn btn-sm btn-toggle p-2 card-design"  value="cl">Check List </button>
-			</div> -->
+			 <div class="col-3">
+				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="cl"  value="cl">Claim Documents </button>
+			</div>
 		</div>
 
 		@if(session('success'))
@@ -42,10 +42,7 @@
 		                allowEscapeKey: false
 		            }).then((result) => {
 		                console.log('result:', result);
-		               /* if (result.isConfirmed) {
-		                    console.log('Redirecting...');
-		                    window.location.href = "{{ url('/insurance/claim_forms') }}";
-		                }*/
+		                
 		            });
 		        }, 300); // Delay to ensure full render
 		    });
@@ -618,7 +615,7 @@
 
        
 		<div class="py-3 d-none" id="branch_off">
-			<form method="POST" action="{{route('save_nominee_details')}}">
+			<form method="POST" action="{{route('save_nominee_details')}}" enctype="multipart/form-data" >
 			@csrf
 			
 		    <div class="card mt-3">
@@ -674,7 +671,7 @@
 				</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label">POD Number</label>
+				    <label class="form-label label-bold">POD Number</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{ old('pod_no',$nomineedata->pod_no) ?? ''}}" placeholder="Enter POD Number">
 				    @error('pod_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
@@ -685,11 +682,6 @@
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-				<!-- <div class="col-3 mb-3">
-				    <label class="form-label label-bold">Cheque Sent Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="cheq_sent_date"  value="{{$nomineedata->cheq_sent_date ?? ''}}">
-				</div>
- -->
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Remarks</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{ old('bo_remarks',$nomineedata->bo_remarks) ?? ''}}" placeholder="Remarks...">
@@ -698,23 +690,24 @@
 
 				<div class="col-3"></div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label label-bold">Maker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{ old('bo_maker',$nomineedata->bo_maker )?? ''}}" placeholder="Enter Maker EMP ID and Name">
 				    @error('bo_maker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label label-bold">Checker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{ old('bo_checker',$nomineedata->bo_checker) ?? ''}}" placeholder="Enter Checker EMP ID and Name">
 				    @error('bo_checker')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-			</div>
-		    </div></div>
+			  </div>
+		     </div>
+		   </div>
             <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 
-           
+            
 		
 			<div class="d-flex py-4">
 				<div class="ms-auto">
@@ -729,6 +722,57 @@
 
 		
       <!-- BO -->
+
+      <!-- Documents -->
+      <div class="py-3 d-none" id="checklist">
+      <form action=" {{ route('update_documents')}} " id="pdfForm" >
+      	@csrf
+      <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header-doc text-black">Documents</div>
+        	<div class="card-body bg-card-branch">
+        		<div class="row">
+        			<label class="form-label label-bold text-black">Upload (Please name the documents properly before upload )</label>
+        			<div class="col-4 mb-3">
+				    
+				    <input type="file" class="form-control form-control-design3 clsAlphaNoOnly"  id="pdfInput" name="files" multiple accept="application/pdf">
+				    
+				</div>
+
+                     <div class="preview-container" id="previewContainer"></div>
+	        		<div class="row mt-4">
+	                  
+                       <label class="label-bold text-black">Saved Documents</label>
+		        	   @foreach($documentdata as $doc)
+					    <div class="preview-box" id="doc-{{ $doc->id }}">
+					        <div class="card align-items-center cardcl2">
+                                      <div class="card-body">
+                                           <a target="_blank" href="{{ URL::to('/')}}{{$doc->filepath}}/{{$doc->stored_name}}"><img class="pdflogo" src="/insurance_images/pdf_icon.png"></a>
+                                      </div>
+                                      <div class="form-label maxline2 maxwidth p-1" title="{{ $doc->original_name }}">{{ $doc->original_name }}</div>
+                                     <button type="button" class="remove-existing-btn mb-2" data-id="{{ $doc->id }}">Remove</button>
+                                  </div>
+					        
+					    </div>
+					@endforeach
+					<input type="hidden" name="delete_doc_ids[]" id="delete_doc_ids">
+
+
+	        	    </div>
+	        	
+
+        	   
+        	</div>    		
+        </div>
+        </div>
+         <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
+			<div class="d-flex py-4">
+				<div class="ms-auto">
+					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
+				</div>
+		    </div>
+
+        </form>
+        </div>
 
        
        <input type="hidden" id="usertype" value="{{ Auth::user()->branch_id}}">
@@ -804,7 +848,7 @@
    $(document).ready(function() {
       const userbranch = $('#usertype').val();
      
-      if(userbranch == '1100'){
+     /* if(userbranch == '1100'){
       	$('#head_off').removeClass('d-none');
 	      $('#head_off').addClass('d-block');
           $('#ho').addClass('active');
@@ -828,9 +872,184 @@
 	      $('#checklist').addClass('d-none');
           
 
-      }
+      }*/
    	});
 
-   
+ let selectedFiles = [];
+
+    const input = document.getElementById('pdfInput');
+    const previewContainer = document.getElementById('previewContainer');
+
+    input.addEventListener('change', function (e) {
+        const newFiles = Array.from(e.target.files);
+
+        newFiles.forEach(file => {
+            if (file.type === 'application/pdf') {
+                selectedFiles.push(file);
+                showPreview(file);
+            }
+        });
+
+        input.value = ''; // allow same file again
+    });
+
+    function showPreview(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const box = document.createElement('div');
+            box.classList.add('preview-box');
+            box.classList.add('border');
+            box.classList.add('cardcl2');
+
+            // Show file name
+            const fileName = document.createElement('span');
+            fileName.classList.add('file-name');
+            fileName.classList.add('maxline2');
+            fileName.classList.add('form-label');
+            fileName.classList.add('mt-2');
+            fileName.textContent = file.name;
+
+            // Show PDF preview
+            const icon = document.createElement('img');
+			icon.src = '/insurance_images/pdf_icon.png'; // <- load from Laravel public/images
+			icon.alt = 'PDF';
+			icon.classList.add('pdf-icon');
+			icon.classList.add('pdflogo');
+
+            // Remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'X';
+            removeBtn.classList.add('remove-btn');
+            
+
+            removeBtn.onclick = function () {
+                selectedFiles = selectedFiles.filter(f => f !== file);
+                box.remove();
+            };
+
+            box.appendChild(removeBtn);
+            
+            box.appendChild(icon);
+            box.appendChild(fileName);
+            previewContainer.appendChild(box);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    document.getElementById('pdfForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData();
+
+        // Add PDF files
+        selectedFiles.forEach(file => {
+            formData.append('pdfs[]', file);
+        });
+
+        // Add all other inputs in the form
+        form.querySelectorAll('input, textarea, select').forEach(input => {
+            if (input.type !== 'file') {
+                formData.append(input.name, input.value);
+            }
+        });
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+           // alert(data.message || 'Upload successful.');
+
+		            Swal.fire({
+		                title: 'Message',
+		                text: data.message || 'Upload successful',
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                if (result.isConfirmed) {
+		                    console.log('Redirecting...');
+		                    location.reload();
+		                }
+		            });
+            previewContainer.innerHTML = '';
+            selectedFiles = [];
+            form.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Upload failed.');
+        });
+    });
+
+  let deleteDocIds = [];
+
+document.querySelectorAll('.remove-existing-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const docId = this.getAttribute('data-id');
+
+        if (!deleteDocIds.includes(docId)) {
+            deleteDocIds.push(docId);
+            document.getElementById('delete_doc_ids').value = JSON.stringify(deleteDocIds);
+
+            // Grey out the doc preview
+            const previewBox = document.getElementById('doc-' + docId);
+            previewBox.classList.add('marked-for-delete');
+        }
+    });
+});
+
+$(document).ready(function() {
+  const opentab = '{{ $spec}}';
+  
+  if(opentab == 'ho'){
+      $('#head_off').removeClass('d-none');
+      $('#head_off').addClass('d-block');
+      $('#ho').addClass('active');
+
+      $('#branch_off').removeClass('d-block');
+      $('#branch_off').addClass('d-none');
+
+      $('#checklist').removeClass('d-block');
+      $('#checklist').addClass('d-none');
+ 
+    }
+
+    if(opentab == 'bo'){
+      $('#head_off').removeClass('d-block');
+      $('#head_off').addClass('d-none');
+
+      $('#branch_off').removeClass('d-none');
+      $('#branch_off').addClass('d-block');
+      $('#bo').addClass('active');
+
+      $('#checklist').removeClass('d-block');
+      $('#checklist').addClass('d-none');
+ 
+    }
+
+    if(opentab == 'cl'){
+      $('#head_off').removeClass('d-block');
+      $('#head_off').addClass('d-none');
+
+      $('#branch_off').removeClass('d-block');
+      $('#branch_off').addClass('d-none');
+      
+      $('#checklist').removeClass('d-none');
+      $('#checklist').addClass('d-block');
+      $('#cl').addClass('active');
+
+ 
+    }
+
+});
+
+
 </script>
 @endsection

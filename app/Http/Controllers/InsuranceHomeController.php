@@ -14,6 +14,8 @@ use App\Models\InsuranceRequestLetterStatus;
 use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
+use App\Models\InsuranceDocument;
+
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
 use App\Models\AuditLog;
@@ -255,8 +257,10 @@ class InsuranceHomeController extends Controller
               ->orderByRaw("CASE WHEN cliam_status != 'completed' THEN 0 ELSE 1 END")
               ->orderBy('id','DESC')->paginate(25); 
         }
+
+        $landingTab = (Auth::user()->branch_id == '1100') ?'ho':'bo';
         
-        return view('insurance.index',compact('data','search'));
+        return view('insurance.index',compact('data','search','landingTab'));
     }
 
     public function claim_forms(){
@@ -433,11 +437,12 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
         $branch = Branch::get();
-        
+        $landingTab = (Auth::user()->branch_id == '1100' ? 'ho' :'bo'); 
         $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
-       // print_r($checklistdata);die();
+        $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
+       
         $productDetails = InsuranceProduct::where('product',$data->product)->first();
         $formArray=array();
         $claimformtype =$productDetails->type;
@@ -454,15 +459,16 @@ class InsuranceHomeController extends Controller
         }
         
       // print_r($formArray);die();
-        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch'));
+        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($spec ,  $id)
     {
-         $data = InsuranceClaimDetail::where('id',decrypt($id))->first();
+       // print_r($spec);die();
+        $data = InsuranceClaimDetail::where('id',decrypt($id))->first();
         $partners = InsurancePartner::get();
         $products = InsuranceProduct::get();
         $placeofdeath = InsurancePlaceofDeath::get();
@@ -476,6 +482,7 @@ class InsuranceHomeController extends Controller
         $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
+        $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
        // print_r($checklistdata);die();
         $productDetails = InsuranceProduct::where('product',$data->product)->first();
         $formArray=array();
@@ -493,7 +500,7 @@ class InsuranceHomeController extends Controller
         }
         
       // print_r($formArray);die();
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch'));
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec'));
     }
 
     /**
@@ -721,8 +728,7 @@ class InsuranceHomeController extends Controller
 
     public function downloadFolderSmart($folderName)
     {
-        print_r("lll");die();
-
+       
       $folderPath = public_path('template/' . $folderName);
 
       if (!File::exists($folderPath)) {
@@ -817,7 +823,8 @@ class InsuranceHomeController extends Controller
     }
 
     public function save_nominee_details(Request $request){
-      // print_r($request->input());die();
+     // print_r($request->input());die();
+     
       $inputdata = $request->all();
       $errors = [];
 
@@ -884,6 +891,118 @@ class InsuranceHomeController extends Controller
         else{
             return redirect()->back()->with('failure','Error while Saving data');
         }
+    }
+
+    public function save_documents(Request $request){
+       $request->validate([
+          'pdfs.*' => 'required|mimes:pdf|max:5120', // max 5MB each
+          // Add any other validations for text fields here
+       ]);
+
+       $savedFiles = [];
+
+       $leadDetails= InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+       $folderName = $leadDetails->utrn;
+
+       if (file_exists(public_path().'/template/Documents/'.$folderName)) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Documents/'.$folderName, $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Documents/'.$folderName;
+
+    
+      if ($request->hasFile('pdfs')) {
+        foreach ($request->file('pdfs') as $index => $file) {
+            // Original filename
+            $originalName = $file->getClientOriginalName();
+            $tempPath = $file->getPathname();
+
+            // Create a unique filename — use timestamp or UUID
+            $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+             $destination = public_path().$filepath . '/' . $newName;
+       
+            if (move_uploaded_file($tempPath, $destination)) {
+              InsuranceDocument::create([
+                'insurance_claim_details_id' => decrypt($request->lead_id),
+                'original_name' => $originalName,
+                'stored_name' => $newName,
+                'filepath' => $filepath,
+                'status' => '1',
+                'creator'=> Auth::user()->employee_id,
+                'updator' => Auth::user()->employee_id
+
+              ]);
+            }
+
+        }
+    }
+
+
+    return response()->json(['message' => 'Saved Successfully']);
+    }
+
+
+    public function update_documents(Request $request){
+
+      $removable_ids = [];
+
+      foreach ($request->delete_doc_ids as $value) {
+          $decoded = json_decode($value, true);
+          if (is_array($decoded)) {
+              $removable_ids = array_merge($removable_ids, $decoded);
+          }
+      }
+
+      $request->validate([
+          'pdfs.*' => 'required|mimes:pdf|max:5120', // max 5MB each
+          // Add any other validations for text fields here
+       ]);
+
+       $savedFiles = [];
+
+       $leadDetails= InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+       $folderName = $leadDetails->utrn;
+
+       if (file_exists(public_path().'/template/Documents/'.$folderName)) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Documents/'.$folderName, $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Documents/'.$folderName;
+
+    
+        if ($request->hasFile('pdfs')) {
+          foreach ($request->file('pdfs') as $index => $file) {
+              // Original filename
+              $originalName = $file->getClientOriginalName();
+              $tempPath = $file->getPathname();
+
+              // Create a unique filename — use timestamp or UUID
+              $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+               $destination = public_path().$filepath . '/' . $newName;
+         
+              if (move_uploaded_file($tempPath, $destination)) {
+                InsuranceDocument::create([
+                  'insurance_claim_details_id' => decrypt($request->lead_id),
+                  'original_name' => $originalName,
+                  'stored_name' => $newName,
+                  'filepath' => $filepath,
+                  'status' => '1',
+                  'creator'=> Auth::user()->employee_id,
+                  'updator' => Auth::user()->employee_id
+
+                ]);
+              }
+
+          }
+      }
+      
+      InsuranceDocument::whereIn('id',$removable_ids)->update(['status' => '0']);
+
+      return response()->json(['message' => "Updated Successfully"]);
     }
 
     public function save_claim_checklist(Request $request){
@@ -1237,7 +1356,7 @@ class InsuranceHomeController extends Controller
 
         if (file_exists(public_path().'/template/'.$folderName)) {  
           } else {
-            File::makeDirectory(public_path().'/template/'.$folderName, $mode = 0777, true, true);
+            File::makeDirectory(public_path().'/template/'.$folderName, $mode = 0775, true, true);
           }
 
            foreach($_FILES['files']['name'] as $key=>$val){ 
@@ -1268,7 +1387,7 @@ class InsuranceHomeController extends Controller
         $note = 'New '.$request->modulename.' added';
         $link = url('/insurance/settings/');
 
-         $this->auditlogs($module, $operation, $note, $link);
+        $this->auditlogs($module, $operation, $note, $link);
 
       return redirect()->back()->with('success', "Added Successfully");
 
