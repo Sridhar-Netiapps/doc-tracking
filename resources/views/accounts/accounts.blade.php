@@ -66,7 +66,7 @@
                             {{-- </form> --}}
                         </li>
                     {{-- @endif --}}
-                    @if ($type === 'received')
+                    @if ($type == 'received')
                     <li style="margin-left: 10px;">
                         <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
                     </li>

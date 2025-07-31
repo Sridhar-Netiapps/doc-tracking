@@ -7,6 +7,7 @@
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">
             <ul class="d-flex justify-content-center align-items-center list-unstyled m-0">
+                @unless(auth()->user()->hasAnyRole(['super_admin']))
                 <li class="nav-item">
                     <a class="nav-link {{ $isActive ? 'active' : '' }}" href="{{ url('/home') }}">
                         <img src="{{ $isActive ? '/images/home1.svg' : '/images/home2.svg' }}" />
@@ -43,6 +44,7 @@
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
                 </li>
+                @endunless
                 @endunless
             </ul>
         </div>

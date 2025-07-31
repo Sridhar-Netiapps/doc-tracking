@@ -1160,7 +1160,6 @@ class DocumentController extends Controller
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();
             $filter($data, 'account_opening_documents');
-            // dd($data->get());
             return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
         } else {
             return redirect()->back()->with('error', 'Invalid document type selected.');

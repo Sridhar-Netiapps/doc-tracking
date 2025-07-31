@@ -52,11 +52,12 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
         foreach ($rows as $row) {
             $this->total++;
             try {
-                $doc_type = Str::upper(trim($row['document_type']));
-                $doc_unique_no = Str::upper(trim($row['document_unique_no']));
+                $doc_type = !empty($row['document_type']) ? Str::upper(trim($row['document_type'])) : null;
+                $doc_unique_no = !empty($row['document_unique_no']) ? Str::upper(trim($row['document_unique_no'])) : null;
                 $doc_status = $status[Str::upper(trim($row['status']))];
                 
                 DB::beginTransaction();
+
                 if (empty($doc_unique_no) || empty($doc_type)) {
                     throw new \Exception("Missing required fields.");
                 }
@@ -102,11 +103,24 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
 
     public function rules(): array
     {
-        return [];
+        return [
+            'document_unique_no' => 'required|string',
+            'document_type'      => 'required|string',
+        ];
+    }
+
+    public function customValidationMessages()
+    {
+        return [
+            'document_unique_no.required' => 'Document Unique Number is required.',
+            'document_unique_no.string'   => 'Document Unique Number must be a string.',
+            'document_type.required'      => 'Document Type is required.',
+            'document_type.string'        => 'Document Type must be a string.',
+        ];
     }
 
     public function getTotal(): int
-    {
+    {   
         return $this->total;
     }
 

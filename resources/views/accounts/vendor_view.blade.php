@@ -650,7 +650,10 @@
                 }
             });
         });
-
+        $('.vendor-upload').click(function () {
+            $('#upload-vendor').modal('show');
+            // $('#add-vendor').modal('show');
+        });
         $(document).ready(function () {
             $('.cancel-modal').on('click', function () {
                 $('#yourModalId').modal('hide');

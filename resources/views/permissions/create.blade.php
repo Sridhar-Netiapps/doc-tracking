@@ -15,25 +15,11 @@
                     </ol>
                 </nav>
             </div>
-
         </div>
     </div>
-
-    <!-- Validation errors -->
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="row">
         <div class="col-6">
             <div class="form-card">
-
                 <form action="{{ route('permissions.store') }}" method="POST" id="permissionCreateForm">
                     @csrf
                     <label class="form-label">Create Permission</label>
@@ -47,9 +33,7 @@
             <p class="small text-center opacity-50 text-muted">Dummy Content Here's a template for a Permission Form. Feel free to customize it according to your needs</p>
         </div>
     </div>
-
 </div>
-
 <script>
     $(document).ready(function () {
         // Form Validation Setup
