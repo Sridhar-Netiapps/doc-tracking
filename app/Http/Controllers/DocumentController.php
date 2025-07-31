@@ -711,16 +711,6 @@ class DocumentController extends Controller
                 }
                 $dispatchNumbers[] = '#'.$dispatch->dispatch_no;
                 // dd($dispatch);
-                $data = [
-                    'dispatch_no' => $dispatch->dispatch_no,
-                    'awb_pod' => $dispatch->awb_pod,
-                    'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
-                    'branch_code' => $dispatch->branch_code,
-                ];
-                $html = view('emails.dispatches_mail', ['data' => $data])->render();
-                $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
-                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
             DB::commit();
             return redirect()->route('dispatches', 'list')->with('success', implode(', ', $dispatchNumbers) . ' Couriers Dispatched Successfully.');
@@ -752,6 +742,8 @@ class DocumentController extends Controller
 
             foreach ($updates as $update) {
                 $dispatch = CourierDispatch::find($update['id']);
+                // $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
+
 
                 if (!$dispatch) continue;
 
@@ -790,6 +782,29 @@ class DocumentController extends Controller
                         });
                     }
                 }
+            }
+            if (in_array((int)$update['remarks'], [5, 7], true)) {
+                $data = [
+                    'dispatch_no' => $dispatch->dispatch_no,
+                    'awb_pod' => $dispatch->awb_pod,
+                    'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
+                    'branch_code' => $dispatch->branch_code,
+                ];
+                $html = view('emails.dispatches_mail', ['data' => $data])->render();
+                $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
+                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
+            } elseif ((int)$update['remarks'] === 12) {
+                $data = [
+                    'dispatch_no' => $dispatch->dispatch_no,
+                    'awb_pod' => $dispatch->awb_pod,
+                    'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
+                    'branch_code' => $dispatch->branch_code,
+                ];
+                $html = view('emails.tracking_completed', ['data' => $data])->render();
+                $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
+                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
 
             DB::commit();

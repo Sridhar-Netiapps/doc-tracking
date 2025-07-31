@@ -479,7 +479,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode.</label>
-                        <input type="number" id="box_barcode_input" name="box_barcode" class="form-control length_15" min="0">
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
