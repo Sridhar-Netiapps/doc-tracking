@@ -18,7 +18,7 @@
                 <li><a href="{{ route('accounts.trash') }}"><img src="/images/material-symbols-light--group-add.svg"/> Recycle Bin</a></li>
                 <li><a href="{{ route('users.activities') }}"><img src="/images/material-symbols-light--group-add.svg"/> Activity</a></li>
                 @endrole
-                @role('master')
+                @role('master|super_admin')
                 <li><a href="{{ route('roles.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Roles</a></li>
                 <li><a href="{{ route('permissions.index') }}"><img src="/images/material-symbols-light--lock-person-outline-rounded.svg"/> Permission</a></li>
                 @endrole
