@@ -3,9 +3,9 @@ $(document).ready(function(){
         return this.optional(element) || /^[^<>]*$/.test(value);
     }, 'Please enter valid input.');
 
-    $.validator.addMethod("alphanumeric", function(value, element) {
-        return this.optional(element) || /^[\w\s]+$/i.test(value);
-    }, "Please enter letters, numbers, spaces or underscores only");
+    // $.validator.addMethod("alphanumeric", function(value, element) {
+    //     return this.optional(element) || /^[\w\s]+$/i.test(value);
+    // }, "Please enter letters, numbers, spaces or underscores only");
 
     $.validator.addMethod("lettersonly", function(value, element) {
         return this.optional(element) || /^[a-z\s]+$/i.test(value);
@@ -81,6 +81,30 @@ $(document).ready(function(){
             e.preventDefault();
         }
     });
+
+    // $(document).on('keypress', '.capsonly', function (e) {
+    //     if (!/[A-Z0-9\s]/.test(String.fromCharCode(e.which))) {
+    //         e.preventDefault();
+    //     }
+    // });
+
+    $(document).on('input', '.capsonly, .alphanumeric', function () {
+        let value = $(this).val();
+    
+        if ($(this).hasClass('capsonly')) {
+            // Allow only letters & spaces, convert to uppercase
+            value = value.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+        }
+    
+        if ($(this).hasClass('alphanumeric')) {
+            // Allow only letters, numbers & spaces, convert to uppercase
+            value = value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
+        }
+    
+        $(this).val(value);
+    });
+    
+    
 
     $(document).on('keypress','.alphanumeric', function (e) {
         if (!/^[\w\s]+$/.test(String.fromCharCode(e.which))) {
