@@ -16,45 +16,39 @@
             </div>
 
         </div>
-        <div>
+        {{-- <div>
             <a href="{{ route('permissions.create') }}" class="btn btn-primary">Create Permission</a>
-        </div>
+        </div> --}}
     </div>
-
-
-
-
-    @if (session('success'))
-        <div class="alert alert-success mt-3">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="row">
         <div class="col-8">
             <div class="form-card">
                 <table class="table table-bordered mt-3">
                     <thead>
-                    <tr>
-                        <th width="90%">Name</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th>S.No</th>
+                            <th width="90%">Name</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
                     @foreach ($permissions as $permission)
-                        <tr>
-                            <td>{{ $permission->name }}</td>
-                            <td>
-                                <div class="d-flex">
-                                    <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm me-3">Edit</a>
-                                    {{-- <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form> --}}
-                                </div>
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $permission->name }}</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm me-3">Edit</a>
+                                        {{-- <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form> --}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
                     @endforeach
                     </tbody>
                 </table>

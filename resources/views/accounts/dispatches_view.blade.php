@@ -38,7 +38,7 @@
                     </div> --}}
                     <div class="col">
                         <label>Dispatch Date</label>
-                        <h5> {{ $dispatch->dispatch_date }} </h5>
+                        <h5>{{ $dispatch->dispatch_date != null ? date('d-m-Y', strtotime($dispatch->dispatch_date)): '-' }}</h5>
                     </div>
                     {{-- <div class="col border-end">
                         <label>Dispatch By</label>
@@ -70,7 +70,7 @@
                 </li>                    
                 <li class="ms-auto">
                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
-                        @if ($dispatch->status == 5)
+                        @if ($dispatch->status == 5 || $dispatch->status == 7)
                             <button id="update-all" class="btn btn-primary d-none">Update All</button>
                         @endif 
                     @endunless
