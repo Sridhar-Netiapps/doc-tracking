@@ -32,7 +32,7 @@
                     <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
@@ -42,7 +42,7 @@
                 @endunless
                 @endif
                 @if ($type == 'list')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -56,7 +56,7 @@
                             <thead>
                                 <tr>
                                     @if ($type == 'ready')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                     <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                     @endunless
                                     @else
@@ -76,7 +76,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <th scope="col">Update Status</th>
                                         @endunless
                                     @endif
@@ -87,7 +87,7 @@
                                 @foreach ($records as $row)
                                     <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                         @if ($type == 'ready')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                         <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                         @endunless
                                         @else
@@ -123,7 +123,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -135,7 +135,7 @@
                                             @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
@@ -149,12 +149,12 @@
                                             <div class="">
                                                 <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'tracking')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                 @endif

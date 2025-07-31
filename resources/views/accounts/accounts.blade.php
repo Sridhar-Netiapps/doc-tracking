@@ -131,7 +131,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -213,7 +213,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -275,7 +275,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -353,7 +353,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -417,7 +417,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -497,7 +497,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -554,7 +554,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -627,7 +627,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
