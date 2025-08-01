@@ -790,7 +790,7 @@
                 return;
             }
 
-            sendUpdateRequest(data);
+            sendUpdateRequest(data,'row');
         });
 
         // Handle bulk update
@@ -828,12 +828,11 @@
             });
 
             if (!hasError && data.length) {
-                sendUpdateRequest(data);
+                sendUpdateRequest(data,'all');
             }
         });
 
-
-        function sendUpdateRequest(payload) {
+        function sendUpdateRequest(payload, type) {
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
@@ -842,7 +841,11 @@
                     updates: payload
                 },
                 success: function () {
-                    Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    if (type === 'all') { 
+                        Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    } else {
+                        location.reload(); 
+                    }
                 },
                 error: function () {
                     Swal.fire("Error", "Update failed", "error");
