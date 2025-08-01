@@ -406,34 +406,40 @@ class DocumentController extends Controller
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
-            'courier_name' => 'required|string',
+            'courier_name' => 'nullable|string',
             'awb_pod' => 'nullable|string',
-            'mmrp_barcode' => 'required|string',
+            'mmrp_barcode' => 'nullable|string',
             // 'dispatch_date' => 'required|date',
             'loan_ids'=> 'nullable|array',
             'goldloan_ids'=> 'nullable|array',
             'dtrf_ids'=> 'nullable|array',
             'aof_ids'=> 'nullable|array'
         ]);
-
+// dd($request->all());
         DB::beginTransaction(); // Start Transaction
 
         try {
-            $dispatch = new CourierDispatch;
-            $dispatch->courier_id = $validated['courier_name'];
-            $dispatch->courier_name = $validated['courier_name'];
-            $dispatch->awb_pod = $validated['awb_pod'];
-            $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
-            $dispatch->branch_code = $this->user->branch_id; 
-            $dispatch->region_id = $this->user->region_id; 
-            $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
-            $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
-            $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
-            $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
-            $dispatch->status = 3;
-            $dispatch->created_by = $this->user->id;
+            if (!empty($validated['dispatch_id'])) {
+                $dispatch = CourierDispatch::find($validated['dispatch_id']);
+                $dispatch->courier_id = $validated['courier_name'];
+                $dispatch->courier_name = $validated['courier_name'];
+                $dispatch->awb_pod = $validated['awb_pod'];
+                $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
+                $dispatch->updated_by = $this->user->id;
+            }else{
+                $dispatch = new CourierDispatch;
+                $dispatch->branch_code = $this->user->branch_id; 
+                $dispatch->region_id = $this->user->region_id; 
+                $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
+                $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
+                $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
+                $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
+                $dispatch->status = 3;
+                $dispatch->created_by = $this->user->id;
+            }
             $dispatch->save();
             $dispatch_id = $dispatch->id;
+
 
             if(isset($request->loan_ids)){
                 LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
@@ -607,6 +613,8 @@ class DocumentController extends Controller
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::where('status', 1)->get();
+        // $couriers = Courier::pluck('name', 'id');
+
         return view('accounts.dispatches', compact(
             'records',
             'ready_to_dispatch_count',

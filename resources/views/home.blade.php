@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 @include('layouts.topmenu')
+@include('layouts.welcome')
 
 <div class="container-fluid mt-3 ">
     <div class="bigCard">

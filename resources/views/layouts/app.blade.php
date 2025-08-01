@@ -95,7 +95,7 @@
                                             {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ Auth::user()->roles->value('name') }}</div>
+                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ ucwords(str_replace('-', ' ', Auth::user()->roles->value('name'))) }}                                        </div>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
