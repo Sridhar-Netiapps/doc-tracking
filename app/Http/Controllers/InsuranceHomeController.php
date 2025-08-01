@@ -407,6 +407,13 @@ class InsuranceHomeController extends Controller
            
            // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
+            $mailData=['message' => 'New Lead created in Insurance Module.Please refer Lead ID - '.$claimdata->utrn].' for detailed information' ;
+            $reciepients=array();
+            $reciepients=['druva@netiapps.com'];
+            $csvContent='';
+            $fileName = '';
+            $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
              $module = 'Insurance'; 
              $operation = 'create';
              $note = 'New Lead created - '."INS_CLM".$utrn;
@@ -630,9 +637,14 @@ class InsuranceHomeController extends Controller
 
        $nomineedetail->save();
 
-       $mailData=array();
+        $mailData=['message' => 'The Lead details are updated to the Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
 
-       //Mail::to(['druva@netiapps.com'])->queue(new IntimationResponseMail($mailData));
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -789,9 +801,66 @@ class InsuranceHomeController extends Controller
     public function import_claim_data(Request $request){
 
        $import = new ImportClaimDetails ;
+       $file = $request->file('file');
+       $errors=array();
+
+     
+       if ($request->hasFile('file')) {
+
+            foreach ($request->file('file') as $file) {
+           
+                $result = $this->validateFileWhileSaving($file);
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+              
+            }
+
+            if(sizeof($errors)>0){
+               return response()->json([
+                    'status' => 'false',
+                    'message' => implode(',', $errors)
+                ]);
+            }
+        }
 
        Excel::import($import, $request->file('file'));
 
+       if (file_exists(public_path().'/template/Imports/')) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Imports/', $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Imports';
+
+    
+        if ($request->hasFile('file')) {
+         
+             $doc_file = $request->file('file') ;
+             $temp = explode(".", $doc_file->getClientOriginalName());
+             $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+             $destinationPath = public_path().$filepath;
+
+              if ($doc_file->move($destinationPath,$newName)) {
+                    $mailData=[
+                      'message' => 'The Lead details are imported to the Insurance Module .Please find the attachemnt of the same .'];
+                    $reciepients=array();
+                    $reciepients=['druva@netiapps.com'];
+                    $csvContent=$destinationPath.'/'.$newName;
+                    $fileName = $doc_file->getClientOriginalName();
+                   // print_r($csvContent);die();
+
+                    $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+        
+              }
+
+          
+      }
+       
        if($import->getRowCount() == 0){
 
              $module = 'Insurance'; 
@@ -813,8 +882,10 @@ class InsuranceHomeController extends Controller
              $link = url('/').'/insurance/claim_forms';
 
             $this->auditlogs($module , $operation ,$note , $link);
+
              return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
         }
+
     }
 
     public function search(Request $request){
@@ -878,6 +949,15 @@ class InsuranceHomeController extends Controller
 
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
              $claimdata = InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+
+             $mailData=['message' => 'Nominee details are updated in Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
+              $reciepients=array();
+              $reciepients=['druva@netiapps.com'];
+              $csvContent='';
+              $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -945,7 +1025,6 @@ class InsuranceHomeController extends Controller
 
 
     public function update_documents(Request $request){
-
       $removable_ids = [];
 
       foreach ($request->delete_doc_ids as $value) {
@@ -955,12 +1034,38 @@ class InsuranceHomeController extends Controller
           }
       }
 
-      $request->validate([
+       $request->validate([
           'pdfs.*' => 'required|mimes:pdf|max:5120', // max 5MB each
           // Add any other validations for text fields here
        ]);
 
        $savedFiles = [];
+       $errors = [];
+
+       if ($request->hasFile('pdfs')) {
+
+            foreach ($request->file('pdfs') as $file) {
+            // print_r("kkk");die();
+                // 🔍 Validate each file
+                $result = $this->validateFileWhileSaving($file);
+               // print_r($result);die();
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+              
+            }
+
+            if(sizeof($errors)>0){
+               return response()->json([
+                    'status' => 'false',
+                    'message' => implode(',', $errors)
+                ]);
+            }
+        }
+
 
        $leadDetails= InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
        $folderName = $leadDetails->utrn;
@@ -999,8 +1104,24 @@ class InsuranceHomeController extends Controller
 
           }
       }
+
+      $mailData=['message' => 'Claim related documents are updated in Insurance Module.Please refer Lead ID - '.$leadDetails->utrn].' to view detailed information';
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
+       $module = 'Insurance'; 
+       $operation = 'Update';
+       $note = 'Documents are updated - '."INS_CLM".$leadDetails->utrn;
+       $link = url('/').'/insurance/view_claim_details/'.encrypt($leadDetails->id);
+
+       $this->auditlogs($module , $operation ,$note , $link);
       
-      InsuranceDocument::whereIn('id',$removable_ids)->update(['status' => '0']);
+      InsuranceDocument::whereIn('id',$removable_ids)->update(['status' => '0', 'updator' => Auth::user()->employee_id]);
 
       return response()->json(['message' => "Updated Successfully"]);
     }
@@ -1162,7 +1283,11 @@ class InsuranceHomeController extends Controller
       $claim_status= $request->status;
       $proccesed= $request->proccesed;
       $branch= $request->branch;
-
+      if(Auth::user()->branch_id != '1100'){
+        $branch=Auth::user()->branch_id;
+      }
+      
+    // print_r($branch);die();
       $data = InsuranceClaimDetail::whereBetween('intimation_date',[$start , $end])
               ->with('nominee')
               ->when($region,function($q)use($region){
@@ -1204,8 +1329,16 @@ class InsuranceHomeController extends Controller
         $products = InsuranceProduct::get();
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
-        $procesedby=['NA','Vindhya','Ujjivan','HO'];  
-        $branches = Branch::get();
+        $procesedby=['NA','Vindhya','Ujjivan','HO']; 
+
+        $brID = Auth::user()->branch_id;
+
+        if(Auth::user()->branch_id == '1100'){
+          $branches = Branch::get();
+        }else{
+          $branches = Branch::where('code',$brID)->get();
+        } 
+        
 
         $start = $request->start;
         $end = $request->end;
@@ -1382,6 +1515,16 @@ class InsuranceHomeController extends Controller
         InsurancePlaceofDeath::create(['place'=> $request->title]);
       }
 
+        $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
+
         $module = 'Insurance';
         $operation = $module;
         $note = 'New '.$request->modulename.' added';
@@ -1415,7 +1558,7 @@ class InsuranceHomeController extends Controller
 
         $fileName = $file->getClientOriginalName();
         $extension = strtolower($file->getClientOriginalExtension());
-        $allowedExtensions = ['pdf', 'docx', 'jpg', 'jpeg', 'png'];
+        $allowedExtensions = ['pdf'];
         $maxSize = 40 * 1024 * 1024; // 40MB
 
         if (!in_array($extension, $allowedExtensions)) {
@@ -1427,7 +1570,8 @@ class InsuranceHomeController extends Controller
         }
 
         $isValidExtension = self::isValidFileExtension($fileName, $allowedExtensions);
-        if (!$isValidExtension) {
+         if (!$isValidExtension) {
+            
             return true;
         } 
 

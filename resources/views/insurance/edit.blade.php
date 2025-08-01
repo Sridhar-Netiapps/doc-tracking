@@ -24,9 +24,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			 <div class="col-3">
+			<!--  <div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="cl"  value="cl">Claim Documents </button>
-			</div>
+			</div> -->
 		</div>
 
 		@if(session('success'))
@@ -211,7 +211,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">ACTUAL ID</label>
+					    <label class="form-label label-bold">Actual ID</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="actual_id" value="{{ old('actual_id', $data->actual_id )}}" placeholder="Enter Actual ID">
 					    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -366,7 +366,7 @@
 					
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of Re-submision to Partner</label>
+					    <label class="form-label label-bold">Date of re-submission to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date', $data->re_submit_to_partner_date)}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -888,6 +888,7 @@
                 selectedFiles.push(file);
                 showPreview(file);
             }
+
         });
 
         input.value = ''; // allow same file again
@@ -962,29 +963,29 @@
         })
         .then(res => res.json())
         .then(data => {
-           // alert(data.message || 'Upload successful.');
+           
+            Swal.fire({
+                title: 'Message',
+                text: data.message ,
+                icon: (data.status == 'false')? 'error':'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then((result) => {
+                console.log('result:', result);
+                if (result.isConfirmed) {
+                    console.log('Redirecting...');
+                    location.reload();
+                }
+            });
 
-		            Swal.fire({
-		                title: 'Message',
-		                text: data.message || 'Upload successful',
-		                icon: 'success',
-		                confirmButtonText: 'OK',
-		                allowOutsideClick: false,
-		                allowEscapeKey: false
-		            }).then((result) => {
-		                console.log('result:', result);
-		                if (result.isConfirmed) {
-		                    console.log('Redirecting...');
-		                    location.reload();
-		                }
-		            });
             previewContainer.innerHTML = '';
             selectedFiles = [];
             form.reset();
         })
         .catch(err => {
             console.error(err);
-            alert('Upload failed.');
+            alert('Upload failed.: Please check the file');
         });
     });
 
