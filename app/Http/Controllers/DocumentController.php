@@ -803,6 +803,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -814,6 +815,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -1178,4 +1180,11 @@ class DocumentController extends Controller
             return redirect()->back()->with('error', 'Invalid document type selected.');
         }
     }
+
+    public function sendEmail($subject, $content, $to, $cc=null)
+    {
+        $to = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+        Mail::to($to)->send(new \App\Mail\DispatchesMail($content, $subject));
+    }
+
 }
