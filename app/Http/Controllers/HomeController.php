@@ -37,7 +37,7 @@ class HomeController extends Controller
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
         $filter = function ($query) {
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -56,7 +56,7 @@ class HomeController extends Controller
         $dailyFilter = function ($query) {
             $query->whereDate('updated_at', Carbon::today());
 
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
