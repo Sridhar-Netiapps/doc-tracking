@@ -14,11 +14,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ $currentTab === 'all' ? 'active-tab' : '' }}" href="{{ route('accounts.index','all') }}">All</a>
+                    <a class="nav-link {{ $currentTab === 'all' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'all','dtype' => 'loan']) }}">All</a>
                 </li>
 
                 <li class="nav-item ">
-                    <a class="nav-link {{ $currentTab === 'pending' ? 'active-tab' : '' }}" href="{{ route('accounts.index','pending') }}">Pending</a>
+                    <a class="nav-link {{ $currentTab === 'pending' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'pending','dtype' => 'loan']) }}">Pending</a>
                 </li>
 
                 <li class="nav-item ">
@@ -30,16 +30,16 @@
                 </li>
 
                 <li class="nav-item ">
-                    <a class="nav-link {{ $currentTab === 'rejected' ? 'active-tab' : '' }}" href="{{ route('accounts.index','rejected') }}">Rejected</a>
+                    <a class="nav-link {{ $currentTab === 'rejected' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'rejected','dtype' => 'loan']) }}">Rejected</a>
                 </li>
 
                 <li class="nav-item ">
-                    <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index','received') }}">Received</a>
+                    <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'received','dtype' => 'loan']) }}">Received</a>
                 </li>
 
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <li class="nav-item ">
-                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
+                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'moved','dtype' => 'loan']) }}">Moved to RMA</a>
                 </li>
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>

@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
     Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
-        Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
+        Route::get('/{type}/{dtype}', [DocumentController::class, 'index'])->name('accounts.index');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
