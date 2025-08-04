@@ -19,11 +19,12 @@ class SyncDocumentRecords extends Command
 
     public function handle(): void
     {
+        Log::info("Entered In to Doc Sync");
         $this->syncLoanType(HrmLoanDocument::class, LoanDocument::class, 'MB', 'etl_date');
         $this->syncLoanType(HrmGoldLoanDocument::class, GoldLoanDocument::class, 'GL', 'etl_date');
         $this->syncLoanType(HrmAccountOpeningDocument::class, AccountOpeningDocument::class, 'LD', 'etl_date');
         $this->syncLoanType(HrmDtrfDocument::class, DtrfDocument::class, 'DT', 'etl_date');
-
+        Log::info("Completed Doc Sync");
         $this->info('All document records synced successfully with unique references.');
     }
 
@@ -31,6 +32,7 @@ class SyncDocumentRecords extends Command
     {
         $today = now()->toDateString();
         $formattedMonthYear = now()->format('my');
+        Log::info($targetModel . ": Started documents.");
 
         $sourceModel::whereDate($dateColumn, $today)->chunk(100, function ($records) use ($targetModel, $prefix, $formattedMonthYear) {
             $grouped = $records->groupBy('branch_code');
@@ -56,5 +58,6 @@ class SyncDocumentRecords extends Command
                 }
             }
         });
+        Log::info($targetModel . ": Done documents.");
     }
 }

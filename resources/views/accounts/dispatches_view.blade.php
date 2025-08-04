@@ -18,19 +18,19 @@
                 <div class="row">
                     <div class="col border-end">
                         <label>Dispatch Number</label>
-                        <h5> {{ $dispatch->dispatch_no }} </h5>
+                        <h5> {{ $dispatch->dispatch_no != null ? $dispatch->dispatch_no : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>AWB/POD Number</label>
-                        <h5> {{ $dispatch->awb_pod }} </h5>
+                        <h5> {{ $dispatch->awb_pod != null ? $dispatch->awb_pod : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>Courier Name</label>
-                        <h5> {{ $dispatch->courierName->name }} </h5>
+                        <h5> {{ $dispatch->courier_name != null ? $dispatch->courierName->name : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>MMRP Internal Barcode No.</label>
-                        <h5> {{ $dispatch->mmrp_barcode }} </h5>
+                        <h5> {{ $dispatch->mmrp_barcode != null ? $dispatch->mmrp_barcode : '-' }} </h5>
                     </div>
                     {{-- <div class="col border-end">
                         <label>Branch code</label>
