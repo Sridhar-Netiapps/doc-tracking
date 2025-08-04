@@ -684,6 +684,10 @@ class DocumentController extends Controller
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
+                $dispatch->courier_id = $validated['courier_name'];
+                $dispatch->courier_name = $validated['courier_name'];
+                $dispatch->awb_pod = $validated['awb_pod'];
+                $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
                 $dispatch->verified_by = Auth::user()->id;
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
