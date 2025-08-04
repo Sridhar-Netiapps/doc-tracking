@@ -71,7 +71,7 @@ class DocumentController extends Controller
             elseif($type ==='pending'){
                 $query->where('status',1);
             }
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -146,38 +146,78 @@ class DocumentController extends Controller
         // unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
+        // $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
 
-            if ($user->hasRole('ro-user')) {
+        //     if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+        //         $query->where('region', $user->region);
+        //     }
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+        //     if ($fromDate !== null && $toDate !== null) {
+        //         $start = Carbon::parse($fromDate)->startOfDay();
+        //         $end   = Carbon::parse($toDate)->endOfDay();
+        //         $query->whereBetween('updated_at', [$start, $end]);
+        //     }
+        //     elseif ($fromDate !== null) {
+        //         $start = Carbon::parse($fromDate)->startOfDay();
+        //         $query->where('updated_at', '>=', $start);
+        //     }
+        //     elseif ($toDate !== null) {
+        //         $end = Carbon::parse($toDate)->endOfDay();
+        //         $query->where('updated_at', '<=', $end);
+        //     }
+        //     if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
+        //         $query->whereIn('status', [8, 9, 10, 11]);
+        //     }
+        
+        //     if ($hasFilters) {
+        //         foreach ($filters as $field => $value) {
+        //             if (!empty($value) && \Schema::hasColumn($table, $field)) {
+        //                 if ($filters['doc_type'] === 'moved' && $field === 'status') {
+        //                     continue;
+        //                 }
+        //                 if (in_array($field, ['cif_id', 'account_number'])) {
+        //                     $query->where($field, 'like', '%' . $value . '%');
+        //                 } else {
+        //                     $query->where($field, $value);
+        //                 }
+        //             }
+        //         }
+        //     }
+            
+        // };
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
+
+            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
+        
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
             }
+        
             if ($fromDate !== null && $toDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $end   = Carbon::parse($toDate)->endOfDay();
                 $query->whereBetween('updated_at', [$start, $end]);
-            }
-            elseif ($fromDate !== null) {
+            } elseif ($fromDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $query->where('updated_at', '>=', $start);
-            }
-            elseif ($toDate !== null) {
+            } elseif ($toDate !== null) {
                 $end = Carbon::parse($toDate)->endOfDay();
                 $query->where('updated_at', '<=', $end);
             }
-            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
+        
+            // Only apply this when no specific status is provided
+            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved' && empty($filters['status'])) {
                 $query->whereIn('status', [8, 9, 10, 11]);
             }
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                        if ($filters['doc_type'] === 'moved' && $field === 'status') {
-                            continue;
-                        }
-                        if (in_array($field, ['cif_id', 'account_number'])) {
+                        if (in_array($field, ['cif_id', 'account_number','channel'])) {
                             $query->where($field, 'like', '%' . $value . '%');
                         } else {
                             $query->where($field, $value);
@@ -185,8 +225,8 @@ class DocumentController extends Controller
                     }
                 }
             }
-            
         };
+        
 
         $loan_document = null;
         $gold_loan_document = null;
@@ -221,11 +261,11 @@ class DocumentController extends Controller
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100)->withQueryString();
-            
-            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'dtrf_documents');
-            })->paginate(100)->withQueryString();
-            
+            if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
+                $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
+                    $filterFunction($q, 'dtrf_documents');
+                })->paginate(100)->withQueryString();
+            }
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
@@ -307,7 +347,7 @@ class DocumentController extends Controller
         $allDocuments = collect();
     
         $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
-            if ($user->hasRole('ro-user')) {
+            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
     
@@ -553,7 +593,7 @@ class DocumentController extends Controller
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region_id', $this->user->region_id);
             }
 
@@ -1026,7 +1066,7 @@ class DocumentController extends Controller
             // elseif($type ==='pending'){
             //     $query->where('status',1);
             // }
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {

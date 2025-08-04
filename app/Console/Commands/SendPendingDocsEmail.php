@@ -32,6 +32,7 @@ class SendPendingDocsEmail extends Command
      */
     public function handle()
     {
+        Log::info("Entered In to Doc Sync");
         $tables = [
             'loan' => LoanDocument::class,
             'goldloan' => GoldLoanDocument::class,
@@ -44,6 +45,7 @@ class SendPendingDocsEmail extends Command
         $branchCounts = [];
     
         foreach ($tables as $label => $table) {
+            Log::info("Processing to Doc Sync");
             $docs =$table::select('branch_code', DB::raw('COUNT(*) as count'))->where('status', 1)
                 ->whereDate('created_at', $today)->groupBy('branch_code')->get();
 
