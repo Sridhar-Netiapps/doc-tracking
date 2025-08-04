@@ -32,17 +32,17 @@
                     <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
-                        <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
+                        {{-- <button class="btn btn-primary proceed" type="button">Add Courier Details</button> --}}
                     </form>
                 </li> 
                 @endunless
                 @endif
                 @if ($type == 'list')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -56,7 +56,7 @@
                             <thead>
                                 <tr>
                                     @if ($type == 'ready')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                     <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                     @endunless
                                     @else
@@ -76,7 +76,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <th scope="col">Update Status</th>
                                         @endunless
                                     @endif
@@ -87,15 +87,15 @@
                                 @foreach ($records as $row)
                                     <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                         @if ($type == 'ready')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                         <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                         @endunless
                                         @else
                                         <td>{{ $row->dispatch_no }}</td>
                                         @endif
-                                        <td>{{ $row->awb_pod }}</td>
-                                        <td>{{ $row->courierName->name }}</td>
-                                        <td>{{ $row->mmrp_barcode }}</td>
+                                        <td>{{ $row->awb_pod ?? '' }}</td>
+                                        <td>{{ $row->courierName->name ?? '' }}</td>
+                                        <td>{{ $row->mmrp_barcode ?? '' }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         {{-- <td>{{ $row->region }}</td> --}}
                                         <td><p>MB Loan - {{ $row->loan_ids!= null ? count(explode(',',$row->loan_ids)):0 }}</p>
@@ -123,7 +123,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -135,7 +135,7 @@
                                             @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
@@ -148,13 +148,18 @@
                                             {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             <div class="">
                                                 <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                @if ($type == 'ready')
+                                                @hasrole('bo-checker')
+                                                <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
+                                                @endhasrole
+                                                @endif
                                                 @if ($type == 'tracking')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                 @endif
@@ -354,6 +359,43 @@
         <h5>Filters</h5>
     </div>
 </div>
+<div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="update-courier" action="{{ route('courier.update')}}" method="POST">
+                @csrf
+                <div class="modal-header p-4 text-center">
+                    <h5 class="mb-0 text-primary">Update Details</h5>
+                </div>
+                <input type="hidden" name="dispatch_id" />
+                <div class="modal-body p-4 row">
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">Courier Name *</label>
+                        <select id="courier_name" name="courier_name" class="form-control select2" required>
+                            <option value=''>Select</option>
+                            @foreach($couriers as $key => $courier)
+                                <option value='{{ $key }}'>{{ $courier->name }}</option>
+                            @endforeach
+                        </select>
+                        <label id="courier_name-error" class="error" for="designation_ids"></label>
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">AWB/POD</label>
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
+                    </div>
+                    <div class="col-4 pb-2">
+                        <label for="status" class="form-label">MMRP Barcode No *</label>
+                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
@@ -379,47 +421,111 @@
             }
         });
 
-        $('.proceed').click(function () {
-            hasSelection = false;
-            let ids = [];
+        // $('.proceed').click(function () {
+        //     hasSelection = false;
+        //     let ids = [];
 
-            $('input.readytodispatch:checked').each(function () {
-                ids.push($(this).data('id'));
-            });
+        //     $('input.readytodispatch:checked').each(function () {
+        //         ids.push($(this).data('id'));
+        //     });
 
-            $('#proceed').find('input[name$="_ids[]"]').remove();
+        //     $('#proceed').find('input[name$="_ids[]"]').remove();
 
-            if (ids.length > 0) {
-                hasSelection = true;
-                ids.forEach(function (id) {
-                    $('#proceed').append(
-                        '<input type="hidden" name="readytodispatch_ids[]" value="' + id + '">'
-                    );
-                });
-            }
+        //     if (ids.length > 0) {
+        //         hasSelection = true;
+        //         ids.forEach(function (id) {
+        //             $('#proceed').append(
+        //                 '<input type="hidden" name="readytodispatch_ids[]" value="' + id + '">'
+        //             );
+        //         });
+        //     }
 
-            if (hasSelection) {
-                Swal.fire({
-                    title: "Alert!",
-                    text: "Are You Sure ?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "YES",
-                    cancelButtonText: "NO"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#proceed').submit();                     
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: "Warning!",
-                    text: "Please select at least one Document.",
-                    icon: "warning",
-                    confirmButtonText: "OK"
-                });
+        //     if (hasSelection) {
+        //         Swal.fire({
+        //             title: "Alert!",
+        //             text: "Are You Sure ?",
+        //             icon: "warning",
+        //             showCancelButton: true,
+        //             confirmButtonText: "YES",
+        //             cancelButtonText: "NO"
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+        //                 $('#proceed').submit();                     
+        //             }
+        //         });
+        //     } else {
+        //         Swal.fire({
+        //             title: "Warning!",
+        //             text: "Please select at least one Document.",
+        //             icon: "warning",
+        //             confirmButtonText: "OK"
+        //         });
+        //     }
+        // });
+
+
+        $(document).on('click', '.proceed', function () {
+            $('input[name="dispatch_id"]').val($(this).data('id')),
+            
+            // Reset form each time
+            $('#update-courier')[0].reset();
+
+            // Show modal
+            $('#add-courier').modal('show');
+        });
+
+
+        $('#update-courier').validate({
+            rules: {
+                awb_pod: { alphanumeric: true },
+                courier_name: { required: true },
+                mmrp_barcode: { alphanumeric: true, required: true }
+            },
+            messages: {
+                courier_name: { required: "Courier name is required" },
+                mmrp_barcode: { required: "Barcode is required" }
+            },
+            submitHandler: function (form) {
+                const formData = {
+                    _token: $('input[name="_token"]').val(),
+                    dispatch_id: $('input[name="dispatch_id"]').val(),
+                    courier_name: $('select[name="courier_name"]').val(),
+                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
+                    awb_pod: $('input[name="awb_pod"]').val(),
+                    dispatch_date: $('input[name="dispatch_date"]').val(),
+                    loan_ids: [],
+                    goldloan_ids: [],
+                    dtrf_ids: [],
+                    aof_ids: []
+                };
+
+
+                $.post($(form).attr('action'), formData)
+                    .done(function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Courier created successfully.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.href = `{{ route('dispatched') }}`;
+                            });
+                        } else {
+                            Swal.fire("Error!", "Failed to create courier.", "error");
+                        }
+                    })
+                    .fail(function () {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Something went wrong!",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    });
             }
         });
+
    
         $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
