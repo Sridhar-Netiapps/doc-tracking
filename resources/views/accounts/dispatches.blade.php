@@ -362,7 +362,7 @@
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('courier.update')}}" method="POST">
+            <form id="update-courier" action="{{ route('dispatched' )}}" method="POST">
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Update Details</h5>
@@ -493,10 +493,10 @@
                     mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
                     awb_pod: $('input[name="awb_pod"]').val(),
                     dispatch_date: $('input[name="dispatch_date"]').val(),
-                    loan_ids: [],
-                    goldloan_ids: [],
-                    dtrf_ids: [],
-                    aof_ids: []
+                    // loan_ids: [],
+                    // goldloan_ids: [],
+                    // dtrf_ids: [],
+                    // aof_ids: []
                 };
 
 
@@ -509,7 +509,7 @@
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
-                                window.location.href = `{{ route('dispatched') }}`;
+                                window.location.href = `{{ route('dispatches','list') }}`;
                             });
                         } else {
                             Swal.fire("Error!", "Failed to create courier.", "error");
