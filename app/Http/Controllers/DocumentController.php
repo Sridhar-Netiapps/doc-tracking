@@ -406,26 +406,23 @@ class DocumentController extends Controller
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
-            'courier_name' => 'nullable|string',
-            'awb_pod' => 'nullable|string',
-            'mmrp_barcode' => 'nullable|string',
             // 'dispatch_date' => 'required|date',
             'loan_ids'=> 'nullable|array',
             'goldloan_ids'=> 'nullable|array',
             'dtrf_ids'=> 'nullable|array',
             'aof_ids'=> 'nullable|array'
         ]);
-// dd($request->all());
         DB::beginTransaction(); // Start Transaction
 
         try {
-            if (!empty($validated['dispatch_id'])) {
+            if (isset($request->dispatch_id) && !empty($request->dispatch_id)) {
                 $dispatch = CourierDispatch::find($validated['dispatch_id']);
                 $dispatch->courier_id = $validated['courier_name'];
                 $dispatch->courier_name = $validated['courier_name'];
                 $dispatch->awb_pod = $validated['awb_pod'];
                 $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
                 $dispatch->updated_by = $this->user->id;
+                $dispatch->save();
             }else{
                 $dispatch = new CourierDispatch;
                 $dispatch->branch_code = $this->user->branch_id; 
@@ -436,42 +433,42 @@ class DocumentController extends Controller
                 $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
                 $dispatch->status = 3;
                 $dispatch->created_by = $this->user->id;
-            }
-            $dispatch->save();
-            $dispatch_id = $dispatch->id;
-
-
-            if(isset($request->loan_ids)){
-                LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->goldloan_ids)){
-                GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->dtrf_ids)){
-                DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->aof_ids)){
-                AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
+                $dispatch->save();
+                $dispatch_id = $dispatch->id;
+    
+    
+                if(isset($request->loan_ids)){
+                    LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->goldloan_ids)){
+                    GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->dtrf_ids)){
+                    DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->aof_ids)){
+                    AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
             }
             DB::commit();
             return response()->json(['success' => true]);
@@ -668,18 +665,22 @@ class DocumentController extends Controller
 
     public function updateCourier(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
-            'readytodispatch_ids' => 'required|array'
+            'courier_name' => 'required|string',
+            'awb_pod' => 'nullable|string',
+            'mmrp_barcode' => 'required|string',
+            'dispatch_id' => 'required'
         ]);
         DB::beginTransaction(); // Start Transaction
-
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
             // dd($sequence);
             // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
             // ->whereDate('created_at', now()->format('Y-m-d'))->first();
             // dd($sequence);
-            $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
+            $dispatched = CourierDispatch::where('id',$validated['dispatch_id'])->get();
+            // $dispatched = CourierDispatch::find('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
