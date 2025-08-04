@@ -19,9 +19,10 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
-                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
                 <li class="ms-auto">
-                    <button class="btn btn-primary proceed" type="button">Add Courier Details</button>
+                    <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     {{-- <a class="btn btn-secondary" href="{{ url()->previous() }}">Go Back</a> --}}
                 </li>
                 @endunless
@@ -32,7 +33,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr> 
-                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
+                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
                                     @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
@@ -61,7 +62,7 @@
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
-                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor']))
+                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
                                         <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                         @endunless
                                         <td>
@@ -196,7 +197,50 @@
                     <input type="text" class="form-control lettersonly" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="submit" class="btn btn-primary">Filt $('.proceed').click(function () {
+                        selectedDocuments = $('input.select:checked').map(function () {
+                            return {
+                                id: $(this).data('id'),
+                                doc_type: $(this).data('doc_type')
+                            };
+                        }).get();
+            
+                        if (selectedDocuments.length) {
+                            // $('#add-courier').modal('show');
+                            const formData = {
+                                _token: $('input[name="_token"]').val(),
+                                loan_ids: [],
+                                goldloan_ids: [],
+                                dtrf_ids: [],
+                                aof_ids: []
+                            };
+                            $.post({{ route('courier.update')}}, formData)
+                                .done(function () {
+                                    Swal.fire({
+                                        title: "Success!",
+                                        text: "Courier details updated successfully.",
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        selectedDocuments.forEach(doc => {
+                                            $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
+                                            $('span.badge').text(doc_count - selectedDocuments.length);
+                                        });
+                                        if ($('input.select').length === 0) {
+                                            window.location.href = `{{ route('dispatches','ready')}}`;
+                                        
+                                        }
+                                    });
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "Warning!",
+                                text: "Please select at least one Document.",
+                                icon: "warning",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });er</button>
                     {{-- <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a> --}}
                     <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a>                
                 </div>
@@ -224,8 +268,8 @@
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD *</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod" required>
+                        <label for="status" class="form-label">AWB/POD</label>
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No *</label>
@@ -253,26 +297,93 @@
         });
 
         let selectedDocuments = [];
+        
+        // $('.proceed').click(function () {
+        //     selectedDocuments = $('input.select:checked').map(function () {
+        //         return {
+        //             id: $(this).data('id'),
+        //             doc_type: $(this).data('doc_type')
+        //         };
+        //     }).get();
 
-        $('.proceed').click(function () {
-            selectedDocuments = $('input.select:checked').map(function () {
+        //     if (selectedDocuments.length) {
+        //         // $('#add-courier').modal('show');
+        //         const formData = {
+        //             _token: $('input[name="_token"]').val(),
+        //             loan_ids: [],
+        //             goldloan_ids: [],
+        //             dtrf_ids: [],
+        //             aof_ids: []
+        //         };
+        //         $.post({{ route('courier.update')}}, formData)
+        //             .done(function () {
+        //                 Swal.fire({
+        //                     title: "Success!",
+        //                     text: "Courier details updated successfully.",
+        //                     icon: "success",
+        //                     confirmButtonText: "OK"
+        //                 }).then(() => {
+        //                     selectedDocuments.forEach(doc => {
+        //                         $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
+        //                         $('span.badge').text(doc_count - selectedDocuments.length);
+        //                     });
+        //                     if ($('input.select').length === 0) {
+        //                         window.location.href = `{{ route('dispatches','ready')}}`;
+                            
+        //                     }
+        //                 });
+        //         })
+        //     } else {
+        //         Swal.fire({
+        //             title: "Warning!",
+        //             text: "Please select at least one Document.",
+        //             icon: "warning",
+        //             confirmButtonText: "OK"
+        //         });
+        //     }
+        // });
+
+        $(document).on('click', '.proceed', function () {
+            let selectedDocuments = $('input.select:checked').map(function () {
                 return {
                     id: $(this).data('id'),
                     doc_type: $(this).data('doc_type')
                 };
             }).get();
 
-            if (selectedDocuments.length) {
-                $('#add-courier').modal('show');
-            } else {
-                Swal.fire({
-                    title: "Warning!",
-                    text: "Please select at least one Document.",
-                    icon: "warning",
-                    confirmButtonText: "OK"
-                });
+            if (!selectedDocuments.length) {
+                Swal.fire("Warning!", "Please select at least one Document.", "warning");
+                return;
             }
+
+            const formData = {
+                _token: "{{ csrf_token() }}",
+                loan_ids: [],
+                goldloan_ids: [],
+                dtrf_ids: [],
+                aof_ids: []
+            };
+
+            selectedDocuments.forEach(doc => {
+                const type = String(doc.doc_type).toLowerCase();
+                if (type === 'loan') formData.loan_ids.push(doc.id);
+                else if (type === 'goldloan') formData.goldloan_ids.push(doc.id);
+                else if (type === 'dtrf') formData.dtrf_ids.push(doc.id);
+                else if (type === 'aof') formData.aof_ids.push(doc.id);
+            });
+
+            $.post("{{ route('courier.update') }}", formData)
+                .done(function (res) {
+                    console.log("Response:", res);
+                    Swal.fire("Success!", "Courier created successfully.", "success")
+                        .then(() => window.location.href = `{{ route('dispatches', 'ready') }}`);
+                })
+                .fail(function (xhr) {
+                    console.error("Error:", xhr.responseText);
+                    Swal.fire("Error!", "Request failed.", "error");
+                });
         });
+
 
         $('.awb_pod').on('change', function () {
             let awbPod = $(this).val().trim();
@@ -384,15 +495,15 @@
                                 $('#add-courier').modal('hide');
                             }
                         });
-                    })
-                    .fail(function () {
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Something went wrong!",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
+                })
+                .fail(function () {
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Something went wrong!",
+                        icon: "error",
+                        confirmButtonText: "OK"
                     });
+                });
             }
         });
         $('#applyFilter').click(function () {

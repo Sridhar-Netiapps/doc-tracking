@@ -3,9 +3,9 @@ $(document).ready(function(){
         return this.optional(element) || /^[^<>]*$/.test(value);
     }, 'Please enter valid input.');
 
-    // $.validator.addMethod("alphanumeric", function(value, element) {
-    //     return this.optional(element) || /^[\w\s]+$/i.test(value);
-    // }, "Please enter letters, numbers, spaces or underscores only");
+    $.validator.addMethod("alphanumeric", function(value, element) {
+        return this.optional(element) || /^[\w\s]+$/i.test(value);
+    }, "Please enter letters, numbers, spaces or underscores only");
 
     $.validator.addMethod("lettersonly", function(value, element) {
         return this.optional(element) || /^[a-z\s]+$/i.test(value);
