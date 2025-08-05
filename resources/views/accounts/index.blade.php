@@ -197,50 +197,7 @@
                     <input type="text" class="form-control lettersonly" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary">Filt $('.proceed').click(function () {
-                        selectedDocuments = $('input.select:checked').map(function () {
-                            return {
-                                id: $(this).data('id'),
-                                doc_type: $(this).data('doc_type')
-                            };
-                        }).get();
-            
-                        if (selectedDocuments.length) {
-                            // $('#add-courier').modal('show');
-                            const formData = {
-                                _token: $('input[name="_token"]').val(),
-                                loan_ids: [],
-                                goldloan_ids: [],
-                                dtrf_ids: [],
-                                aof_ids: []
-                            };
-                            $.post({{ route('courier.update')}}, formData)
-                                .done(function () {
-                                    Swal.fire({
-                                        title: "Success!",
-                                        text: "Courier details updated successfully.",
-                                        icon: "success",
-                                        confirmButtonText: "OK"
-                                    }).then(() => {
-                                        selectedDocuments.forEach(doc => {
-                                            $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-                                            $('span.badge').text(doc_count - selectedDocuments.length);
-                                        });
-                                        if ($('input.select').length === 0) {
-                                            window.location.href = `{{ route('dispatches','ready')}}`;
-                                        
-                                        }
-                                    });
-                            })
-                        } else {
-                            Swal.fire({
-                                title: "Warning!",
-                                text: "Please select at least one Document.",
-                                icon: "warning",
-                                confirmButtonText: "OK"
-                            });
-                        }
-                    });er</button>
+                    <button type="submit" class="btn btn-primary">Filter</button>
                     {{-- <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a> --}}
                     <a href="{{ route('dispatches.clear', $type ?? 'all') }}" class="btn btn-secondary">Clear</a>                
                 </div>
