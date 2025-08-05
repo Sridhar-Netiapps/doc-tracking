@@ -29,6 +29,7 @@
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/apexchart.js') }}"></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> --}}
+    <script src="{{ asset('js/flatpickr.js') }}"></script>
     <script src="{{ asset('js/flatpickr.min.js') }}"></script>
 
     {{-- <link href="{{ asset('accordin/bootstrap.min.css') }}" rel="stylesheet">
@@ -95,7 +96,7 @@
                                             {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ ucwords(str_replace('-', ' ', Auth::user()->roles->value('name'))) }}                                        </div>
+                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ ucwords(str_replace(['-', '_'], ' ', Auth::user()->roles->value('name'))) }} </div>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
