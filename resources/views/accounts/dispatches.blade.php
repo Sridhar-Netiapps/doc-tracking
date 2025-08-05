@@ -56,9 +56,9 @@
                             <thead>
                                 <tr>
                                     @if ($type == 'ready')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                    {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                     <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
-                                    @endunless
+                                    @endunless --}}
                                     @else
                                     <th scope="col">Dispatch No</th>
                                     @endif
@@ -87,9 +87,9 @@
                                 @foreach ($records as $row)
                                     <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                         @if ($type == 'ready')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                        {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
                                         <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
-                                        @endunless
+                                        @endunless --}}
                                         @else
                                         <td>{{ $row->dispatch_no }}</td>
                                         @endif
@@ -373,8 +373,8 @@
                         <label for="status" class="form-label">Courier Name *</label>
                         <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
-                            @foreach($couriers as $key => $courier)
-                                <option value='{{ $key }}'>{{ $courier->name }}</option>
+                            @foreach($couriers as $courier)
+                                <option value='{{ $courier->id }}'>{{ $courier->name }}</option>
                             @endforeach
                         </select>
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
