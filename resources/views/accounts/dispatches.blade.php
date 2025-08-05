@@ -373,8 +373,8 @@
                         <label for="status" class="form-label">Courier Name *</label>
                         <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
-                            @foreach($couriers as $key => $courier)
-                                <option value='{{ $key }}'>{{ $courier->name }}</option>
+                            @foreach($couriers as $courier)
+                                <option value='{{ $courier->id }}'>{{ $courier->name }}</option>
                             @endforeach
                         </select>
                         <label id="courier_name-error" class="error" for="designation_ids"></label>
