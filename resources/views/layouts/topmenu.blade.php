@@ -37,14 +37,14 @@
                     <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index','received') }}">Received</a>
                 </li>
 
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @hasrole('bank-user|admin|super-admin|master')
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index','moved') }}">Moved to RMA</a>
                 </li>
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
                 </li>
-                @endunless
+                @endhasrole
                 @endunless
             </ul>
         </div>
