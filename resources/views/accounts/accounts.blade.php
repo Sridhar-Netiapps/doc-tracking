@@ -892,9 +892,9 @@
         });
 
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
-            allowInput: false,         
+            allowInput: false, 
             clickOpens: true
         });
 

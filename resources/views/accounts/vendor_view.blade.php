@@ -540,7 +540,7 @@
             }).modal('show');;
         });
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
             allowInput: false,         
             clickOpens: true

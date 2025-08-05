@@ -244,7 +244,7 @@
 <script>
     $(document).ready(function () {
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
             allowInput: false,         
             clickOpens: true
