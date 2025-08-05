@@ -70,12 +70,44 @@
 		        }).then((result) => {
 	            if (result.isConfirmed) {
 	                // 👇 Redirect to another URL
-	                window.location.href = "{{ url('/insurance/claim_forms') }}";
+	               // window.location.href = "{{ url('/insurance/claim_forms') }}";
 	            }
 		    });
 		 </script>
 		 
 		@endif
+
+		@if(session()->has('failures'))
+		    <div class="alert alert-danger">
+		    	<strong class="text-success">{{ session()->get('message') }}</strong><br>
+		        <table class="table table-bordered ">
+		        	<tr>
+		        		<th>Row Number</th>
+		        		<th>Error Description</th>
+		        	</tr>
+		        
+                  <tbody>
+		            @foreach(session()->get('failures') as $failure)  
+		                <tr>
+		                	<td>{{ $failure->row() +1 }}</td>
+		                	<td>{{ implode(', ', $failure->errors()) }}</td>
+		                </tr>
+		            @endforeach
+		          </tbody>
+		          </table>
+		    </div>
+
+		    @if(!empty(session()->get('errordata')))
+			    <form action="{{ route('download.error.report') }}" method="POST">
+			        @csrf
+			        <input type="hidden" name="data" value="{{ base64_encode(json_encode(session()->get('errordata'))) }}">
+			        <button type="submit" class="btn btn-danger">Download Error Report Data</button>
+			    </form>
+			@endif
+
+
+		@endif
+
 
 
 	<div class="py-4">

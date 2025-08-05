@@ -18,6 +18,7 @@ use App\Models\InsuranceDocument;
 
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
+use App\Exports\ExportErrorRows;
 use App\Models\AuditLog;
 use App\AuditLogTrait;
 use App\Models\Branch;
@@ -313,6 +314,11 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
+          'date_of_death' => 'required',
+          'policy_number' => 'required',
+          'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
          
       ]);
 
@@ -520,13 +526,12 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
-          'region' => 'required',
+          'date_of_death' => 'required',
           'policy_number' => 'required',
-          'cust_id' => 'required',
-          'actual_id' => 'required',
-          'cliam_status' => 'required',
-          'cause_of_death' => 'required',
-          'deceased'=> 'required'
+          'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
+         
       ]);
 
         $request->merge([
@@ -827,7 +832,7 @@ class InsuranceHomeController extends Controller
             }
         }
 
-       Excel::import($import, $request->file('file'));
+      Excel::import($import, $request->file('file'));
 
        if (file_exists(public_path().'/template/Imports/')) {  
         } else {
@@ -857,10 +862,10 @@ class InsuranceHomeController extends Controller
                     $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
         
               }
+ 
 
-          
       }
-       
+      
        if($import->getRowCount() == 0){
 
              $module = 'Insurance'; 
@@ -883,9 +888,50 @@ class InsuranceHomeController extends Controller
 
             $this->auditlogs($module , $operation ,$note , $link);
 
-             return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+            // return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
         }
 
+
+        $failures = $import->getCollectedFailures();
+   
+       $Errordata = array();
+       if (!empty($import->failedRows)) {
+      // Send mail with error rows
+        
+        foreach ($import->failedRows as $key => $value) {
+           $Errordata[]=$value['data'];
+        }
+     
+         // return Excel::download(new ExportErrorRows($Errordata), 'insurance_error_leads_'.date('Y_m_d_his').'.xlsx');
+          
+      } 
+
+
+      if (sizeof($failures) > 0 ) {
+            return back()->with([
+                'failures' => $failures,
+                'errordata' => $Errordata,
+                'message' => ' New Entry - '.$inserted.'   , Updated Entry - '.$updated.'   , Error rows - '.sizeof($Errordata)
+            ]);
+        }else{
+           return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+        }
+       
+
+
+
+    }
+
+
+    public function downloadErrorReport(Request $request)
+    {
+        $json = base64_decode($request->input('data'));
+        $Errordata = json_decode($json, true);
+
+        return Excel::download(
+            new ExportErrorRows($Errordata,'insurance_error_leads_'.date('Y_m_d_his').'.xlsx'),
+            'error_report.xlsx'
+        );
     }
 
     public function search(Request $request){

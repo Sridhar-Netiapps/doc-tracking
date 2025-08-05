@@ -642,7 +642,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">IFSC Code</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC">
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC" minlength="11" maxlength="11">
 				    @error('ifsc')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -1051,6 +1051,78 @@ $(document).ready(function() {
 
 });
 
+ const coveredInput = document.querySelector('input[name="policy_covered_date"]');
+    const tenureInput = document.querySelector('input[name="loan_tenure"]');
+    const expiryInput = document.querySelector('input[name="policy_expiry_date"]');
+    
+
+    function calculateExpiryDate() {
+       const coveredDate = new Date(coveredInput.value);
+        const tenureMonths = parseInt(tenureInput.value);
+
+        if (!isNaN(coveredDate.getTime()) && !isNaN(tenureMonths)) {
+            const expiryDate = new Date(coveredDate);
+            expiryDate.setMonth(expiryDate.getMonth() + tenureMonths);
+
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+
+            expiryInput.value = `${yyyy}-${mm}-${dd}`;
+            expiryInput.min = coveredInput.value;
+        }
+    }
+
+    coveredInput.addEventListener('change', calculateExpiryDate);
+    tenureInput.addEventListener('input', calculateExpiryDate);
+
+    calculateExpiryDate(); // initialize if values are prefilled
+
+    const dobInput = document.querySelector('input[name="dob"]');
+    const ageInput = document.querySelector('input[name="age"]');
+
+    dobInput.addEventListener('change', function () {
+        const dob = new Date(dobInput.value);
+        const today = new Date();
+       
+        if (!isNaN(dob.getTime())) {
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--; // not completed this month
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            ageInput.value = `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+        } else {
+            ageInput.value = '';
+        }
+    });
+    
+    const intimationReceivedDateInput = document.querySelector('input[name="intimation_date"]');
+    const documentReceivedDateInput = document.querySelector('input[name="doc_rec_date"]');
+    const documentsubmissionDateInput = document.querySelector('input[name="submit_to_partner_date"]');
+    const documentre_submissionDateInput = document.querySelector('input[name="re_submit_to_partner_date"]');
+
+    function RestrictDocReceivedDate() {
+       documentReceivedDateInput.min = intimationReceivedDateInput.value;
+    }
+    intimationReceivedDateInput.addEventListener('change', RestrictDocReceivedDate);
+
+     function RestrictresubmissiondDate() {
+        documentre_submissionDateInput.min = documentsubmissionDateInput.value;
+    }
+    
+    documentsubmissionDateInput.addEventListener('change', RestrictresubmissiondDate);
+
 
 </script>
+
+
 @endsection

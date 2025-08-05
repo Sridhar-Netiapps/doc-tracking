@@ -8,45 +8,162 @@ use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
 use Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Validators\Failure;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
-class ImportClaimDetails implements ToModel, WithStartRow
+use Throwable;
+
+class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, SkipsOnError
 {
     /**s
     * @param Collection $collection
     */
-
+   
     public $rowCount = 0;
     public $insertedCount = 0;
     public $updatedCount = 0;
+    public array $collectedFailures = [];
+    public $failedRows = [];
 
+
+     use Importable, SkipsFailures, SkipsErrors;
 
      public function startRow(): int
     {
         return 2;
     } 
     
+
+    
     public function model(array $row)
     {
        ++$this->rowCount;
 
+       $row = $this->ensureMissingIndexesAreNull($row, [6, 13]);
        
        $insurancedetaisl = InsuranceClaimDetail::where('utrn',$row['0'])->first();
+       $exp_date = '';
+       $myage = '';
 
-	    if($insurancedetaisl){
-	         $claimDetail = InsuranceClaimDetail::find($insurancedetaisl->id);
-             $claimDetail->latest_editor = Auth::user()->employee_id; 
-	         $this->updatedCount++;
-	    }else{
-	         $claimDetail = new InsuranceClaimDetail;
-	          $utrn = 'INS_CLM'.rand('000000','999999');
-	          $claimDetail->utrn = $utrn;
-	          $claimDetail->ho_employee_id = Auth::user()->employee_id; 
-	          $this->insertedCount++;
-	    }
-           
+	       $errors = [];
+	       if (empty($row[1]) ) {
+		        $errors[] = 'Region is required (Col B)';
+		    }
+
+		    if (!empty($row[1]) && is_numeric($row[1]) ) {
+		        $errors[] = 'Region cannot be a integer value (Col B)';
+		    }
+
+		    if (empty($row[2])) {
+		        $errors[] = 'Branch ID-Name is required (Col C)';
+		        $branch = explode('-',$row[2]) ;
+		    }
+		    if (!empty($row[2])) {
+		        $branch = explode('-',$row[2]) ;
+		        if(!is_numeric($branch[0])){
+		        	$errors[] = 'Branch ID should be Numeric. Ex:1100-Koramangala (Col C)';
+		        }
+		        if(is_numeric($branch[0]) && strlen($branch[0]) !=4){
+		        	$errors[] = 'Branch ID should be 4 digits only. Ex:1100-Koramangala (Col C)';
+		        }
+		    }
+
+		    if (empty($row[3])) {
+		        $errors[] = 'Partner is required (Col D)';
+		    }
+
+		    if (empty($row[4])) {
+		        $errors[] = 'Product is required (Col E)';
+		    }
+
+		    if (empty($row[6])) {
+		        $errors[] = 'Policy Number is required (Col G)';
+		    }
+
+		    if (empty($row[13])) {
+		        $errors[] = 'Date of Death is required (Col M)';
+		    }
+
+		    if (!empty($row[57]) && strlen($row[57]) != 11) {
+		        $errors[] = 'IFSC should be of 11 characters (Col BF)';
+		    }
+
+		    if (!empty($row[63]) && strlen($row[63]) != 10) {
+		        $errors[] = 'Nominee Contact Number should be 10 digits (Col BL)';
+
+		        if(!is_numeric($row[63])){
+		        	$errors[] = 'Nominee Contact Number should contain only Numbers (Col BL)';
+		        }
+		    }
+
+		    if (!empty($row[7]) && !empty($row[21])) {
+		    	$coverd=Date::excelToDateTimeObject($row['7'])->format('Y-m-d');
+		        $exp_date = date('Y-m-d',strtotime('+'.$row[21].'months', strtotime($coverd)));
+		    }
+
+		    if (!empty($row[12])) {
+		    	$dofb=Date::excelToDateTimeObject($row['12'])->format('Y-m-d');
+		        $now = now();
+		        $interval  = $now->diff($dofb);
+		        $myage = ($interval->format('%y years %m months'));
+		    }
+
+		    if (!empty($row[17]) && !empty($row[25])) {
+                $intDate = strtotime(Date::excelToDateTimeObject($row['17'])->format('Y-m-d'));
+                $docRecDate = strtotime(Date::excelToDateTimeObject($row['25'])->format('Y-m-d'));
+                if($docRecDate < $intDate){
+                	$errors[] = 'Document Received Date cannot be before Date of Intimation (Col Z)';
+                }
+		    } 
+
+		    if (!empty($row[27]) && !empty($row[28])) {
+                $subDate = strtotime(Date::excelToDateTimeObject($row['27'])->format('Y-m-d'));
+                $resubDate = strtotime(Date::excelToDateTimeObject($row['28'])->format('Y-m-d'));
+                if($resubDate < $subDate){
+                	$errors[] = 'Date of re-submision to partner cannot be before Date of submision to partner (Col AC)';
+                }
+		    } 	
+		   
+
+		    if (!empty($errors)) {
+		        $failure = new Failure(
+		            $this->rowCount,   // current row number
+		            'row',             // can be 'row' or a specific column
+		            $errors,           // array of error messages
+		            $row               // raw row data
+		        );
+		        $this->onFailure($failure);
+		        return null; // Skip processing
+		    }
+
+	    //print_r($failure);die();
+
+		      if($insurancedetaisl){
+			         $claimDetail = InsuranceClaimDetail::find($insurancedetaisl->id);
+		             $claimDetail->latest_editor = Auth::user()->employee_id; 
+			         $this->updatedCount++;
+			   }else{
+			         $claimDetail = new InsuranceClaimDetail;
+			          $utrn = 'INS_CLM'.rand('000000','999999');
+			          $claimDetail->utrn = $utrn;
+			          $claimDetail->ho_employee_id = Auth::user()->employee_id; 
+			          $this->insertedCount++;
+			    }
+
+
+	      
             if(!empty($row['1'])){ $claimDetail->region = $row['1']; } 
 			if(!empty($row['2'])){ $claimDetail->branch = $row['2']; } 
 			if(!empty($row['3'])){ $claimDetail->partner = $row['3']; } 
@@ -54,14 +171,14 @@ class ImportClaimDetails implements ToModel, WithStartRow
 			if(!empty($row['5'])){ $claimDetail->mp_no = $row['5']; } 
 			if(!empty($row['6'])){ $claimDetail->policy_number = $row['6']; } 
 			if(!empty($row['7'])){ $claimDetail->policy_covered_date = is_numeric($row['7'])? Date::excelToDateTimeObject($row['7'])->format('Y-m-d'): $row['7'];} 
-			if(!empty($row['8'])){$claimDetail->policy_expiry_date = is_numeric($row['8'])? Date::excelToDateTimeObject($row['8'])->format('Y-m-d'): $row['8'];}
+			if(!empty($row['8'])){$claimDetail->policy_expiry_date = $exp_date ?? (is_numeric($row['8'])? Date::excelToDateTimeObject($row['8'])->format('Y-m-d'): $row['8']);}
 			if(!empty($row['9'])){ $claimDetail->cust_id = $row['9']; } 
 			if(!empty($row['10'])){ $claimDetail->actual_id = $row['10']; } 
 			if(!empty($row['11'])){ $claimDetail->deceased_name = $row['11']; } 
 			if(!empty($row['12'])){$claimDetail->dob = is_numeric($row['12'])? Date::excelToDateTimeObject($row['12'])->format('Y-m-d'): $row['12'];}
-			if(!empty($row['13'])){$claimDetail->date_of_death = is_numeric($row['13'])? Date::excelToDateTimeObject($row['13'])->format('Y-m-d'): $row['13'];}
+			if(!empty(trim($row['13']))){$claimDetail->date_of_death = is_numeric($row['13'])? Date::excelToDateTimeObject($row['13'])->format('Y-m-d'): $row['13'];}
 			if(!empty($row['14'])){ $claimDetail->gender = $row['14']; }
-			if(!empty($row['15'])){ $claimDetail->age = $row['15']; }  
+			if(!empty($row['15'])){ $claimDetail->age = $myage ?? $row['15']; }  
 			if(!empty($row['16'])){ $claimDetail->deceased = $row['16']; }
 			if(!empty($row['17'])){$claimDetail->intimation_date = is_numeric($row['17'])? Date::excelToDateTimeObject($row['17'])->format('Y-m-d'): $row['17'];}
 			if(!empty($row['18'])){ $claimDetail->place_of_death = $row['18']; } 
@@ -170,4 +287,52 @@ class ImportClaimDetails implements ToModel, WithStartRow
     {
         return $this->updatedCount;
     }
+
+   
+    public function customValidationMessages()
+    {
+        return [
+            '6.required' => 'policy_number is required',
+            '13.required' => 'date_of_death is required',
+        ];
+    }
+
+    public function onFailure(Failure ...$failures)
+    {
+        $this->collectedFailures = array_merge($this->collectedFailures, $failures);
+
+        foreach ($failures as $failure) {
+            $rowIndex = $failure->row(); // 2, 10, 15, etc.
+            $errorMessage = implode(', ', $failure->errors());
+            $rowData = $failure->values();
+
+            $this->failedRows[] = [
+                'row' => $rowIndex,
+                'data' => $rowData,
+                'error' => $errorMessage,
+            ];
+        }
+    }
+
+    public function getCollectedFailures(): array
+    {
+        return $this->collectedFailures;
+    }
+
+    public function onError(Throwable $e)
+    {
+        Log::error("Error during import: " . $e->getMessage());
+    }
+
+    protected function ensureMissingIndexesAreNull(array $row, array $indexes): array
+{
+    foreach ($indexes as $index) {
+        if (!array_key_exists($index, $row)) {
+            $row[$index] = null;
+        }
+    }
+    return $row;
+}
+
+
 }
