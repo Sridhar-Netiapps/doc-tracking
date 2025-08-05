@@ -200,13 +200,13 @@ class DocumentController extends Controller
             if ($fromDate !== null && $toDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $end   = Carbon::parse($toDate)->endOfDay();
-                $query->whereBetween('updated_at', [$start, $end]);
+                $query->whereBetween('account_creation_date', [$start, $end]);
             } elseif ($fromDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
-                $query->where('updated_at', '>=', $start);
+                $query->where('account_creation_date', '>=', $start);
             } elseif ($toDate !== null) {
                 $end = Carbon::parse($toDate)->endOfDay();
-                $query->where('updated_at', '<=', $end);
+                $query->where('account_creation_date', '<=', $end);
             }
         
             // Only apply this when no specific status is provided
@@ -358,15 +358,15 @@ class DocumentController extends Controller
             if ($fromDate !== null && $toDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $end   = Carbon::parse($toDate)->endOfDay();
-                $query->whereBetween('updated_at', [$start, $end]);
+                $query->whereBetween('account_creation_date', [$start, $end]);
             }
             elseif ($fromDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
-                $query->where('updated_at', '>=', $start);
+                $query->where('account_creation_date', '>=', $start);
             }
             elseif ($toDate !== null) {
                 $end = Carbon::parse($toDate)->endOfDay();
-                $query->where('updated_at', '<=', $end);
+                $query->where('account_creation_date', '<=', $end);
             }
     
             if ($hasFilters) {
