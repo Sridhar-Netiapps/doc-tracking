@@ -15,9 +15,9 @@
                 </nav>
             </div>
         </div>
-        {{-- <div>
+        <div>
             <a href="{{ route('roles.create') }}" class="btn btn-primary">Create Role</a>
-        </div> --}}
+        </div>
     </div>
     <div class="row">
         <div class="col-8">

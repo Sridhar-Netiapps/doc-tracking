@@ -70,7 +70,7 @@
                     <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 <li class="ms-auto">
-                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                             <button id="update-all" class="btn btn-primary d-none">Update All</button>
                         @endif 
@@ -100,7 +100,7 @@
                                     <th scope="col" class="text-nowrap">Disb Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                    
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                    
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none loan text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none loan text-nowrap" scope="col">Actions</th>
@@ -153,7 +153,7 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
@@ -161,7 +161,7 @@
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="loan text-nowrap">
@@ -202,7 +202,7 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none goldloan text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none goldloan text-nowrap" scope="col">Actions</th>
@@ -252,14 +252,14 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="goldloan text-nowrap">
@@ -302,7 +302,7 @@
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none aof text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none aof text-nowrap" scope="col">Actions</th>
@@ -354,14 +354,14 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="aof text-nowrap">
@@ -397,7 +397,7 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none dtrf text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none dtrf text-nowrap" scope="col">Actions</th>
@@ -442,7 +442,7 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))                                                 
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
