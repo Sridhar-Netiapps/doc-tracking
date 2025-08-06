@@ -149,13 +149,13 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Member Code</label>
-				    <input type="text" class="form-control form-control-design numbersonly" name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
+				    <input type="text" class="form-control form-control-design clsAlphaNoOnly" name="mp_no" value="{{ old('mp_no')}}" placeholder="Enter Member Code">
 				    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Number</label>
-				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="policy_number" value="{{ old('policy_number')}}" placeholder="Enter Policy Number">
+				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="policy_number" value="{{ old('policy_number')}}" placeholder="Enter Policy Number" >
 				    @error('policy_number')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -163,6 +163,7 @@
 				    <label class="form-label label-bold">Policy Covered Date</label>
 				    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
 				    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
+				    <div class="text-error text-danger small" id="covered-error"></div>
 				</div>
 
 				<div class="col-3 mb-3">
@@ -260,13 +261,13 @@
 				
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Loan Account ID</label>
-				    <input type="text" class="form-control form-control-design  numbersonly" name="load_acc_id" value="{{ old('load_acc_id')}}" placeholder="Enter Loan Account ID">
+				    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="load_acc_id" value="{{ old('load_acc_id')}}" placeholder="Enter Loan Account ID">
 				    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Loan Tenure</label>
-				    <input type="text" class="form-control form-control-design   numbersonly" name="loan_tenure" value="{{ old('loan_tenure')}}" maxlength="3" placeholder="Enter Loan Tenure">
+				    <input type="text" class="form-control form-control-design numbersonly" name="loan_tenure" value="{{ old('loan_tenure')}}" maxlength="3" placeholder="Enter Loan Tenure">
 				    @error('loan_tenure')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -345,14 +346,13 @@
 					    @error('ho_remark2')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					
-
+				
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Claim Status</label>
 					    <select class="form-control form-control-design  form-select" name="cliam_status" >
 					    	<option value="">Select</option>
 					    	@foreach($claimstatus as $key=>$value)
-					    	   <option {{ ( old('cliam_status')==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+					    	   <option {{ ( old('cliam_status' , 'Pending From Branch')==$value->claim_status)?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror
@@ -578,6 +578,78 @@
 
 		</div>
 
-	
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
+ const coveredInput = document.querySelector('input[name="policy_covered_date"]');
+    const tenureInput = document.querySelector('input[name="loan_tenure"]');
+    const expiryInput = document.querySelector('input[name="policy_expiry_date"]');
+    
+
+    function calculateExpiryDate() {
+       const coveredDate = new Date(coveredInput.value);
+        const tenureMonths = parseInt(tenureInput.value);
+
+        if (!isNaN(coveredDate.getTime()) && !isNaN(tenureMonths)) {
+            const expiryDate = new Date(coveredDate);
+            expiryDate.setMonth(expiryDate.getMonth() + tenureMonths);
+
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+
+            expiryInput.value = `${yyyy}-${mm}-${dd}`;
+            expiryInput.min = coveredInput.value;
+        }
+    }
+
+    coveredInput.addEventListener('change', calculateExpiryDate);
+    tenureInput.addEventListener('input', calculateExpiryDate);
+
+    calculateExpiryDate(); // initialize if values are prefilled
+
+    const dobInput = document.querySelector('input[name="dob"]');
+    const ageInput = document.querySelector('input[name="age"]');
+
+    dobInput.addEventListener('change', function () {
+        const dob = new Date(dobInput.value);
+        const today = new Date();
+       
+        if (!isNaN(dob.getTime())) {
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--; // not completed this month
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            ageInput.value = `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+        } else {
+            ageInput.value = '';
+        }
+    });
+    
+    const intimationReceivedDateInput = document.querySelector('input[name="intimation_date"]');
+    const documentReceivedDateInput = document.querySelector('input[name="doc_rec_date"]');
+    const documentsubmissionDateInput = document.querySelector('input[name="submit_to_partner_date"]');
+    const documentre_submissionDateInput = document.querySelector('input[name="re_submit_to_partner_date"]');
+
+    function RestrictDocReceivedDate() {
+       documentReceivedDateInput.min = intimationReceivedDateInput.value;
+    }
+    intimationReceivedDateInput.addEventListener('change', RestrictDocReceivedDate);
+
+     function RestrictresubmissiondDate() {
+        documentre_submissionDateInput.min = documentsubmissionDateInput.value;
+    }
+    
+    documentsubmissionDateInput.addEventListener('change', RestrictresubmissiondDate);
+
+
+</script>	
     
 @endsection

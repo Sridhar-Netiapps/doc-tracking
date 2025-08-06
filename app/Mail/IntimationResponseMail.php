@@ -20,45 +20,49 @@ class IntimationResponseMail extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public $mailData;
+    public $csvContent;
+    public $fileName;
+
+    public function __construct($mailData , $csvContent , $fileName)
     {
-        //
+        $this->mailData = $mailData;
+        $this->csvContent = $csvContent;
+        $this->fileName = $fileName;
     }
 
     /**
      * Get the message envelope.
      */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Intimation Response Mail',
-        );
-    }
-
+    
     /**
-     * Get the message content definition.
+     * Override build only to attach raw memory file
      */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.welcome',
-        );
+    public function build()
+    { 
+        $newName = $this->fileName;
+        
+       
+                if($newName != ''){
+                     return $this->subject('Intimation Response Mail')
+                        ->view('emails.welcome')
+                        ->attach($this->csvContent, [
+                            'as' => 'Intimation.xlsx',
+                            'mime' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        ]);
+                }
+                else{
+                     return $this->subject('Intimation Response Mail')
+                        ->view('emails.welcome');
+                }
+                
+
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
+    public static function sendThrottled($reciepients , $mailData , $csvContent , $fileName )
     {
-        return [];
-    }
+         $key = 'send-email:' . implode(',', $reciepients);
 
-    public static function sendThrottled($email, $mailData)
-    {
-       // $key = 'send-email:' . $email;
-        $key = 'send-email:' . implode(',', $email);
 
         if (RateLimiter::tooManyAttempts($key, 2)) {  // Allow only 5 emails per minute
             return response()->json(['message' => 'Too many emails sent. Please try again later.'], 429);
@@ -67,6 +71,6 @@ class IntimationResponseMail extends Mailable implements ShouldQueue
         RateLimiter::hit($key, 30); // Store rate limit for 60 seconds
 
         // Send email after passing throttle check
-        Mail::to($email)->send(new IntimationResponseMail($mailData));
+        Mail::to($reciepients)->send(new IntimationResponseMail($mailData , $csvContent , $fileName));
     }
 }
