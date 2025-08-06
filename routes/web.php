@@ -63,7 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])->name('dispatches.filter');
     Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
-    Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
+    Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');

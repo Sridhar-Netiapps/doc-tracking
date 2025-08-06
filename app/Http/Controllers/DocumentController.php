@@ -686,14 +686,14 @@ class DocumentController extends Controller
         
     }
 
-    public function viewDispatches($id)
+    public function viewDispatches($type,$id)
     {
         $dispatch = CourierDispatch::find($id);
-        // $type = 'dispatch';
-        $previousUrl = url()->previous(); 
-        $type = Str::afterLast($previousUrl, '/');
+        // // $type = 'dispatch';
+        // $previousUrl = url()->previous(); 
+        // $type = Str::afterLast($previousUrl, '/');
         $dtype = session()->pull('dtype');
-
+        // dd($dtype);
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
         $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
@@ -977,13 +977,13 @@ class DocumentController extends Controller
             if($request->input('updates', []))
                 return response()->json(['success' => true]);
             else
-                return redirect()->route('accounts.index','moved')->with('success', 'Status Updated Successfully.');
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Status Updated Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             if($request->input('updates', []))
                 return response()->json(['error' => $e->getMessage()], 500);
             else
-                return redirect()->route('accounts.index','moved')->with('error', 'Status Updation Failed.');
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Status Updation Failed.');
         }
     }
 
