@@ -41,11 +41,11 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
-                                @role('master')
+                                @role('master|super_admin|admin')
                                 <th>Roles</th>
                                 {{-- <th>Permissions</th> --}}
                                 @endrole
-                                @role('master|super_admin|admin')
+                                @role('master|super_admin')
                                 <th>Action</th>
                                 @endrole
                             </tr>
@@ -64,7 +64,7 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
-                                    @role('master')
+                                    @role('master|super_admin|admin')
                                         <td>
                                             @foreach ($user->roles as $role)
                                                 <span class="badge text-bg-primary">{{ $role->name }}</span>
@@ -76,7 +76,7 @@
                                             @endforeach
                                         </td> --}}
                                     @endrole
-                                    @role('master|super_admin|admin')
+                                    @role('master|super_admin')
                                         <td>
                                             <div class="btn-actions">
                                                 @can('edit-user')

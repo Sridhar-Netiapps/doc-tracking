@@ -29,4 +29,14 @@ class LoanDocument extends Model
     {
         return $this->belongsTo(CourierDispatch::class,'dispatch_id');
     }
+    public function history()
+    {
+        return $this->belongsTo(DocumentHistory::class,'document_id');
+    }
+    public function getReceivedDate()
+    {
+        return $this->hasOne(DocumentHistory::class, 'document_id')
+                    ->where('document_type', 'LoanDocument')
+                    ->where('current_status', 5);
+    }
 }

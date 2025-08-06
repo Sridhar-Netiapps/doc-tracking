@@ -42,7 +42,7 @@
                 @endunless
                 @endif
                 @if ($type == 'list')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -76,7 +76,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <th scope="col">Update Status</th>
                                         @endunless
                                     @endif
@@ -123,7 +123,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -135,7 +135,7 @@
                                             @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
@@ -147,19 +147,19 @@
                                         <td class="border-start">
                                             {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             <div class="">
-                                                <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=>$row->id]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
                                                 @hasrole('bo-checker')
                                                 <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
                                                 @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                 @endif
@@ -188,7 +188,7 @@
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Docs</option>
                         <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
@@ -410,6 +410,12 @@
         //     width: '100%',
         //     dropdownAutoWidth: true
         // });
+        flatpickr(".flatpickr-date", {
+            dateFormat: "d-m-Y",        
+            maxDate: "today",         
+            allowInput: false, 
+            clickOpens: true
+        });
         $('select[name="remarks"]').change(function () {
             const row = $(this).closest('tr');
             const reasonField = row.find('textarea[name="reason_for_rejection"]');
@@ -420,49 +426,6 @@
                 reasonField.addClass('d-none').val('');
             }
         });
-
-        // $('.proceed').click(function () {
-        //     hasSelection = false;
-        //     let ids = [];
-
-        //     $('input.readytodispatch:checked').each(function () {
-        //         ids.push($(this).data('id'));
-        //     });
-
-        //     $('#proceed').find('input[name$="_ids[]"]').remove();
-
-        //     if (ids.length > 0) {
-        //         hasSelection = true;
-        //         ids.forEach(function (id) {
-        //             $('#proceed').append(
-        //                 '<input type="hidden" name="readytodispatch_ids[]" value="' + id + '">'
-        //             );
-        //         });
-        //     }
-
-        //     if (hasSelection) {
-        //         Swal.fire({
-        //             title: "Alert!",
-        //             text: "Are You Sure ?",
-        //             icon: "warning",
-        //             showCancelButton: true,
-        //             confirmButtonText: "YES",
-        //             cancelButtonText: "NO"
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 $('#proceed').submit();                     
-        //             }
-        //         });
-        //     } else {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
-        //     }
-        // });
-
 
         $(document).on('click', '.proceed', function () {
             $('input[name="dispatch_id"]').val($(this).data('id')),
@@ -493,10 +456,6 @@
                     mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
                     awb_pod: $('input[name="awb_pod"]').val(),
                     dispatch_date: $('input[name="dispatch_date"]').val(),
-                    // loan_ids: [],
-                    // goldloan_ids: [],
-                    // dtrf_ids: [],
-                    // aof_ids: []
                 };
 
 
@@ -523,6 +482,43 @@
                             confirmButtonText: "OK"
                         });
                     });
+            }
+        });
+
+        $('.awb_pod').on('change', function () {
+            let awbPod = $(this).val().trim();
+            let $input = $(this);
+
+            $('#awb-error').remove(); // remove old error message
+
+            if (awbPod !== '') {
+                $.ajax({
+                    url: "{{ route('courier.checkAwb') }}",
+                    type: "POST",
+                    data: {
+                        awb_pod: awbPod,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.exists) {
+                            // Show error
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            
+                            // Clear input
+                            $input.val('');
+
+                            // Add red border
+                            $input.addClass('is-invalid');
+
+                            // Disable submit
+                            // $('button[type="submit"]').prop('disabled', true);
+                        } else {
+                            $('#awb-error').remove();
+                            $input.removeClass('is-invalid');
+                            $('button[type="submit"]').prop('disabled', false);
+                        }
+                    }
+                });
             }
         });
 

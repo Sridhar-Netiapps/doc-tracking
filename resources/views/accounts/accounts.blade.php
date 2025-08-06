@@ -16,22 +16,22 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">
                         MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
                         Gold Loan Docs <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
                         Liabilities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">
                         DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
                     </button>
                 </li>
@@ -78,7 +78,6 @@
 
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
             <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
-
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
@@ -112,7 +111,7 @@
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -131,7 +130,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -168,7 +167,7 @@
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -184,7 +183,7 @@
                                             <td>{{ $row->glow_application_id }}</td>
                                             <td>{{ $row->loan_disbursement_type }}</td>
                                             <td>{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|bo-read-only')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -213,7 +212,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -227,7 +226,7 @@
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -259,7 +258,7 @@
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -275,7 +274,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -311,7 +310,7 @@
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -324,7 +323,7 @@
                                             <td>{{ $row->loan_amount }}</td>
                                             <td>{{ $row->barcode }}</td>
                                             <td>{{ $row->business_category }}</td> 
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|bo-read-only')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -353,7 +352,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -399,7 +398,7 @@
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -417,7 +416,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -453,7 +452,7 @@
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -468,7 +467,7 @@
                                             <td>{{ $row->scheme ?? '-' }}</td>
                                             <td>{{ $row->type_of_account_opening }}</td>
                                             <td>{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|bo-read-only')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -497,7 +496,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -543,7 +542,7 @@
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -554,7 +553,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -590,7 +589,7 @@
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -598,7 +597,7 @@
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                             <td>{{ $row->barcode}}</td>
                                             <td>{{ $row->business_category}}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|bo-read-only')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -627,7 +626,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -659,7 +658,7 @@
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Docs</option>
                         <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liabilities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
@@ -776,8 +775,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a> 
-                    {{-- {{dd($type)}} --}}
+                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>
@@ -892,9 +890,9 @@
         });
 
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
-            allowInput: false,         
+            allowInput: false, 
             clickOpens: true
         });
 

@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
     Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
-        Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
+        Route::get('/{type}/{dtype}', [DocumentController::class, 'index'])->name('accounts.index');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])->name('dispatches.filter');
     Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
-    Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
+    Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
