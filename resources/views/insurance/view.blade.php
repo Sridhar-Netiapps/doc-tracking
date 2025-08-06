@@ -34,9 +34,9 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-white" id="bo"  value="bo">Branch Office </button>
 			</div>
 
-			 <div class="col-3">
+			<!--  <div class="col-3">
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-black" id="cl"  value="cl">Claim Documents </button>
-			</div>
+			</div> -->
 		</div>
 
 		
@@ -161,7 +161,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">ACTUAL ID</label>
+					    <label class="form-label label-bold">Actual ID</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="actual_id" value="{{ $data->actual_id}}" placeholder="Enter Actual ID">
 					    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -316,7 +316,7 @@
 					
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of Re-submision to Partner</label>
+					    <label class="form-label label-bold">Date of re-submission to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
