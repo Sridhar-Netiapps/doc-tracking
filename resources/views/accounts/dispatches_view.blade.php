@@ -6,12 +6,10 @@
         <div class="col">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
-                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
     </div>
 </div>
-{{-- {{dd($dispatch)}} --}}
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col">
@@ -33,18 +31,10 @@
                         <label>MMRP Internal Barcode No.</label>
                         <h5> {{ $dispatch->mmrp_barcode != null ? $dispatch->mmrp_barcode : '-' }} </h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Branch code</label>
-                        <h5> {{ $dispatch->branch_code }} </h5>
-                    </div> --}}
                     <div class="col">
                         <label>Dispatch Date</label>
                         <h5>{{ $dispatch->dispatch_date != null ? date('d-m-Y', strtotime($dispatch->dispatch_date)): '-' }}</h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Dispatch By</label>
-                        <h5> {{ $dispatch->dispatched_by }} </h5>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -55,19 +45,19 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 <li class="ms-auto">
                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
@@ -80,7 +70,7 @@
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -185,7 +175,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -283,7 +273,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -385,7 +375,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -834,6 +824,8 @@
         });
 
         function sendUpdateRequest(payload, type) {
+        console.log(payload);
+        // return false;
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
