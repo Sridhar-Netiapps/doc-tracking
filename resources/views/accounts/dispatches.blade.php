@@ -427,49 +427,6 @@
             }
         });
 
-        // $('.proceed').click(function () {
-        //     hasSelection = false;
-        //     let ids = [];
-
-        //     $('input.readytodispatch:checked').each(function () {
-        //         ids.push($(this).data('id'));
-        //     });
-
-        //     $('#proceed').find('input[name$="_ids[]"]').remove();
-
-        //     if (ids.length > 0) {
-        //         hasSelection = true;
-        //         ids.forEach(function (id) {
-        //             $('#proceed').append(
-        //                 '<input type="hidden" name="readytodispatch_ids[]" value="' + id + '">'
-        //             );
-        //         });
-        //     }
-
-        //     if (hasSelection) {
-        //         Swal.fire({
-        //             title: "Alert!",
-        //             text: "Are You Sure ?",
-        //             icon: "warning",
-        //             showCancelButton: true,
-        //             confirmButtonText: "YES",
-        //             cancelButtonText: "NO"
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 $('#proceed').submit();                     
-        //             }
-        //         });
-        //     } else {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
-        //     }
-        // });
-
-
         $(document).on('click', '.proceed', function () {
             $('input[name="dispatch_id"]').val($(this).data('id')),
             
@@ -499,10 +456,6 @@
                     mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
                     awb_pod: $('input[name="awb_pod"]').val(),
                     dispatch_date: $('input[name="dispatch_date"]').val(),
-                    // loan_ids: [],
-                    // goldloan_ids: [],
-                    // dtrf_ids: [],
-                    // aof_ids: []
                 };
 
 
@@ -529,6 +482,43 @@
                             confirmButtonText: "OK"
                         });
                     });
+            }
+        });
+
+        $('.awb_pod').on('change', function () {
+            let awbPod = $(this).val().trim();
+            let $input = $(this);
+
+            $('#awb-error').remove(); // remove old error message
+
+            if (awbPod !== '') {
+                $.ajax({
+                    url: "{{ route('courier.checkAwb') }}",
+                    type: "POST",
+                    data: {
+                        awb_pod: awbPod,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.exists) {
+                            // Show error
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            
+                            // Clear input
+                            $input.val('');
+
+                            // Add red border
+                            $input.addClass('is-invalid');
+
+                            // Disable submit
+                            // $('button[type="submit"]').prop('disabled', true);
+                        } else {
+                            $('#awb-error').remove();
+                            $input.removeClass('is-invalid');
+                            $('button[type="submit"]').prop('disabled', false);
+                        }
+                    }
+                });
             }
         });
 

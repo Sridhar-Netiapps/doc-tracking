@@ -254,51 +254,6 @@
         });
 
         let selectedDocuments = [];
-        
-        // $('.proceed').click(function () {
-        //     selectedDocuments = $('input.select:checked').map(function () {
-        //         return {
-        //             id: $(this).data('id'),
-        //             doc_type: $(this).data('doc_type')
-        //         };
-        //     }).get();
-
-        //     if (selectedDocuments.length) {
-        //         // $('#add-courier').modal('show');
-        //         const formData = {
-        //             _token: $('input[name="_token"]').val(),
-        //             loan_ids: [],
-        //             goldloan_ids: [],
-        //             dtrf_ids: [],
-        //             aof_ids: []
-        //         };
-        //         $.post({{ route('courier.update')}}, formData)
-        //             .done(function () {
-        //                 Swal.fire({
-        //                     title: "Success!",
-        //                     text: "Courier details updated successfully.",
-        //                     icon: "success",
-        //                     confirmButtonText: "OK"
-        //                 }).then(() => {
-        //                     selectedDocuments.forEach(doc => {
-        //                         $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-        //                         $('span.badge').text(doc_count - selectedDocuments.length);
-        //                     });
-        //                     if ($('input.select').length === 0) {
-        //                         window.location.href = `{{ route('dispatches','ready')}}`;
-                            
-        //                     }
-        //                 });
-        //         })
-        //     } else {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
-        //     }
-        // });
 
         $(document).on('click', '.proceed', function () {
             let selectedDocuments = $('input.select:checked').map(function () {
@@ -339,44 +294,6 @@
                     console.error("Error:", xhr.responseText);
                     Swal.fire("Error!", "Request failed.", "error");
                 });
-        });
-
-
-        $('.awb_pod').on('change', function () {
-            let awbPod = $(this).val().trim();
-            let $input = $(this);
-
-            $('#awb-error').remove(); // remove old error message
-
-            if (awbPod !== '') {
-                $.ajax({
-                    url: "{{ route('courier.checkAwb') }}",
-                    type: "POST",
-                    data: {
-                        awb_pod: awbPod,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function (response) {
-                        if (response.exists) {
-                            // Show error
-                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
-                            
-                            // Clear input
-                            $input.val('');
-
-                            // Add red border
-                            $input.addClass('is-invalid');
-
-                            // Disable submit
-                            $('button[type="submit"]').prop('disabled', true);
-                        } else {
-                            $('#awb-error').remove();
-                            $input.removeClass('is-invalid');
-                            $('button[type="submit"]').prop('disabled', false);
-                        }
-                    }
-                });
-            }
         });
 
         $('#update-courier').validate({
