@@ -689,6 +689,7 @@ class DocumentController extends Controller
         // $type = 'dispatch';
         $previousUrl = url()->previous(); 
         $type = Str::afterLast($previousUrl, '/');
+        $dtype = session()->pull('dtype');
 
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
@@ -699,7 +700,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
 
-        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
     
 
@@ -953,13 +954,13 @@ class DocumentController extends Controller
     {
         try {
             DB::beginTransaction();
-
             if($request->input('updates', []))
                 $updates = $request->input('updates', []);
             else
                 $updates[] = $request->all();
             
             foreach ($updates as $update) {
+                session(['dtype' => $update['type']]);
                 $doc = $this->table[$update['type']]::find($update['id']);
                 $doc->status = $update['remarks'];
                 if(isset($update['reason_for_rejection']))
