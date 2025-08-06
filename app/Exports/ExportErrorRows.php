@@ -51,7 +51,7 @@ class ExportErrorRows implements FromCollection,WithHeadings
                 $value[18],
                 $value[19],
                 $value[20],
-                '="'.$value[21].'"',
+                $value[21],
                 $value[22],
                 $value[23],     
                 $value[24],
@@ -89,7 +89,7 @@ class ExportErrorRows implements FromCollection,WithHeadings
                 $value[54],
             
                 $value[55],
-                $value[56],
+                '="'.$value[56].'"',
                 $value[57],
                 $value[58],
                 $value[59],

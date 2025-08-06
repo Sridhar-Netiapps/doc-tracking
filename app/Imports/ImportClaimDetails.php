@@ -58,7 +58,19 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
        $myage = '';
 
 	       $errors = [];
-	       if (empty($row[1]) ) {
+
+	       foreach ($row as $key => $value) {
+		          if (is_string($value)) {
+		              if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
+		                  $errors[] = 'Script tags are not allowed.';
+		              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-_]*$/', $value)) {
+		                  $errors[] = 'Special characters are not allowed.';
+		              }
+		          }
+		     }
+		    // print_r($insurancedetaisl);die();
+
+	       if (!$insurancedetaisl && empty($row[1]) ) {
 		        $errors[] = 'Region is required (Col B)';
 		    }
 
@@ -66,7 +78,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		        $errors[] = 'Region cannot be a integer value (Col B)';
 		    }
 
-		    if (empty($row[2])) {
+		    if (!$insurancedetaisl && empty($row[2])) {
 		        $errors[] = 'Branch ID-Name is required (Col C)';
 		        $branch = explode('-',$row[2]) ;
 		    }
@@ -80,19 +92,19 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		        }
 		    }
 
-		    if (empty($row[3])) {
+		    if (!$insurancedetaisl && empty($row[3])) {
 		        $errors[] = 'Partner is required (Col D)';
 		    }
 
-		    if (empty($row[4])) {
+		    if (!$insurancedetaisl && empty($row[4])) {
 		        $errors[] = 'Product is required (Col E)';
 		    }
 
-		    if (empty($row[6])) {
+		    if (!$insurancedetaisl && empty($row[6])) {
 		        $errors[] = 'Policy Number is required (Col G)';
 		    }
 
-		    if (empty($row[13])) {
+		    if (!$insurancedetaisl && empty($row[13])) {
 		        $errors[] = 'Date of Death is required (Col M)';
 		    }
 
@@ -109,40 +121,111 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		    }
 
 		    if (!empty($row[7]) && !empty($row[21])) {
-		    	$coverd=Date::excelToDateTimeObject($row['7'])->format('Y-m-d');
+
+		    	if (is_numeric($row[7])) {
+		            $coverd = Date::excelToDateTimeObject($row[7])->format('Y-m-d');
+		        } else {
+		            $coverd = date('Y-m-d', strtotime($row[7]));
+		        }
+
 		        $exp_date = date('Y-m-d',strtotime('+'.$row[21].'months', strtotime($coverd)));
+		       //  print_r($exp_date);die();
 		    }
 
-		    if (!empty($row[12])) {
-		    	$dofb=Date::excelToDateTimeObject($row['12'])->format('Y-m-d');
+		     if (!empty($row[12])) {
+		    	
+		    	if (is_numeric($row[12])) {
+		            $dofb=Date::excelToDateTimeObject($row['12'])->format('Y-m-d');
+		        } else {
+		            $dofb = date('Y-m-d', strtotime($row[12]));
+		        }
+                
+
 		        $now = now();
 		        $interval  = $now->diff($dofb);
 		        $myage = ($interval->format('%y years %m months'));
 		    }
 
-		    if (!empty($row[17]) && !empty($row[25])) {
-                $intDate = strtotime(Date::excelToDateTimeObject($row['17'])->format('Y-m-d'));
-                $docRecDate = strtotime(Date::excelToDateTimeObject($row['25'])->format('Y-m-d'));
+
+		     if (!empty($row[17]) && !empty($row[25])) {
+		     	if (is_numeric($row[17])) {
+		            $intDate=Date::excelToDateTimeObject($row['17'])->format('Y-m-d');
+		        } else {
+		            $intDate = date('Y-m-d', strtotime($row[17]));
+		        }
+
+		        if (is_numeric($row[25])) {
+		            $docRecDate=Date::excelToDateTimeObject($row['25'])->format('Y-m-d');
+		        } else {
+		            $docRecDate = date('Y-m-d', strtotime($row[25]));
+		        }
+
+                
                 if($docRecDate < $intDate){
                 	$errors[] = 'Document Received Date cannot be before Date of Intimation (Col Z)';
                 }
 		    } 
+		    elseif(!empty($row[25]) && $insurancedetaisl){
+                $intidate = $insurancedetaisl->intimation_date;
+               
+                if (is_numeric($row[25])) {
+		            $docRecDate=Date::excelToDateTimeObject($row['25'])->format('Y-m-d');
+		        } else {
+		            $docRecDate = date('Y-m-d', strtotime($row[25]));
+		        }
+		        // print_r($intidate);die();
+
+		        if($docRecDate < $intidate){
+                	$errors[] = 'Document Received Date cannot be before '.$insurancedetaisl->intimation_date. ' (Col Z)';
+                }
+
+		    }
 
 		    if (!empty($row[27]) && !empty($row[28])) {
-                $subDate = strtotime(Date::excelToDateTimeObject($row['27'])->format('Y-m-d'));
-                $resubDate = strtotime(Date::excelToDateTimeObject($row['28'])->format('Y-m-d'));
+
+		    	if (is_numeric($row[27])) {
+		            $subDate=Date::excelToDateTimeObject($row['27'])->format('Y-m-d');
+		        } else {
+		            $subDate = date('Y-m-d', strtotime($row[27]));
+		        }
+
+		        if (is_numeric($row[28])) {
+		            $resubDate=Date::excelToDateTimeObject($row['28'])->format('Y-m-d');
+		        } else {
+		            $resubDate = date('Y-m-d', strtotime($row[28]));
+		        }
+
                 if($resubDate < $subDate){
                 	$errors[] = 'Date of re-submision to partner cannot be before Date of submision to partner (Col AC)';
                 }
-		    } 	
+		    }
+		    elseif(!empty($row[28])){
+                   
+                   $submidate = $insurancedetaisl->submit_to_partner_date;
+		    	    if (is_numeric($row[28])) {
+		                $resubDate=Date::excelToDateTimeObject($row['28'])->format('Y-m-d');
+			        } else {
+			            $resubDate = date('Y-m-d', strtotime($row[28]));
+			        }
+
+			        if($resubDate < $submidate){
+                	  $errors[] = 'Date of re-submision to partner cannot be before '.$submidate.' (Col AC)';
+                    }
+
+
+		    }	
+
 		   
 
 		    if (!empty($errors)) {
-		        $failure = new Failure(
+		    	
+		    	  $failure = new Failure(
 		            $this->rowCount,   // current row number
 		            'row',             // can be 'row' or a specific column
 		            $errors,           // array of error messages
-		            $row               // raw row data
+		            $row ,
+		           
+		                          // raw row data
 		        );
 		        $this->onFailure($failure);
 		        return null; // Skip processing
@@ -162,7 +245,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			          $this->insertedCount++;
 			    }
 
-
+           // print_r($exp_date);die();
 	      
             if(!empty($row['1'])){ $claimDetail->region = $row['1']; } 
 			if(!empty($row['2'])){ $claimDetail->branch = $row['2']; } 

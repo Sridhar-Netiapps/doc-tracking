@@ -78,8 +78,8 @@
 		@endif
 
 		@if(session()->has('failures'))
-		    <div class="alert alert-danger">
-		    	<strong class="text-success">{{ session()->get('message') }}</strong><br>
+		    <div class="alert alert-danger bg-import-error">
+		    	<strong class="text-danger">{{ session()->get('message') }}</strong><br>
 		        <table class="table table-bordered ">
 		        	<tr>
 		        		<th>Row Number</th>

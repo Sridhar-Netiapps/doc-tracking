@@ -893,7 +893,7 @@ class InsuranceHomeController extends Controller
 
 
         $failures = $import->getCollectedFailures();
-   
+       //  print_r(json_encode($failures));die();
        $Errordata = array();
        if (!empty($import->failedRows)) {
       // Send mail with error rows
