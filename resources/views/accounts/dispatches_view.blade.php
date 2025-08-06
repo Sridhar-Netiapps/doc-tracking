@@ -6,12 +6,10 @@
         <div class="col">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
-                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
     </div>
 </div>
-{{-- {{dd($dispatch)}} --}}
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col">
@@ -33,18 +31,10 @@
                         <label>MMRP Internal Barcode No.</label>
                         <h5> {{ $dispatch->mmrp_barcode != null ? $dispatch->mmrp_barcode : '-' }} </h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Branch code</label>
-                        <h5> {{ $dispatch->branch_code }} </h5>
-                    </div> --}}
                     <div class="col">
                         <label>Dispatch Date</label>
                         <h5>{{ $dispatch->dispatch_date != null ? date('d-m-Y', strtotime($dispatch->dispatch_date)): '-' }}</h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Dispatch By</label>
-                        <h5> {{ $dispatch->dispatched_by }} </h5>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -834,6 +824,8 @@
         });
 
         function sendUpdateRequest(payload, type) {
+        console.log(payload);
+        return false;
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
