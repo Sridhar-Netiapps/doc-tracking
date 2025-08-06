@@ -1206,6 +1206,9 @@ class DocumentController extends Controller
             $data = GoldLoanDocument::query();
             $filter($data, 'gold_loan_documents');
             // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     dd($dt->getReceivedDate->created_at);
+            // }
             return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
         } elseif ($request->doc_type === 'dtrf') {
             $data = DtrfDocument::query();
@@ -1215,6 +1218,10 @@ class DocumentController extends Controller
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();
             $filter($data, 'account_opening_documents');
+            // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     dd($dt->dispatch->courierName->name);
+            // }
             return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
         } else {
             return redirect()->back()->with('error', 'Invalid document type selected.');
