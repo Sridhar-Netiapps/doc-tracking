@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
     Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
     Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
-    Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
+    // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
     Route::resource('vendor', VendorController::class);
     Route::resource('couriers', CourierController::class);
