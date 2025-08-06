@@ -71,7 +71,7 @@ class DocumentController extends Controller
             elseif($type ==='pending'){
                 $query->where('status',1);
             }
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -146,38 +146,78 @@ class DocumentController extends Controller
         // unset($filters['from_date'], $filters['to_date']);
 
         $docType = $filters['document_type'] ?? null;
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
+        // $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
 
-            if ($user->hasRole('ro-user')) {
+        //     if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+        //         $query->where('region', $user->region);
+        //     }
+        //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
+        //         $query->where('branch_code', $user->branch_id);
+        //     }
+        //     if ($fromDate !== null && $toDate !== null) {
+        //         $start = Carbon::parse($fromDate)->startOfDay();
+        //         $end   = Carbon::parse($toDate)->endOfDay();
+        //         $query->whereBetween('updated_at', [$start, $end]);
+        //     }
+        //     elseif ($fromDate !== null) {
+        //         $start = Carbon::parse($fromDate)->startOfDay();
+        //         $query->where('updated_at', '>=', $start);
+        //     }
+        //     elseif ($toDate !== null) {
+        //         $end = Carbon::parse($toDate)->endOfDay();
+        //         $query->where('updated_at', '<=', $end);
+        //     }
+        //     if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
+        //         $query->whereIn('status', [8, 9, 10, 11]);
+        //     }
+        
+        //     if ($hasFilters) {
+        //         foreach ($filters as $field => $value) {
+        //             if (!empty($value) && \Schema::hasColumn($table, $field)) {
+        //                 if ($filters['doc_type'] === 'moved' && $field === 'status') {
+        //                     continue;
+        //                 }
+        //                 if (in_array($field, ['cif_id', 'account_number'])) {
+        //                     $query->where($field, 'like', '%' . $value . '%');
+        //                 } else {
+        //                     $query->where($field, $value);
+        //                 }
+        //             }
+        //         }
+        //     }
+            
+        // };
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
+
+            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
+        
             if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
                 $query->where('branch_code', $user->branch_id);
             }
+        
             if ($fromDate !== null && $toDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $end   = Carbon::parse($toDate)->endOfDay();
-                $query->whereBetween('updated_at', [$start, $end]);
-            }
-            elseif ($fromDate !== null) {
+                $query->whereBetween('account_creation_date', [$start, $end]);
+            } elseif ($fromDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
-                $query->where('updated_at', '>=', $start);
-            }
-            elseif ($toDate !== null) {
+                $query->where('account_creation_date', '>=', $start);
+            } elseif ($toDate !== null) {
                 $end = Carbon::parse($toDate)->endOfDay();
-                $query->where('updated_at', '<=', $end);
+                $query->where('account_creation_date', '<=', $end);
             }
-            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved') {
+        
+            // Only apply this when no specific status is provided
+            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved' && empty($filters['status'])) {
                 $query->whereIn('status', [8, 9, 10, 11]);
             }
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
-                        if ($filters['doc_type'] === 'moved' && $field === 'status') {
-                            continue;
-                        }
-                        if (in_array($field, ['cif_id', 'account_number'])) {
+                        if (in_array($field, ['cif_id', 'account_number','channel'])) {
                             $query->where($field, 'like', '%' . $value . '%');
                         } else {
                             $query->where($field, $value);
@@ -185,8 +225,8 @@ class DocumentController extends Controller
                     }
                 }
             }
-            
         };
+        
 
         $loan_document = null;
         $gold_loan_document = null;
@@ -221,11 +261,11 @@ class DocumentController extends Controller
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100)->withQueryString();
-            
-            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'dtrf_documents');
-            })->paginate(100)->withQueryString();
-            
+            if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
+                $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
+                    $filterFunction($q, 'dtrf_documents');
+                })->paginate(100)->withQueryString();
+            }
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
@@ -310,7 +350,7 @@ class DocumentController extends Controller
         $allDocuments = collect();
     
         $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
-            if ($user->hasRole('ro-user')) {
+            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
     
@@ -321,15 +361,15 @@ class DocumentController extends Controller
             if ($fromDate !== null && $toDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
                 $end   = Carbon::parse($toDate)->endOfDay();
-                $query->whereBetween('updated_at', [$start, $end]);
+                $query->whereBetween('account_creation_date', [$start, $end]);
             }
             elseif ($fromDate !== null) {
                 $start = Carbon::parse($fromDate)->startOfDay();
-                $query->where('updated_at', '>=', $start);
+                $query->where('account_creation_date', '>=', $start);
             }
             elseif ($toDate !== null) {
                 $end = Carbon::parse($toDate)->endOfDay();
-                $query->where('updated_at', '<=', $end);
+                $query->where('account_creation_date', '<=', $end);
             }
     
             if ($hasFilters) {
@@ -409,66 +449,69 @@ class DocumentController extends Controller
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
-            'courier_name' => 'required|string',
-            'awb_pod' => 'nullable|string',
-            'mmrp_barcode' => 'required|string',
             // 'dispatch_date' => 'required|date',
             'loan_ids'=> 'nullable|array',
             'goldloan_ids'=> 'nullable|array',
             'dtrf_ids'=> 'nullable|array',
             'aof_ids'=> 'nullable|array'
         ]);
-
         DB::beginTransaction(); // Start Transaction
 
         try {
-            $dispatch = new CourierDispatch;
-            $dispatch->courier_id = $validated['courier_name'];
-            $dispatch->courier_name = $validated['courier_name'];
-            $dispatch->awb_pod = $validated['awb_pod'];
-            $dispatch->mmrp_barcode = $validated['mmrp_barcode']; 
-            $dispatch->branch_code = $this->user->branch_id; 
-            $dispatch->region_id = $this->user->region_id; 
-            $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
-            $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
-            $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
-            $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
-            $dispatch->status = 3;
-            $dispatch->created_by = $this->user->id;
-            $dispatch->save();
-            $dispatch_id = $dispatch->id;
-
-            if(isset($request->loan_ids)){
-                LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->goldloan_ids)){
-                GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->dtrf_ids)){
-                DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
-            }
-            if(isset($request->aof_ids)){
-                AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) use($dispatch_id) {
-                    $doc->status = 3;
-                    $doc->dispatch_id = $dispatch_id;
-                    $doc->updated_by = $this->user->id;
-                    $doc->save();
-                });
+            if (isset($request->dispatch_id) && !empty($request->dispatch_id)) {
+                $dispatch = CourierDispatch::find($validated['dispatch_id']);
+                $dispatch->courier_id = $validated['courier_name'];
+                $dispatch->courier_name = $validated['courier_name'];
+                $dispatch->awb_pod = $validated['awb_pod'];
+                $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
+                $dispatch->updated_by = $this->user->id;
+                $dispatch->save();
+            }else{
+                $dispatch = new CourierDispatch;
+                $dispatch->branch_code = $this->user->branch_id; 
+                $dispatch->region_id = $this->user->region_id; 
+                $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
+                $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
+                $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
+                $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
+                $dispatch->status = 3;
+                $dispatch->created_by = $this->user->id;
+                $dispatch->save();
+                $dispatch_id = $dispatch->id;
+    
+    
+                if(isset($request->loan_ids)){
+                    LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->goldloan_ids)){
+                    GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->dtrf_ids)){
+                    DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
+                if(isset($request->aof_ids)){
+                    AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) use($dispatch_id) {
+                        $doc->status = 3;
+                        $doc->dispatch_id = $dispatch_id;
+                        $doc->updated_by = $this->user->id;
+                        $doc->save();
+                    });
+                }
             }
             DB::commit();
             return response()->json(['success' => true]);
@@ -553,7 +596,7 @@ class DocumentController extends Controller
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region_id', $this->user->region_id);
             }
 
@@ -610,6 +653,8 @@ class DocumentController extends Controller
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::where('status', 1)->get();
+        // $couriers = Courier::pluck('name', 'id');
+
         return view('accounts.dispatches', compact(
             'records',
             'ready_to_dispatch_count',
@@ -647,6 +692,7 @@ class DocumentController extends Controller
         // $type = 'dispatch';
         $previousUrl = url()->previous(); 
         $type = Str::afterLast($previousUrl, '/');
+        $dtype = session()->pull('dtype');
 
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
@@ -657,27 +703,35 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
 
-        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total'));
+        return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
     
 
     public function updateCourier(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
-            'readytodispatch_ids' => 'required|array'
+            'courier_name' => 'required|string',
+            'awb_pod' => 'nullable|string',
+            'mmrp_barcode' => 'required|string',
+            'dispatch_id' => 'required'
         ]);
         DB::beginTransaction(); // Start Transaction
-
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
             // dd($sequence);
             // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
             // ->whereDate('created_at', now()->format('Y-m-d'))->first();
             // dd($sequence);
-            $dispatched = CourierDispatch::whereIn('id',$validated['readytodispatch_ids'])->get();
+            $dispatched = CourierDispatch::where('id',$validated['dispatch_id'])->get();
+            // $dispatched = CourierDispatch::find('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
                 $sequence++;
+                $dispatch->courier_id = $validated['courier_name'];
+                $dispatch->courier_name = $validated['courier_name'];
+                $dispatch->awb_pod = $validated['awb_pod'];
+                $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
                 $dispatch->verified_by = Auth::user()->id;
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
@@ -793,6 +847,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -804,6 +859,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -901,13 +957,13 @@ class DocumentController extends Controller
     {
         try {
             DB::beginTransaction();
-
             if($request->input('updates', []))
                 $updates = $request->input('updates', []);
             else
                 $updates[] = $request->all();
             
             foreach ($updates as $update) {
+                session(['dtype' => $update['type']]);
                 $doc = $this->table[$update['type']]::find($update['id']);
                 $doc->status = $update['remarks'];
                 if(isset($update['reason_for_rejection']))
@@ -1014,7 +1070,7 @@ class DocumentController extends Controller
             // elseif($type ==='pending'){
             //     $query->where('status',1);
             // }
-            if ($this->user->hasRole('ro-user')) {
+            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -1154,6 +1210,9 @@ class DocumentController extends Controller
             $data = GoldLoanDocument::query();
             $filter($data, 'gold_loan_documents');
             // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     dd($dt->getReceivedDate->created_at);
+            // }
             return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
         } elseif ($request->doc_type === 'dtrf') {
             $data = DtrfDocument::query();
@@ -1163,9 +1222,20 @@ class DocumentController extends Controller
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();
             $filter($data, 'account_opening_documents');
+            // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     dd($dt->dispatch->courierName->name);
+            // }
             return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
         } else {
             return redirect()->back()->with('error', 'Invalid document type selected.');
         }
     }
+
+    public function sendEmail($subject, $content, $to, $cc=null)
+    {
+        $to = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+        Mail::to($to)->send(new \App\Mail\DispatchesMail($content, $subject));
+    }
+
 }

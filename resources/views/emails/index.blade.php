@@ -67,7 +67,7 @@
                 <td>{{ $email->subject }}</td>
                 <td>{{ $email->status }}</td>
                 <td>{{ $email->sent_at ?? '—' }}</td>
-                @role('super_admin|master')
+                @role('super_admin|master|admin')
                 <td>
                     <a href="{{ route('emails.edit', $email->id) }}" class="btn btn-sm btn-warning">Edit</a>
                     {{-- <form action="{{ route('emails.destroy', $email->id) }}" method="POST" style="display:inline;">

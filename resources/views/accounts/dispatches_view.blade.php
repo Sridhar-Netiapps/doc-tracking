@@ -6,7 +6,6 @@
         <div class="col">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
-                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
     </div>
@@ -18,32 +17,24 @@
                 <div class="row">
                     <div class="col border-end">
                         <label>Dispatch Number</label>
-                        <h5> {{ $dispatch->dispatch_no }} </h5>
+                        <h5> {{ $dispatch->dispatch_no != null ? $dispatch->dispatch_no : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>AWB/POD Number</label>
-                        <h5> {{ $dispatch->awb_pod }} </h5>
+                        <h5> {{ $dispatch->awb_pod != null ? $dispatch->awb_pod : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>Courier Name</label>
-                        <h5> {{ $dispatch->courierName->name }} </h5>
+                        <h5> {{ $dispatch->courier_name != null ? $dispatch->courierName->name : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>MMRP Internal Barcode No.</label>
-                        <h5> {{ $dispatch->mmrp_barcode }} </h5>
+                        <h5> {{ $dispatch->mmrp_barcode != null ? $dispatch->mmrp_barcode : '-' }} </h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Branch code</label>
-                        <h5> {{ $dispatch->branch_code }} </h5>
-                    </div> --}}
                     <div class="col">
                         <label>Dispatch Date</label>
                         <h5>{{ $dispatch->dispatch_date != null ? date('d-m-Y', strtotime($dispatch->dispatch_date)): '-' }}</h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Dispatch By</label>
-                        <h5> {{ $dispatch->dispatched_by }} </h5>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -54,22 +45,22 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 <li class="ms-auto">
-                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                             <button id="update-all" class="btn btn-primary d-none">Update All</button>
                         @endif 
@@ -79,7 +70,7 @@
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -99,7 +90,7 @@
                                     <th scope="col" class="text-nowrap">Disb Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                    
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                    
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none loan text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none loan text-nowrap" scope="col">Actions</th>
@@ -152,7 +143,7 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
@@ -160,7 +151,7 @@
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="loan text-nowrap">
@@ -184,7 +175,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -201,7 +192,7 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none goldloan text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none goldloan text-nowrap" scope="col">Actions</th>
@@ -251,14 +242,14 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="goldloan text-nowrap">
@@ -282,7 +273,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -301,7 +292,7 @@
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none aof text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none aof text-nowrap" scope="col">Actions</th>
@@ -353,14 +344,14 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="aof text-nowrap">
@@ -384,7 +375,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -396,7 +387,7 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Status</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                   
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
                                         @if ($dispatch->status == 5 || $dispatch->status == 7)
                                             <th class="d-none dtrf text-nowrap" scope="col">Update Status</th>
                                             <th class="d-none dtrf text-nowrap" scope="col">Actions</th>
@@ -441,14 +432,14 @@
                                                     @endif
                                                 </td> 
                                             @endhasrole
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor']))                                                 
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))                                             
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
                                                 @if ($dispatch->status == 5 || $dispatch->status == 7)
                                                     @if ($row->status == 4)
                                                         <td class="dtrf text-nowrap">
@@ -790,7 +781,7 @@
                 return;
             }
 
-            sendUpdateRequest(data);
+            sendUpdateRequest(data,'row');
         });
 
         // Handle bulk update
@@ -828,12 +819,13 @@
             });
 
             if (!hasError && data.length) {
-                sendUpdateRequest(data);
+                sendUpdateRequest(data,'all');
             }
         });
 
-
-        function sendUpdateRequest(payload) {
+        function sendUpdateRequest(payload, type) {
+        console.log(payload);
+        // return false;
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
@@ -842,7 +834,11 @@
                     updates: payload
                 },
                 success: function () {
-                    Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    if (type === 'all') { 
+                        Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    } else {
+                        location.reload(); 
+                    }
                 },
                 error: function () {
                     Swal.fire("Error", "Update failed", "error");

@@ -82,7 +82,9 @@
                                     <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
+                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                     <th scope="col" class="text-nowrap">Action</th>
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -117,11 +119,13 @@
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
+                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                                 @endif
                                             </td>
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -155,7 +159,9 @@
                                     <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
+                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                     <th scope="col" class="text-nowrap">Action</th>
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,17 +183,19 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            Opening                   <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
+                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                                 @endif
                                             </td>
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -223,7 +231,9 @@
                                     <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
+                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                     <th scope="col" class="text-nowrap">Action</th>
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -253,11 +263,13 @@
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
+                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                                 @endif
                                             </td>
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -286,7 +298,9 @@
                                     <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
+                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                     <th scope="col" class="text-nowrap">Action</th>
+                                    @endunless
                                 </tr>
                             </thead>
                             <tbody>
@@ -309,11 +323,13 @@
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
+                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
                                                 @endif
                                             </td>
+                                            @endunless
                                         </tr>
                                     @endforeach
                                 @endif
@@ -384,7 +400,13 @@
                     <input type="text" class="form-control category_of_document lettersonly" placeholder="Document Category" value="{{ old('category_of_document', $filters['category_of_document'] ?? '') }}" name="category_of_document">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="number" class="form-control work_order_no" placeholder="Work Order No" value="{{ old('work_order_no', $filters['work_order_no'] ?? '') }}" name="work_order_no" min="0">
+                    <input type="text" class="form-control work_order_no alphanumeric" placeholder="Work Order No" value="{{ old('work_order_no', $filters['work_order_no'] ?? '') }}" name="work_order_no">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control file_barcode alphanumeric" placeholder="File Barcode" value="{{ old('file_barcode', $filters['file_barcode'] ?? '') }}" name="file_barcode">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control box_barcode alphanumeric" placeholder="Box Barcode" value="{{ old('box_barcode', $filters['box_barcode'] ?? '') }}" name="box_barcode">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select scheme" name="scheme">
@@ -519,7 +541,7 @@
             }).modal('show');;
         });
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
             allowInput: false,         
             clickOpens: true

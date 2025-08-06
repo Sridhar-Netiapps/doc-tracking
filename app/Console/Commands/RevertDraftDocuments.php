@@ -30,6 +30,7 @@ class RevertDraftDocuments extends Command
      */
     public function handle()
     {
+        Log::info("Entered In to Doc Revert");
         $tables = [
             LoanDocument::class,
             GoldLoanDocument::class,
@@ -38,6 +39,7 @@ class RevertDraftDocuments extends Command
         ];
 
         foreach ($tables as $model) {
+            Log::info("Processing to Doc Revert");
             $updated = $model::where('status',2)->get()->each(function ($doc) {
                 $doc->status = 1;
                 $doc->updated_by = 0;

@@ -36,15 +36,16 @@
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'received','dtype' => 'loan']) }}">Received</a>
                 </li>
-
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @hasrole('ro-user|ro-supervisor|ro-read-only|bank-user|admin|super_admin|master')
                 <li class="nav-item ">
                     <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'moved','dtype' => 'loan']) }}">Moved to RMA</a>
                 </li>
+                @endhasrole
+                @hasrole('ro-user|ro-supervisor|bank-user|admin|super_admin|master')
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
                 </li>
-                @endunless
+                @endhasrole
                 @endunless
             </ul>
         </div>

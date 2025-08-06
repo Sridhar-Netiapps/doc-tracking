@@ -7,7 +7,7 @@
                 {{-- <li><a href="{{ route('departments.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Departments</a></li> --}}
                 <li><a href="{{ route('users.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Users</a></li>
                 <li><a href="{{ route('vendor.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Vendor</a></li>
-                @role('super_admin|master')
+                @role('super_admin|master|admin')
                 <li><a href="{{ route('emails.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Emails</a></li>
                 @endrole
                 @role('admin|super_admin|master')
