@@ -42,7 +42,7 @@
                 @endunless
                 @endif
                 @if ($type == 'list')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -76,7 +76,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <th scope="col">Update Status</th>
                                         @endunless
                                     @endif
@@ -123,7 +123,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -135,7 +135,7 @@
                                             @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
@@ -154,12 +154,12 @@
                                                 @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                 @endif
@@ -410,6 +410,12 @@
         //     width: '100%',
         //     dropdownAutoWidth: true
         // });
+        flatpickr(".flatpickr-date", {
+            dateFormat: "d-m-Y",        
+            maxDate: "today",         
+            allowInput: false, 
+            clickOpens: true
+        });
         $('select[name="remarks"]').change(function () {
             const row = $(this).closest('tr');
             const reasonField = row.find('textarea[name="reason_for_rejection"]');

@@ -19,7 +19,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
-                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -33,7 +33,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr> 
-                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
                                     @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
@@ -62,7 +62,7 @@
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
-                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                         <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                         @endunless
                                         <td>
