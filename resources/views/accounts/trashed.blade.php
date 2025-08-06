@@ -158,7 +158,7 @@
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary restore">Update</button>
+                                                <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary restore">Restore</button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -226,7 +226,7 @@
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary restore">Update</button>
+                                                <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary restore">Restore</button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -280,7 +280,7 @@
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary restore">Update</button>
+                                                <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary restore">Restore</button>
                                                 @endif
                                             </td>
                                         </tr>
