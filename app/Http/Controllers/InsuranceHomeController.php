@@ -470,6 +470,9 @@ class InsuranceHomeController extends Controller
 
 
         }
+
+        session()->forget('message');
+        session()->forget('failures');
         
       // print_r($formArray);die();
         return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab'));
@@ -511,6 +514,9 @@ class InsuranceHomeController extends Controller
 
 
         }
+
+        session()->forget('message');
+        session()->forget('failures');
         
       // print_r($formArray);die();
         return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec'));
