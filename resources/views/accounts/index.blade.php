@@ -19,7 +19,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Selected Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
-                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                 <li class="ms-auto">
                     <button class="btn btn-primary proceed" type="button">Proceed to Dispatch</button>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -33,7 +33,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr> 
-                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                                    @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="select_all"/> </th>
                                     @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
@@ -62,7 +62,7 @@
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
-                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user']))
+                                        @unless(auth()->user()->hasAnyRole(['ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
                                         <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                         @endunless
                                         <td>
@@ -244,7 +244,7 @@
 <script>
     $(document).ready(function () {
         flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d-m-Y",        
             maxDate: "today",         
             allowInput: false,         
             clickOpens: true
@@ -254,51 +254,6 @@
         });
 
         let selectedDocuments = [];
-        
-        // $('.proceed').click(function () {
-        //     selectedDocuments = $('input.select:checked').map(function () {
-        //         return {
-        //             id: $(this).data('id'),
-        //             doc_type: $(this).data('doc_type')
-        //         };
-        //     }).get();
-
-        //     if (selectedDocuments.length) {
-        //         // $('#add-courier').modal('show');
-        //         const formData = {
-        //             _token: $('input[name="_token"]').val(),
-        //             loan_ids: [],
-        //             goldloan_ids: [],
-        //             dtrf_ids: [],
-        //             aof_ids: []
-        //         };
-        //         $.post({{ route('courier.update')}}, formData)
-        //             .done(function () {
-        //                 Swal.fire({
-        //                     title: "Success!",
-        //                     text: "Courier details updated successfully.",
-        //                     icon: "success",
-        //                     confirmButtonText: "OK"
-        //                 }).then(() => {
-        //                     selectedDocuments.forEach(doc => {
-        //                         $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-        //                         $('span.badge').text(doc_count - selectedDocuments.length);
-        //                     });
-        //                     if ($('input.select').length === 0) {
-        //                         window.location.href = `{{ route('dispatches','ready')}}`;
-                            
-        //                     }
-        //                 });
-        //         })
-        //     } else {
-        //         Swal.fire({
-        //             title: "Warning!",
-        //             text: "Please select at least one Document.",
-        //             icon: "warning",
-        //             confirmButtonText: "OK"
-        //         });
-        //     }
-        // });
 
         $(document).on('click', '.proceed', function () {
             let selectedDocuments = $('input.select:checked').map(function () {
@@ -339,44 +294,6 @@
                     console.error("Error:", xhr.responseText);
                     Swal.fire("Error!", "Request failed.", "error");
                 });
-        });
-
-
-        $('.awb_pod').on('change', function () {
-            let awbPod = $(this).val().trim();
-            let $input = $(this);
-
-            $('#awb-error').remove(); // remove old error message
-
-            if (awbPod !== '') {
-                $.ajax({
-                    url: "{{ route('courier.checkAwb') }}",
-                    type: "POST",
-                    data: {
-                        awb_pod: awbPod,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function (response) {
-                        if (response.exists) {
-                            // Show error
-                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
-                            
-                            // Clear input
-                            $input.val('');
-
-                            // Add red border
-                            $input.addClass('is-invalid');
-
-                            // Disable submit
-                            $('button[type="submit"]').prop('disabled', true);
-                        } else {
-                            $('#awb-error').remove();
-                            $input.removeClass('is-invalid');
-                            $('button[type="submit"]').prop('disabled', false);
-                        }
-                    }
-                });
-            }
         });
 
         $('#update-courier').validate({

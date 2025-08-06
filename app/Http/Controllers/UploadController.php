@@ -45,7 +45,7 @@ class UploadController extends Controller
         if(!empty($import->failures()))
             session()->flash('upload_failures', $import->failures());
 
-        return redirect()->route('accounts.index','moved')->with('success', 'Upload completed Successfully.');
+        return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Upload completed Successfully.');
     }
     
     public function download(Upload $upload)

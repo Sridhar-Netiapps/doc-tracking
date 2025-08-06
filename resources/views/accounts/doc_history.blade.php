@@ -7,7 +7,7 @@
         <div class="col-10">
             <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
-                <a href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Back</a>
+                <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Back</a>
             </div>
         </div>
         <div class="col-1"></div>
@@ -24,13 +24,13 @@
                             <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                                 <table class="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">S No</th>
-                                        <th scope="col">Previous Status</th>
-                                        <th scope="col">Current Status</th>
-                                        <th scope="col">Done By</th>
-                                        <th scope="col">Done On</th>                                
-                                    </tr>
+                                        <tr>
+                                            <th scope="col">S No</th>
+                                            <th scope="col">Previous Status</th>
+                                            <th scope="col">Current Status</th>
+                                            <th scope="col">Done By</th>
+                                            <th scope="col">Done On</th>                                
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($history as $row)

@@ -25,8 +25,8 @@
                             <label for="doc_type">Document Type</label>
                             <select id="doc_type" name="doc_type" class="form-select">
                                 <option value="">-- Select --</option>
-                                <option value="goldloan">Gold Loan</option>
                                 <option value="loan">MB Loan</option>
+                                <option value="goldloan">Gold Loan</option>
                                 <option value="aof">Liablities</option>
                                 <option value="dtrf">DTR Files</option>
                             </select>
@@ -69,21 +69,21 @@
                                 <label>Account Number</label>
                                 <input type="text" name="account_number" class="form-control">
                             </div>
-                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
+                            {{-- <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Customer Name</label>
                                 <input type="text" name="customer_name" class="form-control">
-                            </div>
+                            </div> --}}
                             {{-- DTRF Fields --}}
-                            <div class="col-3 mt-2 doc-fields dtrf">
+                            {{-- <div class="col-3 mt-2 doc-fields dtrf">
                                 <label>Barcode</label>
                                 <input type="text" name="barcode" class="form-control">
-                            </div>
+                            </div> --}}
 
                             {{-- Unique Fields --}}
-                            <div class="col-3 mt-2 doc-fields goldloan loan">
+                            {{-- <div class="col-3 mt-2 doc-fields goldloan loan">
                                 <label>Loan Amount</label>
                                 <input type="text" name="loan_amount" class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="col-3 mt-2 doc-fields goldloan loan aof">
                                 <label>Channel</label>
                                 <input type="text" name="channel" class="form-control">
@@ -92,34 +92,34 @@
                                 <label>Channel</label>
                                 <input type="text" name="channel_loan" class="form-control">
                             </div> --}}
-                            <div class="col-3 mt-2 doc-fields loan">
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Cycle</label>
                                 <input type="text" name="loan_cycle" class="form-control">
-                            </div>
-                            <div class="col-3 mt-2 doc-fields loan">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
                                 <label>Glow Application ID</label>
                                 <input type="text" name="glow_application_id" class="form-control">
-                            </div>
-                            <div class="col-3 mt-2 doc-fields loan">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
                                 <label>Loan Disbursement Type</label>
                                 <input type="text" name="loan_disbursement_type" class="form-control">
-                            </div>
-                            <div class="col-3 mt-2 doc-fields aof">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
                                 <label>Scheme</label>
                                 <input type="text" name="scheme" class="form-control">
-                            </div>
+                            </div> --}}
                             {{-- <div class="col-3 mt-2 doc-fields ">
                                 <label>Channel (Swagat/HHD/CRM)</label>
                                 <input type="text" name="channel_aof" class="form-control">
                             </div> --}}
-                            <div class="col-3 mt-2 doc-fields aof">
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
                                 <label>PGK No</label>
                                 <input type="text" name="pgk_no" class="form-control">
-                            </div>
-                            <div class="col-3 mt-2 doc-fields aof">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
                                 <label>Account Opening Type</label>
                                 <input type="text" name="type_of_account_opening" class="form-control">
-                            </div>
+                            </div> --}}
                             @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
@@ -207,6 +207,11 @@
             $('.' + search_type).show();
         }
     }
+
+    $(".datepicker").flatpickr({
+            dateFormat: "d-m-Y",
+            allowInput: true
+        });
 
     $(document).ready(function () {
         docfields();

@@ -1,16 +1,6 @@
 <script>
     $(document).ready(function () {
         $('[data-bs-toggle="tooltip"]').tooltip();
-        $(".datepicker").flatpickr({
-            dateFormat: "d-m-Y",
-            allowInput: true
-        });
-        flatpickr(".flatpickr-date", {
-            dateFormat: "Y-m-d",
-            maxDate: "today",         
-            allowInput: false,         
-            clickOpens: true
-        });
         @if(session('success'))
             Swal.fire({
                 title: "Success!",
