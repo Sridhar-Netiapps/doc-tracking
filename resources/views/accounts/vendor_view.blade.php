@@ -21,7 +21,6 @@
         </div>
     </div>
 </div>
-{{dd($dtype)}}
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col">

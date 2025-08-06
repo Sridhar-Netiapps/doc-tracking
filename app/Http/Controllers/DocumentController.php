@@ -292,7 +292,7 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
 
-        dd($filters);
+        // dd($filters);
         // $dtype = $filters['document_type'] ?? 
 
         if($type != 'moved')
