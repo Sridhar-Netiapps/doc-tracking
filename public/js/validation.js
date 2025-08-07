@@ -45,6 +45,31 @@ $(document).ready(function(){
         if($(this).attr('id') != 'contact_no' && !$(this).hasClass("decimal"))
             $(this).val(parseInt($(this).val()));
     });
+
+    // custom validation for reports page date criteria
+    $.validator.addMethod("requiredIfDate", function (value, element) {
+        const from = $('#from_date').val().trim();
+        const to = $('#to_date').val().trim();
+        if (from || to) {
+            return $.trim(value) !== "";
+        }
+        return true;
+    }, "Please select Date Criteria when From/To Date is filled.");
+
+    // Custom method: To Date >= From Date
+$.validator.addMethod("greaterThanOrEqual", function (value, element, param) {
+    const fromDate = $(param).val();
+    if (!fromDate || !value) return true; // Skip if either is empty
+
+    // Convert d-m-Y to Y-m-d for comparison
+    const [d1, m1, y1] = fromDate.split("-");
+    const [d2, m2, y2] = value.split("-");
+    const fDate = new Date(`${y1}-${m1}-${d1}`);
+    const tDate = new Date(`${y2}-${m2}-${d2}`);
+
+    return tDate >= fDate;
+}, "To Date must be greater than or equal to From Date.");
+
     
     // Add a custom validation method
     $.validator.addMethod("greaterThanUnits", function (value, element) {

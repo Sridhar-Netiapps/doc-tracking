@@ -606,9 +606,17 @@ class DocumentController extends Controller
                 $query->where('courier_id', $filters['courier']);
             }
             
-            if ($dispatchDate != null) {
-                $query->whereDate('dispatch_date', $dispatchDate);
-            }                       
+            // if ($dispatchDate != null) {
+            //     $query->whereDate('dispatch_date', $dispatchDate);
+            // }   
+            if ($dispatchDate) {
+                try {
+                    $formattedDate = Carbon::createFromFormat('d-m-Y', $dispatchDate)->format('Y-m-d');
+                    $query->whereDate('dispatch_date', $formattedDate);
+                } catch (\Exception $e) {
+                    // Handle incorrect format or empty input gracefully
+                }
+            }                    
 
             if (!empty($filters['dispatch_no'])) {
                 $query->where('dispatch_no', 'like', '%' . $filters['dispatch_no'] . '%');
@@ -1204,6 +1212,12 @@ class DocumentController extends Controller
             $data = LoanDocument::query();
             $filter($data, 'loan_documents');
             // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     if(empty($dt->getReceivedDate)){
+            //         dd($dt);
+            //     }
+            //     }
+            //     exit;
             return Excel::download(new LoanDocumentExport($data->get()), 'loan_documents.xlsx');
         } elseif ($request->doc_type === 'goldloan') {
             $data = GoldLoanDocument::query();

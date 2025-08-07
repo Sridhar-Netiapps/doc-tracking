@@ -795,14 +795,14 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
                         <input type="hidden" name="status" value="8">
-                        <label for="lot_no" class="form-label">Lot No.</label>
+                        <label for="lot_no" class="form-label">Lot No</label>
                         <input type="text" name="lot_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="category_of_document" class="form-label">Category of the Document.</label>
+                        <label for="category_of_document" class="form-label">Doc. Category</label>
                         {{-- <input type="text" name="category_of_document" class="form-control"> --}}
                         <select class="form-select document_type" name="category_of_document" required>
-                            <option value="">Select Document Category</option>
+                            <option value="">Select Doc. Category</option>
                             <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
                             <option value="CAT A2" {{ ($doc->category_of_document ?? '') == 'CAT A2' ? 'selected' : '' }}>CAT A2</option>
                             <option value="CAT B"  {{ ($doc->category_of_document ?? '') == 'CAT B'  ? 'selected' : '' }}>CAT B</option>
@@ -810,7 +810,7 @@
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="work_order_no" class="form-label">Work Order No.</label>
+                        <label for="work_order_no" class="form-label">Work Order No</label>
                         <input type="text" name="work_order_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
@@ -826,19 +826,19 @@
                         </select>                                                
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <label for="vendor_movement_date" class="form-label">Date of Movement</label>
                         <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode againt Lot No.</label>
+                        <label for="file_barcode" class="form-label">File barcode</label>
                         <input type="text" name="file_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="box_barcode" class="form-label">Box Barcode.</label>
+                        <label for="box_barcode" class="form-label">Box Barcode</label>
                         <input type="text" name="box_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
+                        <label for="date_added_to_vendor" class="form-label">Date of addition</label>
                         <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
                     </div>
                 </div>
