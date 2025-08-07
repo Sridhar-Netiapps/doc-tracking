@@ -20,6 +20,7 @@
     {{-- <script src="{{ asset('js/select2.min.js') }}"></script> --}}
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/material_green.css') }}">
+    
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>

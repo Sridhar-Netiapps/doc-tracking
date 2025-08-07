@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
-    
+
     Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
@@ -96,6 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
     Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
     Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
+    
     // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
     Route::resource('vendor', VendorController::class);
@@ -107,6 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('emails', EmailController::class);
     Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);
     Route::get('uploads/{upload}/download', [UploadController::class, 'download'])->name('uploads.download');
+    Route::get('/download-sample/vendor-documents', [UploadController::class, 'vendorSample'])->name('vendor.sample.download');    
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('users/activity', [UserController::class, 'userActivity'])->name('users.activity');
     Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');

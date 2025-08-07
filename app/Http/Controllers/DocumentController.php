@@ -112,10 +112,8 @@ class DocumentController extends Controller
     {
         $parsedUrl = parse_url(url()->previous());       
         $url = explode('/', trim($parsedUrl['path'], '/'));
-        
         session(['type' => isset($url[1]) ? $url[1]:null]);
         session(['dtype' => isset($url[2]) ? $url[2]:null]);
-
         session(['filters' => $request->all()]);
 
         if ($request->type == 'proceed')
@@ -128,10 +126,10 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        $type = session()->pull('type');
-        $dtype = session()->pull('dtype');
+        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type');
+        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype');
         if(empty($filters))
-            return redirect()->route('accounts.index',['type' => 'all','dtype' => 'loan']);
+            return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         $fromDate = $filters['from_date'] ?? null;

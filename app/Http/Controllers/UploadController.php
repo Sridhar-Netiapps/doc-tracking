@@ -52,4 +52,13 @@ class UploadController extends Controller
     {
         return Storage::disk('public')->download($upload->file_path);
     }
+
+    public function vendorSample()
+    {
+        $filePath = storage_path('app/template/vendor_documents_sample.csv');
+        if (!file_exists($filePath)) {
+            abort(404);
+        }
+        return response()->download($filePath, 'vendor_documents_sample.csv');
+    }
 }
