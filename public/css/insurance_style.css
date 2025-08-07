@@ -51,6 +51,10 @@
   background-color: #FFC107; /* Yellow for Branch Office */
   color: white;
 }
+.btn-toggle.active#cl {
+  background-color: #0DCAF0; /* Yellow for Branch Office */
+  color: black;
+}
 .bg-card{
   background-color: #229E82;
 }
@@ -73,6 +77,12 @@
 	border: 1px solid #d3d3d3 !important;
 	padding: 7px;
 	
+}
+.form-control:focus {
+  border-color: #229E82 !important; /* green border */
+  box-shadow: 0 0 5px rgba(34, 158, 130, 0.5); /* subtle glow */
+  outline: none; /* removes default blue glow in some browsers */
+  background-color: #F0FFFF ;
 }
 input::placeholder {
   color: #d3d3d3;
@@ -99,6 +109,24 @@ input::placeholder {
 	border-bottom: 5px solid #FFC107 !important;
 	border-left:3px solid #d3d3d3 !important;
 	
+}
+.form-control-design2:focus {
+  border-top: 2px solid #FFC107 !important;
+  border-right: 1px solid #FFC107 !important;
+  border-bottom: 5px solid #FFC107 !important;
+  border-left: 3px solid #d3d3d3 !important;
+  background-color: #FFF8E1;
+  box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+  outline: none;
+}
+
+.form-control-design3{
+  background: #FAFAFA;
+  border-top: 2px solid #0DCAF0 !important;
+  border-right: 1px solid #0DCAF0 !important;
+  border-bottom: 5px solid #0DCAF0 !important;
+  border-left:3px solid #0DCAF0 !important;
+  
 }
 
 select.form-control-design {
@@ -143,6 +171,15 @@ select.form-control-design {
 
 }
 
+.cardcl2{
+  border-radius: 10px;
+  border-top: 2px solid #A7A8AA; 
+  border-bottom: 5px solid #0DCAF0; 
+  border-left: 2px solid #A7A8AA; 
+  border-right: 2px solid #A7A8AA; 
+
+}
+
 .bg-card-header{
    background-color: #076E5D;
 }
@@ -152,6 +189,10 @@ select.form-control-design {
 
 .bg-card-header-branch{
    background-color: #E8B006;
+}
+.bg-card-header-doc{
+   background-color: #0DCAF0;
+
 }
 
 .card-row1-bg{
@@ -410,3 +451,93 @@ select.form-control-design {
 .floating-buttons button:hover {
     background-color: #1b846c;
 }  
+
+ #previewContainer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .preview-box {
+       flex: 0 0 auto;
+      width: 250px;
+      
+      text-align: center;
+      padding: 10px;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .pdf-icon {
+      width: 80px;
+      height: 80px;
+      display: block;
+      margin: auto;
+    }
+
+    .file-name {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    iframe {
+        width: 100%;
+        height: 200px;
+        border: 1px solid #aaa;
+    }
+
+    @media (max-width: 768px) {
+        .preview-box {
+            flex: 1 1 100%; /* Stack on small screens */
+        }
+    }
+  .pdflogo{
+     height: 60px;
+     width: 50px;
+  }
+
+  .maxline2 {
+    display: inline-block;
+    max-width: 100%; /* or a specific value like 200px */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .maxwidth{
+    width: 200px;
+  }
+  
+  .preview-box.marked-for-delete {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.preview-box.marked-for-delete::after {
+    content: 'Marked for Deletion';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: red;
+    color: white;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+.bg-import-error{
+  background-color: #FABFBF;
+}

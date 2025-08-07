@@ -97,7 +97,7 @@
                                             {{ Auth::user()->middle_name }}
                                         @endif
                                         {{ Auth::user()->last_name }}
-                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ ucwords(str_replace(['-', '_'], ' ', Auth::user()->roles->value('name'))) }} </div>
+                                        <div class="empId">{{ Auth::user()->employee_id }} - {{ Auth::user()->roles->value('name') != 'super_admin' ? ucwords(str_replace('-', ' ', Auth::user()->roles->value('name'))) : 'ID Maintenance' }} </div>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -128,5 +128,7 @@
         </main>
     </div>
     @include('layouts.scripts')
+
+    <button id="backToTopBtn" title="Go to top">↑</button>
 </body>
 </html>

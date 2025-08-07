@@ -146,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    
 
  });
 
@@ -267,3 +268,7 @@ function formatNumber(input) {
 $(document).ready(function () {
   $(".select2").select2();
 });  
+
+ document.addEventListener('DOMContentLoaded', function () {
+    
+});

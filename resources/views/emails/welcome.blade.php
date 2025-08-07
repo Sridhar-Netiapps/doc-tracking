@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h2>Welcome,</h2>
-    <p>Thank you for registering.</p>
+    <h2>Hello Team,</h2>
+    <p>{{ $mailData['message'] }}</p><br>
+
+    <p> <a href="{{ url('/')}}">Click me</a> to login to the module </p>
+
+    <label><strong>Thanks and Regards,</strong></label>
+    <label>Insurance Team - USFB</label>
 </body>
 </html>
