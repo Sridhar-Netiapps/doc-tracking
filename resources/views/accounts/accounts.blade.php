@@ -83,7 +83,7 @@
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
-                    <div class="table-responsive">
+                    <div class="table-responsive table-fixed-header">
                         <table class="table table-striped">
                             <thead>
                                 <tr>

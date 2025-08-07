@@ -584,3 +584,21 @@ table p{
     background-color: #555;
 }
 
+ .table-fixed-header {
+      height: 600px; /* Set the desired height */
+      overflow-y: auto;
+      display: block;
+    }
+
+    .table-fixed-header thead th {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa; /* Matches Bootstrap table header color */
+      z-index: 2;
+    }
+
+    .table-fixed-header table {
+      width: 100%;
+      border-collapse: separate;
+    }
+
