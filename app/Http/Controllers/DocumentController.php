@@ -42,7 +42,7 @@ class DocumentController extends Controller
             return $next($request);
         });
     }
-    public function index(Request $request, $type)
+    public function index($type, $dtype)
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
@@ -96,8 +96,7 @@ class DocumentController extends Controller
             'rejected' => 6,
             'received' => [5, 7],
         ];
-        
-        $type = $request->input('doc_type', $type ?? null);
+
         $fixed_status = $fixedStatuses[$type] ?? null;
         
         if ($fixed_status) {
@@ -105,20 +104,21 @@ class DocumentController extends Controller
         }
 
         if($type != 'moved')
-            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
         else
-            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'vendors'));
+            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'vendors'));
     }
     public function filter(Request $request)
     {
+        $parsedUrl = parse_url(url()->previous());       
+        $url = explode('/', trim($parsedUrl['path'], '/'));
+        
+        session(['type' => isset($url[1]) ? $url[1]:null]);
+        session(['dtype' => isset($url[2]) ? $url[2]:null]);
+
         session(['filters' => $request->all()]);
-        // return redirect()->route('document.filtered');
-        $previousUrl = url()->previous(); 
-        $type = Str::afterLast($previousUrl, '/'); 
-        // dd($request->all());   
-        // $type = $request->segment(2); 
-        // if($type == 'proceed')
-        if ($type == 'proceed')
+
+        if ($request->type == 'proceed')
             return redirect()->route('accounts.selected');
         else
             return redirect()->route('document.filtered');
@@ -129,7 +129,7 @@ class DocumentController extends Controller
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
         if(empty($filters))
-            return redirect()->route('accounts.index','all');
+            return redirect()->route('accounts.index',['type' => 'all','dtype' => 'loan']);
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         $fromDate = $filters['from_date'] ?? null;
@@ -238,7 +238,7 @@ class DocumentController extends Controller
                 $filterFunction($q, 'loan_documents');
             })->paginate(100)->withQueryString();
 
-        } elseif ($docType === 'gold_loan') {
+        } elseif ($docType === 'goldloan') {
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100)->withQueryString();
@@ -292,10 +292,13 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
 
+        // dd($filters);
+        // $dtype = $filters['document_type'] ?? 
+
         if($type != 'moved')
-        return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
+            return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
         else
-        return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors' ));
+            return view('accounts.vendor_view', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors' ));
     }
     
     public function bulkReview(Request $request)
@@ -691,14 +694,14 @@ class DocumentController extends Controller
         
     }
 
-    public function viewDispatches($id)
+    public function viewDispatches($type,$id)
     {
         $dispatch = CourierDispatch::find($id);
-        // $type = 'dispatch';
-        $previousUrl = url()->previous(); 
-        $type = Str::afterLast($previousUrl, '/');
+        // // $type = 'dispatch';
+        // $previousUrl = url()->previous(); 
+        // $type = Str::afterLast($previousUrl, '/');
         $dtype = session()->pull('dtype');
-
+        // dd($dtype);
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
         $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
@@ -982,13 +985,13 @@ class DocumentController extends Controller
             if($request->input('updates', []))
                 return response()->json(['success' => true]);
             else
-                return redirect()->route('accounts.index','moved')->with('success', 'Status Updated Successfully.');
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Status Updated Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             if($request->input('updates', []))
                 return response()->json(['error' => $e->getMessage()], 500);
             else
-                return redirect()->route('accounts.index','moved')->with('error', 'Status Updation Failed.');
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Status Updation Failed.');
         }
     }
 

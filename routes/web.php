@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
     Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
     Route::prefix('documents')->group(function () {
-        Route::get('/{type}', [DocumentController::class, 'index'])->name('accounts.index');
+        Route::get('/{type}/{dtype}', [DocumentController::class, 'index'])->name('accounts.index');
         Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
         // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])->name('dispatches.filter');
     Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
     Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
-    Route::get('dispatches/view/{id}', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
+    Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
     Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
     Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
     Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
     Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
-    Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
+    // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
     Route::resource('vendor', VendorController::class);
     Route::resource('couriers', CourierController::class);
@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
     Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
     Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
-    Route::get('insurance/edit_claim_details/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
+    Route::get('insurance/edit_claim_details/{spec}/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
 
 
     Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
@@ -138,6 +138,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('save_claim_checklist',[InsuranceHomeController::class,'save_claim_checklist'])->name('save_claim_checklist');
     Route::post('save_nominee_details',[InsuranceHomeController::class,'save_nominee_details'])->name('save_nominee_details');
 
+    Route::post('save_documents',[InsuranceHomeController::class,'save_documents'])->name('save_documents');
+    Route::post('update_documents',[InsuranceHomeController::class,'update_documents'])->name('update_documents');
+
 
     Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');
     Route::get('insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
@@ -146,6 +149,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('insurance/settings',[InsuranceHomeController::class,'settings'])->name('insurance_settings');
     Route::post('insurance/add_new_insurance_item',[InsuranceHomeController::class,'add_new_insurance_item'])->name('add_new_insurance_item');
+
+    Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
+
+
 
    
 });

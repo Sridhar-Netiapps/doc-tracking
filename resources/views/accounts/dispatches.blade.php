@@ -147,7 +147,7 @@
                                         <td class="border-start">
                                             {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             <div class="">
-                                                <a href="{{ route('dispatches.view', $row->id) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=>$row->id]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
                                                 @hasrole('bo-checker')
                                                 <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
@@ -188,7 +188,7 @@
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Docs</option>
                         <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>

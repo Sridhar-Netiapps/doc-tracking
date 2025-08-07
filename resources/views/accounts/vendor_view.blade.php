@@ -355,7 +355,7 @@
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Docs</option>
+                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Docs</option>
                         <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liabilities Docs</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
@@ -444,7 +444,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index',$type) }}" class="btn btn-secondary">Clear</a>
+                    <a  href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a>
                 </div>
             </div>
         </form>
