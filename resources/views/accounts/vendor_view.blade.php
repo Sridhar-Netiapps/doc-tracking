@@ -27,22 +27,22 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}} " id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? 'loan') == 'loan' ? 'active':''}} " id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($gold_loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($account_opening_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs  <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($dtrf_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
                 @hasanyrole('ro-user')
@@ -72,13 +72,13 @@
                                     <th scope="col" class="text-nowrap">Disb Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap">Doc. Category</th>
                                     <th scope="col" class="text-nowrap">Work Order No</th>
                                     <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">Date of Movement</th>
                                     <th scope="col" class="text-nowrap">File Barcode</th>
                                     <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -149,13 +149,13 @@
                                     <th scope="col" class="text-nowrap">Barcode</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap">Doc. Category</th>
                                     <th scope="col" class="text-nowrap">Work Order No</th>
                                     <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">Date of Movement</th>
                                     <th scope="col" class="text-nowrap">File Barcode</th>
                                     <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -221,13 +221,13 @@
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap">Doc. Category</th>
                                     <th scope="col" class="text-nowrap">Work Order No</th>
                                     <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">Date of Movement</th>
                                     <th scope="col" class="text-nowrap">File Barcode</th>
                                     <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -288,13 +288,13 @@
                                     <th scope="col" class="text-nowrap">Business Category</th>
                                     <th scope="col" class="text-nowrap">Lot No</th>
                                     <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap">Doc. Category</th>
                                     <th scope="col" class="text-nowrap">Work Order No</th>
                                     <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">Date of Movement</th>
                                     <th scope="col" class="text-nowrap">File Barcode</th>
                                     <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -463,13 +463,13 @@
                     <div class="col-4 pb-2">
                         <input type="hidden" name="id">
                         <input type="hidden" name="type">
-                        <label for="lot_no" class="form-label">Lot No.</label>
+                        <label for="lot_no" class="form-label">Lot No</label>
                         <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="category_of_document" class="form-label">Category of the Document.</label>
+                        <label for="category_of_document" class="form-label">Doc. Category</label>
                         <select class="form-select document_type" name="category_of_document" id="category_input" required>
-                            <option value="">Select Document Category</option>
+                            <option value="">Select Doc. Category</option>
                             <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
                             <option value="CAT A2" {{ ($doc->category_of_document ?? '') == 'CAT A2' ? 'selected' : '' }}>CAT A2</option>
                             <option value="CAT B"  {{ ($doc->category_of_document ?? '') == 'CAT B'  ? 'selected' : '' }}>CAT B</option>
@@ -477,7 +477,7 @@
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="work_order_no" class="form-label">Work Order No.</label>
+                        <label for="work_order_no" class="form-label">Work Order No</label>
                         <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
@@ -492,19 +492,19 @@
                         </select>                                                
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
+                        <label for="vendor_movement_date" class="form-label">Date of Movement</label>
                         <input type="date" id="vendor_movement_date_input" name="vendor_movement_date" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode.</label>
+                        <label for="file_barcode" class="form-label">File barcode</label>
                         <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="box_barcode" class="form-label">Box Barcode.</label>
+                        <label for="box_barcode" class="form-label">Box Barcode</label>
                         <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="date_added_to_vendor" class="form-label">Date of addition to Vendor.</label>
+                        <label for="date_added_to_vendor" class="form-label">Date of addition</label>
                         <input type="date" id="date_added_input" name="date_added_to_vendor" class="form-control flatpickr-date">
                     </div>
                     <div class="col-4 pb-2">

@@ -18,7 +18,7 @@
         <div class="col-1"></div>
         <div class="col-10">
             <div class="filter-bg">
-                <form method="POST" action="{{ route('reports') }}">
+                <form method="POST" action="{{ route('reports') }}" id="reportForm">
                     @csrf
                     <div class="row">
                         <div class="col mt-2">
@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Account Number</label>
-                                <input type="text" name="account_number" class="form-control">
+                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric">
                             </div>
                             {{-- <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Customer Name</label>
@@ -148,11 +148,11 @@
                         <div class="row">
                             <div class="col-3 mt-2">
                                 <label>From Date</label>
-                                <input type="text" readonly class="form-control datepicker" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                                <input type="text" id="from_date" readonly class="form-control datepicker" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
                             </div>
                             <div class="col-3 mt-2">
                                 <label>To Date</label>
-                                <input type="text" readonly class="form-control datepicker" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                                <input type="text" id="to_date" readonly class="form-control datepicker" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                             </div>
                             <div class="col-3 mt-2">
                                 <label for="date_field">Date Criteria</label>
@@ -211,7 +211,53 @@
     $(".datepicker").flatpickr({
             dateFormat: "d-m-Y",
             allowInput: true
-        });
+    });
+
+    $('#reportForm').validate({
+        rules: {
+            account_number: {
+                alphanumeric: {
+                    depends: function () {
+                        return $('#account_number').val().trim() !== '';
+                    }
+                }
+            },
+            date_field: {
+                required: function () {
+                    return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
+                }
+            },
+            from_date: {
+                date: true
+            },
+            to_date: {
+                date: true,
+                greaterThanOrEqual: "#from_date"
+            }
+        },
+        messages: {
+            account_number: {
+                alphanumeric: "Only letters and numbers allowed"
+            },
+            date_field: {
+                required: "Date Criteria is required"
+            },
+            to_date: {
+                greaterThanOrEqual: "To Date must be greater than or equal to From Date"
+            }
+        },
+        errorClass: 'is-invalid',
+        // validClass: 'is-valid',
+        errorElement: 'div',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            error.insertAfter(element);
+        },
+        invalidHandler: function(event, validator) {
+            // Prevent focus jump or tab scroll
+            event.preventDefault();
+        }
+    });
 
     $(document).ready(function () {
         docfields();
