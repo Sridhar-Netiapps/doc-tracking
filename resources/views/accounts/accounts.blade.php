@@ -97,7 +97,7 @@
                                         @endif
                                     @elsehasrole('ro-supervisor')
                                         {{-- @if ($type === 'received') --}}
-                                            <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
+                                            <th srejectedcope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         {{-- @endif --}}
                                     @endhasrole
                                     {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
@@ -187,7 +187,7 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
@@ -195,7 +195,7 @@
                                                     @else
                                                         <td>{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
-                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
                                                             @endif
@@ -204,7 +204,7 @@
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                         <img src="/images/info_icon.svg"/>
                                                     </span>
                                                     @endif
@@ -327,7 +327,7 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
@@ -335,7 +335,7 @@
                                                     @else
                                                         <td>{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
-                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
                                                             @endif
@@ -344,7 +344,7 @@
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                         <img src="/images/info_icon.svg"/>
                                                     </span>
                                                     @endif
@@ -471,7 +471,7 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
@@ -479,7 +479,7 @@
                                                     @else
                                                         <td>{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
-                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
                                                             @endif
@@ -488,7 +488,7 @@
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                         <img src="/images/info_icon.svg"/>
                                                     </span>
                                                     @endif
@@ -601,7 +601,7 @@
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
-                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                             <img src="/images/info_icon.svg"/>
                                                         </span>
                                                         @endif
@@ -609,7 +609,7 @@
                                                     @else
                                                         <td>{{ $row->statusName->name ?? '-' }}
                                                             @if (in_array($row->status, [6,7]))
-                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                                 <img src="/images/info_icon.svg"/>
                                                             </span>
                                                             @endif
@@ -618,7 +618,7 @@
                                             @else
                                                 <td>{{ $row->statusName->name ?? '-' }}
                                                     @if (in_array($row->status, [6,7]))
-                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason ?? 'No reason provided' }}">
                                                         <img src="/images/info_icon.svg"/>
                                                     </span>
                                                     @endif
@@ -861,8 +861,8 @@
                     <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
                 </div>
                 <div class="modal-body">
-                    <label for="excel_file" class="form-label">Upload File</label>
-                    <input type="file" name="excel_file" class="form-control" required>
+                    <label for="excel_file" class="form-label">Upload File</label>  <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a>
+                    <input type="file" name="excel_file" class="form-control" required> 
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>

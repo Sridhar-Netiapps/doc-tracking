@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 
 class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
 {
@@ -33,6 +35,32 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
     protected $total = 0;
     protected $success = 0;
 
+    
+    public function parseFlexibleDate($value)
+    {
+        // Handle Excel serial number
+        if (is_numeric($value)) {
+            return Carbon::instance(Date::excelToDateTimeObject($value))->format('Y-m-d');
+        }
+
+        // Clean string
+        $value = trim($value);
+
+        // Preferred string formats
+        $formats = ['d-m-Y', 'd/m/Y', 'd.m.Y', 'Y-m-d'];
+
+        foreach ($formats as $format) {
+            try {
+                // Corrected format: Y-m-d
+                return Carbon::createFromFormat($format, $value)->format('Y-m-d');
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return null;
+    }
+    
 
     public function collection(Collection $rows)
     {
@@ -77,11 +105,17 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->category_of_document = $row['category_of_the_document'];
                 $document->work_order_no = $row['work_order_no'];
                 $document->vendor_name = $row['vendor_name'];
-                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? Carbon::parse($row['date_of_vendor_movement'])->format('Y-m-d') : null;
+                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseFlexibleDate($row['date_of_vendor_movement']) : null;
                 $document->file_barcode = $row['file_barcode_against_lot_no'];
                 $document->box_barcode = $row['box_barcode_no'];
-                $document->date_added_to_vendor = !empty($row['date_added_to_vendor']) ? Carbon::parse($row['date_of_addition_to_vendor_data'])->format('Y-m-d') : null;
+                $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
                 $document->status = $doc_status;
+                // dd($row->toArray());
+                // dd([
+                //     'raw' => $row['date_of_vendor_movement'],
+                //     'converted' => $this->parseFlexibleDate($row['date_of_vendor_movement'])
+                // ]);
+                
                 
                 if ($document->isDirty()) {
                     $document->updated_by = auth()->user()->id;

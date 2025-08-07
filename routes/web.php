@@ -49,6 +49,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
     });
+
+    Route::get('/download-sample/vendor-documents', function () {
+        $filePath = storage_path('app/template/vendor_documents_sample.csv');
+    
+        if (!file_exists($filePath)) {
+            abort(404);
+        }
+    
+        return response()->download($filePath, 'vendor_documents_sample.csv');
+    })->name('vendor.sample.download');
+    
     
     Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
