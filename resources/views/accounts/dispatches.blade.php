@@ -41,13 +41,13 @@
                 </li> 
                 @endunless
                 @endif
-                @if ($type == 'list')
+                {{-- @if ($type == 'list')
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endunless
-                @endif
+                @endif --}}
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
