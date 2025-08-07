@@ -112,10 +112,11 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            {{-- <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td> --}}
+                                            <td>{{ $row->vendor_movement_date ? date('d-m-Y', strtotime($row->vendor_movement_date)) : '-' }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
+                                            <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -182,10 +183,10 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            <td>{{ $row->vendor_movement_date ? date('d-m-Y', strtotime($row->vendor_movement_date)) : '-' }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
+                                            <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -256,10 +257,10 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            <td>{{ $row->vendor_movement_date ? date('d-m-Y', strtotime($row->vendor_movement_date)) : '-' }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
+                                            <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
@@ -316,10 +317,10 @@
                                             <td>{{ $row->category_of_document }}</td>
                                             <td>{{ $row->work_order_no }}</td>
                                             <td>{{ $row->vendor_name }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->vendor_movement_date)) }}</td>
+                                            <td>{{ $row->vendor_movement_date ? date('d-m-Y', strtotime($row->vendor_movement_date)) : '-' }}</td>
                                             <td>{{ $row->file_barcode }}</td>
                                             <td>{{ $row->box_barcode }}</td>
-                                            <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
+                                            <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
