@@ -10,6 +10,7 @@ use App\Models\DtrfDocument;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use DB;
+use Illuminate\Support\Facades\Log;
 
 class SendPendingDocsEmail extends Command
 {

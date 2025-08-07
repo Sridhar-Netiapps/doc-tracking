@@ -775,7 +775,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a> 
+                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>

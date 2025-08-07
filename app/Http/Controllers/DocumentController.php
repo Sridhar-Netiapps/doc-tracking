@@ -128,6 +128,8 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
+        $type = session()->pull('type');
+        $dtype = session()->pull('dtype');
         if(empty($filters))
             return redirect()->route('accounts.index',['type' => 'all','dtype' => 'loan']);
         $user = $this->user;
@@ -210,7 +212,7 @@ class DocumentController extends Controller
             }
         
             // Only apply this when no specific status is provided
-            if (isset($filters['doc_type']) && $filters['doc_type'] === 'moved' && empty($filters['status'])) {
+            if (isset($type) && $type === 'moved' && empty($filters['status'])) {
                 $query->whereIn('status', [8, 9, 10, 11]);
             }
         
@@ -275,15 +277,14 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
-        $type = $filters['doc_type'];
+        
         $fixedStatuses = [
             'pending' => 1,
             'rejected' => 6,
             'received' => [5, 7],
             
         ];
-        
-        $type = $request->input('doc_type', $type ?? null);
+        $dtype = $docType != null ? $docType : $dtype;
         $fixed_status = $fixedStatuses[$type] ?? null;
         
         // if ($fixed_status) {
@@ -291,8 +292,6 @@ class DocumentController extends Controller
             $filters['status'] = $fixed_status;
         }
         $vendors = Vendor::all();
-
-        // dd($filters);
         // $dtype = $filters['document_type'] ?? 
 
         if($type != 'moved')

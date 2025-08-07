@@ -11,6 +11,7 @@ use App\Models\GoldLoanDocument;
 use App\Models\LoanDocument;
 use App\Models\AccountOpeningDocument;
 use App\Models\DtrfDocument;
+use Illuminate\Support\Facades\Log;
 
 class SyncDocumentRecords extends Command
 {
