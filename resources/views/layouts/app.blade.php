@@ -127,5 +127,7 @@
         </main>
     </div>
     @include('layouts.scripts')
+
+    <button id="backToTopBtn" title="Go to top">↑</button>
 </body>
 </html>

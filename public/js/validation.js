@@ -220,5 +220,21 @@ $(document).ready(function(){
     
         return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
     }
+
+
+      // Show button when scrolled down 100px
+    window.onscroll = function() {
+        const btn = document.getElementById("backToTopBtn");
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
+    };
+
+    // Scroll to top when clicked
+    document.getElementById("backToTopBtn").addEventListener("click", function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
     
 });
