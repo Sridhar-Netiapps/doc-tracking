@@ -14,8 +14,11 @@ use App\Models\InsuranceRequestLetterStatus;
 use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
+use App\Models\InsuranceDocument;
+
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
+use App\Exports\ExportErrorRows;
 use App\Models\AuditLog;
 use App\AuditLogTrait;
 use App\Models\Branch;
@@ -255,8 +258,10 @@ class InsuranceHomeController extends Controller
               ->orderByRaw("CASE WHEN cliam_status != 'completed' THEN 0 ELSE 1 END")
               ->orderBy('id','DESC')->paginate(25); 
         }
+
+        $landingTab = (Auth::user()->branch_id == '1100') ?'ho':'bo';
         
-        return view('insurance.index',compact('data','search'));
+        return view('insurance.index',compact('data','search','landingTab'));
     }
 
     public function claim_forms(){
@@ -309,6 +314,11 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
+          'date_of_death' => 'required',
+          'policy_number' => 'required',
+          'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
          
       ]);
 
@@ -403,6 +413,13 @@ class InsuranceHomeController extends Controller
            
            // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
+            $mailData=['message' => 'New Lead created in Insurance Module.Please refer Lead ID - '.$claimdata->utrn].' for detailed information' ;
+            $reciepients=array();
+            $reciepients=['druva@netiapps.com'];
+            $csvContent='';
+            $fileName = '';
+            $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
              $module = 'Insurance'; 
              $operation = 'create';
              $note = 'New Lead created - '."INS_CLM".$utrn;
@@ -433,11 +450,12 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
         $branch = Branch::get();
-        
+        $landingTab = (Auth::user()->branch_id == '1100' ? 'ho' :'bo'); 
         $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
-       // print_r($checklistdata);die();
+        $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
+       
         $productDetails = InsuranceProduct::where('product',$data->product)->first();
         $formArray=array();
         $claimformtype =$productDetails->type;
@@ -454,15 +472,16 @@ class InsuranceHomeController extends Controller
         }
         
       // print_r($formArray);die();
-        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch'));
+        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($spec ,  $id)
     {
-         $data = InsuranceClaimDetail::where('id',decrypt($id))->first();
+       // print_r($spec);die();
+        $data = InsuranceClaimDetail::where('id',decrypt($id))->first();
         $partners = InsurancePartner::get();
         $products = InsuranceProduct::get();
         $placeofdeath = InsurancePlaceofDeath::get();
@@ -476,6 +495,7 @@ class InsuranceHomeController extends Controller
         $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
+        $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
        // print_r($checklistdata);die();
         $productDetails = InsuranceProduct::where('product',$data->product)->first();
         $formArray=array();
@@ -493,7 +513,7 @@ class InsuranceHomeController extends Controller
         }
         
       // print_r($formArray);die();
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch'));
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec'));
     }
 
     /**
@@ -506,13 +526,12 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
-          'region' => 'required',
+          'date_of_death' => 'required',
           'policy_number' => 'required',
-          'cust_id' => 'required',
-          'actual_id' => 'required',
-          'cliam_status' => 'required',
-          'cause_of_death' => 'required',
-          'deceased'=> 'required'
+          'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
+         
       ]);
 
         $request->merge([
@@ -623,9 +642,14 @@ class InsuranceHomeController extends Controller
 
        $nomineedetail->save();
 
-       $mailData=array();
+        $mailData=['message' => 'The Lead details are updated to the Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
 
-       //Mail::to(['druva@netiapps.com'])->queue(new IntimationResponseMail($mailData));
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -721,8 +745,7 @@ class InsuranceHomeController extends Controller
 
     public function downloadFolderSmart($folderName)
     {
-        print_r("lll");die();
-
+       
       $folderPath = public_path('template/' . $folderName);
 
       if (!File::exists($folderPath)) {
@@ -783,9 +806,66 @@ class InsuranceHomeController extends Controller
     public function import_claim_data(Request $request){
 
        $import = new ImportClaimDetails ;
+       $file = $request->file('file');
+       $errors=array();
 
-       Excel::import($import, $request->file('file'));
+     
+       if ($request->hasFile('file')) {
 
+            foreach ($request->file('file') as $file) {
+           
+                $result = $this->validateFileWhileSaving($file);
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+              
+            }
+
+            if(sizeof($errors)>0){
+               return response()->json([
+                    'status' => 'false',
+                    'message' => implode(',', $errors)
+                ]);
+            }
+        }
+
+      Excel::import($import, $request->file('file'));
+
+       if (file_exists(public_path().'/template/Imports/')) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Imports/', $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Imports';
+
+    
+        if ($request->hasFile('file')) {
+         
+             $doc_file = $request->file('file') ;
+             $temp = explode(".", $doc_file->getClientOriginalName());
+             $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+             $destinationPath = public_path().$filepath;
+
+              if ($doc_file->move($destinationPath,$newName)) {
+                    $mailData=[
+                      'message' => 'The Lead details are imported to the Insurance Module .Please find the attachemnt of the same .'];
+                    $reciepients=array();
+                    $reciepients=['druva@netiapps.com'];
+                    $csvContent=$destinationPath.'/'.$newName;
+                    $fileName = $doc_file->getClientOriginalName();
+                   // print_r($csvContent);die();
+
+                    $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+        
+              }
+ 
+
+      }
+      
        if($import->getRowCount() == 0){
 
              $module = 'Insurance'; 
@@ -807,8 +887,51 @@ class InsuranceHomeController extends Controller
              $link = url('/').'/insurance/claim_forms';
 
             $this->auditlogs($module , $operation ,$note , $link);
-             return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+
+            // return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
         }
+
+
+        $failures = $import->getCollectedFailures();
+       //  print_r(json_encode($failures));die();
+       $Errordata = array();
+       if (!empty($import->failedRows)) {
+      // Send mail with error rows
+        
+        foreach ($import->failedRows as $key => $value) {
+           $Errordata[]=$value['data'];
+        }
+     
+         // return Excel::download(new ExportErrorRows($Errordata), 'insurance_error_leads_'.date('Y_m_d_his').'.xlsx');
+          
+      } 
+
+
+      if (sizeof($failures) > 0 ) {
+            return back()->with([
+                'failures' => $failures,
+                'errordata' => $Errordata,
+                'message' => ' New Entry - '.$inserted.'   , Updated Entry - '.$updated.'   , Error rows - '.sizeof($Errordata)
+            ]);
+        }else{
+           return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+        }
+       
+
+
+
+    }
+
+
+    public function downloadErrorReport(Request $request)
+    {
+        $json = base64_decode($request->input('data'));
+        $Errordata = json_decode($json, true);
+
+        return Excel::download(
+            new ExportErrorRows($Errordata,'insurance_error_leads_'.date('Y_m_d_his').'.xlsx'),
+            'error_report.xlsx'
+        );
     }
 
     public function search(Request $request){
@@ -817,7 +940,8 @@ class InsuranceHomeController extends Controller
     }
 
     public function save_nominee_details(Request $request){
-      // print_r($request->input());die();
+     // print_r($request->input());die();
+     
       $inputdata = $request->all();
       $errors = [];
 
@@ -872,6 +996,15 @@ class InsuranceHomeController extends Controller
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
              $claimdata = InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
 
+             $mailData=['message' => 'Nominee details are updated in Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
+              $reciepients=array();
+              $reciepients=['druva@netiapps.com'];
+              $csvContent='';
+              $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
              $module = 'Insurance'; 
              $operation = 'Update';
              $note = 'Updated Nominee Details - '.$claimdata->utrn;
@@ -884,6 +1017,159 @@ class InsuranceHomeController extends Controller
         else{
             return redirect()->back()->with('failure','Error while Saving data');
         }
+    }
+
+    public function save_documents(Request $request){
+       $request->validate([
+          'pdfs.*' => 'required|mimes:pdf|max:5120', // max 5MB each
+          // Add any other validations for text fields here
+       ]);
+
+       $savedFiles = [];
+
+       $leadDetails= InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+       $folderName = $leadDetails->utrn;
+
+       if (file_exists(public_path().'/template/Documents/'.$folderName)) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Documents/'.$folderName, $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Documents/'.$folderName;
+
+    
+      if ($request->hasFile('pdfs')) {
+        foreach ($request->file('pdfs') as $index => $file) {
+            // Original filename
+            $originalName = $file->getClientOriginalName();
+            $tempPath = $file->getPathname();
+
+            // Create a unique filename — use timestamp or UUID
+            $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+             $destination = public_path().$filepath . '/' . $newName;
+       
+            if (move_uploaded_file($tempPath, $destination)) {
+              InsuranceDocument::create([
+                'insurance_claim_details_id' => decrypt($request->lead_id),
+                'original_name' => $originalName,
+                'stored_name' => $newName,
+                'filepath' => $filepath,
+                'status' => '1',
+                'creator'=> Auth::user()->employee_id,
+                'updator' => Auth::user()->employee_id
+
+              ]);
+            }
+
+        }
+    }
+
+
+    return response()->json(['message' => 'Saved Successfully']);
+    }
+
+
+    public function update_documents(Request $request){
+      $removable_ids = [];
+
+      foreach ($request->delete_doc_ids as $value) {
+          $decoded = json_decode($value, true);
+          if (is_array($decoded)) {
+              $removable_ids = array_merge($removable_ids, $decoded);
+          }
+      }
+
+       $request->validate([
+          'pdfs.*' => 'required|mimes:pdf|max:5120', // max 5MB each
+          // Add any other validations for text fields here
+       ]);
+
+       $savedFiles = [];
+       $errors = [];
+
+       if ($request->hasFile('pdfs')) {
+
+            foreach ($request->file('pdfs') as $file) {
+            // print_r("kkk");die();
+                // 🔍 Validate each file
+                $result = $this->validateFileWhileSaving($file);
+               // print_r($result);die();
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+              
+            }
+
+            if(sizeof($errors)>0){
+               return response()->json([
+                    'status' => 'false',
+                    'message' => implode(',', $errors)
+                ]);
+            }
+        }
+
+
+       $leadDetails= InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+       $folderName = $leadDetails->utrn;
+
+       if (file_exists(public_path().'/template/Documents/'.$folderName)) {  
+        } else {
+          File::makeDirectory(public_path().'/template/Documents/'.$folderName, $mode = 0775, true, true);
+        }
+       
+        $filepath = '/template/Documents/'.$folderName;
+
+    
+        if ($request->hasFile('pdfs')) {
+          foreach ($request->file('pdfs') as $index => $file) {
+              // Original filename
+              $originalName = $file->getClientOriginalName();
+              $tempPath = $file->getPathname();
+
+              // Create a unique filename — use timestamp or UUID
+              $newName = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+               $destination = public_path().$filepath . '/' . $newName;
+         
+              if (move_uploaded_file($tempPath, $destination)) {
+                InsuranceDocument::create([
+                  'insurance_claim_details_id' => decrypt($request->lead_id),
+                  'original_name' => $originalName,
+                  'stored_name' => $newName,
+                  'filepath' => $filepath,
+                  'status' => '1',
+                  'creator'=> Auth::user()->employee_id,
+                  'updator' => Auth::user()->employee_id
+
+                ]);
+              }
+
+          }
+      }
+
+      $mailData=['message' => 'Claim related documents are updated in Insurance Module.Please refer Lead ID - '.$leadDetails->utrn].' to view detailed information';
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
+       $module = 'Insurance'; 
+       $operation = 'Update';
+       $note = 'Documents are updated - '."INS_CLM".$leadDetails->utrn;
+       $link = url('/').'/insurance/view_claim_details/'.encrypt($leadDetails->id);
+
+       $this->auditlogs($module , $operation ,$note , $link);
+      
+      InsuranceDocument::whereIn('id',$removable_ids)->update(['status' => '0', 'updator' => Auth::user()->employee_id]);
+
+      return response()->json(['message' => "Updated Successfully"]);
     }
 
     public function save_claim_checklist(Request $request){
@@ -1043,7 +1329,11 @@ class InsuranceHomeController extends Controller
       $claim_status= $request->status;
       $proccesed= $request->proccesed;
       $branch= $request->branch;
-
+      if(Auth::user()->branch_id != '1100'){
+        $branch=Auth::user()->branch_id;
+      }
+      
+    // print_r($branch);die();
       $data = InsuranceClaimDetail::whereBetween('intimation_date',[$start , $end])
               ->with('nominee')
               ->when($region,function($q)use($region){
@@ -1085,8 +1375,16 @@ class InsuranceHomeController extends Controller
         $products = InsuranceProduct::get();
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
-        $procesedby=['NA','Vindhya','Ujjivan','HO'];  
-        $branches = Branch::get();
+        $procesedby=['NA','Vindhya','Ujjivan','HO']; 
+
+        $brID = Auth::user()->branch_id;
+
+        if(Auth::user()->branch_id == '1100'){
+          $branches = Branch::get();
+        }else{
+          $branches = Branch::where('code',$brID)->get();
+        } 
+        
 
         $start = $request->start;
         $end = $request->end;
@@ -1237,7 +1535,7 @@ class InsuranceHomeController extends Controller
 
         if (file_exists(public_path().'/template/'.$folderName)) {  
           } else {
-            File::makeDirectory(public_path().'/template/'.$folderName, $mode = 0777, true, true);
+            File::makeDirectory(public_path().'/template/'.$folderName, $mode = 0775, true, true);
           }
 
            foreach($_FILES['files']['name'] as $key=>$val){ 
@@ -1263,12 +1561,22 @@ class InsuranceHomeController extends Controller
         InsurancePlaceofDeath::create(['place'=> $request->title]);
       }
 
+        $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
+        $reciepients=array();
+        $reciepients=['druva@netiapps.com'];
+        $csvContent='';
+        $fileName = '';
+       // print_r($csvContent);die();
+
+        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+
+
         $module = 'Insurance';
         $operation = $module;
         $note = 'New '.$request->modulename.' added';
         $link = url('/insurance/settings/');
 
-         $this->auditlogs($module, $operation, $note, $link);
+        $this->auditlogs($module, $operation, $note, $link);
 
       return redirect()->back()->with('success', "Added Successfully");
 
@@ -1296,7 +1604,7 @@ class InsuranceHomeController extends Controller
 
         $fileName = $file->getClientOriginalName();
         $extension = strtolower($file->getClientOriginalExtension());
-        $allowedExtensions = ['pdf', 'docx', 'jpg', 'jpeg', 'png'];
+        $allowedExtensions = ['pdf'];
         $maxSize = 40 * 1024 * 1024; // 40MB
 
         if (!in_array($extension, $allowedExtensions)) {
@@ -1308,7 +1616,8 @@ class InsuranceHomeController extends Controller
         }
 
         $isValidExtension = self::isValidFileExtension($fileName, $allowedExtensions);
-        if (!$isValidExtension) {
+         if (!$isValidExtension) {
+            
             return true;
         } 
 

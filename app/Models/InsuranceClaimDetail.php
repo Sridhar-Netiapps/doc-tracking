@@ -94,6 +94,11 @@ class InsuranceClaimDetail extends Model
         return $this->hasOne(InsuranceNomineeDetail::class ,'insurance_claim_details_id');
     }
 
+    public function documents(){
+        return $this->hasMany(InsuranceDocument::class ,'insurance_claim_details_id');
+    }
+
+
     public function lastEditor(){
         return $this->belongsTo(User::class , 'latest_editor','employee_id');
     }
