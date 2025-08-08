@@ -100,18 +100,18 @@
                                             <th srejectedcope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         {{-- @endif --}}
                                     @endhasrole
-                                    {{-- @hasanyrole('master|bo-maker|bo-checker|ro-user')
+                                    {{-- @hasanyrole('master|bo-maker|bo-checker|ro-officer')
                                         @if (!in_array($type, ['received', 'rejected']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /> </th>
                                         @endif
                                     @endhasanyrole
-                                    @role('ro-user')
+                                    @role('ro-officer')
                                         @if ($type === 'received')
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -130,7 +130,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -161,13 +161,13 @@
                                                 @endif
                                             </td>
                                             @endhasanyrole
-                                            @role('ro-user')
+                                            @role('ro-officer')
                                             @if ($type === 'received' && $row->status == 1)
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -183,7 +183,7 @@
                                             <td>{{ $row->glow_application_id }}</td>
                                             <td>{{ $row->loan_disbursement_type }}</td>
                                             <td>{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker|bo-read-only')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -212,7 +212,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -252,13 +252,13 @@
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all"/> </th>
                                     @endif
                                     @endhasanyrole
-                                    @role('ro-user')
+                                    @role('ro-officer')
                                         @if ($type === 'received')
                                         <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all"/> </th>
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -274,7 +274,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -304,13 +304,13 @@
                                                 @endif
                                             </td>
                                             @endhasanyrole
-                                            @role('ro-user')
+                                            @role('ro-officer')
                                             @if ($type === 'received' && $row->status == 1)
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -323,7 +323,7 @@
                                             <td>{{ $row->loan_amount }}</td>
                                             <td>{{ $row->barcode }}</td>
                                             <td>{{ $row->business_category }}</td> 
-                                            @hasrole('bo-maker|bo-checker|bo-read-only')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -352,7 +352,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -392,13 +392,13 @@
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /> </th>
                                     @endif
                                     @endhasanyrole
-                                    @role('ro-user')
+                                    @role('ro-officer')
                                         @if ($type === 'received')
                                         <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /> </th>
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -416,7 +416,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -446,13 +446,13 @@
                                                 @endif
                                             </td>
                                             @endhasanyrole
-                                            @role('ro-user')
+                                            @role('ro-officer')
                                             @if ($type === 'received' && $row->status == 1)
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -467,7 +467,7 @@
                                             <td>{{ $row->scheme ?? '-' }}</td>
                                             <td>{{ $row->type_of_account_opening }}</td>
                                             <td>{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker|bo-read-only')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -496,7 +496,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -536,13 +536,13 @@
                                     <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all"/> </th>
                                     @endif
                                     @endhasanyrole
-                                    @role('ro-user')
+                                    @role('ro-officer')
                                         @if ($type === 'received')
                                         <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all"/> </th>
                                         @endif
                                     @endrole --}}
                                     <th scope="col" class="text-nowrap">Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                     <th scope="col" class="text-nowrap">Region</th>
                                     <th scope="col" class="text-nowrap">Branch Name</th>
                                     @endunless
@@ -553,7 +553,7 @@
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
                                     @if ($type == 'received')
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                     <th scope="col" class="text-nowrap">Actions</th>
                                     @endunless
                                     @endif
@@ -583,13 +583,13 @@
                                                 @endif
                                             </td>
                                             @endhasanyrole
-                                            @role('ro-user')
+                                            @role('ro-officer')
                                             @if ($type === 'received' && $row->status == 1)
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
                                             <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bo-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
@@ -597,7 +597,7 @@
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                             <td>{{ $row->barcode}}</td>
                                             <td>{{ $row->business_category}}</td>
-                                            @hasrole('bo-maker|bo-checker|bo-read-only')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -626,7 +626,7 @@
                                             @endhasrole
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                             @if ($type == 'received')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td><button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary btn-sm add-vendor" type="button">Update</button></td>
                                             @endunless
                                             @endif
@@ -667,7 +667,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>

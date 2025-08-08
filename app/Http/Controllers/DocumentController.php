@@ -71,7 +71,7 @@ class DocumentController extends Controller
             elseif($type ==='pending'){
                 $query->where('status',1);
             }
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -148,7 +148,7 @@ class DocumentController extends Controller
         $docType = $filters['document_type'] ?? null;
         // $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
 
-        //     if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+        //     if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
         //         $query->where('region', $user->region);
         //     }
         //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
@@ -189,7 +189,7 @@ class DocumentController extends Controller
         // };
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
 
-            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+            if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
         
@@ -347,7 +347,7 @@ class DocumentController extends Controller
         $allDocuments = collect();
     
         $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
-            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+            if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
     
@@ -593,7 +593,7 @@ class DocumentController extends Controller
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region_id', $this->user->region_id);
             }
 
@@ -1075,7 +1075,7 @@ class DocumentController extends Controller
             // elseif($type ==='pending'){
             //     $query->where('status',1);
             // }
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
