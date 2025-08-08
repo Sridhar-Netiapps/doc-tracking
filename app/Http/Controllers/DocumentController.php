@@ -1132,11 +1132,20 @@ class DocumentController extends Controller
         }
     }
 
+    // public function checkAwb(Request $request)
+    // {
+    //     $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
+    //     return response()->json(['exists' => $exists]);
+    // }
     public function checkAwb(Request $request)
-    {
-        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
-        return response()->json(['exists' => $exists]);
-    }
+{
+    $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
+        ->where('courier_id', $request->courier_id) // match courier name too
+        ->exists();
+
+    return response()->json(['exists' => $exists]);
+}
+
     
     public function reports(Request $request)
     {
