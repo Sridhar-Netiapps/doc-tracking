@@ -485,24 +485,39 @@
             }
         });
 
+        // Prevent entering AWB without courier selected
+        $('.awb_pod').on('focus', function () {
+            let courierId = $('#courier_name').val();
+
+            $('#courier-error').remove();
+
+            if (courierId === '') {
+                $('#courier_name').after('<label id="courier-error" class="error text-danger">Please select a Courier Name first.</label>');
+
+                $('#courier_name').focus();
+            }
+        });
+
         $('.awb_pod').on('change', function () {
             let awbPod = $(this).val().trim();
+            let courierId = $('#courier_name').val();  // get courier name
             let $input = $(this);
 
             $('#awb-error').remove(); // remove old error message
 
-            if (awbPod !== '') {
+            if (awbPod !== '' && courierId !== '') {
                 $.ajax({
                     url: "{{ route('courier.checkAwb') }}",
                     type: "POST",
                     data: {
                         awb_pod: awbPod,
+                        courier_id: courierId,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function (response) {
                         if (response.exists) {
                             // Show error
-                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
                             
                             // Clear input
                             $input.val('');
