@@ -46,15 +46,15 @@
                     @endif
                 @endhasanyrole
                 @hasanyrole('master|super_admin|admin')
-                @if (!in_array($type, ['received', 'rejected']))
-                    <li style="margin-left: 38%;">
-                        <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
-                            @csrf
-                            <button class="btn btn-primary proceed" type="button">Proceed</button>
-                        </form>
-                    </li>
-                @endif
-            @endhasanyrole
+                    @if (!in_array($type, ['received', 'rejected']))
+                        <li style="margin-left: 38%;">
+                            <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
+                                @csrf
+                                <button class="btn btn-primary proceed" type="button">Proceed</button>
+                            </form>
+                        </li>
+                    @endif
+                @endhasanyrole
 
                 @role('ro-supervisor|master|super_admin|admin')
                     {{-- @if ($type != 'rejected' && $type != 'pending') --}}
@@ -79,7 +79,7 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
             <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($filters['document_type'] ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -226,7 +226,7 @@
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -366,7 +366,7 @@
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -510,7 +510,7 @@
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($filters['document_type'] ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -652,7 +652,8 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
-            <input type="hidden" name="doc_type" value="{{$type}}">
+            <input type="hidden" name="type" value="{{$type}}">
+            <input type="hidden" name="dtype" value="{{$dtype}}">
             <div class="row">
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
@@ -713,13 +714,13 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
                 </div>
-                <div class="col-12 mt-3 d-none">
+                {{-- <div class="col-12 mt-3 d-none">
                     <select class="form-select" name="type">
                         <option value="">Loan Disbursement/Account Opening</option>
                         <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
                         <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
                     </select>
-                </div>
+                </div> --}}
                 <div class="col-12 mt-3 d-none">
                     <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
                 </div>
@@ -876,6 +877,19 @@
 <script>
     $(document).ready(function () {
         
+        $('button.nav-link').each(function() {
+            if(parseInt($(this).find('span').text()) > 0){
+                $(this).addClass('active');
+                let tab = $(this).attr('id');
+                $(`#${tab}-pane`).addClass('show active');
+                return false;
+            }
+            else{
+                $(this).removeClass('active');
+                let tab = $(this).attr('id');
+                $(`#${tab}-pane`).removeClass('show active');
+            }
+        });
         $(".loan_all").click(function () {
             $(".loan:visible").prop('checked', $(this).prop('checked'));
         });
@@ -1004,14 +1018,12 @@
         $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {
             let hasFilter = false;
 
-            
             $(this).find('input:not([type=hidden]):visible, select:visible').each(function () {
                 if ($(this).val().trim() !== '') {
                     hasFilter = true;
                     return false; 
                 }
             });
-
             if (!hasFilter) {
                 e.preventDefault(); /^\d+$/
                 Swal.fire({

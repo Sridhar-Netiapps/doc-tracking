@@ -38,7 +38,7 @@
                                             <td>{{ $loop->iteration }} </td>
                                             <td>{{ $row->oldStatus->name ?? '-' }}</td>
                                             <td>{{ $row->newStatus->name ?? '-' }}
-                                                @if ($row->remarks != null)
+                                                @if (in_array($row->current_status, [6,7]) && $row->remarks != null)
                                                 <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->remarks }}">
                                                     <img src="/images/info_icon.svg"/>
                                                 </span>
