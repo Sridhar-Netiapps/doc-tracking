@@ -18,7 +18,7 @@
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Dispatched Documents <span class="badge text-bg-warning">{{$allDocuments != Null ?count($allDocuments):0}}</span></button>
                 </li>
                 <li class="ms-auto">
-                    @hasanyrole('master|ro-user')
+                    @hasanyrole('master|ro-officer')
                     @if ($dispatch->status =="Delivered")
                     <button class="btn btn-primary vendor" type="button">Add Vendor Details</button>
                     @elseif ($dispatch->status == 4)
@@ -33,7 +33,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr> 
-                                @hasanyrole('master|ro-user')
+                                @hasanyrole('master|ro-officer')
                                 <th scope="col"><input type="checkbox" class="select_all"/> </th>
                                 @endhasanyrole
                                 <th scope="col"> Document Type</th>
@@ -60,7 +60,7 @@
                         <tbody>
                             @foreach ($allDocuments as $doc)
                                 <tr>
-                                    @hasanyrole('master|ro-user')
+                                    @hasanyrole('master|ro-officer')
                                     <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                     @endhasanyrole
                                     <td>{{ ucfirst($doc->doc_type) }}</td>

@@ -45,7 +45,7 @@
                     <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
-                @hasanyrole('ro-user')
+                @hasanyrole('ro-officer')
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -81,7 +81,7 @@
                                     <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
-                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                     <th scope="col" class="text-nowrap">Action</th>
                                     @endunless
                                 </tr>
@@ -119,7 +119,7 @@
                                             <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
-                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
@@ -159,7 +159,7 @@
                                     <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
-                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                     <th scope="col" class="text-nowrap">Action</th>
                                     @endunless
                                 </tr>
@@ -189,7 +189,7 @@
                                             <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
-                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
@@ -231,7 +231,7 @@
                                     <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
-                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                     <th scope="col" class="text-nowrap">Action</th>
                                     @endunless
                                 </tr>
@@ -263,7 +263,7 @@
                                             <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
-                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
@@ -298,7 +298,7 @@
                                     <th scope="col" class="text-nowrap">Date of addition</th>
                                     <th scope="col" class="text-nowrap">Status</th>
                                     <th scope="col" class="text-nowrap">Activity Date</th>
-                                    @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                    @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                     <th scope="col" class="text-nowrap">Action</th>
                                     @endunless
                                 </tr>
@@ -323,7 +323,7 @@
                                             <td>{{ $row->date_added_to_vendor ? date('d-m-Y', strtotime($row->date_added_to_vendor)) : '-' }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
-                                            @unless(auth()->user()->hasAnyRole(['bank-user|ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
                                                 <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
@@ -364,7 +364,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-user', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
