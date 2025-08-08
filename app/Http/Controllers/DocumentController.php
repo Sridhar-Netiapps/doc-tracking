@@ -1149,8 +1149,15 @@ class DocumentController extends Controller
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
+        $vendors = Vendor::all();
+        // $couriers = Courier::pluck('name', 'id');
+        $couriers = Courier::where('status', 1)->get();
+
+
         
-        return view('accounts.reports');        
+        // return view('accounts.reports');  
+        return view('accounts.reports', compact('vendors', 'couriers'));
+      
     }
 
 
@@ -1175,26 +1182,54 @@ class DocumentController extends Controller
                 }
             }
 
-            if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+            // if ($request->filled(['from_date', 'to_date', 'date_field'])) {
                 
-                $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
-                    $field = match ($request->input('date_field')) {
-                        'dispatch_date' => 'dispatch_date',
-                        'received_date' => 'updated_at',
-                        default         => null,
-                    };
-                    if ($field) {
-                        if ($fromDate && $toDate) {
-                            $q->whereBetween($field, [$fromDate, $toDate]);
-                        } elseif ($fromDate) {
-                            $q->whereDate($field, '>=', $fromDate);
-                        } elseif ($toDate) {
-                            $q->whereDate($field, '<=', $toDate);
-                        }
-                    }
-                });
+            //     $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
+            //         $field = match ($request->input('date_field')) {
+            //             'dispatch_date' => 'dispatch_date',
+            //             'received_date' => 'updated_at',
+            //             default         => null,
+            //         };
+            //         if ($field) {
+            //             if ($fromDate && $toDate) {
+            //                 $q->whereBetween($field, [$fromDate, $toDate]);
+            //             } elseif ($fromDate) {
+            //                 $q->whereDate($field, '>=', $fromDate);
+            //             } elseif ($toDate) {
+            //                 $q->whereDate($field, '<=', $toDate);
+            //             }
+            //         }
+            //     });
 
-                $field = match ($request->input('date_field')) {
+            //     $field = match ($request->input('date_field')) {
+            //         'creation_date' => 'account_creation_date',
+            //         'movement_date' => 'vendor_movement_date',
+            //         'addition_date' => 'date_added_to_vendor',
+            //         'activity_date' => 'updated_at',
+            //         'sync_date'     => 'created_at',
+            //         default         => null,
+            //     };
+            
+            //     if ($field) {
+            //         if ($fromDate && $toDate) {
+            //             $query->whereBetween($field, [$fromDate, $toDate]);
+            //         } elseif ($fromDate) {
+            //             $query->whereDate($field, '>=', $fromDate);
+            //         } elseif ($toDate) {
+            //             $query->whereDate($field, '<=', $toDate);
+            //         }
+            //     }
+            // }
+            if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+                $dateField = $request->input('date_field');
+            
+                $dispatchField = match ($dateField) {
+                    'dispatch_date' => 'dispatch_date',
+                    'received_date' => 'updated_at',
+                    default         => null,
+                };
+            
+                $mainField = match ($dateField) {
                     'creation_date' => 'account_creation_date',
                     'movement_date' => 'vendor_movement_date',
                     'addition_date' => 'date_added_to_vendor',
@@ -1203,16 +1238,47 @@ class DocumentController extends Controller
                     default         => null,
                 };
             
-                if ($field) {
-                    if ($fromDate && $toDate) {
-                        $query->whereBetween($field, [$fromDate, $toDate]);
-                    } elseif ($fromDate) {
-                        $query->whereDate($field, '>=', $fromDate);
-                    } elseif ($toDate) {
-                        $query->whereDate($field, '<=', $toDate);
-                    }
+                // If filtering by dispatch date or received date → only dispatched docs
+                if ($dispatchField) {
+                    $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate) {
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween($dispatchField, [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate($dispatchField, '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate($dispatchField, '<=', $toDate);
+                        }
+                    });
+                }
+                // Otherwise check both dispatched and non-dispatched
+                elseif ($mainField) {
+                    $query->where(function ($q) use ($mainField, $fromDate, $toDate) {
+                        // For dispatched docs → match main field too
+                        $q->whereHas('dispatch', function ($dq) use ($mainField, $fromDate, $toDate) {
+                            if ($fromDate && $toDate) {
+                                $dq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif ($fromDate) {
+                                $dq->whereDate($mainField, '>=', $fromDate);
+                            } elseif ($toDate) {
+                                $dq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+            
+                        // Or non-dispatched docs with the main field
+                        $q->orWhereDoesntHave('dispatch', function ($nq) use ($mainField, $fromDate, $toDate) {
+                            if ($fromDate && $toDate) {
+                                $nq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif ($fromDate) {
+                                $nq->whereDate($mainField, '>=', $fromDate);
+                            } elseif ($toDate) {
+                                $nq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+                    });
                 }
             }
+            
+            
         };
 
         if ($request->doc_type === 'loan') {

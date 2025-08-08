@@ -56,19 +56,23 @@ $(document).ready(function(){
         return true;
     }, "Please select Date Criteria when From/To Date is filled.");
 
+    $.validator.addMethod("customDate", function (value, element) {
+        if ($.trim(value) === "") return true; // allow empty
+        return /^\d{2}-\d{2}-\d{4}$/.test(value);
+    }, "Please enter a valid date in DD-MM-YYYY format");
+
     // Custom method: To Date >= From Date
-$.validator.addMethod("greaterThanOrEqual", function (value, element, param) {
-    const fromDate = $(param).val();
-    if (!fromDate || !value) return true; // Skip if either is empty
-
-    // Convert d-m-Y to Y-m-d for comparison
-    const [d1, m1, y1] = fromDate.split("-");
-    const [d2, m2, y2] = value.split("-");
-    const fDate = new Date(`${y1}-${m1}-${d1}`);
-    const tDate = new Date(`${y2}-${m2}-${d2}`);
-
-    return tDate >= fDate;
-}, "To Date must be greater than or equal to From Date.");
+    $.validator.addMethod("greaterThanOrEqual", function (value, element, params) {
+        if ($.trim(value) === "" || $.trim($(params).val()) === "") return true;
+    
+        var fromParts = $(params).val().split("-");
+        var toParts = value.split("-");
+    
+        var fromDate = new Date(fromParts[2], fromParts[1] - 1, fromParts[0]);
+        var toDate = new Date(toParts[2], toParts[1] - 1, toParts[0]);
+    
+        return toDate >= fromDate;
+    }, "To Date must be greater than or equal to From Date");
 
     
     // Add a custom validation method

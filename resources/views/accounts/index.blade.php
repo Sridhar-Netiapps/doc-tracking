@@ -53,7 +53,7 @@
                                     <th scope="col" class="text-nowrap"> Customer Name</th>
                                     <th scope="col" class="text-nowrap"> Disb Date /<br> Creation Date</th>
                                     <th scope="col" class="text-nowrap"> Channel</th>
-                                    <th scope="col" class="text-nowrap"> Disb Type <br>/ Type</th>
+                                    <th scope="col" class="text-nowrap"> Disb Type</th>
                                     <th scope="col" class="text-nowrap"> Business Category</th>
                                     <th scope="col" class="text-nowrap"> Status</th>
                                     <th scope="col" class="text-nowrap"> Activity Date</th>

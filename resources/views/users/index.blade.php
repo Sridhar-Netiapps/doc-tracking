@@ -67,7 +67,7 @@
                                     @role('master|super_admin|admin')
                                         <td>
                                             @foreach ($user->roles as $role)
-                                                <span class="badge text-bg-primary">{{ $role->name }}</span>
+                                                <span>{{ $role->name }}</span>
                                             @endforeach
                                         </td>
                                         {{-- <td>
