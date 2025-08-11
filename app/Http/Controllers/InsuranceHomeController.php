@@ -19,6 +19,8 @@ use App\Models\InsuranceDocument;
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
 use App\Exports\ExportErrorRows;
+use App\Exports\ExportAuditLogs;
+
 use App\Models\AuditLog;
 use App\AuditLogTrait;
 use App\Models\Branch;
@@ -225,7 +227,7 @@ class InsuranceHomeController extends Controller
 
         if(Auth::user()->branch_id == '1100'){
           $data = InsuranceClaimDetail::when($search,function($query)use($search){
-               $query->where('cust_id','LIKE',$search.'%');
+               $query->where('actual_id','LIKE',$search.'%');
                $query->orWhere('load_acc_id','LIKE',$search.'%');
                $query->orWhere('utrn','LIKE','%'.$search.'%');
                $query->orWhere('partner','LIKE','%'.$search.'%');
@@ -314,11 +316,17 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
+          'policy_covered_date' => 'required',
+          'actual_id' => 'required',
+          'deceased_name' => 'required',
           'date_of_death' => 'required',
-          'policy_number' => 'required',
+          'load_acc_id' => 'required',
+          'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
-          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
+          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
+         
          
       ]);
 
@@ -386,6 +394,7 @@ class InsuranceHomeController extends Controller
         $claimdata->utrn_nominee = $request->utrn_nominee;
 
         $claimdata->recovery_status = $request->recovery_status;
+        $claimdata->recoveries = $request->recoveries;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
         $claimdata->chq_deposit_date = $request->chq_deposit_date;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
@@ -413,7 +422,7 @@ class InsuranceHomeController extends Controller
            
            // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
-            $mailData=['message' => 'New Lead created in Insurance Module.Please refer Lead ID - '.$claimdata->utrn].' for detailed information' ;
+            $mailData=['message' => 'New Lead created in Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' for detailed information'] ;
             $reciepients=array();
             $reciepients=['druva@netiapps.com'];
             $csvContent='';
@@ -531,11 +540,17 @@ class InsuranceHomeController extends Controller
           'branch' => 'required',
           'partner' => 'required',
           'product' => 'required',
+          'policy_covered_date' => 'required',
+          'actual_id' => 'required',
+          'deceased_name' => 'required',
           'date_of_death' => 'required',
-          'policy_number' => 'required',
+          'load_acc_id' => 'required',
+          'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
-          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date']
+          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
+          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
+         
          
       ]);
 
@@ -613,6 +628,7 @@ class InsuranceHomeController extends Controller
       
         
         $claimdata->recovery_status = $request->recovery_status;
+        $claimdata->recoveries = $request->recoveries;
         $claimdata->bounced_chq_no = $request->bounced_chq_no;
         $claimdata->bounced_chq_date = $request->bounced_chq_date;
         $claimdata->bounced_chq_reason = $request->bounced_chq_reason;
@@ -1297,14 +1313,27 @@ class InsuranceHomeController extends Controller
       }else{
         $search=$request->search;
       }
-      $data = AuditLog::when($search,function($query)use($search){
-           $query->where('note','LIKE','%'.$search.'%');
-           $query->orWhere('user_id','LIKE','%'.$search.'%');
-           $query->orWhere('operation','LIKE','%'.$search.'%');
-      })
-      ->orderBy('id','DESC')->paginate(50);
+      if($request->type == 'filter'){
+          $data = AuditLog::when($search,function($query)use($search){
+               $query->where('note','LIKE','%'.$search.'%');
+               $query->orWhere('user_id','LIKE','%'.$search.'%');
+               $query->orWhere('operation','LIKE','%'.$search.'%');
+          })
+          ->orderBy('id','DESC')->paginate(50);
+          return view('insurance.audit',compact('data','search'));
+      }
+      else{
+         $data = AuditLog::when($search,function($query)use($search){
+               $query->where('note','LIKE','%'.$search.'%');
+               $query->orWhere('user_id','LIKE','%'.$search.'%');
+               $query->orWhere('operation','LIKE','%'.$search.'%');
+          })
+          ->orderBy('id','DESC')->get();
 
-      return view('insurance.audit',compact('data','search'));
+         return Excel::download(new ExportAuditLogs($data), 'audit_logs_'.date('Ymdhis').'.xlsx'); 
+
+      }
+      
     }
 
     public function report(Request $request){
@@ -1703,5 +1732,36 @@ class InsuranceHomeController extends Controller
         }
         return true; // Valid file
     }
+
+
+    public function get_products(Request $request){
+       $partner = InsurancePartner::where('partner',$request->partner_id)->first();
+       $products = InsuranceProduct::where('partner_id', $partner->id)->pluck('product', 'id');
+       return response()->json($products);
+    }
+
+    public function clone_lead_details($id){
+        $lead = InsuranceClaimDetail::find($id);
+        if ($lead) {
+            $utrn = rand('000000','999999');
+            
+              $newLead = $lead->replicate(); // Clone attributes except the primary key
+              $newLead->utrn = "INS_CLM".$utrn;
+              $newLead->save(); // Inserts as a new row with a new id
+
+              $module = 'Insurance';
+              $operation = 'Clone';
+              $note = 'New lead created '.$newLead->utrn.' by cloning - '.$lead->utrn;
+              $link = url('/').'/insurance/view_claim_details/'.encrypt($newLead->id);
+
+              $this->auditlogs($module, $operation, $note, $link);
+
+              return redirect()->back()->with('success','Lead cloned Succesfully. New lead ID - '.$newLead->utrn );
+          } else {
+              return redirect()->back()->with('failure','Lead details not found');
+          }
+                  
+        }
+
 
 }

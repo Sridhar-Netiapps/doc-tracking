@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('insurance_partners', function (Blueprint $table) {
             $table->id();
             $table->string('partner');
+            $table->string('partner_id');
             $table->string('insurance_type')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

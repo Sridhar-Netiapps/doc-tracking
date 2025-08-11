@@ -137,7 +137,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
 
+    Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
+    Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
 
-
+   
    
 });
