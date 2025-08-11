@@ -126,8 +126,8 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type');
-        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype');
+        $type = $filters['type'] ?? session()->pull('type', 'all');
+        $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
         if(empty($filters))
             return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
         $user = $this->user;
@@ -1303,7 +1303,12 @@ class DocumentController extends Controller
         } elseif ($request->doc_type === 'dtrf') {
             $data = DtrfDocument::query();
             $filter($data, 'dtrf_documents');
-            // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     if(!empty($dt->getReceivedDetails)){
+            //         dd($dt->getReceivedDetails->creator->first_name);
+            //     }
+            // }
+            // exit;
             return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();

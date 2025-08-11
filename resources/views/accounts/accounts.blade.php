@@ -16,22 +16,22 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">
                         MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">
                         Gold Loan Docs <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">
                         Liabilities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">
                         DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
                     </button>
                 </li>
@@ -79,7 +79,7 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
             <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -226,7 +226,7 @@
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -366,7 +366,7 @@
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -510,7 +510,7 @@
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @endif
@@ -876,20 +876,60 @@
    
 <script>
     $(document).ready(function () {
-        
+        let dtype = '{{$dtype}}';
+        let activeTab = null;
+        let fallbackTab = null;
+
         $('button.nav-link').each(function() {
-            if(parseInt($(this).find('span').text()) > 0){
-                $(this).addClass('active');
-                let tab = $(this).attr('id');
-                $(`#${tab}-pane`).addClass('show active');
-                return false;
+            let tab = $(this).attr('id');
+            let count = parseInt($(this).find('span').text()) || 0;
+
+            // Primary choice: dtype matches tab & count > 0
+            if (!activeTab && dtype === tab && count > 0) {
+                activeTab = tab;
             }
-            else{
-                $(this).removeClass('active');
-                let tab = $(this).attr('id');
-                $(`#${tab}-pane`).removeClass('show active');
+
+            // Fallback choice: dtype doesn't match tab but count > 0
+            if (!fallbackTab && dtype !== tab && count > 0) {
+                fallbackTab = tab;
             }
         });
+
+        // Decide final active tab
+        if (!activeTab) {
+            // If all tabs have > 0, prefer dtype tab
+            if ($('button.nav-link').filter(function() {
+                return parseInt($(this).find('span').text()) || 0;
+            }).length === $('button.nav-link').length) {
+                activeTab = dtype;
+            } else {
+                activeTab = fallbackTab;
+            }
+        }
+
+        // Activate the selected tab
+        if (activeTab) {
+            $('button.nav-link, .tab-pane').removeClass('active show');
+            $(`#${activeTab}`).addClass('active');
+            $(`#${activeTab}-pane`).addClass('show active');
+        }
+
+        // let dtype = '{{$dtype}}';
+        // $('button.nav-link').each(function() {
+        //     let tab = $(this).attr('id');
+        //     if(dtype == tab){    
+        //         if(parseInt($(this).find('span').text()) > 0){
+        //             $(this).addClass('active');
+        //             $(`#${tab}-pane`).addClass('show active');
+        //             return false;
+        //         }
+        //         else{
+        //             $(this).removeClass('active');
+        //             let tab = $(this).attr('id');
+        //             $(`#${tab}-pane`).removeClass('show active');
+        //         }
+        //     }
+        // });
         $(".loan_all").click(function () {
             $(".loan:visible").prop('checked', $(this).prop('checked'));
         });
