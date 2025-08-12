@@ -54,8 +54,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Exception handling configuration
     })
 
-     ->withSchedule(function () {
+    /* ->withSchedule(function () {
         Schedule::command('app:sync-h-r-mdata')->everyMinute();
-    })
+    })*/
     
     ->create();
