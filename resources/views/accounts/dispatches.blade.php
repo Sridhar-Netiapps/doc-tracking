@@ -533,7 +533,6 @@
             const mmrpBarcode = $(this).data('mmrp-barcode');
             const dispatchDate = $(this).data('dispatch-date');
 
-            // Reset and fill form
             $('#update-courier')[0].reset();
             $('input[name="dispatch_id"]').val(courierId);
             $('select[name="courier_name"]').val(courierName);
@@ -541,15 +540,12 @@
             $('input[name="mmrp_barcode"]').val(mmrpBarcode);
             $('input[name="dispatch_date"]').val(dispatchDate);
 
-            // Show modal
             $('#add-courier').modal('show');
 
-            // Change form action to UPDATE route
             $('#update-courier').attr('action', `{{ url('dispatches/update-courier') }}/${courierId}`);
         });
 
 
-        // Prevent entering AWB without courier selected
         $('.awb_pod').on('focus', function () {
             let courierId = $('#courier_name').val();
 
@@ -562,12 +558,16 @@
             }
         });
 
-        $('.awb_pod').on('change', function () {
+        let invalidAwbs = new Set();
+
+        $('.awb_pod').on('input', function () {
             let awbPod = $(this).val().trim();
-            let courierId = $('#courier_name').val();  // get courier name
+            let courierId = $('#courier_name').val();
             let $input = $(this);
 
-            $('#awb-error').remove(); // remove old error message
+            $('#awb-error').remove();
+            $input.removeClass('is-invalid');
+            invalidAwbs.delete($input[0]); 
 
             if (awbPod !== '' && courierId !== '') {
                 $.ajax({
@@ -580,35 +580,26 @@
                     },
                     success: function (response) {
                         if (response.exists) {
-                            // Show error
                             $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
-                            
-                            // Clear input
-                            $input.val('');
-
-                            // Add red border
                             $input.addClass('is-invalid');
-
-                            // Disable submit
-                            // $('button[type="submit"]').prop('disabled', true);
-                        } else {
-                            $('#awb-error').remove();
-                            $input.removeClass('is-invalid');
-                            $('button[type="submit"]').prop('disabled', false);
+                            invalidAwbs.add($input[0]); 
                         }
                     }
                 });
             }
         });
 
-   
+        $('form').on('submit', function () {
+            invalidAwbs.forEach(function(inputEl) {
+                $(inputEl).val(''); 
+            });
+        });
+
         $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
             let search = $('#search').val()?.trim();
             let dateFrom = $('#date_from').val()?.trim();
             let dateTo = $('#date_to').val()?.trim();
-
-            // Add more filter fields if needed
 
             if (!status && !search && !dateFrom && !dateTo) {
                 Swal.fire({
