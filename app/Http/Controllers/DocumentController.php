@@ -71,13 +71,13 @@ class DocumentController extends Controller
             elseif($type ==='pending'){
                 $query->where('status',1);
             }
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
-            return $query->orderBy('updated_at', 'desc');
+            return $query->orderBy('account_creation_date', 'desc');
         };
         // dd($filter(GoldLoanDocument::query())->get());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
@@ -126,8 +126,8 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type');
-        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype');
+        $type = $filters['type'] ?? session()->pull('type', 'all');
+        $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
         if(empty($filters))
             return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
         $user = $this->user;
@@ -148,7 +148,7 @@ class DocumentController extends Controller
         $docType = $filters['document_type'] ?? null;
         // $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters,$fromDate,$toDate, $docType) {
 
-        //     if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+        //     if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
         //         $query->where('region', $user->region);
         //     }
         //     if ($user->hasRole('bo-maker') || $user->hasRole('bo-checker')) {
@@ -189,7 +189,7 @@ class DocumentController extends Controller
         // };
         $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
 
-            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+            if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
         
@@ -347,7 +347,7 @@ class DocumentController extends Controller
         $allDocuments = collect();
     
         $customFilter = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate) {
-            if ($user->hasRole('ro-user') || $user->hasRole('ro-supervisor')) {
+            if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
             }
     
@@ -593,7 +593,7 @@ class DocumentController extends Controller
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region_id', $this->user->region_id);
             }
 
@@ -1075,7 +1075,7 @@ class DocumentController extends Controller
             // elseif($type ==='pending'){
             //     $query->where('status',1);
             // }
-            if ($this->user->hasRole('ro-user') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
@@ -1130,18 +1130,34 @@ class DocumentController extends Controller
         }
     }
 
+    // public function checkAwb(Request $request)
+    // {
+    //     $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
+    //     return response()->json(['exists' => $exists]);
+    // }
     public function checkAwb(Request $request)
-    {
-        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)->exists();
-        return response()->json(['exists' => $exists]);
-    }
+{
+    $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
+        ->where('courier_id', $request->courier_id) // match courier name too
+        ->exists();
+
+    return response()->json(['exists' => $exists]);
+}
+
     
     public function reports(Request $request)
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
+        $vendors = Vendor::all();
+        // $couriers = Courier::pluck('name', 'id');
+        $couriers = Courier::where('status', 1)->get();
+
+
         
-        return view('accounts.reports');        
+        // return view('accounts.reports');  
+        return view('accounts.reports', compact('vendors', 'couriers'));
+      
     }
 
 
@@ -1166,26 +1182,54 @@ class DocumentController extends Controller
                 }
             }
 
-            if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+            // if ($request->filled(['from_date', 'to_date', 'date_field'])) {
                 
-                $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
-                    $field = match ($request->input('date_field')) {
-                        'dispatch_date' => 'dispatch_date',
-                        'received_date' => 'updated_at',
-                        default         => null,
-                    };
-                    if ($field) {
-                        if ($fromDate && $toDate) {
-                            $q->whereBetween($field, [$fromDate, $toDate]);
-                        } elseif ($fromDate) {
-                            $q->whereDate($field, '>=', $fromDate);
-                        } elseif ($toDate) {
-                            $q->whereDate($field, '<=', $toDate);
-                        }
-                    }
-                });
+            //     $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
+            //         $field = match ($request->input('date_field')) {
+            //             'dispatch_date' => 'dispatch_date',
+            //             'received_date' => 'updated_at',
+            //             default         => null,
+            //         };
+            //         if ($field) {
+            //             if ($fromDate && $toDate) {
+            //                 $q->whereBetween($field, [$fromDate, $toDate]);
+            //             } elseif ($fromDate) {
+            //                 $q->whereDate($field, '>=', $fromDate);
+            //             } elseif ($toDate) {
+            //                 $q->whereDate($field, '<=', $toDate);
+            //             }
+            //         }
+            //     });
 
-                $field = match ($request->input('date_field')) {
+            //     $field = match ($request->input('date_field')) {
+            //         'creation_date' => 'account_creation_date',
+            //         'movement_date' => 'vendor_movement_date',
+            //         'addition_date' => 'date_added_to_vendor',
+            //         'activity_date' => 'updated_at',
+            //         'sync_date'     => 'created_at',
+            //         default         => null,
+            //     };
+            
+            //     if ($field) {
+            //         if ($fromDate && $toDate) {
+            //             $query->whereBetween($field, [$fromDate, $toDate]);
+            //         } elseif ($fromDate) {
+            //             $query->whereDate($field, '>=', $fromDate);
+            //         } elseif ($toDate) {
+            //             $query->whereDate($field, '<=', $toDate);
+            //         }
+            //     }
+            // }
+            if ($request->filled(['from_date', 'to_date', 'date_field'])) {
+                $dateField = $request->input('date_field');
+            
+                $dispatchField = match ($dateField) {
+                    'dispatch_date' => 'dispatch_date',
+                    'received_date' => 'updated_at',
+                    default         => null,
+                };
+            
+                $mainField = match ($dateField) {
                     'creation_date' => 'account_creation_date',
                     'movement_date' => 'vendor_movement_date',
                     'addition_date' => 'date_added_to_vendor',
@@ -1194,16 +1238,47 @@ class DocumentController extends Controller
                     default         => null,
                 };
             
-                if ($field) {
-                    if ($fromDate && $toDate) {
-                        $query->whereBetween($field, [$fromDate, $toDate]);
-                    } elseif ($fromDate) {
-                        $query->whereDate($field, '>=', $fromDate);
-                    } elseif ($toDate) {
-                        $query->whereDate($field, '<=', $toDate);
-                    }
+                // If filtering by dispatch date or received date → only dispatched docs
+                if ($dispatchField) {
+                    $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate) {
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween($dispatchField, [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate($dispatchField, '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate($dispatchField, '<=', $toDate);
+                        }
+                    });
+                }
+                // Otherwise check both dispatched and non-dispatched
+                elseif ($mainField) {
+                    $query->where(function ($q) use ($mainField, $fromDate, $toDate) {
+                        // For dispatched docs → match main field too
+                        $q->whereHas('dispatch', function ($dq) use ($mainField, $fromDate, $toDate) {
+                            if ($fromDate && $toDate) {
+                                $dq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif ($fromDate) {
+                                $dq->whereDate($mainField, '>=', $fromDate);
+                            } elseif ($toDate) {
+                                $dq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+            
+                        // Or non-dispatched docs with the main field
+                        $q->orWhereDoesntHave('dispatch', function ($nq) use ($mainField, $fromDate, $toDate) {
+                            if ($fromDate && $toDate) {
+                                $nq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif ($fromDate) {
+                                $nq->whereDate($mainField, '>=', $fromDate);
+                            } elseif ($toDate) {
+                                $nq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+                    });
                 }
             }
+            
+            
         };
 
         if ($request->doc_type === 'loan') {
@@ -1228,7 +1303,12 @@ class DocumentController extends Controller
         } elseif ($request->doc_type === 'dtrf') {
             $data = DtrfDocument::query();
             $filter($data, 'dtrf_documents');
-            // dd($data->get());
+            // foreach($data->get() as $dt){
+            //     if(!empty($dt->getReceivedDetails)){
+            //         dd($dt->getReceivedDetails->creator->first_name);
+            //     }
+            // }
+            // exit;
             return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
         } elseif ($request->doc_type === 'aof') {
             $data = AccountOpeningDocument::query();
@@ -1249,4 +1329,26 @@ class DocumentController extends Controller
         Mail::to($to)->send(new \App\Mail\DispatchesMail($content, $subject));
     }
 
+    public function revertStatus(Request $request)
+    {
+        $id = $request->document_id;
+        $dtype = $request->dtype;
+        try {
+            DB::beginTransaction();
+
+            $doc = $this->table[$dtype]::find($id);
+            $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$dtype]))
+                ->where('current_status',$doc->status)->where('previous_status','<',$doc->status)->latest()->first();
+            $doc->status = $history->previous_status;
+            $doc->reason = $request->reason;
+            $doc->updated_by = $this->user->id;
+            $doc->save();
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

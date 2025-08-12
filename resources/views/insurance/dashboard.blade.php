@@ -169,7 +169,7 @@
         var value = config.w.config.series[config.dataPointIndex];
 
         // Redirect to another page (you can modify the URL)
-        window.location.href = '/insurance/claim_forms?search=' + encodeURIComponent(label);
+       // window.location.href = '/insurance/claim_forms?search=' + encodeURIComponent(label);
       }
     },
 

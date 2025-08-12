@@ -127,7 +127,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Partner</label>
-				    <select class="form-control form-control-design form-select" name="partner"  >
+				    <select class="form-control form-control-design form-select" name="partner" id="partner"  >
 				    	<option value="">Select</option>
 				    	@foreach($partners as $key=>$value)
 				    	   <option {{(old('partner') == $value->partner)?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
@@ -138,7 +138,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Product</label>
-				    <select class="form-control form-control-design  form-select" name="product"  >
+				    <select class="form-control form-control-design  form-select" name="product" id="product" >
 				    	<option value="">Select</option>
 				    	@foreach($products as $key=>$value)
 				    	   <option {{(old('product') == $value->product)?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
@@ -161,14 +161,14 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Covered Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
+				    <input type="date" class="form-control form-control-design" name="policy_covered_date" value="{{ old('policy_covered_date')}}">
 				    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 				    <div class="text-error text-danger small" id="covered-error"></div>
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Policy Expired Date</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}" >
+				    <input type="date" class="form-control form-control-design" name="policy_expiry_date" value="{{ old('policy_expiry_date')}}" >
 				    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -192,13 +192,13 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Date of Birth</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="dob" max="{{ date('Y-m-d')}}" value="{{ old('dob')}}">
+				    <input type="date" class="form-control form-control-design" name="dob" max="{{ date('Y-m-d')}}" value="{{ old('dob')}}">
 				    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Date of Death</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="date_of_death" value="{{ old('date_of_death')}}" max="{{ date('Y-m-d')}}">
+				    <input type="date" class="form-control form-control-design" name="date_of_death" value="{{ old('date_of_death')}}" max="{{ date('Y-m-d')}}">
 				    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -232,7 +232,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Date Of Death Intimation</label>
-				    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ old('intimation_date')}}" max="{{ date('Y-m-d')}}">
+				    <input type="date" class="form-control form-control-design" name="intimation_date" value="{{ old('intimation_date')}}" max="{{ date('Y-m-d')}}">
 				    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -306,7 +306,7 @@
         		   
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of document received</label>
+					    <label class="form-label label-bold">Date of Document Received</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="doc_rec_date" value="{{ old('doc_rec_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -323,13 +323,13 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of submision to partner</label>
+					    <label class="form-label label-bold">Date of Submision to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="submit_to_partner_date" value="{{ old('submit_to_partner_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of re-submision to partner</label>
+					    <label class="form-label label-bold">Date of Re-submision to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>	
@@ -380,7 +380,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Notification Number</label>
-					    <input type="text" class="form-control form-control-design  number-with-format" name="notification_number" value="{{ old('notification_number')}}" placeholder="Enter Notification Number">
+					    <input type="text" class="form-control form-control-design clsAlphaNoOnly" name="notification_number" value="{{ old('notification_number')}}" placeholder="Enter Notification Number">
 					    @error('notification_number')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -416,7 +416,7 @@
 					
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of settlement</label>
+					    <label class="form-label label-bold">Date of Settlement</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="settlement_date" value="{{ old('settlement_date')}}" max="{{ date('Y-m-d')}}">
 					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -462,8 +462,14 @@
         		<div class="row">
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Recovery Status</label>
-					    <input type="text" class="form-control form-control-design  numberonly" name="recovery_status" value="{{ old('recovery_status')}}" placeholder="Enter Recovery Status">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recovery_status" value="{{ old('recovery_status')}}" placeholder="Enter Recovery Status">
 					    @error('recovery_status')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recoveries</label>
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recoveries" value="{{ old('recoveries')}}" placeholder="Enter Recoveries">
+					    @error('recoveries')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
@@ -485,7 +491,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">SPDC Bounced reason</label>
+					    <label class="form-label label-bold">SPDC Bounced Reason</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_reason" value="{{ old('bounced_chq_reason')}}" placeholder="Enter reason for SPDC Bounce">
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -533,25 +539,25 @@
         	<div class="card-body">
         		<div class="row">
         			<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Write off received Date</label>
+					    <label class="form-label label-bold">Write off Received Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="write_off_rec" value="{{ old('write_off_rec')}}">
 					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Write off status</label>
+					    <label class="form-label label-bold">Write off Status</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="write_off_status" value="{{ old('write_off_status')}}" placeholder="Enter Write off status">
 					    @error('write_off_status')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to Business Head</label>
+					    <label class="form-label label-bold">Handed Over to Business Head</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_bh" value="{{ old('handed_to_bh')}}" placeholder="Handed over to Business Head">
 					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to credit</label>
+					    <label class="form-label label-bold">Handed Over to Credit</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ old('handed_to_credit')}}" placeholder="Handed over to credit">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -592,6 +598,9 @@
             const expiryDate = new Date(coveredDate);
             expiryDate.setMonth(expiryDate.getMonth() + tenureMonths);
 
+            // Subtract one day
+            expiryDate.setDate(expiryDate.getDate() - 1);
+
             const yyyy = expiryDate.getFullYear();
             const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
             const dd = String(expiryDate.getDate()).padStart(2, '0');
@@ -627,7 +636,8 @@
                 months += 12;
             }
 
-            ageInput.value = `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+          //  ageInput.value = `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+             ageInput.value = `${years}`;
         } else {
             ageInput.value = '';
         }
@@ -637,6 +647,12 @@
     const documentReceivedDateInput = document.querySelector('input[name="doc_rec_date"]');
     const documentsubmissionDateInput = document.querySelector('input[name="submit_to_partner_date"]');
     const documentre_submissionDateInput = document.querySelector('input[name="re_submit_to_partner_date"]');
+
+  //  coveredInput.addEventListener('change', RestrictIntimationDate);
+
+    /*function RestrictIntimationDate() {
+       intimationReceivedDateInput.min = coveredInput.value;
+    }*/
 
     function RestrictDocReceivedDate() {
        documentReceivedDateInput.min = intimationReceivedDateInput.value;
@@ -649,6 +665,20 @@
     
     documentsubmissionDateInput.addEventListener('change', RestrictresubmissiondDate);
 
+
+	$(document).on('change', '#partner', function () {
+	    console.log('Partner changed:', $(this).val()); // debug
+	    let partnerId = $(this).val();
+	    let $productSelect = $('#product').html('<option value="">Select</option>');
+
+	    if (partnerId) {
+	        $.get('{{ route("get_products") }}', { partner_id: partnerId }, function (data) {
+	            $.each(data, function (id, product) {
+	                $productSelect.append(`<option value="${product}">${product}</option>`);
+	            });
+	        });
+	    }
+	});
 
 </script>	
     

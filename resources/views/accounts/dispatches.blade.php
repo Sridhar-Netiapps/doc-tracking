@@ -32,7 +32,7 @@
                     <a href="{{ route('dispatches','reject') }}" class="nav-link {{$type == 'reject' ? 'active':''}}" id="reject-tab" role="tab" aria-controls="reject-tab-pane" aria-selected="{{ $type == 'reject' ? 'true' : 'false' }}">Courier Rejected @if ($type == 'reject' && $reject_count != 0)<span class="badge text-bg-warning">{{$reject_count}}</span>@endif</a>
                 </li>
                 @if ($type == 'ready')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user']))
                 <li class="ms-auto">
                     <form method="POST" action="{{ route('dispatched') }}" id="proceed">
                         @csrf
@@ -42,7 +42,7 @@
                 @endunless
                 @endif
                 {{-- @if ($type == 'list')
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
@@ -56,7 +56,7 @@
                             <thead>
                                 <tr>
                                     @if ($type == 'ready')
-                                    {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                    {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user']))
                                     <th scope="col"><input type="checkbox" class="readytodispatch_all"/></th>
                                     @endunless --}}
                                     @else
@@ -76,7 +76,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Activity Date</th>
                                     @if ($type == 'list' || $type == 'tracking')
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <th scope="col">Update Status</th>
                                         @endunless
                                     @endif
@@ -87,7 +87,7 @@
                                 @foreach ($records as $row)
                                     <tr data-id="{{ $row->id }}" data-dispatch="{{ $row->dispatch_no }}">
                                         @if ($type == 'ready')
-                                        {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user']))
+                                        {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user']))
                                         <td><input type="checkbox" class="readytodispatch" name="readytodispatch_ids[]" data-id="{{ $row->id }}" data-doc_type="{{ $row->doc_type }}"></td>  
                                         @endunless --}}
                                         @else
@@ -123,7 +123,7 @@
                                         </td>
                                         <td>{{ date('d-m-Y', strtotime($row->updated_at)) ?? '-' }}</td>
                                         @if ($type == 'list')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=5>Received</option>
@@ -135,7 +135,7 @@
                                             @endunless
                                         @endif
                                         @if ($type == 'tracking')
-                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                             <td>
                                                 <select name="remarks" class="form-control select2 remarks" required>
                                                     <option selected value=12>Tracking Completed</option>
@@ -154,12 +154,12 @@
                                                 @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                 @endif
                                                 @if ($type == 'list')
-                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
+                                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                 @endif
@@ -485,24 +485,39 @@
             }
         });
 
+        // Prevent entering AWB without courier selected
+        $('.awb_pod').on('focus', function () {
+            let courierId = $('#courier_name').val();
+
+            $('#courier-error').remove();
+
+            if (courierId === '') {
+                $('#courier_name').after('<label id="courier-error" class="error text-danger">Please select a Courier Name first.</label>');
+
+                $('#courier_name').focus();
+            }
+        });
+
         $('.awb_pod').on('change', function () {
             let awbPod = $(this).val().trim();
+            let courierId = $('#courier_name').val();  // get courier name
             let $input = $(this);
 
             $('#awb-error').remove(); // remove old error message
 
-            if (awbPod !== '') {
+            if (awbPod !== '' && courierId !== '') {
                 $.ajax({
                     url: "{{ route('courier.checkAwb') }}",
                     type: "POST",
                     data: {
                         awb_pod: awbPod,
+                        courier_id: courierId,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function (response) {
                         if (response.exists) {
                             // Show error
-                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists.</label>');
+                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
                             
                             // Clear input
                             $input.val('');

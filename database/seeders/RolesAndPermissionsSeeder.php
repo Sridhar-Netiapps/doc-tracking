@@ -30,10 +30,10 @@ class RolesAndPermissionsSeeder extends Seeder
         $role = Role::create(['name' => 'admin']);
         $role->givePermissionTo(Permission::all());
 
-        $role = Role::create(['name' => 'bank-user']);
+        $role = Role::create(['name' => 'ho-user']);
         $role->givePermissionTo(Permission::all());
 
-        $role = Role::create(['name' => 'ro-user']);
+        $role = Role::create(['name' => 'ro-officer']);
         $role->givePermissionTo('doc-update');
 
         $role = Role::create(['name' => 'bo-maker']);
@@ -52,9 +52,9 @@ class RolesAndPermissionsSeeder extends Seeder
             } elseif ($index <= 5) {
                 $user->assignRole('admin'); // Next 3 users
             }elseif ($index <= 7) {
-                $user->assignRole('bank-user'); // Next 3 users
+                $user->assignRole('ho-user'); // Next 3 users
             }elseif ($index <= 12) {
-                $user->assignRole('ro-user'); // Next 3 users
+                $user->assignRole('ro-officer'); // Next 3 users
             }elseif ($index <= 21) {
                 $user->assignRole('bo-maker'); // Next 3 users
             }elseif ($index <= 30) {

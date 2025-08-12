@@ -19,12 +19,10 @@ class AddHttpHeaders
     {
         $response = $next($request);
         if($response instanceof Response){
-            // $response->headers->remove('Cache-Control');
-            // $response->headers->set('X-Content-Type-Options', 'nosniff');
-            // $response->headers->set('X-Frame-Options', 'DENY');
-            // $response->headers->set('Content-Security-Policy', "default-src 'self'");
-            // $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-            // $response->headers->set('X-XSS-Protection', '1; mode=block');
+           /* $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+            $response->headers->set('Pragma', 'no-cache');
+            $response->headers->set('Expires', '0');*/
+            
         /*$response->headers->set('Content-Security-Policy',
             "default-src 'self'; " .
             "img-src 'self' data:; " .// for dropdown

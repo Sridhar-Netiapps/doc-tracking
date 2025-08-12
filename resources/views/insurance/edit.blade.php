@@ -131,7 +131,7 @@
         </div>
 
 		<div class="card mt-3">
-        	<div class="card-header label-font-header bg-card-header text-white">Policy Imformation</div>
+        	<div class="card-header label-font-header bg-card-header text-white">Policy Information</div>
         	<div class="card-body bg-card-branch">
         		<div class="row">
         		  <div class="row">
@@ -160,7 +160,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Partner</label>
-					    <select class="form-control form-control-design  form-select" name="partner"  >
+					    <select class="form-control form-control-design  form-select" name="partner" id="partner" >
 					    	<option value="">Select</option>
 					    	@foreach($partners as $key=>$value)
 					    	   <option {{( (old('partner',$data->partner )== $value->partner))?'selected':''}} value="{{$value->partner}}">{{$value->partner}}</option>
@@ -171,11 +171,9 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Product</label>
-					    <select class="form-control form-control-design  form-select" name="product"  >
+					    <select class="form-control form-control-design  form-select" name="product"  id="product">
 					    	<option value="">Select</option>
-					    	@foreach($products as $key=>$value)
-					    	   <option {{((old('product',$data->product )== $value->product))?'selected':''}} value="{{$value->product}}">{{$value->product}}</option>
-					    	@endforeach
+					    	
 					    </select>
 					    @error('product')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -194,13 +192,13 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Policy Covered</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="policy_covered_date" value="{{ old('policy_covered_date', $data->policy_covered_date)}}">
+					    <input type="date" class="form-control form-control-design" name="policy_covered_date" value="{{ old('policy_covered_date', $data->policy_covered_date)}}">
 					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Policy Expired Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="policy_expiry_date" value="{{ old('policy_expiry_date', $data->policy_expiry_date)}}">
+					    <input type="date" class="form-control form-control-design" name="policy_expiry_date" value="{{ old('policy_expiry_date', $data->policy_expiry_date)}}">
 					    @error('policy_expiry_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -224,13 +222,13 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Birth</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="dob" value="{{ old('dob', $data->dob)}}">
+					    <input type="date" class="form-control form-control-design" name="dob" value="{{ old('dob', $data->dob)}}">
 					    @error('dob')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Death</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="date_of_death" value="{{ old('date_of_death', $data->date_of_death )}}">
+					    <input type="date" class="form-control form-control-design" name="date_of_death" value="{{ old('date_of_death', $data->date_of_death )}}">
 					    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -264,7 +262,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date Of Death Intimation</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ old('intimation_date', $data->intimation_date )}}">
+					    <input type="date" class="form-control form-control-design" name="intimation_date" value="{{ old('intimation_date', $data->intimation_date )}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -366,7 +364,7 @@
 					
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of re-submission to Partner</label>
+					    <label class="form-label label-bold">Date of Re-submission to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date', $data->re_submit_to_partner_date)}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -505,6 +503,12 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recoveries</label>
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recoveries" value="{{ old('recoveries',$data->recoveries)}}" placeholder="Enter Recoveries">
+					    @error('recoveries')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Bounced SPDC No</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_no" value="{{ old('bounced_chq_no', $data->bounced_chq_no)}}" placeholder="Enter Bounced SPDC Number">
 					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
@@ -583,13 +587,13 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to Business Head</label>
+					    <label class="form-label label-bold">Handed Over to Business Head</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_bh" value="{{ old('handed_to_bh', $data->handed_to_bh)}}" placeholder="Handed over to Business Head">
 					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to Credit</label>
+					    <label class="form-label label-bold">Handed Over to Credit</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ old('handed_to_credit', $data->handed_to_credit)}}" placeholder="Handed over to Credit">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -845,35 +849,7 @@
     
    }	
 
-   $(document).ready(function() {
-      const userbranch = $('#usertype').val();
-     
-     /* if(userbranch == '1100'){
-      	$('#head_off').removeClass('d-none');
-	      $('#head_off').addClass('d-block');
-          $('#ho').addClass('active');
 
-	      $('#branch_off').removeClass('d-block');
-	      $('#branch_off').addClass('d-none');
-
-	      $('#checklist').removeClass('d-block');
-	      $('#checklist').addClass('d-none');
-     
-      }
-      else{
-      	  $('#head_off').removeClass('d-block');
-	      $('#head_off').addClass('d-none');
-
-	      $('#branch_off').removeClass('d-none');
-	      $('#branch_off').addClass('d-block');
-	      $('#bo').addClass('active');
-
-	      $('#checklist').removeClass('d-block');
-	      $('#checklist').addClass('d-none');
-          
-
-      }*/
-   	});
 
  let selectedFiles = [];
 
@@ -1064,6 +1040,8 @@ $(document).ready(function() {
             const expiryDate = new Date(coveredDate);
             expiryDate.setMonth(expiryDate.getMonth() + tenureMonths);
 
+            expiryDate.setDate(expiryDate.getDate() - 1);
+
             const yyyy = expiryDate.getFullYear();
             const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
             const dd = String(expiryDate.getDate()).padStart(2, '0');
@@ -1099,7 +1077,7 @@ $(document).ready(function() {
                 months += 12;
             }
 
-            ageInput.value = `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+            ageInput.value = `${years}`;
         } else {
             ageInput.value = '';
         }
@@ -1120,6 +1098,39 @@ $(document).ready(function() {
     }
     
     documentsubmissionDateInput.addEventListener('change', RestrictresubmissiondDate);
+
+     $(document).ready(function() {
+      let partnerId = '{{$data->partner }}';
+	    let $productSelect = $('#product').html('<option value="">Select</option>');
+        var selectedProductId = '{{$data->product }}';
+       
+
+	    if (partnerId) {
+	        $.get('{{ route("get_products") }}', { partner_id: partnerId }, function (data) {
+	            $.each(data, function (id, product) {
+	            	let selected = (product == selectedProductId) ? 'selected' : '';
+	                $productSelect.append(`<option ${selected} value="${product}">${product}</option>`);
+	            });
+	        });
+	    }
+     
+   	});
+    
+    
+    $(document).on('change', '#partner', function () {
+	    console.log('Partner changed:', $(this).val()); // debug
+	    let partnerId = $(this).val();
+	    let $productSelect = $('#product').html('<option value="">Select</option>');
+        
+	    if (partnerId) {
+	        $.get('{{ route("get_products") }}', { partner_id: partnerId }, function (data) {
+	            $.each(data, function (id, product) {
+	            	  $productSelect.append(`<option value="${product}">${product}</option>`);
+	            });
+	        });
+	    }
+	});
+
 
 
 </script>

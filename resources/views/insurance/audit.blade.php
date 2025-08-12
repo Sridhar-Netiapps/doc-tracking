@@ -10,12 +10,19 @@
             </div>
 
             <div class="ms-auto">
-             <form method="GET" action="{{route('audit')}}">
-               <div class="input-group mb-3">
-                <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
-                <button class="btn btn btn-secondary" type="submit" >GO</button>
-               </div>
-             </form>
+                <div class="d-flex">
+                     <form class="me-3" method="GET" action="{{route('audit')}}">
+                       <div class="input-group mb-3">
+                        <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
+                        <button class="btn btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
+
+                        <button class="btn btn-dark" name="type" value="export">Export</button>
+                       </div>
+                     </form>
+                  
+                    
+             
+           </div>
         </div>
  
         </div>

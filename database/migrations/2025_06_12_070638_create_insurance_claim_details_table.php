@@ -61,6 +61,7 @@ return new class extends Migration
             $table->string('utrn_nominee')->nullable();
 
             $table->string('recovery_status')->nullable();
+            $table->string('recoveries')->nullable();
             $table->string('bounced_chq_no')->nullable();
             $table->string('bounced_chq_date')->nullable();
             $table->string('bounced_chq_reason')->nullable();

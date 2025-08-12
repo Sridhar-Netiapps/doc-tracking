@@ -7,7 +7,12 @@
         <div class="col-10">
             <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
+                <div>
+                @hasanyrole('ro-supervisor|admin')
+                <button class="btn btn-primary revert-status">Revert Status</button>
+                @endhasanyrole
                 <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Back</a>
+                </div>
             </div>
         </div>
         <div class="col-1"></div>
@@ -38,7 +43,7 @@
                                             <td>{{ $loop->iteration }} </td>
                                             <td>{{ $row->oldStatus->name ?? '-' }}</td>
                                             <td>{{ $row->newStatus->name ?? '-' }}
-                                                @if (in_array($row->current_status, [6,7]) && $row->remarks != null)
+                                                @if ($row->remarks != null)
                                                 <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->remarks }}">
                                                     <img src="/images/info_icon.svg"/>
                                                 </span>
@@ -160,4 +165,45 @@
         <div class="col-1"></div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('.revert-status').click(function (e) {
+            let type = '{{$type}}';
+            let dtype = '{{$dtype}}';
+            let document_id = '{{$document->id}}';
+            e.preventDefault();
+            Swal.fire({
+                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                input: "text",
+                inputLabel: "Enter reason for reverting the document:",
+                inputPlaceholder: "Reason...",
+                showCancelButton: true,
+                confirmButtonText: '<b>Confirm Revert</b>',
+                cancelButtonText: "Cancel",
+                customClass: {
+                    popup: 'rounded-3 shadow',
+                    confirmButton: 'btn btn-primary btn-lg',
+                    cancelButton: 'btn btn-secondary btn-lg',
+                },
+                inputValidator: value => !value && "Reason is required!"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $.post(`{{ route('document.revert') }}`, {
+                        _token: $('input[name="_token"]').val(),
+                        document_id: document_id,
+                        type: type,
+                        dtype: dtype,
+                        reason: result.value,
+                    })
+                    .done(() => {
+                        Swal.fire("Reverted!", "Document reverted successfully.", "success").then(() => { location.reload(); });
+                    })
+                    .fail(() => {
+                        Swal.fire("Error!", "Something went wrong!", "error");
+                    });
+                }
+            });
+        });
+    });
+</script>
 @endsection

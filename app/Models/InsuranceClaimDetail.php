@@ -53,6 +53,7 @@ class InsuranceClaimDetail extends Model
         'utrn_mph',
         'utrn_nominee',
     	'recovery_status',
+        'recoveries',
     	'bounced_chq_no',
     	'bounced_chq_date',
     	'bounced_chq_reason',

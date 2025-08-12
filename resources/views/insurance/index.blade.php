@@ -116,7 +116,7 @@
 				<th class="text-table-head">Intimation Date</th>
 				<th class="text-table-head">Lead ID</th>
 				<th class="text-table-head">Product</th>
-				<th class="text-table-head">CIF ID</th>
+				<th class="text-table-head">Actual ID</th>
 				<th class="text-table-head">Deceased Name</th>
 				<th class="text-table-head">Deceased Type</th>
 				<th class="text-table-head">Loan Acc No</th>
@@ -134,7 +134,7 @@
 					<td>{{ ($value->intimation_date !='')?date('d M,Y',strtotime($value->intimation_date)):''}}</td>
 					<td class="text-table">{{ $value->utrn}}</td>
 					<td class="text-table">{{ $value->product}}</td>
-					<td class="text-table">{{ $value->cust_id}}</td>
+					<td class="text-table">{{ $value->actual_id}}</td>
 					<td class="text-table">{{ $value->deceased_name}}</td>
 					<td class="text-table">{{ $value->deceased}}</td>
 					<td class="text-table">{{ $value->load_acc_id}}</td>

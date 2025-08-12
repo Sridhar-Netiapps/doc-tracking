@@ -120,18 +120,38 @@
                                 <label>Account Opening Type</label>
                                 <input type="text" name="type_of_account_opening" class="form-control">
                             </div> --}}
-                            @foreach ([
+                            {{-- @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
-                                // 'dispatched_by' => 'Dispatched By (User ID)',
-                                // 'tracked_by' => 'Tracked By (User ID)',
                                 ] as $field => $label)
                                 <div class="col-3 mt-2 courier">
                                     <label>{{ $label }}</label>
                                     <input type="text" name="{{ $field }}" class="form-control">
                                 </div>
-                            @endforeach
+                            @endforeach --}}
                             @foreach ([
+                                'awb_pod' => 'AWB/POD',
+                                'courier_name' => 'Courier Name',
+                            ] as $field => $label)
+                                <div class="col-3 mt-2 courier">
+                                    <label>{{ $label }}</label>
+                            
+                                    @if ($field === 'courier_name')
+                                        <select id="courier_name" name="courier_name" class="form-control select2" required>
+                                            <option value="">Select</option>
+                                            @foreach ($couriers as $courier)
+                                                <option value="{{ $courier->id }}" {{ ($doc->courier_name ?? '') == $courier->id ? 'selected' : '' }}>
+                                                    {{ $courier->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="text" name="{{ $field }}" class="form-control" value="{{ $doc->$field ?? '' }}">
+                                    @endif
+                                </div>
+                            @endforeach
+                            
+                            {{-- @foreach ([
                                 'lot_no' => 'Lot No',
                                 'category' => 'Document Category',
                                 'work_order_no' => 'Work Order No.',
@@ -143,7 +163,33 @@
                                     <label>{{ $label }}</label>
                                     <input type="text" name="{{ $field }}" class="form-control">
                                 </div>
+                            @endforeach --}}
+                            @foreach ([
+                                'lot_no' => 'Lot No',
+                                'category' => 'Document Category',
+                                'work_order_no' => 'Work Order No.',
+                                'vendor_name' => 'Vendor Name',
+                                'file_barcode' => 'File Barcode Against Lot',
+                                'box_barcode' => 'Box Barcode No.',
+                            ] as $field => $label)
+                                <div class="col-3 mt-2 vendor">
+                                    <label>{{ $label }}</label>
+
+                                    @if ($field === 'vendor_name')
+                                        <select class="form-select" name="vendor_name" required>
+                                            <option value="">Select Vendor Name</option>
+                                            @foreach ($vendors as $vendor)
+                                                <option value="{{ $vendor->name }}" {{ ($doc->vendor_name ?? '') == $vendor->name ? 'selected' : '' }}>
+                                                    {{ $vendor->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="text" name="{{ $field }}" class="form-control" value="{{ $doc->$field ?? '' }}">
+                                    @endif
+                                </div>
                             @endforeach
+
                         </div>
                         <div class="row">
                             <div class="col-3 mt-2">
@@ -214,50 +260,48 @@
     });
 
     $('#reportForm').validate({
-        rules: {
-            account_number: {
-                alphanumeric: {
-                    depends: function () {
-                        return $('#account_number').val().trim() !== '';
-                    }
+    rules: {
+        account_number: {
+            alphanumeric: {
+                depends: function () {
+                    return $('#account_number').val().trim() !== '';
                 }
-            },
-            date_field: {
-                required: function () {
-                    return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
-                }
-            },
-            from_date: {
-                date: true
-            },
-            to_date: {
-                date: true,
-                greaterThanOrEqual: "#from_date"
             }
         },
-        messages: {
-            account_number: {
-                alphanumeric: "Only letters and numbers allowed"
-            },
-            date_field: {
-                required: "Date Criteria is required"
-            },
-            to_date: {
-                greaterThanOrEqual: "To Date must be greater than or equal to From Date"
+        date_field: {
+            required: function () {
+                return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
             }
         },
-        errorClass: 'is-invalid',
-        // validClass: 'is-valid',
-        errorElement: 'div',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            error.insertAfter(element);
+        from_date: {
+            customDate: true
         },
-        invalidHandler: function(event, validator) {
-            // Prevent focus jump or tab scroll
-            event.preventDefault();
+        to_date: {
+            customDate: true,
+            greaterThanOrEqual: "#from_date"
         }
-    });
+    },
+    messages: {
+        account_number: {
+            alphanumeric: "Only letters and numbers allowed"
+        },
+        date_field: {
+            required: "Date Criteria is required"
+        },
+        to_date: {
+            greaterThanOrEqual: "To Date must be greater than or equal to From Date"
+        }
+    },
+    errorClass: 'is-invalid',
+    errorElement: 'div',
+    errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        error.insertAfter(element);
+    },
+    invalidHandler: function (event, validator) {
+        event.preventDefault();
+    }
+});
 
     $(document).ready(function () {
         docfields();

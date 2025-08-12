@@ -48,12 +48,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
         Route::post('/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
+        // Route::get('/{id}/{type}/{dtype}', [DocumentController::class, 'revertStatus'])->name('accounts.revert');
     });
 
     Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
+    Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
     Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
     Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
     Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
@@ -154,7 +156,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
 
+    Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
+    Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
 
-
+   
    
 });

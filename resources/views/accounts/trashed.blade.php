@@ -33,7 +33,7 @@
                     <button class="nav-link {{($filters['document_type'] ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
-                @hasanyrole('ro-user')
+                @hasanyrole('ro-officer')
                 <li class="ms-auto">
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
