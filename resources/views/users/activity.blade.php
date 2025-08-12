@@ -13,18 +13,19 @@
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
                 </nav> --}}
-                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
-            </div>
-        </div>
-        <form id="exportForm" method="GET" action="{{ route('activity.export') }}">
+                <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
+                 {{-- <form id="exportForm" method="GET" action="{{ route('activity.export') }}"> --}}
+        <form method="GET" action="{{ route('activity.export') }}">
             @foreach(($filters ?? []) as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach        
-            <button type="button" id="exportBtn" class="btn btn-success">
+            {{-- <button type="button" id="exportBtn" class="btn btn-success"> --}}
+            <button type="submit" class="btn btn-sm btn-success">
                 Export
             </button>
         </form>
-        
+            </div>
+        </div>
     </div>
 
 
@@ -100,6 +101,12 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control employee_id alphanumeric" placeholder="Employee ID" value="{{ old('employee_id', $filters['employee_id'] ?? '') }}" name="employee_id">
                 </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Activity From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" readonly class="form-control flatpickr-date" placeholder="Activity To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('users.activities') }}" class="btn btn-secondary">Clear</a> 
@@ -109,7 +116,7 @@
     </div>
 </div>
 <!-- Bootstrap Modal -->
-<div class="modal fade" id="filterAlertModal" tabindex="-1">
+{{-- <div class="modal fade" id="filterAlertModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body text-center">
@@ -120,22 +127,31 @@
         </div>
       </div>
     </div>
-  </div>
-  <script>
-    $(document).on('click', '#exportBtn', function () {
-        let formData = $('#exportForm').serialize();
+</div> --}}
+<script>
+    $(document).ready(function () {
+        // $(document).on('click', '#exportBtn', function () {
+        //     let formData = $('#exportForm').serialize();
 
-        $.ajax({
-            url: '{{ route("activity.export.check") }}',
-            type: 'GET',
-            data: formData,
-            success: function (response) {
-                if (response.status === 'error') {
-                    Swal.fire("Warning!", "Filter the data first.", "warning");
-                } else {
-                    $('#exportForm')[0].submit();
-                }
-            }
+        //     $.ajax({
+        //         url: '{{ route("activity.export.check") }}',
+        //         type: 'GET',
+        //         data: formData,
+        //         success: function (response) {
+        //             if (response.status === 'error') {
+        //                 Swal.fire("Warning!", "Filter the data first.", "warning");
+        //             } else {
+        //                 $('#exportForm')[0].submit();
+        //             }
+        //         }
+        //     });
+        // });
+        flatpickr(".flatpickr-date", {
+            dateFormat: "d-m-Y",        
+            maxDate: "today",         
+            allowInput: false, 
+            clickOpens: true
+            // altFormat: "d-m-Y"  
         });
     });
 </script>
