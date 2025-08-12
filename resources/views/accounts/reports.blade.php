@@ -266,26 +266,26 @@
     </div>
 </div>
 <script>
-    function docfields() {
-        var docType = $('#doc_type').val();
-        var search_type = $('#search_type').val();
-        $('.doc-fields').hide();
-        $('.courier').hide();
-        $('.vendor').hide();
-        if (docType) {
-            $('.' + docType).show();
-        }
-        if (search_type) {
-            $('.' + search_type).show();
-        }
-    }
-
-    $(".datepicker").flatpickr({
-            dateFormat: "d-m-Y",
-            allowInput: true
-    });
-
     $(document).ready(function () {
+        function docfields() {
+            var docType = $('#doc_type').val();
+            var search_type = $('#search_type').val();
+            $('.doc-fields').hide();
+            $('.courier').hide();
+            $('.vendor').hide();
+            if (docType) {
+                $('.' + docType).show();
+            }
+            if (search_type) {
+                $('.' + search_type).show();
+            }
+        }
+
+        $(".datepicker").flatpickr({
+                dateFormat: "d-m-Y",
+                allowInput: true
+        });
+
         $('.select2').select2();
         docfields();
         $('#doc_type').on('change', docfields);
