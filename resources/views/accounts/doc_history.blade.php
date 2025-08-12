@@ -8,7 +8,9 @@
             <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
                 <div>
+                @hasanyrole('ro-supervisor|admin')
                 <button class="btn btn-primary revert-status">Revert Status</button>
+                @endhasanyrole
                 <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Back</a>
                 </div>
             </div>
