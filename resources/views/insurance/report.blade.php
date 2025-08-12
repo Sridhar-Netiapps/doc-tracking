@@ -103,6 +103,8 @@
 	<div class="table-responsive tablescrollable">
         <table class="table  table-bordered" >
             <thead class="table-dark">
+                <th class="text-nowrap">Created Date</th>
+                <th class="text-nowrap">Last Modified Date</th>
                 <th class="text-nowrap">Lead ID</th>
                 <th class="text-nowrap">Creation Date</th>
                 <th class="text-nowrap">Intimation Date</th>
@@ -129,6 +131,8 @@
             <tbody>
                 @foreach($data as $key=>$value)
                 <tr>
+                    <td>{{ date('d-m-Y',strtotime($value->created_at))}}</td>
+                    <td>{{ date('d-m-Y',strtotime($value->updated_at))}}</td>
                     <td>{{ $value->utrn}}</td>
                     <td>{{ date('d M,Y',strtotime($value->created_at))}}</td>
                     <td>{{ date('d M,Y',strtotime($value->intimation_date))}}</td>

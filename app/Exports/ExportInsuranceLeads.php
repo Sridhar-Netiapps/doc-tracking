@@ -28,6 +28,8 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
          foreach($data as $key=>$value){
            
             $formattedData->push([
+                date('d-m-Y',strtotime($value->created_at)),
+                date('d-m-Y',strtotime($value->updated_at)),    
                 $value->id,
                 $value->utrn,
                 $value->region,
@@ -87,7 +89,7 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
             
                 $value->nominee->nominee_name_bank,
                 $value->nominee->bank_name,
-                $value->nominee->acc_number,
+                '="'.$value->nominee->acc_number.'"',
                 $value->nominee->ifsc,
                 $value->nominee->branch_name,
                 $value->nominee->spdc_bank_name,
@@ -115,6 +117,8 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
     {
 
         return [
+        'Creation Date',
+        'Last Modified Date',
         "Reference ID ",
         "Lead ID",
         "REGION",

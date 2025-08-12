@@ -82,7 +82,7 @@
   border-color: #229E82 !important; /* green border */
   box-shadow: 0 0 5px rgba(34, 158, 130, 0.5); /* subtle glow */
   outline: none; /* removes default blue glow in some browsers */
-  background-color: #F0FFFF ;
+  background-color: #e3ffff  ;
 }
 input::placeholder {
   color: #d3d3d3;
