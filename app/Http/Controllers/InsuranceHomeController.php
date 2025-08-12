@@ -1503,8 +1503,9 @@ class InsuranceHomeController extends Controller
         $placeofdeath = InsurancePlaceofDeath::get();
         $relationship = InsuranceRelationship::get();
         $deathcause = InsuranceCauseOfDeath::get();
+        $claimstatus = InsuranceClaimStatus::get();
 
-        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause'));
+        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus'));
     }
 
     public function add_new_insurance_item(Request $request){
@@ -1584,7 +1585,7 @@ class InsuranceHomeController extends Controller
             }
 
 
-        InsuranceProduct::create(['product'=> $request->title , 'type' => 'NMB' , 'folder_name' => $folderName]);
+        InsuranceProduct::create(['product'=> $request->title ,'partner_id'=>$request->partner, 'type' => 'NMB' , 'folder_name' => $folderName]);
       }
 
       if($module == 'Cause of Death'){
@@ -1593,6 +1594,10 @@ class InsuranceHomeController extends Controller
 
       if($module == 'Place Of Death'){
         InsurancePlaceofDeath::create(['place'=> $request->title]);
+      }
+
+      if($module == 'Claim Status'){
+        InsuranceClaimStatus::create(['claim_status'=> $request->title]);
       }
 
         $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];

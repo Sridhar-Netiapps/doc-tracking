@@ -271,7 +271,7 @@
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Place of Death</label>
 					    <select class="form-control form-control-design  form-select" name="place_of_death">
-					    	<option>Select</option>
+					    	<option value="">Select</option>
 					    	@foreach($placeofdeath as $key=>$value)
 					    	   <option {{ ( (old('place_of_death',$data->place_of_death)==$value->place))?'selected':''}}  value="{{$value->place}}">{{$value->place}}</option>
 					    	@endforeach
@@ -282,7 +282,7 @@
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Cause of Death</label>
 					    <select class="form-control form-control-design  form-select" name="cause_of_death" >
-					    	<option>Select</option>
+					    	<option value="">Select</option>
 					    	@foreach($deathcause as $key=>$value)
 					    	   <option  {{ ((old('cause_of_death', $data->cause_of_death)==$value->cause))?'selected':''}}  value="{{$value->cause}}">{{$value->cause}}</option>
 					    	@endforeach

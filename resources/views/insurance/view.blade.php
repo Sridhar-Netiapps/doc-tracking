@@ -19,7 +19,7 @@
 				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			@endif
 
-			<a href="{{ route('clone_lead_details',$data->id)}}"><button class="btn btn-sm btn-dark btn-text p-2" >Duplicate</button> </a>
+			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}"><button class="btn btn-sm btn-success btn-text p-2" >Clone</button> </a>
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
@@ -897,7 +897,11 @@
     });
 
 
-
+$(document).on('click', '.confirm-link', function(e) {
+    if (!confirm('Are you sure you want to delete this?')) {
+        e.preventDefault(); // stop navigation
+    }
+});
 
 </script>
 @endsection
