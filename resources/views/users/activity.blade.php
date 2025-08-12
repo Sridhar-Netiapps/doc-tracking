@@ -6,15 +6,25 @@
         <div>
             <div class="d-flex justify-content-center align-items-center">
                 <h3 class="me-3">Audit Logs</h3>
-                <nav aria-label="breadcrumb">
+                {{-- <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
                         <li class="breadcrumb-item"><a href="/library">Library</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Data</li>
                     </ol>
-                </nav>
+                </nav> --}}
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
             </div>
         </div>
+        <form id="exportForm" method="GET" action="{{ route('activity.export') }}">
+            @foreach(($filters ?? []) as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endforeach        
+            <button type="button" id="exportBtn" class="btn btn-success">
+                Export
+            </button>
+        </form>
+        
     </div>
 
 
@@ -54,12 +64,79 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="">
+                    {{-- <div class="">
                         {{ $activites->links('pagination::bootstrap-5') }}
+                    </div> --}}
+                    <div class="">
+                        {{ $activites->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5>Filters</h5>
+        <form method="POST" action="{{ route('activity.filter') }}">
+            @csrf
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <select class="form-select region" name="region">
+                        <option value="">Select Region</option>
+                        <option value="South" {{ ($filters['region'] ?? '') == 'South' ? 'selected' : '' }}>South</option>
+                        <option value="North" {{ ($filters['region'] ?? '') == 'North' ? 'selected' : '' }}>North</option>
+                        <option value="East" {{ ($filters['region'] ?? '') == 'East' ? 'selected' : '' }}>East</option>
+                        <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="number" class="form-control branch_id" placeholder="Branch Code" value="{{ old('branch_id', $filters['branch_id'] ?? '') }}" name="branch_id" min="0">
+                </div>
+                <div class="col-12 mt-3">
+                    <input type="text" class="form-control employee_id alphanumeric" placeholder="Employee ID" value="{{ old('employee_id', $filters['employee_id'] ?? '') }}" name="employee_id">
+                </div>
+                <div class="col-12 d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ route('users.activities') }}" class="btn btn-secondary">Clear</a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="filterAlertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <p class="mb-0">Filter the data first</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).on('click', '#exportBtn', function () {
+        let formData = $('#exportForm').serialize();
+
+        $.ajax({
+            url: '{{ route("activity.export.check") }}',
+            type: 'GET',
+            data: formData,
+            success: function (response) {
+                if (response.status === 'error') {
+                    Swal.fire("Warning!", "Filter the data first.", "warning");
+                } else {
+                    $('#exportForm')[0].submit();
+                }
+            }
+        });
+    });
+</script>
 @endsection
