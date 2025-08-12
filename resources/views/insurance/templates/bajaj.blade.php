@@ -182,7 +182,7 @@
 	      			<label class="label-font">Members Name : <strong class="label-font">{{$data->deceased_name}}</strong></label>
 	      		</td>
 	      		<td class="col-50">
-	      			<label class="label-font">Membership No: <strong class="label-font"></strong></label>
+	      			<label class="label-font">Membership No: <strong class="label-font">{{ $data->mp_no}}</strong></label>
 	      		</td>
 	      	</tr>
 
@@ -197,7 +197,7 @@
 
 	      	<tr>
 	      		<td class="col-50">
-	      			<label class="label-font">Loan Account Number: <strong class="label-font"></strong></label>
+	      			<label class="label-font">Loan Account Number: <strong class="label-font">{{$data->load_acc_id}}</strong></label>
 	      		</td>
 	      		<td class="col-50">
 	      			<label class="label-font">Sum Assured: <strong class="label-font">{{ $data->claim_amount}}</strong></label>

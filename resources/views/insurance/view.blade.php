@@ -7,7 +7,7 @@
 
         
 		<div class="ms-auto">
-			@if($data->cliam_status !='Completed')
+			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Completed')
 				@if($data->products->type == 'MB')
 				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
 				@else
@@ -18,6 +18,8 @@
 
 				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			@endif
+
+			<a href="{{ route('clone_lead_details',$data->id)}}"><button class="btn btn-sm btn-dark btn-text p-2" >Duplicate</button> </a>
 			
 			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
@@ -38,6 +40,44 @@
 				<button class="form-control btn-secondary btn btn-sm btn-toggle p-2 card-design border border-black" id="cl"  value="cl">Claim Documents </button>
 			</div> -->
 		</div>
+
+
+		@if(session('success'))
+		<script nonce='{{ env("CSP_NONCE") }}'>
+		    document.addEventListener('DOMContentLoaded', function () {
+		        setTimeout(function () {
+		            Swal.fire({
+		                title: 'Message',
+		                text: @json(session('success')),
+		                icon: 'success',
+		                confirmButtonText: 'OK',
+		                allowOutsideClick: false,
+		                allowEscapeKey: false
+		            }).then((result) => {
+		                console.log('result:', result);
+		                
+		            });
+		        }, 300); // Delay to ensure full render
+		    });
+		</script>
+		@php
+		    session()->forget('success');
+		@endphp
+		@endif
+        
+       
+		@if(Session::has('failure'))
+		 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
+		  var mesage = '{{ session('failure') }}';
+		  Swal.fire({
+		        title: 'Message',
+		        text: mesage,
+		        icon: 'failure',  
+		        confirmButtonText: 'OK'
+		    });
+		 </script>
+		 
+		@endif 
 
 		
         
@@ -86,7 +126,7 @@
         </div>
 
 		<div class="card mt-3">
-        	<div class="card-header label-font-header bg-card-header text-white">Policy Imformation</div>
+        	<div class="card-header label-font-header bg-card-header text-white">Policy Information</div>
         	<div class="card-body bg-card-branch">
         		<div class="row">
         		  <div class="row">
@@ -316,7 +356,7 @@
 					
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of re-submission to Partner</label>
+					    <label class="form-label label-bold">Date of Re-submission to Partner</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ $data->re_submit_to_partner_date}}">
 					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -455,6 +495,12 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recoveries</label>
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="recoveries" value="{{ old('recoveries',$data->recoveries)}}" placeholder="Enter Recoveries">
+					    @error('recoveries')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Bounced SPDC No</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="bounced_chq_no" value="{{ $data->bounced_chq_no}}" placeholder="Enter Bounced SPDC Number">
 					    @error('bounced_chq_no')<div class="text-error">{{ $message }}</div>@enderror
@@ -533,13 +579,13 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to Business Head</label>
+					    <label class="form-label label-bold">Handed Over to Business Head</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_bh" value="{{ $data->handed_to_bh}}" placeholder="Handed over to Business Head">
 					    @error('handed_to_bh')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Handed over to Credit</label>
+					    <label class="form-label label-bold">Handed Over to Credit</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="handed_to_credit" value="{{ $data->handed_to_credit}}" placeholder="Handed over to Credit">
 					    @error('handed_to_credit')<div class="text-error">{{ $message }}</div>@enderror
 					</div>

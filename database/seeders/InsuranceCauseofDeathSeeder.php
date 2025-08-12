@@ -14,28 +14,26 @@ class InsuranceCauseofDeathSeeder extends Seeder
     public function run(): void
     {
         $data = [
-        	['cause' =>'ACCIDENT',],
-			['cause' =>'ACCIDENT(BURNING)',],
-			['cause' =>'CANCER',],
-			['cause' =>'SUDDEN DEATH',],
-			['cause' =>'MURDER',],
-			['cause' =>'C.R. FAILURE',],
-			['cause' =>'STOVE BURST',],
-			['cause' =>'SNAKE BITE',],
-			['cause' =>'KIDNEY FAILURE',],
-			['cause' =>'RESIDENCE',],
-			['cause' =>'HEAD INJURY',],
-			['cause' =>'NATURAL',],
-			['cause' =>'HEART ATTACK',],
-			['cause' =>'ILLNESS',],
-			['cause' =>'BURN',],
-			['cause' =>'C R FAILURE',],
-			['cause' =>'STROKE',],
-			['cause' =>'ELECTSHOCK',],
-			['cause' =>'SNAKEBITE',],
-			['cause' =>'COVID-19',],
-			['cause' =>'SUICIDE',],
-			['cause' =>'DROWNING']
+        	['cause' =>'Accident',],
+			['cause' =>'Accident(Burning)',],
+			['cause' =>'Cancer',],
+			['cause' =>'Sudden Death',],
+			['cause' =>'Murder',],
+			['cause' =>'C.R.Failure',],
+			['cause' =>'Stove BurstT',],
+			['cause' =>'Snake Bite',],
+			['cause' =>'Kidney Failure',],
+			['cause' =>'Residence',],
+			['cause' =>'Head Injury',],
+			['cause' =>'Natural',],
+			['cause' =>'Heart Attack',],
+			['cause' =>'Illness',],
+			['cause' =>'Burn',],
+			['cause' =>'Stroke',],
+			['cause' =>'Electshock',],
+			['cause' =>'Covid-19',],
+			['cause' =>'Suicide',],
+			['cause' =>'Drowning']
         ];
         
         foreach ($data as $key => $value) {

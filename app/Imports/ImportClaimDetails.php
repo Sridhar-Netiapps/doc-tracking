@@ -119,6 +119,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		        	$errors[] = 'Nominee Contact Number should contain only Numbers (Col BL)';
 		        }
 		    }
+		   // print_r($row[7]);die();
 
 		    if (!empty($row[7]) && !empty($row[21])) {
 
@@ -245,7 +246,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			          $this->insertedCount++;
 			    }
 
-           // print_r($exp_date);die();
+            //print_r($row['7']);die();
 	      
             if(!empty($row['1'])){ $claimDetail->region = $row['1']; } 
 			if(!empty($row['2'])){ $claimDetail->branch = $row['2']; } 
@@ -254,7 +255,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			if(!empty($row['5'])){ $claimDetail->mp_no = $row['5']; } 
 			if(!empty($row['6'])){ $claimDetail->policy_number = $row['6']; } 
 			if(!empty($row['7'])){ $claimDetail->policy_covered_date = is_numeric($row['7'])? Date::excelToDateTimeObject($row['7'])->format('Y-m-d'): $row['7'];} 
-			if(!empty($row['8'])){$claimDetail->policy_expiry_date = $exp_date ?? (is_numeric($row['8'])? Date::excelToDateTimeObject($row['8'])->format('Y-m-d'): $row['8']);}
+			$claimDetail->policy_expiry_date = $exp_date ?? (is_numeric($row['8'])? Date::excelToDateTimeObject($row['8'])->format('Y-m-d'): $row['8']);
 			if(!empty($row['9'])){ $claimDetail->cust_id = $row['9']; } 
 			if(!empty($row['10'])){ $claimDetail->actual_id = $row['10']; } 
 			if(!empty($row['11'])){ $claimDetail->deceased_name = $row['11']; } 
