@@ -162,6 +162,11 @@
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))                                             
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
+                                                    @hasrole('bo-checker|admin|master')
+                                                        <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ $row->id }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
+                                                            Edit
+                                                        </button>
+                                                    @endhasrole
                                                 @endif
                                             </div>
                                         </td>
@@ -448,6 +453,41 @@
                 courier_name: { required: "Courier name is required" },
                 mmrp_barcode: { required: "Barcode is required" }
             },
+            // submitHandler: function (form) {
+            //     const formData = {
+            //         _token: $('input[name="_token"]').val(),
+            //         dispatch_id: $('input[name="dispatch_id"]').val(),
+            //         courier_name: $('select[name="courier_name"]').val(),
+            //         mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
+            //         awb_pod: $('input[name="awb_pod"]').val(),
+            //         dispatch_date: $('input[name="dispatch_date"]').val(),
+            //     };
+
+
+            //     $.post($(form).attr('action'), formData)
+            //         .done(function (res) {
+            //             if (res.success) {
+            //                 Swal.fire({
+            //                     title: "Success!",
+            //                     text: "Courier created successfully.",
+            //                     icon: "success",
+            //                     confirmButtonText: "OK"
+            //                 }).then(() => {
+            //                     window.location.href = `{{ route('dispatches','list') }}`;
+            //                 });
+            //             } else {
+            //                 Swal.fire("Error!", "Failed to create courier.", "error");
+            //             }
+            //         })
+            //         .fail(function () {
+            //             Swal.fire({
+            //                 title: "Error!",
+            //                 text: "Something went wrong!",
+            //                 icon: "error",
+            //                 confirmButtonText: "OK"
+            //             });
+            //         });
+            // }
             submitHandler: function (form) {
                 const formData = {
                     _token: $('input[name="_token"]').val(),
@@ -458,32 +498,56 @@
                     dispatch_date: $('input[name="dispatch_date"]').val(),
                 };
 
+                const actionUrl = $(form).attr('action');
+                const method = actionUrl.includes('update-updateDetails') ? 'PUT' : 'POST';
 
-                $.post($(form).attr('action'), formData)
-                    .done(function (res) {
+                $.ajax({
+                    url: actionUrl,
+                    type: method,
+                    data: formData,
+                    success: function (res) {
                         if (res.success) {
                             Swal.fire({
                                 title: "Success!",
-                                text: "Courier created successfully.",
+                                text: method === 'POST' ? "Courier created successfully." : "Courier updated successfully.",
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
                                 window.location.href = `{{ route('dispatches','list') }}`;
                             });
                         } else {
-                            Swal.fire("Error!", "Failed to create courier.", "error");
+                            Swal.fire("Error!", "Failed to save courier details.", "error");
                         }
-                    })
-                    .fail(function () {
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Something went wrong!",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
-                    });
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong!", "error");
+                    }
+                });
             }
         });
+
+        $(document).on('click', '.edit-courier', function () {
+            const courierId = $(this).data('id');
+            const courierName = $(this).data('courier-name');
+            const awbPod = $(this).data('awb-pod');
+            const mmrpBarcode = $(this).data('mmrp-barcode');
+            const dispatchDate = $(this).data('dispatch-date');
+
+            // Reset and fill form
+            $('#update-courier')[0].reset();
+            $('input[name="dispatch_id"]').val(courierId);
+            $('select[name="courier_name"]').val(courierName);
+            $('input[name="awb_pod"]').val(awbPod);
+            $('input[name="mmrp_barcode"]').val(mmrpBarcode);
+            $('input[name="dispatch_date"]').val(dispatchDate);
+
+            // Show modal
+            $('#add-courier').modal('show');
+
+            // Change form action to UPDATE route
+            $('#update-courier').attr('action', `{{ url('dispatches/update-courier') }}/${courierId}`);
+        });
+
 
         // Prevent entering AWB without courier selected
         $('.awb_pod').on('focus', function () {

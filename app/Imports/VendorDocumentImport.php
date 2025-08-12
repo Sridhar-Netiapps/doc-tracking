@@ -61,6 +61,15 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
         return null;
     }
     
+    function parseExcelDate($value)
+    {
+        if (is_numeric($value)) {
+            return date('Y-m-d', ($value - 25569) * 86400);
+        } else {
+            $timestamp = strtotime($value);
+            return $timestamp ? date('Y-m-d', $timestamp) : null;
+        }
+    }
 
     public function collection(Collection $rows)
     {
@@ -76,7 +85,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
             'PERMOUNT' => 10,
             'DESTROYED' => 11,
         ];
-
+        
         foreach ($rows as $row) {
             $this->total++;
             try {
@@ -93,30 +102,26 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 if (!isset($table[$doc_type])) {
                     throw new \Exception("Invalid document type.");
                 }
-
-                // VendorDocument::where('document_unique_no', $doc_unique_no)
+                
                 $document = $table[$doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
-                // dd($document);
+                
                 if (!$document) {
                     throw new \Exception($doc_unique_no." Document not found");
                 }
-
+                
                 $document->lot_no = $row['lot_no'] ?? null;
                 $document->category_of_document = $row['category_of_the_document'];
                 $document->work_order_no = $row['work_order_no'];
                 $document->vendor_name = $row['vendor_name'];
-                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseFlexibleDate($row['date_of_vendor_movement']) : null;
+                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseExcelDate($row['date_of_vendor_movement']) : null;
+                // $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? Carbon::createFromFormat('d/m/Y', $row['date_of_vendor_movement'])->format('Y-m-d') : null;
+                // $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseFlexibleDate($row['date_of_vendor_movement']) : null;
                 $document->file_barcode = $row['file_barcode_against_lot_no'];
                 $document->box_barcode = $row['box_barcode_no'];
-                $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
+                $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseExcelDate($row['date_of_addition_to_vendor_data']) : null;
+                // $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
                 $document->status = $doc_status;
-                // dd($row->toArray());
-                // dd([
-                //     'raw' => $row['date_of_vendor_movement'],
-                //     'converted' => $this->parseFlexibleDate($row['date_of_vendor_movement'])
-                // ]);
-                
-                
+            
                 if ($document->isDirty()) {
                     $document->updated_by = auth()->user()->id;
                     $document->save();

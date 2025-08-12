@@ -59,6 +59,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
     Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
     Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
+    Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->name('courier.add');
+    Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->name('courier.updateDetails');
     Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
     Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
@@ -106,6 +108,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UserController::class);
+    Route::post('activity/filter', [UserController::class, 'filter'])->name('activity.filter');
+    Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
+    Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
+    Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
     // Route::resource('branches', BranchController::class);
     Route::resource('emails', EmailController::class);
     Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);

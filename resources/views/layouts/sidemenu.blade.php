@@ -1,7 +1,9 @@
 
         <div class="treeList h-100">
             <ul>
+                @unless ('super_admin')
                 <li class=""><a href="{{ url('home') }}"><img src="/images/material-symbols-light--dashboard-outline-rounded.svg" /> Back to Dashboard</a></li>
+                @endunless
                 {{-- <li><a href="/"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Group</a></li> --}}
                 {{-- <li><a href="{{ route('branches.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Branches</a></li> --}}
                 {{-- <li><a href="{{ route('departments.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Departments</a></li> --}}
@@ -12,6 +14,8 @@
                 <li><a href="{{ route('process_status.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Process Status</a></li>
                 <li><a href="{{ route('couriers.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Courier</a></li>
                 <li><a href="{{ route('accounts.trash') }}"><img src="/images/material-symbols-light--group-add.svg"/> Recycle Bin</a></li>
+                @endrole
+                @role('master|admin|super_admin')
                 <li><a href="{{ route('users.activities') }}"><img src="/images/material-symbols-light--group-add.svg"/> Activity</a></li>
                 @endrole
                 @role('master')

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
+use App\Exports\ActivityExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -184,4 +186,86 @@ class UserController extends Controller
         $activites = $filter(ActivityLog::query())->paginate(100)->withQueryString();
         return view('users.activity', compact('activites'));
     }
+    public function filter(Request $request)
+    {
+        // Store filters in session
+        session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id'])]);
+    
+        return redirect()->route('activity.filterlist');
+    }
+    
+    public function filterList(Request $request)
+    {
+        // Get filters from session
+        $filters = session('activity_filters', []);
+    
+        $query = ActivityLog::query();
+    
+        if (!empty($filters['region'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('region', $filters['region']);
+            });
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('branch_id', $filters['branch_id']);
+            });
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('employee_id', $filters['employee_id']);
+            });
+        }
+    
+        $activites = $query->orderBy('created_at', 'desc')->paginate(100);
+    
+        return view('users.activity', compact('activites', 'filters'));
+    }
+    
+    public function exportCheck(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id']);
+
+        if (empty(array_filter($filters))) {
+            return response()->json(['status' => 'error']);
+       }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function export(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id']);
+        $query = $this->applyActivityFilters(ActivityLog::query(), $filters);
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return Excel::download(new ActivityExport($data), 'activity_logs.xlsx');
+    }
+
+
+    private function applyActivityFilters($query, $filters)
+    {
+        if (!empty($filters['region'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('region', $filters['region']);
+            });
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('branch_id', $filters['branch_id']);
+            });
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('employee_id', $filters['employee_id']);
+            });
+        }
+    
+        return $query;
+    }
+
 }
