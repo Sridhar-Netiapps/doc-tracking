@@ -48,7 +48,7 @@ class SyncHRMdata extends Command
                     $branch_data = explode('-',$branchData);
                     $region_id = '';
 
-                    $role = 'bo-readonly';
+                    $role = 'branch-user';
 
                     $ho_designations = ["Chief of Staff-Branch Banking",
                         "National Manager-Branch Banking",
@@ -155,7 +155,7 @@ class SyncHRMdata extends Command
                     }
 
                     if(in_array($designation , $ro_readonly_designations)){
-                         $role = 'ro-readonly';
+                         $role = 'ro-user';
                     }
 
                     if(in_array($designation , $bo_checker_designations)){
@@ -167,7 +167,7 @@ class SyncHRMdata extends Command
                     }
 
                      if(in_array($designation , $bo_readonly_designations)){
-                         $role = 'bo-readonly';
+                         $role = 'branch-user';
                     }
 
                  
