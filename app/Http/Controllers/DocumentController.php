@@ -944,12 +944,17 @@ class DocumentController extends Controller
         ]);
 
         $courier = Dispatch::findOrFail($id);
-        $courier->update($request->only([
-            'courier_name', 'mmrp_barcode', 'awb_pod', 'dispatch_date'
-        ]));
+
+        $courier->courier_name = $request->courier_name;
+        $courier->mmrp_barcode = $request->mmrp_barcode;
+        $courier->awb_pod = $request->awb_pod;
+        $courier->dispatch_date = $request->dispatch_date;
+
+        $courier->save();
 
         return response()->json(['success' => true]);
     }
+
 
 
     public function removeDocument(Request $request)
@@ -1168,12 +1173,8 @@ class DocumentController extends Controller
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
         $vendors = Vendor::all();
-        // $couriers = Courier::pluck('name', 'id');
         $couriers = Courier::where('status', 1)->get();
 
-
-        
-        // return view('accounts.reports');  
         return view('accounts.reports', compact('vendors', 'couriers'));
       
     }
@@ -1198,6 +1199,15 @@ class DocumentController extends Controller
                         $query->where($field, $value);
                     }
                 }
+            }
+
+            // Courier name filtering
+            if (!empty($filters['courier_name'])) {
+                $courierId = $filters['courier_name'];
+                $query->whereHas('dispatch.courierName', function ($q) use ($courierId) {
+                    $q->where('id', $courierId); // if dropdown stores ID
+                    // $q->where('name', $courierId); // if dropdown stores NAME instead
+                });
             }
 
             if ($request->filled(['from_date', 'to_date', 'date_field'])) {
@@ -1291,7 +1301,7 @@ class DocumentController extends Controller
             $filter($data, 'gold_loan_documents');
             // dd($data->get());
             // foreach($data->get() as $dt){
-            //     dd($dt->getReceivedDetails);
+            //     dd($dt->dispatch->courierName->name);
             // }
             return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
         } elseif ($request->doc_type === 'dtrf') {

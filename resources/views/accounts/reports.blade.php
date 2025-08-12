@@ -129,7 +129,7 @@
                                     <input type="text" name="{{ $field }}" class="form-control">
                                 </div>
                             @endforeach --}}
-                            @foreach ([
+                            {{-- @foreach ([
                                 'awb_pod' => 'AWB/POD',
                                 'courier_name' => 'Courier Name',
                             ] as $field => $label)
@@ -149,7 +149,32 @@
                                         <input type="text" name="{{ $field }}" class="form-control" value="{{ $doc->$field ?? '' }}">
                                     @endif
                                 </div>
+                            @endforeach --}}
+
+                            @foreach ([
+                                'awb_pod' => 'AWB/POD',
+                                'courier_name' => 'Courier Name',
+                            ] as $field => $label)
+                                <div class="col-3 mt-2 courier">
+                                    <label>{{ $label }}</label>
+
+                                    @if ($field === 'courier_name')
+                                        <select id="courier_name" name="courier_name" class="form-control select2">
+                                            <option value="">Select</option>
+                                            @foreach ($couriers as $courier)
+                                                <option value="{{ $courier->id }}"
+                                                    {{ request('courier_name') == $courier->id ? 'selected' : '' }}>
+                                                    {{ $courier->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="text" name="{{ $field }}" class="form-control"
+                                            value="{{ request($field) }}">
+                                    @endif
+                                </div>
                             @endforeach
+
                             
                             {{-- @foreach ([
                                 'lot_no' => 'Lot No',
@@ -216,7 +241,7 @@
                             </div>
                             <div class="col-3 mt-2">
                                 <label>Status</label>
-                                <select id="status" name="status" class="form-select">
+                                <select id="status" name="status" class="form-select select2" multiple>
                                     <option value="">-- Select --</option>
                                     <option value="1">Pending</option>
                                     <option value="2">In Draft</option>
@@ -260,54 +285,54 @@
             allowInput: true
     });
 
-    $('#reportForm').validate({
-    rules: {
-        account_number: {
-            alphanumeric: {
-                depends: function () {
-                    return $('#account_number').val().trim() !== '';
-                }
-            }
-        },
-        date_field: {
-            required: function () {
-                return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
-            }
-        },
-        from_date: {
-            customDate: true
-        },
-        to_date: {
-            customDate: true,
-            greaterThanOrEqual: "#from_date"
-        }
-    },
-    messages: {
-        account_number: {
-            alphanumeric: "Only letters and numbers allowed"
-        },
-        date_field: {
-            required: "Date Criteria is required"
-        },
-        to_date: {
-            greaterThanOrEqual: "To Date must be greater than or equal to From Date"
-        }
-    },
-    errorClass: 'is-invalid',
-    errorElement: 'div',
-    errorPlacement: function (error, element) {
-        error.addClass('invalid-feedback');
-        error.insertAfter(element);
-    },
-    invalidHandler: function (event, validator) {
-        event.preventDefault();
-    }
-});
-
     $(document).ready(function () {
+        $('.select2').select2();
         docfields();
         $('#doc_type').on('change', docfields);
         $('#search_type').on('change', docfields);
+        $('#reportForm').validate({
+            rules: {
+                account_number: {
+                    alphanumeric: {
+                        depends: function () {
+                            return $('#account_number').val().trim() !== '';
+                        }
+                    }
+                },
+                date_field: {
+                    required: function () {
+                        return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
+                    }
+                },
+                from_date: {
+                    customDate: true
+                },
+                to_date: {
+                    customDate: true,
+                    greaterThanOrEqual: "#from_date"
+                }
+            },
+            messages: {
+                account_number: {
+                    alphanumeric: "Only letters and numbers allowed"
+                },
+                date_field: {
+                    required: "Date Criteria is required"
+                },
+                to_date: {
+                    greaterThanOrEqual: "To Date must be greater than or equal to From Date"
+                }
+            },
+            errorClass: 'is-invalid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element);
+            },
+            invalidHandler: function (event, validator) {
+                event.preventDefault();
+            }
+        });
     });
 </script>
 @endsection

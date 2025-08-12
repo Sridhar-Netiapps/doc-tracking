@@ -50,6 +50,11 @@
                     <button id="update-all" class="btn btn-primary d-none">Update All</button>
                 </li>
                 @endhasanyrole
+                @role('ro-supervisor|master|super_admin|admin')
+                <li class="ms-auto">
+                    <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
+                </li>
+            @endrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
@@ -530,6 +535,26 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="upload-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="rma-upload" action="{{ route('uploads.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header text-center">
+                    <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
+                </div>
+                <div class="modal-body">
+                    <label for="excel_file" class="form-label">Upload File</label>  <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a>
+                    <input type="file" name="excel_file" class="form-control" required> 
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         let dtype = '{{$dtype}}';
@@ -569,6 +594,10 @@
             $(`#${activeTab}`).addClass('active');
             $(`#${activeTab}-pane`).addClass('show active');
         }
+        $('.vendor-upload').click(function () {
+            $('#upload-vendor').modal('show');
+            // $('#add-vendor').modal('show');
+        });
 
         $('.retrive').click(function () {
             $('input[name="id"]').val($(this).data('id'));
