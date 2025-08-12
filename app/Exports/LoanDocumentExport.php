@@ -91,7 +91,7 @@ class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
             $doc->reason != null ? ($doc->reason) : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
-            $doc->status >= 4 ? (optional($doc->getReceivedDetails)->status >= 4 ? optional($doc->getReceivedDetails->creator)->employee_id . ' - ' . optional($doc->getReceivedDetails->creator)->first_name : '-') : '-',
+            $doc->status >= 4 ? (optional($doc->getReceivedDetails)->current_status >= 4 ? optional($doc->getReceivedDetails->creator)->employee_id . ' - ' . optional($doc->getReceivedDetails->creator)->first_name : '-') : '-',
             $doc->lot_no,
             $doc->category_of_document,
             $doc->work_order_no,

@@ -33,11 +33,10 @@ class GoldLoanDocument extends Model
     {
         return $this->belongsTo(DocumentHistory::class,'document_id');
     }
-    public function getReceivedDate()
+    public function getReceivedDetails()
     {
         return $this->hasOne(DocumentHistory::class, 'document_id')
                     ->where('document_type', 'GoldLoanDocument')
-                    ->where('current_status', 5);
+                    ->whereIn('current_status', [5,7]);
     }
-
 }

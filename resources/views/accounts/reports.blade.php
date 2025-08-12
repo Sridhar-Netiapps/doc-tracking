@@ -211,6 +211,7 @@
                                     <option value="addition_date">Addition to Vendor Data</option>
                                     <option value="sync_date">Sync Date</option> 
                                     <option value="activity_date">Activity Date</option>
+                                    <option value="tracking_date">Tracking Date</option>
                                 </select>
                             </div>
                             <div class="col-3 mt-2">

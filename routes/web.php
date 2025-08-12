@@ -57,6 +57,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
     Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
     Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
+    Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->name('courier.add');
+    Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->name('courier.updateDetails');
     Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
     Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
     Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');

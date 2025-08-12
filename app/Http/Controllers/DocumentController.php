@@ -126,8 +126,11 @@ class DocumentController extends Controller
     {
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
-        $type = $filters['type'] ?? session()->pull('type', 'all');
-        $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
+        
+        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
+        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
+        // $type = $filters['type'] ?? session()->pull('type', 'all');
+        // $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
         if(empty($filters))
             return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
         $user = $this->user;
@@ -933,6 +936,21 @@ class DocumentController extends Controller
         }
     }
     
+    public function updateCourierDetails(Request $request, $id)
+    {
+        $request->validate([
+            'courier_name' => 'required',
+            'mmrp_barcode' => 'required|alpha_num',
+        ]);
+
+        $courier = Dispatch::findOrFail($id);
+        $courier->update($request->only([
+            'courier_name', 'mmrp_barcode', 'awb_pod', 'dispatch_date'
+        ]));
+
+        return response()->json(['success' => true]);
+    }
+
 
     public function removeDocument(Request $request)
     {
@@ -1182,44 +1200,6 @@ class DocumentController extends Controller
                 }
             }
 
-            // if ($request->filled(['from_date', 'to_date', 'date_field'])) {
-                
-            //     $query->whereHas('dispatch', function ($q) use ($fromDate, $toDate, $request) {
-            //         $field = match ($request->input('date_field')) {
-            //             'dispatch_date' => 'dispatch_date',
-            //             'received_date' => 'updated_at',
-            //             default         => null,
-            //         };
-            //         if ($field) {
-            //             if ($fromDate && $toDate) {
-            //                 $q->whereBetween($field, [$fromDate, $toDate]);
-            //             } elseif ($fromDate) {
-            //                 $q->whereDate($field, '>=', $fromDate);
-            //             } elseif ($toDate) {
-            //                 $q->whereDate($field, '<=', $toDate);
-            //             }
-            //         }
-            //     });
-
-            //     $field = match ($request->input('date_field')) {
-            //         'creation_date' => 'account_creation_date',
-            //         'movement_date' => 'vendor_movement_date',
-            //         'addition_date' => 'date_added_to_vendor',
-            //         'activity_date' => 'updated_at',
-            //         'sync_date'     => 'created_at',
-            //         default         => null,
-            //     };
-            
-            //     if ($field) {
-            //         if ($fromDate && $toDate) {
-            //             $query->whereBetween($field, [$fromDate, $toDate]);
-            //         } elseif ($fromDate) {
-            //             $query->whereDate($field, '>=', $fromDate);
-            //         } elseif ($toDate) {
-            //             $query->whereDate($field, '<=', $toDate);
-            //         }
-            //     }
-            // }
             if ($request->filled(['from_date', 'to_date', 'date_field'])) {
                 $dateField = $request->input('date_field');
             
@@ -1235,11 +1215,24 @@ class DocumentController extends Controller
                     'addition_date' => 'date_added_to_vendor',
                     'activity_date' => 'updated_at',
                     'sync_date'     => 'created_at',
+                    // 'tracking_date' => 'tracking_date',
                     default         => null,
                 };
+
+                if ($dateField === 'tracking_date') {
+                    $query->whereHas('getReceivedDetails', function ($q) use ($fromDate, $toDate) {
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween('created_at', [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate('created_at', '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate('created_at', '<=', $toDate);
+                        }
+                    });
+                }
             
                 // If filtering by dispatch date or received date → only dispatched docs
-                if ($dispatchField) {
+                elseif ($dispatchField) {
                     $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate) {
                         if ($fromDate && $toDate) {
                             $q->whereBetween($dispatchField, [$fromDate, $toDate]);
@@ -1250,6 +1243,7 @@ class DocumentController extends Controller
                         }
                     });
                 }
+                
                 // Otherwise check both dispatched and non-dispatched
                 elseif ($mainField) {
                     $query->where(function ($q) use ($mainField, $fromDate, $toDate) {
@@ -1297,7 +1291,7 @@ class DocumentController extends Controller
             $filter($data, 'gold_loan_documents');
             // dd($data->get());
             // foreach($data->get() as $dt){
-            //     dd($dt->getReceivedDate->created_at);
+            //     dd($dt->getReceivedDetails);
             // }
             return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
         } elseif ($request->doc_type === 'dtrf') {

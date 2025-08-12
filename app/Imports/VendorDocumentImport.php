@@ -76,7 +76,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
             'PERMOUNT' => 10,
             'DESTROYED' => 11,
         ];
-
+        // dd($rows);
         foreach ($rows as $row) {
             $this->total++;
             try {
@@ -105,12 +105,14 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->category_of_document = $row['category_of_the_document'];
                 $document->work_order_no = $row['work_order_no'];
                 $document->vendor_name = $row['vendor_name'];
-                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseFlexibleDate($row['date_of_vendor_movement']) : null;
+                $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? Carbon::createFromFormat('d/m/Y', $row['date_of_vendor_movement'])->format('Y-m-d') : null;
+                // $document->vendor_movement_date = !empty($row['date_of_vendor_movement']) ? $this->parseFlexibleDate($row['date_of_vendor_movement']) : null;
                 $document->file_barcode = $row['file_barcode_against_lot_no'];
                 $document->box_barcode = $row['box_barcode_no'];
-                $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
+                $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? Carbon::createFromFormat('d/m/Y', $row['date_of_addition_to_vendor_data'])->format('Y-m-d') : null;
+                // $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
                 $document->status = $doc_status;
-                // dd($row->toArray());
+            
                 // dd([
                 //     'raw' => $row['date_of_vendor_movement'],
                 //     'converted' => $this->parseFlexibleDate($row['date_of_vendor_movement'])

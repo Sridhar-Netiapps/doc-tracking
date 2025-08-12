@@ -42,6 +42,7 @@ class UploadController extends Controller
             'successful_rows' => $import->getSuccessCount(),
             'failed_rows' => count($import->failures()),
         ]);
+        // dd($import->failures());
         if(!empty($import->failures()))
             session()->flash('upload_failures', $import->failures());
 

@@ -27,22 +27,22 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}} " id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}} " id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($gold_loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($account_opening_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs  <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">Liabilities Docs  <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($dtrf_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
                 {{-- @endif --}}
                 @hasanyrole('ro-officer')
@@ -52,7 +52,7 @@
                 @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -133,7 +133,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -203,7 +203,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -277,7 +277,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -350,7 +350,8 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
-            <input type="hidden" name="doc_type" value="{{$type}}">
+            <input type="hidden" name="type" value="{{$type}}">
+            <input type="hidden" name="dtype" value="{{$dtype}}">
             <div class="row">
                 <div class="col-12 mt-3">
                     <select class="form-select document_type" name="document_type">
@@ -445,7 +446,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a>
+                    <a  href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a>
                 </div>
             </div>
         </form>
@@ -531,6 +532,44 @@
 </div>
 <script>
     $(document).ready(function () {
+        let dtype = '{{$dtype}}';
+        let activeTab = null;
+        let fallbackTab = null;
+
+        $('button.nav-link').each(function() {
+            let tab = $(this).attr('id');
+            let count = parseInt($(this).find('span').text()) || 0;
+
+            // Primary choice: dtype matches tab & count > 0
+            if (!activeTab && dtype === tab && count > 0) {
+                activeTab = tab;
+            }
+
+            // Fallback choice: dtype doesn't match tab but count > 0
+            if (!fallbackTab && dtype !== tab && count > 0) {
+                fallbackTab = tab;
+            }
+        });
+
+        // Decide final active tab
+        if (!activeTab) {
+            // If all tabs have > 0, prefer dtype tab
+            if ($('button.nav-link').filter(function() {
+                return parseInt($(this).find('span').text()) || 0;
+            }).length === $('button.nav-link').length) {
+                activeTab = dtype;
+            } else {
+                activeTab = fallbackTab;
+            }
+        }
+
+        // Activate the selected tab
+        if (activeTab) {
+            $('button.nav-link, .tab-pane').removeClass('active show');
+            $(`#${activeTab}`).addClass('active');
+            $(`#${activeTab}-pane`).addClass('show active');
+        }
+
         $('.retrive').click(function () {
             $('input[name="id"]').val($(this).data('id'));
             $('input[name="type"]').val($(this).data('type'));
