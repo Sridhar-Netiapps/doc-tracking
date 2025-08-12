@@ -65,3 +65,21 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 }
+
+/*master - netiapps
+super_admin - iT admin
+admin - new_user 
+
+bo-maker
+bo-checker
+
+ro-officer
+ro-supervisor
+
+ho-user
+
+branch-user --readonly
+ro-user --readonly
+*/
+
+
