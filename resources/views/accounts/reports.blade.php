@@ -1,0 +1,268 @@
+@extends('layouts.app')
+@section('content')
+@include('layouts.topmenu')
+@php
+    $type = 'all';
+@endphp
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <h3>Reports</h3>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="filter-bg">
+                <form method="POST" action="{{ route('reports') }}" id="reportForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col mt-2">
+                            <label for="doc_type">Document Type</label>
+                            <select id="doc_type" name="doc_type" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="loan">MB Loan</option>
+                                <option value="goldloan">Gold Loan</option>
+                                <option value="aof">Liablities</option>
+                                <option value="dtrf">DTR Files</option>
+                            </select>
+                        </div>
+                        <div class="col mt-2">
+                            <label for="search_type">Search Criteria</label>
+                            <select id="search_type" name="search_type" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="courier">Courier</option>
+                                <option value="vendor">Vendor</option>
+                            </select>
+                        </div>
+                        <div class="col mt-2">
+                            <label>Region</label>
+                            <select id="region" name="region" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="South">South</option>
+                                <option value="North">North</option>
+                                <option value="East">East</option>
+                                <option value="West">West</option>
+                            </select>
+                        </div>
+                        <div class="col mt-2">
+                            <label>Branch Code</label>
+                            <input type="text" name="branch_code" class="form-control">
+                        </div>
+                        <div class="col mt-2">
+                            <label>Branch Name</label>
+                            <input type="text" name="branch_name" class="form-control">
+                        </div>
+                    </div>
+                    <div id="dynamic-fields">
+                        <div class="row">
+                            {{-- CIF / Account --}}
+                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
+                                <label>CIF ID</label>
+                                <input type="text" name="cif_id" class="form-control">
+                            </div>
+                            <div class="col-3 mt-2 doc-fields loan goldloan aof">
+                                <label>Account Number</label>
+                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric">
+                            </div>
+                            {{-- <div class="col-3 mt-2 doc-fields loan goldloan aof">
+                                <label>Customer Name</label>
+                                <input type="text" name="customer_name" class="form-control">
+                            </div> --}}
+                            {{-- DTRF Fields --}}
+                            {{-- <div class="col-3 mt-2 doc-fields dtrf">
+                                <label>Barcode</label>
+                                <input type="text" name="barcode" class="form-control">
+                            </div> --}}
+
+                            {{-- Unique Fields --}}
+                            {{-- <div class="col-3 mt-2 doc-fields goldloan loan">
+                                <label>Loan Amount</label>
+                                <input type="text" name="loan_amount" class="form-control">
+                            </div> --}}
+                            <div class="col-3 mt-2 doc-fields goldloan loan aof">
+                                <label>Channel</label>
+                                <input type="text" name="channel" class="form-control">
+                            </div>
+                            {{-- <div class="col-3 mt-2 doc-fields ">
+                                <label>Channel</label>
+                                <input type="text" name="channel_loan" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
+                                <label>Loan Cycle</label>
+                                <input type="text" name="loan_cycle" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
+                                <label>Glow Application ID</label>
+                                <input type="text" name="glow_application_id" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields loan">
+                                <label>Loan Disbursement Type</label>
+                                <input type="text" name="loan_disbursement_type" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
+                                <label>Scheme</label>
+                                <input type="text" name="scheme" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields ">
+                                <label>Channel (Swagat/HHD/CRM)</label>
+                                <input type="text" name="channel_aof" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
+                                <label>PGK No</label>
+                                <input type="text" name="pgk_no" class="form-control">
+                            </div> --}}
+                            {{-- <div class="col-3 mt-2 doc-fields aof">
+                                <label>Account Opening Type</label>
+                                <input type="text" name="type_of_account_opening" class="form-control">
+                            </div> --}}
+                            @foreach ([
+                                'awb_pod' => 'AWB/POD',
+                                'courier_name' => 'Courier Name',
+                                // 'dispatched_by' => 'Dispatched By (User ID)',
+                                // 'tracked_by' => 'Tracked By (User ID)',
+                                ] as $field => $label)
+                                <div class="col-3 mt-2 courier">
+                                    <label>{{ $label }}</label>
+                                    <input type="text" name="{{ $field }}" class="form-control">
+                                </div>
+                            @endforeach
+                            @foreach ([
+                                'lot_no' => 'Lot No',
+                                'category' => 'Document Category',
+                                'work_order_no' => 'Work Order No.',
+                                'vendor_name' => 'Vendor Name',
+                                'file_barcode' => 'File Barcode Against Lot',
+                                'box_barcode' => 'Box Barcode No.',
+                            ] as $field => $label)
+                                <div class="col-3 mt-2 vendor">
+                                    <label>{{ $label }}</label>
+                                    <input type="text" name="{{ $field }}" class="form-control">
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mt-2">
+                                <label>From Date</label>
+                                <input type="text" id="from_date" readonly class="form-control datepicker" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label>To Date</label>
+                                <input type="text" id="to_date" readonly class="form-control datepicker" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label for="date_field">Date Criteria</label>
+                                <select id="date_field" name="date_field" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="creation_date">Account Creation / DTR File Date</option>
+                                    <option value="dispatch_date">Dispatch Date</option>
+                                    <option value="received_date">Courier Received Date</option>
+                                    <option value="movement_date">Vendor Movement Date</option>
+                                    <option value="addition_date">Addition to Vendor Data</option>
+                                    <option value="sync_date">Sync Date</option> 
+                                    <option value="activity_date">Activity Date</option>
+                                </select>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <label>Status</label>
+                                <select id="status" name="status" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="1">Pending</option>
+                                    <option value="2">In Draft</option>
+                                    <option value="3">Awaiting checker Approval</option>
+                                    <option value="4">Dispatched</option>
+                                    <option value="5">Received</option>
+                                    <option value="6">Rejected</option>
+                                    <option value="7">Received with query</option>
+                                    <option value="8">IN</option>
+                                    <option value="9">OUT</option>
+                                    <option value="10">Permount</option>
+                                    <option value="11">Destroyed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-3">Download Report</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+<script>
+    function docfields() {
+        var docType = $('#doc_type').val();
+        var search_type = $('#search_type').val();
+        $('.doc-fields').hide();
+        $('.courier').hide();
+        $('.vendor').hide();
+        if (docType) {
+            $('.' + docType).show();
+        }
+        if (search_type) {
+            $('.' + search_type).show();
+        }
+    }
+
+    $(".datepicker").flatpickr({
+            dateFormat: "d-m-Y",
+            allowInput: true
+    });
+
+    $('#reportForm').validate({
+        rules: {
+            account_number: {
+                alphanumeric: {
+                    depends: function () {
+                        return $('#account_number').val().trim() !== '';
+                    }
+                }
+            },
+            date_field: {
+                required: function () {
+                    return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
+                }
+            },
+            from_date: {
+                date: true
+            },
+            to_date: {
+                date: true,
+                greaterThanOrEqual: "#from_date"
+            }
+        },
+        messages: {
+            account_number: {
+                alphanumeric: "Only letters and numbers allowed"
+            },
+            date_field: {
+                required: "Date Criteria is required"
+            },
+            to_date: {
+                greaterThanOrEqual: "To Date must be greater than or equal to From Date"
+            }
+        },
+        errorClass: 'is-invalid',
+        // validClass: 'is-valid',
+        errorElement: 'div',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            error.insertAfter(element);
+        },
+        invalidHandler: function(event, validator) {
+            // Prevent focus jump or tab scroll
+            event.preventDefault();
+        }
+    });
+
+    $(document).ready(function () {
+        docfields();
+        $('#doc_type').on('change', docfields);
+        $('#search_type').on('change', docfields);
+    });
+</script>
+@endsection

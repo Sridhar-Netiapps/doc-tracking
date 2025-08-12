@@ -101,6 +101,16 @@
                     <label for="dor">Date of Releaving</label>
                     <input type="date" class="form-control" id="dor" name="dor">
                 </div>
+                
+                <div class="form-group col-4 mb-4">
+                    <label for="designation_id">Designation ID</label>
+                    <input type="text" class="form-control" id="designation_id" name="designation_id" required>
+                </div>
+
+                <div class="form-group col-4 mb-4">
+                    <label for="department_id">Department ID</label>
+                    <input type="text" class="form-control" id="department_id" name="department_id" required>
+                </div>
 
                 <!-- Buttons -->
                 <div class="d-flex ">

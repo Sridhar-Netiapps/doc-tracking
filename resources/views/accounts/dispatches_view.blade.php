@@ -3,334 +3,468 @@
 @include('layouts.topmenu')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="d-flex page-heading">
                 <h3 >{{ ucfirst($dispatch->statusName->name) }} Documents</h3>
-                {{-- <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button> --}}
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col">
             <div class="filter-bg">
                 <div class="row">
                     <div class="col border-end">
                         <label>Dispatch Number</label>
-                        <h5> {{ $dispatch->dispatch_no }} </h5>
+                        <h5> {{ $dispatch->dispatch_no != null ? $dispatch->dispatch_no : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>AWB/POD Number</label>
-                        <h5> {{ $dispatch->awb_pod }} </h5>
+                        <h5> {{ $dispatch->awb_pod != null ? $dispatch->awb_pod : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>Courier Name</label>
-                        <h5> {{ $dispatch->courierName->name }} </h5>
+                        <h5> {{ $dispatch->courier_name != null ? $dispatch->courierName->name : '-' }} </h5>
                     </div>
                     <div class="col border-end">
                         <label>MMRP Internal Barcode No.</label>
-                        <h5> {{ $dispatch->mmrp_barcode }} </h5>
+                        <h5> {{ $dispatch->mmrp_barcode != null ? $dispatch->mmrp_barcode : '-' }} </h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Branch code</label>
-                        <h5> {{ $dispatch->branch_code }} </h5>
-                    </div> --}}
                     <div class="col">
                         <label>Dispatch Date</label>
-                        <h5> {{ $dispatch->dispatch_date }} </h5>
+                        <h5>{{ $dispatch->dispatch_date != null ? date('d-m-Y', strtotime($dispatch->dispatch_date)): '-' }}</h5>
                     </div>
-                    {{-- <div class="col border-end">
-                        <label>Dispatch By</label>
-                        <h5> {{ $dispatch->dispatched_by }} </h5>
-                    </div> --}}
                 </div>
             </div>
-            {{-- {{dd($dispatch)}} --}}
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-1"></div>
-            <div class="col-10">
+        <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                {{-- @if ($loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="loanac-tab" data-bs-toggle="tab" data-bs-target="#loanac-tab-pane" type="button" role="tab" aria-controls="loanac-tab-pane" aria-selected="true">Loan Documents <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan-tab" data-bs-toggle="tab" data-bs-target="#loan-tab-pane" type="button" role="tab" aria-controls="loan-tab-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($gold_loan_document) --}}
+               
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Documents <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan-tab" data-bs-toggle="tab" data-bs-target="#goldloan-tab-pane" type="button" role="tab" aria-controls="goldloan-tab-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($account_opening_document) --}}
+                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">AOF Documents <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof-tab" data-bs-toggle="tab" data-bs-target="#aof-tab-pane" type="button" role="tab" aria-controls="aof-tab-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
                 </li>
-                {{-- @endif --}}
-                {{-- @if ($dtrf_document) --}}
+                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTRF Documents <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf-tab" data-bs-toggle="tab" data-bs-target="#dtrf-tab-pane" type="button" role="tab" aria-controls="dtrf-tab-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
                 </li>                    
-                {{-- @endif --}}
-                @hasanyrole('ro-user')
                 <li class="ms-auto">
-                    <button id="update-all" class="btn btn-primary d-none">Update All</button>
+                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                            <button id="update-all" class="btn btn-primary d-none">Update All</button>
+                        @endif 
+                    @endunless
+                    <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
+                    {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
-                @endhasanyrole
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active" id="loanac-tab-pane" role="tabpanel" aria-labelledby="loanac-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Loan Cycle</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Type of Loan<br>Disbursement</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
-                                <th class="d-none loan" scope="col">Update Status</th>
-                                <th class="d-none loan" scope="col">Actions</th>
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($loan_document)
-                                @foreach ($loan_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan">
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->loan_cycle }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->loan_disbursement_type }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
-                                            @endif
-                                        </td>
-                                        @hasanyrole('ro-user')
-                                        @if ($row->status == 4)
-                                        <td class="loan">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                                <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
+                <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-tab-pane" role="tabpanel" aria-labelledby="loan-tab" tabindex="0">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Loan Cycle</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Disb Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Glow App ID</th>
+                                    <th scope="col" class="text-nowrap">Disb Type</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                    
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none loan text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none loan text-nowrap" scope="col">Actions</th>
                                         @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                    @endunless
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($loan_document)
+                                    @foreach ($loan_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_cycle }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_amount }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->glow_application_id }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_disbursement_type }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td> Received
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                            @else
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                                @if ($row->status == 3)
+                                                    <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
+                                                        <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="loan text-nowrap">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                                <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
-                                <th class="d-none goldloan" scope="col">Update Status</th>
-                                <th class="d-none goldloan" scope="col">Actions</th>
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($gold_loan_document)
-                                @foreach ($gold_loan_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan">
-                                        <td>{{ $row->unique_ref_no }}</td>  
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->business_category }}</td> 
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
-                                            @endif
-                                        </td>
-                                        @hasanyrole('ro-user')
-                                        @if ($row->status == 4)
-                                        <td class="goldloan">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
+                <div class="tab-pane fade {{($dtype ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-tab-pane" role="tabpanel" aria-labelledby="goldloan-tab" tabindex="0">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none goldloan text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none goldloan text-nowrap" scope="col">Actions</th>
                                         @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                    @endunless
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($gold_loan_document)
+                                    @foreach ($gold_loan_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>  
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->loan_amount }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td> 
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td class="text-nowrap"> Received
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                            @else
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                                @if ($row->status == 3)
+                                                    <td class="text-nowrap" class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="goldloan text-nowrap">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control text-nowrap reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">CIF ID</th>
-                                <th scope="col">A/C No</th>
-                                <th scope="col">Customer Name</th>
-                                <th scope="col">Creation Date</th>
-                                <th scope="col">Channel</th>
-                                <th scope="col">Type of Account Opening</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
-                                <th class="d-none aof" scope="col">Update Status</th>
-                                <th class="d-none aof" scope="col">Actions</th>                            
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($account_opening_document)
-                                @foreach ($account_opening_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof">
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
-                                        <td>{{ $row->customer_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
-                                        <td>{{ $row->channel }}</td>
-                                        <td>{{ $row->type_of_account_opening }}</td>
-                                        <td>{{ $row->business_category }}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
-                                            @endif
-                                        </td>
-                                        @hasanyrole('ro-user')
-                                        @if ($row->status == 4)
-                                        <td class="aof">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
+                <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-tab-pane" role="tabpanel" aria-labelledby="aof-tab" tabindex="0">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Scheme</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">PGK No</th>
+                                    <th scope="col" class="text-nowrap">Type</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none aof text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none aof text-nowrap" scope="col">Actions</th>
                                         @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                    @endunless
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($account_opening_document)
+                                    @foreach ($account_opening_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
+                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
+                                            <td class="text-nowrap">{{ $row->channel }}</td>
+                                            <td class="text-nowrap">{{ $row->scheme }}</td>
+                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            <td class="text-nowrap">{{ $row->pgk_no }}</td>
+                                            <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
+                                            <td class="text-nowrap">{{ $row->business_category }}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td class="text-nowrap"> Received
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                            @else
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))
+                                                @if ($row->status == 3)
+                                                    <td class="text-nowrap" class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="aof text-nowrap">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Unique Number</th>
-                                <th scope="col">Branch Code</th>
-                                <th scope="col">Branch Name</th>
-                                <th scope="col">DTR File Date</th>
-                                <th scope="col">Business Category</th>
-                                <th scope="col">Status</th>
-                                @hasanyrole('ro-user')
-                                <th class="d-none dtrf" scope="col">Update Status</th>
-                                <th class="d-none dtrf" scope="col">Actions</th>
-                                @endhasanyrole
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($dtrf_document)
-                                @foreach ($dtrf_document as $row)
-                                    <tr data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf">
-                                        <td>{{ $row->unique_ref_no }}</td>
-                                        <td>{{ $row->branch_code }}</td>
-                                        <td>{{ $row->branch_name }}</td>
-                                        <td>{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
-                                        <td>{{ $row->business_category}}</td>
-                                        <td>{{ $row->statusName->name ?? '-' }}
-                                            @if (in_array($row->status, [6,7]))
-                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
-                                                <img src="/images/info_icon.svg"/>
-                                              </span>
-                                            @endif
-                                        </td>
-                                        @hasanyrole('ro-user')
-                                        @if ($row->status == 4)
-                                        <td class="dtrf">
-                                            <select name="remarks" class="form-control select2 remarks" required>
-                                                <option selected value=5>Received</option>
-                                                <option value=7>Received with Query</option>
-                                                <option value=6>Rejected</option>
-                                            </select>
-                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
-                                        </td>
-                                        <td class="border-start">
-                                            <button type="button" class="btn btn-primary update-row">Update</button>
-                                        </td>
+                <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-tab-pane" role="tabpanel" aria-labelledby="dtrf-tab" tabindex="0">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">DTR File Date</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user', 'bo-read-only', 'ro-read-only']))                                   
+                                        @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                            <th class="d-none dtrf text-nowrap" scope="col">Update Status</th>
+                                            <th class="d-none dtrf text-nowrap" scope="col">Actions</th>
                                         @endif
-                                        @endhasanyrole
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                    @endunless
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($dtrf_document)
+                                    @foreach ($dtrf_document as $row)
+                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
+                                            <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_code }}</td>
+                                            <td class="text-nowrap">{{ $row->branch_name }}</td>
+                                            <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
+                                            <td class="text-nowrap">{{ $row->barcode}}</td>
+                                            <td class="text-nowrap">{{ $row->business_category}}</td>
+                                            @hasrole('bo-maker|bo-checker')
+                                                @if ($row->status > 7)
+                                                    <td class="text-nowrap"> Received
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td>{{ $row->statusName->name ?? '-' }}
+                                                        @if (in_array($row->status, [6,7]))
+                                                            <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                                <img src="/images/info_icon.svg"/>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                            @else
+                                                <td class="text-nowrap">{{ $row->statusName->name ?? '-' }}
+                                                    @if (in_array($row->status, [6,7]))
+                                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->reason }}">
+                                                            <img src="/images/info_icon.svg"/>
+                                                        </span>
+                                                    @endif
+                                                </td> 
+                                            @endhasrole
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-user', 'ro-supervisor', 'bank-user', 'bo-read-only', 'ro-read-only']))                                                 
+                                                @if ($row->status == 3)
+                                                    <td class="text-nowrap" class="border-start">
+                                                        <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
+                                                    </td>
+                                                @endif
+                                            @endunless
+                                            @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'bank-user']))                                             
+                                                @if ($dispatch->status == 5 || $dispatch->status == 7)
+                                                    @if ($row->status == 4)
+                                                        <td class="dtrf text-nowrap">
+                                                            <select name="remarks" class="form-control select2 remarks" required>
+                                                                <option selected value=5>Received</option>
+                                                                <option value=7>Received with Query</option>
+                                                                <option value=6>Rejected</option>
+                                                            </select>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                        </td>
+                                                        <td class="border-start">
+                                                            <button type="button" class="btn btn-primary update-row">Update</button>
+                                                        </td>
+                                                    @endif
+                                                @endif
+                                            @endunless
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 
@@ -347,8 +481,8 @@
                     <select class="form-select document_type" name="document_type">
                         <option value="">Select Document Type</option>
                         <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Documents</option>
-                        <option value="gold_loan" {{ ($filters['document_type'] ?? '') == 'gold_loan' ? 'selected' : '' }}>Gold Loan Documents</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Documents</option>
+                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Documents</option>
+                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liabilities Documents</option>
                         <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
                     </select>
                 </div>
@@ -425,7 +559,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index','all') }}" class="btn btn-secondary">Clear</a>
+                    <a  href="{{ route('accounts.index',['type' => 'all','dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a>
                 </div>
             </div>
         </form>
@@ -579,13 +713,63 @@
             const reason = row.find('.reason').val();
 
             if (remarks !== '5' && !reason.trim()) {
-                throw `Reason is required for this Document: #${uid}`;
+                throw `Reason is required for Document #${uid} under ${type.toUpperCase()}`;
             }
 
             return { id, type, remarks, reason_for_rejection: reason };
         }
 
-        // Handle individual update
+        $('.remove-doc').click(function (e) {
+            e.preventDefault();
+
+            let docId = $(this).data('id');
+            let type = $(this).data('type');
+            let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
+            let row = $(this).closest('tr');
+
+            var doc_count = $(`#${type}-tab`).find('span.badge').text();
+            // console.log(doc_count);
+
+
+            if (!docId || !type || !dispatchId) {
+                Swal.fire("Warning!", "Missing document data.", "warning");
+                return;
+            }
+
+            Swal.fire({
+                title: "Confirm Removal",
+                text: "Are you sure you want to remove this document?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, remove",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post(`{{ route('document.dispatchremove') }}`, {
+                        _token: $('input[name="_token"]').val(),
+                        doc_id: docId,
+                        type: type,
+                        dispatch_id: dispatchId,
+                    })
+                    .done(function () {
+                        Swal.fire({
+                            title: "Removed!",
+                            text: "Document removed successfully.",
+                            icon: "success",
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        row.remove(); 
+                        $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
+                    })
+                    .fail(function (xhr) {
+                        Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+                    });
+                }
+            });
+        });
+
+
         $('.update-row').on('click', function () {
             const row = $(this).closest('tr');
             let data;
@@ -597,15 +781,34 @@
                 return;
             }
 
-            sendUpdateRequest(data);
+            sendUpdateRequest(data,'row');
         });
 
         // Handle bulk update
         $('#update-all').on('click', function () {
+            const activeTab = $('.nav-link.active').attr('id'); // e.g., "loan-tab"
             const data = [];
             let hasError = false;
 
-            $('tr[data-id]').each(function () {
+            let tabSelector = '';
+
+            // Map tab id to row class or pane
+            switch (activeTab) {
+                case 'loan-tab':
+                    tabSelector = '#loan-tab-pane';
+                    break;
+                case 'goldloan-tab':
+                    tabSelector = '#goldloan-tab-pane';
+                    break;
+                case 'aof-tab':
+                    tabSelector = '#aof-tab-pane';
+                    break;
+                case 'dtrf-tab':
+                    tabSelector = '#dtrf-tab-pane';
+                    break;
+            }
+
+            $(`${tabSelector} tr[data-id]`).each(function () {
                 try {
                     data.push(collectRowData($(this)));
                 } catch (err) {
@@ -616,12 +819,13 @@
             });
 
             if (!hasError && data.length) {
-                sendUpdateRequest(data);
+                sendUpdateRequest(data,'all');
             }
         });
 
-        // Common AJAX function
-        function sendUpdateRequest(payload) {
+        function sendUpdateRequest(payload, type) {
+        console.log(payload);
+        // return false;
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
@@ -630,7 +834,11 @@
                     updates: payload
                 },
                 success: function () {
-                    Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    if (type === 'all') { 
+                        Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                    } else {
+                        location.reload(); 
+                    }
                 },
                 error: function () {
                     Swal.fire("Error", "Update failed", "error");

@@ -37,7 +37,7 @@ body{
 }
 
 body{
-    background: #E6FDF7;
+    background: #efefef;
     font-family: "Sora", sans-serif;
     font-optical-sizing: auto;
 }
@@ -106,7 +106,6 @@ body{
 a{
     text-decoration: none;
     color: #229e82;
-    border-bottom: 1px solid #229e82;
 }
 .headerCards .card img{
     margin-bottom: 10px;
@@ -139,8 +138,10 @@ h2{
 }
 
 .bg-new{
-    background: #ececec;
+    background: linear-gradient(90deg, #229E82 0%, #0C382E 100%);
     margin-bottom: 20px;
+}
+.bg-new .nav-link{
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -249,13 +250,42 @@ h2{
     padding-top: 66px;
 }
 
-.bg-tran-white, .bg-new{
-    background: rgba(255, 255, 255, 0.41);
+.bg-new{
+    background: #229E82;
 }
+
+.bg-tran-white{
+    background: #FFFFFF;
+}
+
+.bg-new .active-tab{
+    color: #000000 !important;
+    background: #ffca43;
+    font-weight: 600;
+    background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%);
+}
+
+.bg-new .nav-link:hover{
+    color: #000000 !important;
+    background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%);
+    font-weight: 600;
+}
+
+.bg-new .nav-link{
+    padding: 10px 30px;
+    font-weight: 600;
+}
+
+
+.listView{
+    font-size: 15px;
+}
+
 
 .btn{
     font-size: 13px;
 }
+
 
 .alert{
     padding: 10px;
@@ -318,9 +348,14 @@ h2{
     color: #229e82;
 }
 
-.nav-link{
-    color: #229e82 !important;
+.bg-new .nav-link{
+    color: #fff;
 }
+
+.nav-link{
+    color: #229e82;
+}
+
 
 .nav-link:hover, .nav-link:focus {
     color: #229e82 !important;
@@ -393,7 +428,7 @@ input[type=checkbox]{
 
 .page-heading h3{
     padding-right: 20px;
-    font-size: 22px;
+    font-size: 18px;
 }
 .page-heading .btn{
     height: 30px;
@@ -401,3 +436,169 @@ input[type=checkbox]{
 table p{
     margin-bottom: 0;
 }
+
+.bigCard{
+    /* background: linear-gradient(180deg, #FFCA43 84.44%, #997928 100%); */
+    background: linear-gradient(180deg, #FFF 84.44%, #bebebd 100%);
+    /* background: #FFF;    */
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+
+}
+
+.bigCard h2{
+    font-weight: 600;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: 30px;
+}
+
+.bigCard p{
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: 15px;
+    font-style: bold;
+    color: #051b11;
+    transition: 0.5s ease all;
+}
+
+.bigCard .cardBox{
+    border-right: 1px solid #937424;
+    padding: 20px 2px;
+    transition: 0.5s ease all;
+}
+
+.bigCard .cardBox:last-child{
+    border: none;
+}
+.bigCard .Yellow{
+    h2{
+        color: #f78f35 !important;
+    }
+}
+.bigCard .col-6{
+    h2{
+        color: #229E82 !important;
+    }
+    p{
+        font-size: 13px;
+    }
+}
+.smallCard{
+    background: #fff;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0px;
+    padding: 20px;
+}
+
+.smallCard h3{
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+.smallCard .listView{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    padding-top: 8px;
+    border-bottom: 1px solid #efefef;
+    line-height: 30px;
+}
+
+.smallCard .listView:last-child{
+    border-bottom: none;
+}
+
+.smallCard .listView .value{
+    font-weight: 600;
+    background: #ffca43;
+    padding: 4px;
+    border-radius: 7px;
+    color: #000000;
+    height: 25px;
+    line-height: 18px;
+}
+
+.topDash{
+    background: #229E82;
+}
+
+.invert{
+    background: #000000 !important;
+    color: #fff !important;
+}
+
+.listView ul{
+    padding-left: 0px;
+    margin-left: 0px;
+    list-style: none;
+    width: 100%;
+    
+}
+
+.listView ul li{
+    width: 100%;
+    list-style: none;
+    display: inline-block;
+}
+
+.listView ul li .value{
+    float: right;
+    background: #229e82 !important;
+    color: #fff !important;
+}
+.listView ul li .label{
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+.listView .label{
+    font-weight: 600;
+    font-size: 16px;
+}
+
+#backToTopBtn {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 4px;
+}
+
+#backToTopBtn:hover {
+    background-color: #555;
+}
+
+ .table-fixed-header {
+      height: 600px; /* Set the desired height */
+      overflow-y: auto;
+      display: block;
+    }
+
+    .table-fixed-header thead th {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa; /* Matches Bootstrap table header color */
+      z-index: 2;
+    }
+
+    .table-fixed-header table {
+      width: 100%;
+      border-collapse: separate;
+    }
+

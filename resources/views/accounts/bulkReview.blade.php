@@ -46,7 +46,7 @@
                     <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                         @csrf
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-courier" type="button">Add Courier Details</button>
-                        <a class="btn btn-secondary" href="{{ route('accounts.index',$type)}}">Go Back</a>
+                        <a class="btn btn-secondary" href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan'])}}">Go Back</a>
                     </form>
                 </li>
             </ul>

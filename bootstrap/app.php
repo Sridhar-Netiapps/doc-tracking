@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Schedule;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
-        // Define other route files as needed
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Global middleware (runs for all requests)
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ActivityLogger::class,
         ]);
 
         // Middleware group: api

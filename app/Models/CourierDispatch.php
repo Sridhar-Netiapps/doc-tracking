@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class CourierDispatch extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'awb_pod',
@@ -45,6 +47,11 @@ class CourierDispatch extends Model
 
     public function courierName()
     {
-        return $this->belongsTo(Courier::class, 'courier_name');
+        return $this->belongsTo(Courier::class, 'courier_id');
+    }
+
+    public function dispatcher()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }

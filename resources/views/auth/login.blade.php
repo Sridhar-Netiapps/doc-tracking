@@ -11,7 +11,11 @@
         <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
         <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
+        <script src="{{ asset('js/validation.js') }}"></script>
+
     </head>
     <body>
         <div id="app">
@@ -32,23 +36,23 @@
                         </div>
                         <div class="col-md-4">
                             <div class="login-bg">
-                                <form method="POST" action="{{ route('login') }}">
+                                <form method="POST" action="{{ route('login') }}" id="login-form">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="email" class="col-form-label">{{ __('Email Address') }}</label>
+                                        <label for="username" class="col-form-label">{{ __('Employee ID') }}</label>
                                         <div class="">
-                                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                            @error('email')
+                                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"  autofocus>
+                                            @error('username')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                             @enderror
                                         </div>
-                                    </div>
+                                    </div>                                    
                                     <div class="mb-3">
                                         <label for="password" class=" col-form-label ">{{ __('Password') }}</label>
                                         <div class="">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="current-password">
                                             @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -70,3 +74,46 @@
         </div>
     </body>
 </html>
+
+<script>
+    $(document).ready(function () {
+        $('#login-form').validate({
+            rules: {
+                username: {
+                    required: true,
+                    alphanumeric: true 
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                }
+            },
+            messages: {
+                username: {
+                    required: "Please enter your Employee ID",
+                    alphanumeric: "Employee ID must be letters and numbers only"
+                },
+                password: {
+                    required: "Please enter your password",
+                    minlength: "Password must be at least 6 characters"
+                }
+            },
+            errorElement: 'span',
+            errorClass: 'invalid-feedback',
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+            }
+        });
+    
+        // Trim input
+        $('input').on('input', function () {
+            $(this).val($(this).val().trim());
+        });
+    });
+</script>    

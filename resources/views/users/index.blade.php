@@ -15,11 +15,11 @@
                 </nav>
             </div>
         </div>
-        @if(auth()->user()->can('create-user'))
+        @role('super_admin|master')
         <div>
             <a href="{{ route('users.create') }}" class="btn btn-primary">Create User</a>
         </div>
-        @endif
+        @endrole
     </div>
 
 
@@ -33,6 +33,7 @@
                                 <th>S.No</th>
                                 <th>Name</th>
                                 <th>Employee ID</th>
+                                <th>Region</th>
                                 <th>Branch Code</th>
                                 <th>Email</th>
                                 <th>Gender</th>
@@ -40,13 +41,13 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
-                                @role('master')
+                                @role('master|super_admin|admin')
                                 <th>Roles</th>
                                 {{-- <th>Permissions</th> --}}
                                 @endrole
-                                @canany(['edit-user','delete-user'])
+                                @role('master|super_admin')
                                 <th>Action</th>
-                                @endcanany
+                                @endrole
                             </tr>
                         </thead>
                         <tbody>
@@ -55,6 +56,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $user->employee_id }}</td>
+                                    <td>{{ $user->region }}</td>
                                     <td>{{ $user->branch_id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ ucfirst($user->gender) }}</td>
@@ -62,39 +64,39 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
-                                    @role('master')
-                                    <td>
-                                        @foreach ($user->roles as $role)
-                                            <span class="badge text-bg-primary">{{ $role->name }}</span>
-                                        @endforeach
-                                    </td>
-                                    {{-- <td>
-                                        @foreach ($user->getAllPermissions() as $permission)
-                                            <span class="badge text-bg-secondary">{{ $permission->name }}</span>
-                                        @endforeach
-                                    </td> --}}
+                                    @role('master|super_admin|admin')
+                                        <td>
+                                            @foreach ($user->roles as $role)
+                                                <span class="badge text-bg-primary">{{ $role->name }}</span>
+                                            @endforeach
+                                        </td>
+                                        {{-- <td>
+                                            @foreach ($user->getAllPermissions() as $permission)
+                                                <span class="badge text-bg-secondary">{{ $permission->name }}</span>
+                                            @endforeach
+                                        </td> --}}
                                     @endrole
-                                    @canany(['edit-user','delete-user'])
-                                    <td>
-                                        <div class="btn-actions">
-                                            @can('edit-user')
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
-                                            @endcan
-                                            {{-- @can('delete-user')
-                                            <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                                            </form>
-                                            @endcan --}}
-                                        </div>
-                                    </td>
-                                    @endcanany
+                                    @role('master|super_admin')
+                                        <td>
+                                            <div class="btn-actions">
+                                                @can('edit-user')
+                                                <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                @endcan
+                                                {{-- @can('delete-user')
+                                                <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                                                </form>
+                                                @endcan --}}
+                                            </div>
+                                        </td>
+                                    @endrole
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <div class=""">
+                    <div class="">
                         {{ $users->links('pagination::bootstrap-5') }}
                     </div>
                 </div>

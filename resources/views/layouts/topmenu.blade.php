@@ -1,29 +1,52 @@
+@php
+    $currentTab = Request::segment(2); // gets 'pending', 'all', etc.
+    $isActive = request()->is('home');
+@endphp
+
 <div class="bg-new">
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">
             <ul class="d-flex justify-content-center align-items-center list-unstyled m-0">
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','new') }}">New </a>
+                @unless(auth()->user()->hasAnyRole(['super_admin']))
+                <li class="nav-item">
+                    <a class="nav-link {{ $isActive ? 'active' : '' }}" href="{{ url('/home') }}">
+                        <img src="{{ $isActive ? '/images/home1.svg' : '/images/home2.svg' }}" />
+                    </a>
                 </li>
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','all') }}">All </a>
+                <li class="nav-item">
+                    <a class="nav-link {{ $currentTab === 'all' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'all','dtype' => 'loan']) }}">All</a>
                 </li>
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.proceed') }}">In Draft</a>
+
+                <li class="nav-item ">
+                    <a class="nav-link {{ $currentTab === 'pending' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'pending','dtype' => 'loan']) }}">Pending</a>
                 </li>
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','rejected') }}">Rejected</a>
+
+                <li class="nav-item ">
+                    <a class="nav-link {{ Request::is('documents/proceed') ? 'active-tab' : '' }}" href="{{ route('accounts.proceed') }}">In Draft</a>
                 </li>
-                <li class="nav-item px-4">
-                    <a class="nav-link" href="{{ route('accounts.index','received') }}">Received</a>
+
+                <li class="nav-item ">
+                    <a class="nav-link {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}" href="@hasanyrole('master|ro-user'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
                 </li>
-                {{-- @hasanyrole('master|bo-maker|bo-checker') --}}
-                <li class="nav-item px-4">
-                    <a class="nav-link" @hasanyrole('master|ro-user') href="{{ route('dispatches','list') }}" @else href="{{ route('dispatches','ready') }}" @endhasanyrole>Dispatches</a>
+
+                <li class="nav-item ">
+                    <a class="nav-link {{ $currentTab === 'rejected' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'rejected','dtype' => 'loan']) }}">Rejected</a>
                 </li>
-                {{-- @endhasanyrole
-                @hasanyrole('master|ro-user')
-                @endhasanyrole --}}
+
+                <li class="nav-item ">
+                    <a class="nav-link {{ $currentTab === 'received' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'received','dtype' => 'loan']) }}">Received</a>
+                </li>
+                @hasrole('ro-user|ro-supervisor|ro-read-only|bank-user|admin|super_admin|master')
+                <li class="nav-item ">
+                    <a class="nav-link {{ $currentTab === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'moved','dtype' => 'loan']) }}">Moved to RMA</a>
+                </li>
+                @endhasrole
+                @hasrole('ro-user|ro-supervisor|bank-user|admin|super_admin|master')
+                <li class="nav-item px-4">
+                    <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ url('reports') }}">Reports</a>
+                </li>
+                @endhasrole
+                @endunless
             </ul>
         </div>
     </div>

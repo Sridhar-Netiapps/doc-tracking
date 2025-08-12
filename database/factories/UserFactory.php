@@ -43,15 +43,17 @@ class UserFactory extends Factory
             'dor'               => NULL, // Date of resignation
             'doj'               => $this->faker->dateTimeBetween('-10 years', '-6 years'), // Date of joining
             'mobile_number'     => $this->faker->numerify('9#########'),
-            'dob'               => $this->faker->dateTimeBetween('-50 years', '-22 years'),
+            'dob'               => $this->faker->dateTimeBetween('-30 years', '-22 years'),
             'gender'            => $gender,
             'remember_token'    => Str::random(10),
             'status'            => $this->faker->randomElement(['active', 'inactive']),
             'created_at'        => now(),
             'updated_at'        => NULL,
-            'branch_id'         => $this->faker->numberBetween(1111, 1119),
+            'branch_id'         => $regions[$regionName].$this->faker->numberBetween(111, 119),
             'region'            => $regionName,
             'region_id'         => $regions[$regionName],
+            'designation_id'    => 0,
+            'department_id'     => 0,
         ];
     }
 

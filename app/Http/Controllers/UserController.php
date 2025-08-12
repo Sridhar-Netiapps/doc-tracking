@@ -8,25 +8,35 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
+use App\Models\ActivityLog;
 
 class UserController extends Controller
 {
     // Constructor for middleware
-    // public function __construct()
-    // {
-    //     // Add the permission middleware as needed for each method
-    //     // Example:
-    //     // $this->middleware('permission:view-user')->only('index','show');
-    //     // $this->middleware('permission:create-user')->only(['create', 'store']);
-    //     // $this->middleware('permission:edit-user')->only(['edit', 'update']);
-    //     // $this->middleware('permission:delete-user')->only('destroy');
-    // }
+    public function __construct()
+    {
+        // Add the permission middleware as needed for each method
+        // Example:
+        // $this->middleware('permission:view-user')->only('index','show');
+        // $this->middleware('permission:create-user')->only(['create', 'store']);
+        // $this->middleware('permission:edit-user')->only(['edit', 'update']);
+        // $this->middleware('permission:delete-user')->only('destroy');
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
+        });
+    }
 
     // List all users
     public function index()
     {
-        $users = User::with('roles', 'permissions')->paginate(50);
-
+        $filter = function ($query) {
+            if (!$this->user->hasAnyRole(['master', 'super_admin'])) {
+                $query->where('status', 'active');
+            }
+            return $query;
+        };
+        $users = $filter(User::query())->paginate(100)->withQueryString();
         return view('users.index', compact('users'));
     }
 
@@ -55,6 +65,8 @@ class UserController extends Controller
             'mobile_number' => 'required|string|max:15',
             'doj' => 'required|date',
             'dor' => 'nullable|date',
+            'designation_id' => 'required|string|max:255',
+            'department_id' => 'required|string|max:255',
         ]);
 
         // Creating the new user
@@ -72,6 +84,8 @@ class UserController extends Controller
             'mobile_number' => $request->input('mobile_number'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
+            'designation_id' => $request->input('designation_id'),
+            'department_id' => $request->input('department_id'),
         ]);
 
         // Redirecting back with success message
@@ -157,5 +171,17 @@ class UserController extends Controller
         $user->givePermissionTo($request->input('permission'));
 
         return redirect()->back()->with('success', 'Permission assigned successfully.');
+    }
+
+    public function userActivity()
+    {
+        $filter = function ($query) {
+            // if (!$this->user->hasAnyRole(['master', 'super_admin'])) {
+            //     $query->where('status', 'active');
+            // }
+            return $query->orderBy('created_at', 'desc');
+        };
+        $activites = $filter(ActivityLog::query())->paginate(100)->withQueryString();
+        return view('users.activity', compact('activites'));
     }
 }
