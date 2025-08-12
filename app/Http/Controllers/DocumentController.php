@@ -77,7 +77,7 @@ class DocumentController extends Controller
             if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
-            return $query->orderBy('updated_at', 'desc');
+            return $query->orderBy('account_creation_date', 'desc');
         };
         // dd($filter(GoldLoanDocument::query())->get());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
@@ -1323,4 +1323,26 @@ class DocumentController extends Controller
         Mail::to($to)->send(new \App\Mail\DispatchesMail($content, $subject));
     }
 
+    public function revertStatus(Request $request)
+    {
+        $id = $request->document_id;
+        $dtype = $request->dtype;
+        try {
+            DB::beginTransaction();
+
+            $doc = $this->table[$dtype]::find($id);
+            $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$dtype]))
+                ->where('current_status',$doc->status)->where('previous_status','<',$doc->status)->latest()->first();
+            $doc->status = $history->previous_status;
+            $doc->reason = $request->reason;
+            $doc->updated_by = $this->user->id;
+            $doc->save();
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

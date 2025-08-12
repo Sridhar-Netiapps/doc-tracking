@@ -24,7 +24,6 @@ class LoanDocument extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
     public function dispatch()
     {
         return $this->belongsTo(CourierDispatch::class,'dispatch_id');
