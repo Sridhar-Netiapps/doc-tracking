@@ -74,6 +74,9 @@ class LoginController extends Controller
                     Session::flush();
                     Auth::logoutOtherDevices($password);
                     Auth::login($user);
+                    if ($user->hasrole('super_admin')) {
+                        return redirect()->route('users.index');
+                    }
                     return redirect()->intended('/home');
                 }
                 return back()->withErrors(['username' => 'Invalid credentials.']);
@@ -85,6 +88,9 @@ class LoginController extends Controller
             if (Auth::attempt(['employee_id' => $username, 'password' => $password])) {
                 Auth::logoutOtherDevices($password);
                 $user = Auth::user();
+                if ($user->hasrole('super_admin')) {
+                    return redirect()->route('users.index');
+                }
                 return redirect()->intended('/home');
             }
         }
