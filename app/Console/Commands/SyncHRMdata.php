@@ -37,8 +37,8 @@ class SyncHRMdata extends Command
         $currentDateTime = Carbon::today();
         $currentDate = $currentDateTime->format('Y-m-d');
         
-      //  $hrmData = HRMData::where('load_date',$currentDate)->get();
-        $hrmData = HRMData::whereIn('id',['101','102','103','104','105','106','107','108','109','110','111','112'])->get();
+        $hrmData = HRMData::where('load_date',$currentDate)->get();
+        //$hrmData = HRMData::whereIn('id',['101','102'])->get();
 
         if($hrmData){
             foreach($hrmData as $key => $value){
