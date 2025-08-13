@@ -10,6 +10,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('documents:revert-draft')->dailyAt('06:00');
-Schedule::command('documents:sync')->dailyAt('07:00');
-Schedule::command('documents:sync-email')->dailyAt('08:00');
-Schedule::command('app:sync-h-r-mdata')->everyMinute();
+Schedule::command('documents:sync')->dailyAt('06:30');
+Schedule::command('documents:sync-email')->dailyAt('07:00');
+Schedule::command('app:sync-h-r-mdata')->dailyAt('07.30');

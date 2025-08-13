@@ -149,14 +149,17 @@
                                             <div class="">
                                                 <a href="{{ route('dispatches.view',['type'=>$type,'id'=>$row->id]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
-                                                @hasrole('bo-checker')
-                                                <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
-                                                @endhasrole
+                                                    @hasrole('bo-checker')
+                                                        <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
+                                                    @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
-                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn"  data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
+                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
+                                                    @hasanyrole('ro-supervisor|admin|master')
+                                                        <button data-id="{{ $row->id }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
+                                                    @endhasanyrole
                                                 @endif
                                                 @if ($type == 'list')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))                                             
@@ -401,6 +404,37 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="revert-status" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-3 shadow">
+            <form id="revert-courier-status" action="{{ route('courier.revert')}}" method="POST">
+                @csrf
+                <div class="modal-header p-4 text-center">
+                    <h5 class="mb-0 text-primary">Revert Status</h5>
+                </div>
+                <div class="modal-body p-4 row">
+                    <div class="col pb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <input type="hidden" name="dispatch_id" class="revert-reason"/>
+                        <select name="status" class="form-select" required>
+                            <option value="5">Received</option>
+                            <option value="7">Received with Query</option>
+                            <option value="6">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col pb-2">
+                        <label for="reason" class="form-label">Reason</label>
+                        <input type="text" name="reason" class="form-control alphanumeric" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
@@ -612,6 +646,17 @@
                 $('#filterForm').submit(); // or trigger AJAX filtering
             }
         });
+
+        $('#revert-courier-status').validate({
+            rules: {
+                status: { required: true },
+                reason: { alphanumeric: true, required: true }
+            },
+            messages: {
+                courier_name: { required: "Status is required" },
+                reason: { required: "Reason is required" }
+            }
+        });
     });
 
     function collectRowData(row) {
@@ -728,6 +773,10 @@
             }
         });
     }
+    $('.revert-status').click(function () {
+        $('input.revert-reason').val($(this).data('id'));
+        $('#revert-status').modal('show');
+    });
 </script>
 
 @endsection
