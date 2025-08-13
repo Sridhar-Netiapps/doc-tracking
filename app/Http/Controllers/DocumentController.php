@@ -116,7 +116,7 @@ class DocumentController extends Controller
         session(['dtype' => isset($url[2]) ? $url[2]:null]);
         session(['filters' => $request->all()]);
 
-        if ($request->type == 'proceed')
+        if ($url[1] == 'proceed')
             return redirect()->route('accounts.selected');
         else
             return redirect()->route('document.filtered');
@@ -405,7 +405,7 @@ class DocumentController extends Controller
         };
 
         $docType = $filters['document_type'] ?? null;
-        if (!$docType || $docType === 'loan') {
+        if (!$docType || $docType == 'loan') {
             $loanQuery = LoanDocument::query();
             $customFilter($loanQuery, 'loan_documents');
             $loans = $statusFilter($loanQuery)->get()
@@ -416,7 +416,7 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($loans);
         }
         
-        if (!$docType || $docType === 'goldloan') {
+        if (!$docType || $docType == 'goldloan') {
             $goldQuery = GoldLoanDocument::query();
             $customFilter($goldQuery, 'gold_loan_documents');
             $goldloans = $statusFilter($goldQuery)->get()
@@ -427,7 +427,7 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($goldloans);
         }
         
-        if (!$docType || $docType === 'aof') {
+        if (!$docType || $docType == 'aof') {
             $aofQuery = AccountOpeningDocument::query();
             $customFilter($aofQuery, 'account_opening_documents');
             $aofs = $statusFilter($aofQuery)->get()
@@ -438,15 +438,17 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($aofs);
         }
         
-        if (!$docType || $docType === 'dtrf') {
-            $dtrfQuery = DtrfDocument::query();
-            $customFilter($dtrfQuery, 'dtrf_documents');
-            $dtrfs = $statusFilter($dtrfQuery)->get()
-                ->map(function ($item) {
-                    $item->doc_type = 'dtrf';
-                    return $item;
-                });
-            $allDocuments = $allDocuments->merge($dtrfs);
+        if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
+            if (!$docType || $docType == 'dtrf') {
+                $dtrfQuery = DtrfDocument::query();
+                $customFilter($dtrfQuery, 'dtrf_documents');
+                $dtrfs = $statusFilter($dtrfQuery)->get()
+                    ->map(function ($item) {
+                        $item->doc_type = 'dtrf';
+                        return $item;
+                    });
+                $allDocuments = $allDocuments->merge($dtrfs);
+            }
         }
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
@@ -1184,6 +1186,10 @@ class DocumentController extends Controller
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
+        $loan_branch = LoanDocument::pluck('branch_code','branch_code');
+        $goldloan_branch = GoldLoanDocument::pluck('branch_code','branch_code');
+        $dtrf_branch = DtrfDocument::pluck('branch_code','branch_code');
+        $aof_branch = AccountOpeningDocument::pluck('branch_code','branch_code');
         $vendors = Vendor::all();
         $couriers = Courier::where('status', 1)->get();
 
