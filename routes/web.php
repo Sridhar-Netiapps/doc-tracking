@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
     Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
     Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
+    Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->name('courier.revert');
     Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
     Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
     Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');

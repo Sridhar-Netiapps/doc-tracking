@@ -1357,4 +1357,24 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function revertCourierStatus(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $doc = CourierDispatch::find($request->dispatch_id);
+            $doc->status = $request->status;
+            $doc->reason = $request->reason;
+            $doc->updated_by = $this->user->id;
+            $doc->save();
+
+            DB::commit();
+
+            return redirect()->route('dispatches','list')->with('success','Courier Reverted Successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('dispatches','tracking')->with('error',$e->getMessage());
+        }
+    }
 }
