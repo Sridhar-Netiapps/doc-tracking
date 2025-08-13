@@ -32,7 +32,7 @@
                 {{-- @endif --}}
                 {{-- @if ($gold_loan_document) --}}
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 {{-- @endif --}}
                 {{-- @if ($account_opening_document) --}}
