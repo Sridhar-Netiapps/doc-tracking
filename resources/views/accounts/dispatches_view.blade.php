@@ -287,7 +287,7 @@
                                     <th scope="col" class="text-nowrap">Creation Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
                                     <th scope="col" class="text-nowrap">Scheme</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    {{-- <th scope="col" class="text-nowrap">Barcode</th> --}}
                                     <th scope="col" class="text-nowrap">PGK No</th>
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
@@ -313,7 +313,7 @@
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->scheme }}</td>
-                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            {{-- <td class="text-nowrap">{{ $row->barcode }}</td> --}}
                                             <td class="text-nowrap">{{ $row->pgk_no }}</td>
                                             <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>

@@ -149,9 +149,9 @@
                                             <div class="">
                                                 <a href="{{ route('dispatches.view',['type'=>$type,'id'=>$row->id]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
-                                                    @hasrole('bo-checker')
-                                                        <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
-                                                    @endhasrole
+                                                @hasrole('bo-checker|master')
+                                                <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
+                                                @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))

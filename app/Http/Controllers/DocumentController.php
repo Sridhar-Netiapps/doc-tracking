@@ -190,7 +190,7 @@ class DocumentController extends Controller
         //     }
             
         // };
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType, $type) {
 
             if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
@@ -213,9 +213,20 @@ class DocumentController extends Controller
             }
         
             // Only apply this when no specific status is provided
-            if (isset($type) && $type === 'moved' && empty($filters['status'])) {
-                $query->whereIn('status', [8, 9, 10, 11]);
+            // if (isset($type) && $type == 'moved' && empty($filters['status'])) {
+            //     $query->whereIn('status', [8, 9, 10, 11]);
+            // }
+
+            if (isset($type) && $type === 'moved') {
+                if (!empty($filters['status'])) {
+                    // Apply the user-selected status only
+                    $query->where('status', $filters['status']);
+                } else {
+                    // Apply default moved statuses
+                    $query->whereIn('status', [8, 9, 10, 11]);
+                }
             }
+            
         
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
@@ -294,7 +305,7 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
         // $dtype = $filters['document_type'] ?? 
-
+        // dd($type);
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
         else
@@ -1048,6 +1059,7 @@ class DocumentController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'File Moved to RMA successfully!');
+            // return response()->json(['success' => true]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1195,6 +1207,8 @@ class DocumentController extends Controller
                 if (!empty($value) && \Schema::hasColumn($table, $field)) {
                     if (in_array($field, ['cif_id', 'account_number'])) {
                         $query->where($field, 'like', '%' . $value . '%');
+                    } elseif (is_array($value)) {
+                        $query->whereIn($field, $value);
                     } else {
                         $query->where($field, $value);
                     }
@@ -1363,13 +1377,13 @@ class DocumentController extends Controller
 
             $doc = CourierDispatch::find($request->dispatch_id);
             $doc->status = $request->status;
-            $doc->reason = $request->reason;
+            $doc->comments = $request->reason;
             $doc->updated_by = $this->user->id;
             $doc->save();
 
             DB::commit();
 
-            return redirect()->route('dispatches','list')->with('success','Courier Reverted Successfully.');
+            return redirect()->route('dispatches','tracking')->with('success','Courier Reverted Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('dispatches','tracking')->with('error',$e->getMessage());

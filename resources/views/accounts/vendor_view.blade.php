@@ -222,7 +222,7 @@
                                     <th scope="col" class="text-nowrap">Creation Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
                                     <th scope="col" class="text-nowrap">Scheme</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    {{-- <th scope="col" class="text-nowrap">Barcode</th> --}}
                                     <th scope="col" class="text-nowrap">PGK No</th>
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
@@ -254,7 +254,7 @@
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->scheme }}</td>
-                                            <td>{{ $row->barcode }}</td>
+                                            {{-- <td>{{ $row->barcode }}</td> --}}
                                             <td>{{ $row->pgk_no }}</td>
                                             <td>{{ $row->type_of_account_opening }}</td>
                                             <td>{{ $row->business_category }}</td>
@@ -355,6 +355,7 @@
         <h5>Filters</h5>
         <form method="POST" action="{{ route('document.filter') }}">
             @csrf
+            {{-- <input type="hidden" name="type" value="moved"> --}}
             <input type="hidden" name="type" value="{{$type}}">
             <input type="hidden" name="dtype" value="{{$dtype}}">
             <div class="row">
@@ -396,14 +397,14 @@
                     <input type="text" class="form-control account_number alphanumeric" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control lettersonly" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
+                    <input type="text" class="form-control alphanumeric" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle" min=0>
                 </div>
                 
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control category_of_document lettersonly" placeholder="Document Category" value="{{ old('category_of_document', $filters['category_of_document'] ?? '') }}" name="category_of_document">
+                    <input type="text" class="form-control category_of_document alphanumeric" placeholder="Document Category" value="{{ old('category_of_document', $filters['category_of_document'] ?? '') }}" name="category_of_document">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control work_order_no alphanumeric" placeholder="Work Order No" value="{{ old('work_order_no', $filters['work_order_no'] ?? '') }}" name="work_order_no">
@@ -431,13 +432,6 @@
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Date To" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <select class="form-select" name="type">
-                        <option value="">Loan Disbursement/Account Opening</option>
-                        <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
-                        <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
-                    </select>
-                </div>
-                <div class="col-12 mt-3 d-none">
                     <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
                 </div>
                 <div class="col-12 mt-3">
@@ -451,7 +445,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a  href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a>
+                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>

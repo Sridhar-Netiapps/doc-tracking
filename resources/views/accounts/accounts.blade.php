@@ -408,7 +408,7 @@
                                     <th scope="col" class="text-nowrap">Customer Name</th>
                                     <th scope="col" class="text-nowrap">Creation Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    {{-- <th scope="col" class="text-nowrap">Barcode</th> --}}
                                     <th scope="col" class="text-nowrap">PGK No</th>
                                     <th scope="col" class="text-nowrap"> Scheme</th>
                                     <th scope="col" class="text-nowrap">Type</th>
@@ -462,7 +462,7 @@
                                             <td>{{ $row->customer_name }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
-                                            <td>{{ $row->barcode }}</td>
+                                            {{-- <td>{{ $row->barcode }}</td> --}}
                                             <td>{{ $row->pgk_no }}</td>
                                             <td>{{ $row->scheme ?? '-' }}</td>
                                             <td>{{ $row->type_of_account_opening }}</td>
@@ -730,7 +730,7 @@
                     @php
                         $statusLabels = [
                             1 => 'Pending',
-                            2 => 'Selected',
+                            2 => 'In Draft',
                             3 => 'Awaiting checker Approval',
                             4 => 'Dispatched',
                             5 => 'Received',
@@ -1040,7 +1040,7 @@
                             $selected.closest('tr').remove();
                             // $badge.text(doc_count - $selected.length);
                             Object.entries(docMap).forEach(([type, ids]) => {
-                                const $badge = $(`#${type}-tab`).find('span.badge');
+                                const $badge = $(`#${type}`).find('span.badge');
                                 const current = parseInt($badge.text()) || 0;
                                 const newCount = Math.max(current - ids.length, 0);
                                 $badge.text(newCount);

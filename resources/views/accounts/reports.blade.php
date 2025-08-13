@@ -240,8 +240,8 @@
                                 </select>
                             </div>
                             <div class="col-3 mt-2">
-                                <label>Status</label>
-                                <select id="status" name="status" class="form-select select2" multiple>
+                                <label for="status" class="form-label">Status</label>
+                                <select id="status" name="status[]" class="form-select select2" multiple>
                                     <option value="">-- Select --</option>
                                     <option value="1">Pending</option>
                                     <option value="2">In Draft</option>
