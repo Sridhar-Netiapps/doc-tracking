@@ -124,9 +124,12 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        // $filters = session('filters', []);
-        $filters = session()->pull('filters', []);
-        
+        $type = session(['type']);
+        if($type == 'moved')
+            $filters = session('filters', []);
+        else
+            $filters = session()->pull('filters', []);
+            
         $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
         $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
         // $type = $filters['type'] ?? session()->pull('type', 'all');
@@ -226,8 +229,7 @@ class DocumentController extends Controller
                     $query->whereIn('status', [8, 9, 10, 11]);
                 }
             }
-            
-        
+
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
@@ -305,7 +307,7 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
         // $dtype = $filters['document_type'] ?? 
-        // dd($type);
+
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
         else
@@ -1061,7 +1063,6 @@ class DocumentController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'File Moved to RMA successfully!');
-            // return response()->json(['success' => true]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1173,13 +1174,13 @@ class DocumentController extends Controller
     //     return response()->json(['exists' => $exists]);
     // }
     public function checkAwb(Request $request)
-{
-    $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
-        ->where('courier_id', $request->courier_id) // match courier name too
-        ->exists();
+    {
+        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
+            ->where('courier_id', $request->courier_id) // match courier name too
+            ->exists();
 
-    return response()->json(['exists' => $exists]);
-}
+        return response()->json(['exists' => $exists]);
+    }
 
     
     public function reports(Request $request)
