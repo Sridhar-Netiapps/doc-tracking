@@ -326,8 +326,7 @@ class InsuranceHomeController extends Controller
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
           're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
           'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
-         
-         
+             
       ]);
 
      foreach ($inputdata as $key => $value) {
@@ -1503,8 +1502,9 @@ class InsuranceHomeController extends Controller
         $placeofdeath = InsurancePlaceofDeath::get();
         $relationship = InsuranceRelationship::get();
         $deathcause = InsuranceCauseOfDeath::get();
+        $claimstatus = InsuranceClaimStatus::get();
 
-        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause'));
+        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus'));
     }
 
     public function add_new_insurance_item(Request $request){
@@ -1584,7 +1584,7 @@ class InsuranceHomeController extends Controller
             }
 
 
-        InsuranceProduct::create(['product'=> $request->title , 'type' => 'NMB' , 'folder_name' => $folderName]);
+        InsuranceProduct::create(['product'=> $request->title ,'partner_id'=>$request->partner, 'type' => 'NMB' , 'folder_name' => $folderName]);
       }
 
       if($module == 'Cause of Death'){
@@ -1593,6 +1593,10 @@ class InsuranceHomeController extends Controller
 
       if($module == 'Place Of Death'){
         InsurancePlaceofDeath::create(['place'=> $request->title]);
+      }
+
+      if($module == 'Claim Status'){
+        InsuranceClaimStatus::create(['claim_status'=> $request->title]);
       }
 
         $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
@@ -1744,10 +1748,17 @@ class InsuranceHomeController extends Controller
         $lead = InsuranceClaimDetail::find($id);
         if ($lead) {
             $utrn = rand('000000','999999');
+
+            $nomineedetail=InsuranceNomineeDetail::where('insurance_claim_details_id',$id)->first();
             
               $newLead = $lead->replicate(); // Clone attributes except the primary key
               $newLead->utrn = "INS_CLM".$utrn;
               $newLead->save(); // Inserts as a new row with a new id
+
+              $newNomineeDetails = $nomineedetail->replicate();
+              $newNomineeDetails->insurance_claim_details_id = $newLead->id;
+              $newNomineeDetails->save();
+
 
               $module = 'Insurance';
               $operation = 'Clone';

@@ -148,6 +148,31 @@
       </div>
     </div>
   </div>
+
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+        Claim Status
+      </button>
+    </h2>
+    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <div class="d-flex">
+          <button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Claim Status">Add New Status</button>
+        </div>
+        <div class="row py-4">
+          @foreach($claimstatus as $key => $val)
+             <div class="col-3  mb-3">
+              <div class="shadow p-2 mb-2 bg-white rounded border border-dark">
+                <h6 class="card-header text-center">{{$val->claim_status}}</h6>
+              </div>
+             </div>
+          @endforeach
+        </div> 
+      </div>
+    </div>
+  </div>
+
 </div>
 
 
@@ -163,12 +188,22 @@
         <div class="modal-body">
           <input type="hidden" class="form-control" name="modulename" id="recipient-name">
           <div class="form-group">
+            <label>Partner Name</label>
             <input class="form-control form-control-design" type="text" name="title" placeholder="Enter text here" required>
           </div>
 
           <div class="form-group d-none mt-4" id="product">
-           
-            <input class="form-control mt-4" type="file" name="files[]" multiple>
+             <div class="form-group">
+              <label>Partner Name</label>
+              <select class="form-control form-select form-control-design" name="partner" id="partner">
+                <option value="">Select</option>
+                @foreach($partners as $key=>$partner)
+                  <option value="{{ $partner->id}}">{{ $partner->partner}}</option>
+                @endforeach
+              </select>
+            </div>
+             
+            <input class="form-control mt-4" type="file" name="files[]" id="claimForms" multiple>
           </div>
         </div>
         <div class="modal-footer">
@@ -205,10 +240,16 @@
 	  if(recipient == 'Product'){
 	  	$('#product').removeClass('d-none');
 	  	$('#product').addClass('d-block');
+      
+      $('#partner').prop('required',true);
+      $('#claimForms').prop('required',true);
+
 	  }
 	  else{
 	  	$('#product').removeClass('d-block');
 	  	$('#product').addClass('d-none');
+      $('#partner').prop('required',false);
+      $('#claimForms').prop('required',false);
 	  }
 	})
 
