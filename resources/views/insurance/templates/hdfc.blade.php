@@ -595,7 +595,7 @@
             <td class="col-30 content-label">INR {{ $data->loan_outstanding }}/-</td>
           </tr>
           <tr>
-            <td class="col-70 content-label">e) Balanc e and
+            <td class="col-70 content-label">e) Balance and
 Outstanding Loan Balance referred under (d) above) payable to the insured on the happening ased member in case of death claims</td>
             <td class="col-30 content-label">INR {{ $data->payable_to_nominee }}/-</td>
           </tr>
