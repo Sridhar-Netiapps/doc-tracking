@@ -116,7 +116,7 @@ class DocumentController extends Controller
         session(['dtype' => isset($url[2]) ? $url[2]:null]);
         session(['filters' => $request->all()]);
 
-        if ($request->type == 'proceed')
+        if ($url[1] == 'proceed')
             return redirect()->route('accounts.selected');
         else
             return redirect()->route('document.filtered');
@@ -124,9 +124,12 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        // $filters = session('filters', []);
-        $filters = session()->pull('filters', []);
-        
+        $type = session(['type']);
+        if($type == 'moved')
+            $filters = session('filters', []);
+        else
+            $filters = session()->pull('filters', []);
+            
         $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
         $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
         // $type = $filters['type'] ?? session()->pull('type', 'all');
@@ -190,7 +193,7 @@ class DocumentController extends Controller
         //     }
             
         // };
-        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType) {
+        $filterFunction = function ($query, $table) use ($user, $filters, $hasFilters, $fromDate, $toDate, $docType, $type) {
 
             if ($user->hasRole('ro-officer') || $user->hasRole('ro-supervisor')) {
                 $query->where('region', $user->region);
@@ -213,10 +216,20 @@ class DocumentController extends Controller
             }
         
             // Only apply this when no specific status is provided
-            if (isset($type) && $type === 'moved' && empty($filters['status'])) {
-                $query->whereIn('status', [8, 9, 10, 11]);
+            // if (isset($type) && $type == 'moved' && empty($filters['status'])) {
+            //     $query->whereIn('status', [8, 9, 10, 11]);
+            // }
+
+            if (isset($type) && $type === 'moved') {
+                if (!empty($filters['status'])) {
+                    // Apply the user-selected status only
+                    $query->where('status', $filters['status']);
+                } else {
+                    // Apply default moved statuses
+                    $query->whereIn('status', [8, 9, 10, 11]);
+                }
             }
-        
+
             if ($hasFilters) {
                 foreach ($filters as $field => $value) {
                     if (!empty($value) && \Schema::hasColumn($table, $field)) {
@@ -394,7 +407,7 @@ class DocumentController extends Controller
         };
 
         $docType = $filters['document_type'] ?? null;
-        if (!$docType || $docType === 'loan') {
+        if (!$docType || $docType == 'loan') {
             $loanQuery = LoanDocument::query();
             $customFilter($loanQuery, 'loan_documents');
             $loans = $statusFilter($loanQuery)->get()
@@ -405,7 +418,7 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($loans);
         }
         
-        if (!$docType || $docType === 'goldloan') {
+        if (!$docType || $docType == 'goldloan') {
             $goldQuery = GoldLoanDocument::query();
             $customFilter($goldQuery, 'gold_loan_documents');
             $goldloans = $statusFilter($goldQuery)->get()
@@ -416,7 +429,7 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($goldloans);
         }
         
-        if (!$docType || $docType === 'aof') {
+        if (!$docType || $docType == 'aof') {
             $aofQuery = AccountOpeningDocument::query();
             $customFilter($aofQuery, 'account_opening_documents');
             $aofs = $statusFilter($aofQuery)->get()
@@ -427,15 +440,17 @@ class DocumentController extends Controller
             $allDocuments = $allDocuments->merge($aofs);
         }
         
-        if (!$docType || $docType === 'dtrf') {
-            $dtrfQuery = DtrfDocument::query();
-            $customFilter($dtrfQuery, 'dtrf_documents');
-            $dtrfs = $statusFilter($dtrfQuery)->get()
-                ->map(function ($item) {
-                    $item->doc_type = 'dtrf';
-                    return $item;
-                });
-            $allDocuments = $allDocuments->merge($dtrfs);
+        if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
+            if (!$docType || $docType == 'dtrf') {
+                $dtrfQuery = DtrfDocument::query();
+                $customFilter($dtrfQuery, 'dtrf_documents');
+                $dtrfs = $statusFilter($dtrfQuery)->get()
+                    ->map(function ($item) {
+                        $item->doc_type = 'dtrf';
+                        return $item;
+                    });
+                $allDocuments = $allDocuments->merge($dtrfs);
+            }
         }
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
@@ -1159,19 +1174,23 @@ class DocumentController extends Controller
     //     return response()->json(['exists' => $exists]);
     // }
     public function checkAwb(Request $request)
-{
-    $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
-        ->where('courier_id', $request->courier_id) // match courier name too
-        ->exists();
+    {
+        $exists = CourierDispatch::where('awb_pod', $request->awb_pod)
+            ->where('courier_id', $request->courier_id) // match courier name too
+            ->exists();
 
-    return response()->json(['exists' => $exists]);
-}
+        return response()->json(['exists' => $exists]);
+    }
 
     
     public function reports(Request $request)
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
+        $loan_branch = LoanDocument::pluck('branch_code','branch_code');
+        $goldloan_branch = GoldLoanDocument::pluck('branch_code','branch_code');
+        $dtrf_branch = DtrfDocument::pluck('branch_code','branch_code');
+        $aof_branch = AccountOpeningDocument::pluck('branch_code','branch_code');
         $vendors = Vendor::all();
         $couriers = Courier::where('status', 1)->get();
 
@@ -1365,13 +1384,13 @@ class DocumentController extends Controller
 
             $doc = CourierDispatch::find($request->dispatch_id);
             $doc->status = $request->status;
-            $doc->reason = $request->reason;
+            $doc->comments = $request->reason;
             $doc->updated_by = $this->user->id;
             $doc->save();
 
             DB::commit();
 
-            return redirect()->route('dispatches','list')->with('success','Courier Reverted Successfully.');
+            return redirect()->route('dispatches','tracking')->with('success','Courier Reverted Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('dispatches','tracking')->with('error',$e->getMessage());

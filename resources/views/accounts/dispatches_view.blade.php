@@ -49,7 +49,7 @@
                 </li>
                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'gold_loan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
@@ -175,7 +175,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade {{($dtype ?? '') == 'gold_loan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
+                <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -287,7 +287,7 @@
                                     <th scope="col" class="text-nowrap">Creation Date</th>
                                     <th scope="col" class="text-nowrap">Channel</th>
                                     <th scope="col" class="text-nowrap">Scheme</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    {{-- <th scope="col" class="text-nowrap">Barcode</th> --}}
                                     <th scope="col" class="text-nowrap">PGK No</th>
                                     <th scope="col" class="text-nowrap">Type</th>
                                     <th scope="col" class="text-nowrap">Business Category</th>
@@ -313,7 +313,7 @@
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->scheme }}</td>
-                                            <td class="text-nowrap">{{ $row->barcode }}</td>
+                                            {{-- <td class="text-nowrap">{{ $row->barcode }}</td> --}}
                                             <td class="text-nowrap">{{ $row->pgk_no }}</td>
                                             <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>
