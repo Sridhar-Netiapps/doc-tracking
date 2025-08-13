@@ -205,13 +205,15 @@
       <div class="contentrows">
         <label class="label-font"> Group Policy No.:<strong class="policy">{{$data->policy_number}}</strong></label>
         <label class="label-font"> Member Id:<strong class="policy"> {{$data->mp_no}} </strong></label>
-        <label class="label-font"> Client ID:<strong class="policy">{{$data->cust_id}}</strong></label>
+        <label class="label-font"> Client ID:<strong class="policy">{{$data->actual_id}}</strong></label>
         <label class="label-font"> Claim Amount:<strong class="policy">{{$data->claim_amount}}</strong></label>
       </div>
 
       <div class="contentrows">
         <label class="label-font"> Name of Group Policyholder:<strong class="policy">Ujjivan Small Finance Bank</strong></label>
-        <label class="label-font"> Gender:<strong class="policy">{{$data->gender}}</strong></label>
+        <strong class="label-font"> Gender:<strong class="policy">{{$data->gender}}</strong></strong>
+
+        <strong class="label-font"> LAN:<strong class="policy">{{$data->load_acc_id}}</strong></strong>
       </div>
 
       <div class="contentrows">
@@ -219,20 +221,20 @@
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Birth:<strong class="policy">{{$data->dob}}</strong></label>
-        <label class="label-font"> Date of Joining Policy:<strong class="policy">{{$data->deceased_name}}</strong></label>
+        <label class="label-font"> Date of Birth:<strong class="policy">{{ ($data->dob !='')? date('d-m-Y',strtotime($data->dob)): ''}}</strong></label>
+        <label class="label-font"> Date of Joining Policy:<strong class="policy">{{ ($data->policy_covered_date !='')? date('d-m-Y',strtotime($data->policy_covered_date)): ''}}</strong></label>
         <label class="label-font"> Date of last attended duties:<strong class="policy"></strong></label>
       </div>
 
       <div class="contentrows">
-        <label class="label-font"> Date of Death:<strong class="policy">{{$data->date_of_death}}</strong></label>
+        <label class="label-font"> Date of Death:<strong class="policy">{{ ($data->date_of_death !='')? date('d-m-Y',strtotime($data->date_of_death)): ''}}</strong></label>
         <label class="label-font"> Time of Death:<strong class="policy"></strong></label>
         <label class="label-font"> A.M/P.M</label>
       </div>
 
       <div class="contentrows">
         <label class="label-font"> Cause of Death:<strong class="policy">{{$data->cause_of_death}}</strong></label>
-        <label class="label-font"> Age as on Date of Death:<strong class="smallpad"></strong></label>
+        <label class="label-font"> Age as on Date of Death:<strong class="smallpad">{{ $data->age}}</strong></label>
         <label>Years</label>
         <strong class="smallpad policyunderine" ></strong>
         <label>Month(s)</label>

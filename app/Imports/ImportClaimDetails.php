@@ -104,8 +104,28 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		        $errors[] = 'Policy Number is required (Col G)';
 		    }
 
+		    if (!$insurancedetaisl && empty($row[7])) {
+		        $errors[] = 'Policy Covered Date is required (Col H)';
+		    }
+
+		    if (!$insurancedetaisl && empty($row[10])) {
+		        $errors[] = 'Actual ID is required (Col K)';
+		    }
+
+		    if (!$insurancedetaisl && empty($row[11])) {
+		        $errors[] = 'Deceased name is required (Col L)';
+		    }
+
 		    if (!$insurancedetaisl && empty($row[13])) {
-		        $errors[] = 'Date of Death is required (Col M)';
+		        $errors[] = 'Date of Death is required (Col N)';
+		    }
+
+		    if (!$insurancedetaisl && empty($row[20])) {
+		        $errors[] = 'Loan Account ID  is required (Col U)';
+		    }
+
+		    if (!$insurancedetaisl && empty($row[22])) {
+		        $errors[] = 'Claim amount is required (Col W)';
 		    }
 
 		    if (!empty($row[57]) && strlen($row[57]) != 11) {
@@ -121,7 +141,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 		    }
 		   // print_r($row[7]);die();
 
-		    if (!empty($row[7]) && !empty($row[21])) {
+		    /*if (!empty($row[7]) && !empty($row[21])) {
 
 		    	if (is_numeric($row[7])) {
 		            $coverd = Date::excelToDateTimeObject($row[7])->format('Y-m-d');
@@ -215,7 +235,7 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 
 
 		    }	
-
+*/
 		   
 
 		    if (!empty($errors)) {
