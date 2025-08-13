@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -189,7 +190,7 @@ class UserController extends Controller
     public function filter(Request $request)
     {
         // Store filters in session
-        session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id'])]);
+        session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
     
         return redirect()->route('activity.filterlist');
     }
@@ -198,6 +199,8 @@ class UserController extends Controller
     {
         // Get filters from session
         $filters = session('activity_filters', []);
+        $fromDate = $filters['from_date'] ?? null;
+        $toDate = $filters['to_date'] ?? null;
     
         $query = ActivityLog::query();
     
@@ -218,6 +221,21 @@ class UserController extends Controller
                 $q->where('employee_id', $filters['employee_id']);
             });
         }
+
+        if ($fromDate && $toDate) {
+            $start = Carbon::parse($fromDate)->startOfDay();
+            $end   = Carbon::parse($toDate)->endOfDay();
+            $query->whereBetween('created_at', [$start, $end]);
+        } elseif ($fromDate) {
+            $start = Carbon::parse($fromDate)->startOfDay();
+            $query->where('created_at', '>=', $start);
+        } elseif ($toDate) {
+            $end = Carbon::parse($toDate)->endOfDay();
+            $query->where('created_at', '<=', $end);
+        }
+        
+        
+            
     
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
@@ -226,7 +244,7 @@ class UserController extends Controller
     
     public function exportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);

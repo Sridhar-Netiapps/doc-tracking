@@ -1,7 +1,7 @@
 
         <div class="treeList h-100">
             <ul>
-                @unless ('super_admin')
+                @unless(auth()->user()->hasAnyRole(['super_admin']))
                 <li class=""><a href="{{ url('home') }}"><img src="/images/material-symbols-light--dashboard-outline-rounded.svg" /> Back to Dashboard</a></li>
                 @endunless
                 {{-- <li><a href="/"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Group</a></li> --}}
