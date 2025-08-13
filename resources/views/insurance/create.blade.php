@@ -198,7 +198,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Date of Death</label>
-				    <input type="date" class="form-control form-control-design" name="date_of_death" value="{{ old('date_of_death')}}" max="{{ date('Y-m-d')}}">
+				    <input type="date" class="form-control form-control-design" name="date_of_death" value="{{ old('date_of_death')}}" max={{date('Y-m-d')}}>
 				    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -647,6 +647,7 @@
     const documentReceivedDateInput = document.querySelector('input[name="doc_rec_date"]');
     const documentsubmissionDateInput = document.querySelector('input[name="submit_to_partner_date"]');
     const documentre_submissionDateInput = document.querySelector('input[name="re_submit_to_partner_date"]');
+    const dodInput = document.querySelector('input[name="date_of_death"]');
 
   //  coveredInput.addEventListener('change', RestrictIntimationDate);
 
@@ -659,11 +660,29 @@
     }
     intimationReceivedDateInput.addEventListener('change', RestrictDocReceivedDate);
 
-     function RestrictresubmissiondDate() {
+    function RestrictresubmissiondDate() {
         documentre_submissionDateInput.min = documentsubmissionDateInput.value;
     }
-    
+
     documentsubmissionDateInput.addEventListener('change', RestrictresubmissiondDate);
+
+     function checkfordeathdate() {
+       if (dodInput && coveredInput) {
+        let dodDate = new Date(dodInput.value);
+        let coveredDate = new Date(coveredInput.value);
+           
+	        if (dodDate < coveredDate) {
+	            Swal.fire({
+	                icon: 'error',
+	                title: 'Invalid Date',
+	                text: 'Date of Death is prior to date of policy covered date',
+	                confirmButtonText: 'OK'
+	            });
+
+	        }
+       }  
+    }
+    dodInput.addEventListener('change', checkfordeathdate);
 
 
 	$(document).on('change', '#partner', function () {
