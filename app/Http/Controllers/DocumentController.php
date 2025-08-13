@@ -1195,6 +1195,8 @@ class DocumentController extends Controller
                 if (!empty($value) && \Schema::hasColumn($table, $field)) {
                     if (in_array($field, ['cif_id', 'account_number'])) {
                         $query->where($field, 'like', '%' . $value . '%');
+                    } elseif (is_array($value)) {
+                        $query->whereIn($field, $value);
                     } else {
                         $query->where($field, $value);
                     }
