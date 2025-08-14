@@ -223,7 +223,7 @@
       			<td class="col-30">
       				<label class="label-font">Date of Event giving rise to claim</label>
       			</td>
-      			<td class="col-20"><strong class="label-font">{{ $data->date_of_death}}</strong></td>
+      			<td class="col-20"><strong class="label-font">{{ ($data->date_of_death !='')? date('d-m-Y',strtotime($data->date_of_death)): ''}} </strong></td>
       			<td class="col-30">
       				<label class="label-font">Cause of Event giving rise to claim</label>
       			</td>
@@ -343,7 +343,7 @@
 	  
 	  	<p class="label-font ">2. As per the membership register, Claimant/ Beneficiary who has executed this Claim Discharge Form is the same person who has been nominated by insured member.</p>
 	
-	  	<p class="label-font ">3. As on date of death, outstanding loan against the membership number <strong class="fillablespace"></strong> is Rs. <strong class="fillablespace"></strong> .</p>
+	  	<p class="label-font ">3. As on date of death, outstanding loan against the membership number <strong class="fillablespace">{{ $data->mp_no}}</strong> is Rs. <strong class="fillablespace">{{ $data->loan_outstanding}}</strong> .</p>
 	 
 
 	  <div class="margintop">
