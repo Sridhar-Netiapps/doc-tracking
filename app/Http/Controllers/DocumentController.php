@@ -79,7 +79,6 @@ class DocumentController extends Controller
             }
             return $query->orderBy('account_creation_date', 'desc');
         };
-        // dd($filter(GoldLoanDocument::query())->get());
         $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
         $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
@@ -124,18 +123,18 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        $type = session(['type']);
-        if($type == 'moved')
-            $filters = session('filters', []);
-        else
-            $filters = session()->pull('filters', []);
-            
+        $filters = session()->pull('filters', []);
+        
         $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
         $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
         // $type = $filters['type'] ?? session()->pull('type', 'all');
         // $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
-        if(empty($filters))
-            return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
+        if(empty($filters)){
+            if(isset($type) && isset($dtype))
+                return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
+            else
+                return redirect()->route('accounts.index',['type' => 'all','dtype' => 'loan']);
+        }
         $user = $this->user;
         $hasFilters = collect($filters)->filter()->isNotEmpty();
         $fromDate = $filters['from_date'] ?? null;
@@ -1048,7 +1047,7 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
 
-            $doc = $this->table[$request->type]::find($request->id);
+            $doc = $this->table[$request->dtype]::find($request->id);
             $doc->lot_no = $validated['lot_no'];
             $doc->category_of_document = $validated['category_of_document'];
             $doc->work_order_no = $validated['work_order_no'];
@@ -1061,8 +1060,11 @@ class DocumentController extends Controller
             $doc->updated_by = $this->user->id;
             $doc->save();
             DB::commit();
+            if($request->ajax())
+                return response()->json(['success' => true]);
+            else
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => $request->type])->with('success', 'File Moved to RMA successfully!');
 
-            return redirect()->back()->with('success', 'File Moved to RMA successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1187,14 +1189,15 @@ class DocumentController extends Controller
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
-        $loan_branch = LoanDocument::pluck('branch_code','branch_code');
-        $goldloan_branch = GoldLoanDocument::pluck('branch_code','branch_code');
-        $dtrf_branch = DtrfDocument::pluck('branch_code','branch_code');
-        $aof_branch = AccountOpeningDocument::pluck('branch_code','branch_code');
+        $loan_branch = LoanDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $goldloan_branch = GoldLoanDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $dtrf_branch = DtrfDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $aof_branch = AccountOpeningDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $branches = $loan_branch + $goldloan_branch + $dtrf_branch + $aof_branch;
         $vendors = Vendor::all();
         $couriers = Courier::where('status', 1)->get();
 
-        return view('accounts.reports', compact('vendors', 'couriers'));
+        return view('accounts.reports', compact('vendors', 'couriers','branches'));
       
     }
 

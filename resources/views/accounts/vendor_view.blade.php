@@ -127,7 +127,7 @@
                                             @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
+                                                <button type="button" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive">Update</button>
                                                 @endif
                                             </td>
                                             @endunless
@@ -197,7 +197,7 @@
                                             @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
+                                                <button type="button" data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-primary retrive">Update</button>
                                                 @endif
                                             </td>
                                             @endunless
@@ -271,7 +271,7 @@
                                             @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
+                                                <button type="button" data-id="{{ $row->id }}" data-type="aof" class="btn btn-primary retrive">Update</button>
                                                 @endif
                                             </td>
                                             @endunless
@@ -331,7 +331,7 @@
                                             @unless(auth()->user()->hasAnyRole(['ho-user|ro-user']))
                                             <td>
                                                 @if ($row->status != 11)
-                                                <button type="submit" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Update</button>
+                                                <button type="button" data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-primary retrive">Update</button>
                                                 @endif
                                             </td>
                                             @endunless
@@ -353,10 +353,10 @@
     </div>
     <div class="offcanvas-body">
         <h5>Filters</h5>
-        <form method="POST" action="{{ route('document.filter') }}">
+        <form method="POST" id="doc-filter" action="{{ route('document.filter') }}">
             @csrf
-            {{-- <input type="hidden" name="type" value="moved"> --}}
-            <input type="hidden" name="type" value="{{$type}}">
+            <input type="hidden" name="type" value="moved">
+            {{-- <input type="hidden" name="type" value="{{$type}}"> --}}
             <input type="hidden" name="dtype" value="{{$dtype}}">
             <div class="row">
                 <div class="col-12 mt-3">
@@ -445,7 +445,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a> 
+                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>
@@ -463,7 +463,8 @@
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
                         <input type="hidden" name="id">
-                        <input type="hidden" name="type">
+                        <input type="hidden" name="dtype">
+                        <input type="hidden" name="is_filtered" value="{{ isset($filters) ? 1 : 0 }}">
                         <label for="lot_no" class="form-label">Lot No</label>
                         <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric">
                     </div>
@@ -559,20 +560,16 @@
             let tab = $(this).attr('id');
             let count = parseInt($(this).find('span').text()) || 0;
 
-            // Primary choice: dtype matches tab & count > 0
             if (!activeTab && dtype === tab && count > 0) {
                 activeTab = tab;
             }
 
-            // Fallback choice: dtype doesn't match tab but count > 0
             if (!fallbackTab && dtype !== tab && count > 0) {
                 fallbackTab = tab;
             }
         });
 
-        // Decide final active tab
         if (!activeTab) {
-            // If all tabs have > 0, prefer dtype tab
             if ($('button.nav-link').filter(function() {
                 return parseInt($(this).find('span').text()) || 0;
             }).length === $('button.nav-link').length) {
@@ -581,27 +578,45 @@
                 activeTab = fallbackTab;
             }
         }
-
-        // Activate the selected tab
         if (activeTab) {
             $('button.nav-link, .tab-pane').removeClass('active show');
             $(`#${activeTab}`).addClass('active');
             $(`#${activeTab}-pane`).addClass('show active');
         }
+        // Filter Form Validation
+        $('form[action="{{ route('document.filter') }}"]').on('submit', function (e) {
+            let hasFilter = false;
+
+            $(this).find('input:not([type=hidden]):visible, select:visible').each(function () {
+                if ($(this).val().trim() !== '') {
+                    hasFilter = true;
+                    return false; 
+                }
+            });
+            if (!hasFilter) {
+                e.preventDefault(); /^\d+$/
+                Swal.fire({
+                    title: "Warning!",
+                    text: "Please select at least one filter option.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
         $('.vendor-upload').click(function () {
             $('#upload-vendor').modal('show');
             // $('#add-vendor').modal('show');
         });
 
-        $('.retrive').click(function () {
-            $('input[name="id"]').val($(this).data('id'));
-            $('input[name="type"]').val($(this).data('type'));
+        // $('.retrive').click(function () {
+        //     $('input[name="id"]').val($(this).data('id'));
+        //     $('input[name="type"]').val($(this).data('type'));
 
-            $('#retrive').modal({
-                backdrop: 'static',
-                keyboard: false
-            }).modal('show');;
-        });
+        //     $('#retrive').modal({
+        //         backdrop: 'static',
+        //         keyboard: false
+        //     }).modal('show');;
+        // });
         flatpickr(".flatpickr-date", {
             dateFormat: "d-m-Y",        
             maxDate: "today",         
@@ -646,30 +661,55 @@
             },
             submitHandler: function (form) {
 
-                let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
-                let hasSelection = false;
-                loan_total
-                $('#doc-retrive').find('input[name$="_ids[]"]').remove();
-
-                documentTypes.forEach(function (type) {
-                    let ids = [];
-
-                    $('input.' + type + ':checked').each(function () {
-                        ids.push($(this).data('id'));
-                    });
-
-                    if (ids.length > 0) {
-                        hasSelection = true;
-
-                        ids.forEach(function (id) {
-                            $('#doc-retrive').append(
-                                '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
-                            );
+                let filter = $('input[name="is_filtered"]').val();
+                $.ajax({
+                    url: $(form).attr("action"),
+                    type: $(form).attr("method"),
+                    data: $(form).serialize(),
+                    dataType: "json",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "RMA Details Updated Successfully.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            if(filter == '1')
+                                $('#doc-filter').submit();
+                            else
+                                location.reload();
                         });
+                    },
+                    error: function(xhr) {
+                        alert("Something went wrong. Please try again.");
                     }
                 });
+                return false;
 
-                $('#doc-retrive').submit();
+            //     let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
+            //     let hasSelection = false;
+            //     loan_total
+            //     $('#doc-retrive').find('input[name$="_ids[]"]').remove();
+
+            //     documentTypes.forEach(function (type) {
+            //         let ids = [];
+
+            //         $('input.' + type + ':checked').each(function () {
+            //             ids.push($(this).data('id'));
+            //         });
+
+            //         if (ids.length > 0) {
+            //             hasSelection = true;
+
+            //             ids.forEach(function (id) {
+            //                 $('#doc-retrive').append(
+            //                     '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
+            //                 );
+            //             });
+            //         }
+            //     });
+
+            //     $('#doc-retrive').submit();
             }
             // rules: {
             //     status: {
@@ -679,9 +719,12 @@
             // }
         });
 
-        $(document).on('click', '.retrive', function () {
-            const id = $(this).data('id');
-            const type = $(this).data('type');
+        $('.retrive').click(function () {
+            // $(document).on('click', '.retrive', function () {
+            let id = $(this).data('id');
+            let type = $(this).data('type');
+            $('input[name="id"]').val(id);
+            $('input[name="dtype"]').val(type);
 
             $.ajax({
                 url: `/get-document-details/${type}/${id}`,
@@ -707,23 +750,27 @@
                     }
                     $('#status_input').val(data.status).change();
                     $('#update_id').val(data.id); 
+                    $('#retrive').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    }).modal('show');;
                 },
                 error: function () {
                     alert('Failed to fetch document data.');
                 }
             });
         });
-        $('.vendor-upload').click(function () {
-            $('#upload-vendor').modal('show');
-            // $('#add-vendor').modal('show');
-        });
-        $(document).ready(function () {
-            $('.cancel-modal').on('click', function () {
-                $('#yourModalId').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open').css('padding-right', '');
-            });
-        });
+        // $('.vendor-upload').click(function () {
+        //     $('#upload-vendor').modal('show');
+        //     // $('#add-vendor').modal('show');
+        // });
+        // $(document).ready(function () {
+        //     $('.cancel-modal').on('click', function () {
+        //         $('#yourModalId').modal('hide');
+        //         $('.modal-backdrop').remove();
+        //         $('body').removeClass('modal-open').css('padding-right', '');
+        //     });
+        // });
     });
 </script>
 

@@ -51,11 +51,12 @@
                         </div>
                         <div class="col mt-2">
                             <label>Branch Code</label>
-                            <input type="text" name="branch_code" class="form-control">
-                        </div>
-                        <div class="col mt-2">
-                            <label>Branch Name</label>
-                            <input type="text" name="branch_name" class="form-control">
+                            <select id="branch_code" name="branch_code[]" class="form-control select2" multiple>
+                                <option value="">Select</option>
+                                @foreach ($branches as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div id="dynamic-fields">

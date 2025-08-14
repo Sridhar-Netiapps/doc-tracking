@@ -417,6 +417,7 @@
                         <label for="status" class="form-label">Status</label>
                         <input type="hidden" name="dispatch_id" class="revert-reason"/>
                         <select name="status" class="form-select" required>
+                            <option value="4">Dispatched</option>
                             <option value="5">Received</option>
                             <option value="7">Received with Query</option>
                             <option value="6">Rejected</option>
