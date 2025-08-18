@@ -20,13 +20,15 @@ class LogUserLogout
      */
     public function handle(object $event): void
     {
-        \App\Models\ActivityLog::create([
-            'user_id' => $event->user->id,
-            'event_type' => 'logout',
-            'description' => 'User logged out',
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'route' => request()->path(),
-        ]);
+        if (auth()->check() && !auth()->user()->hasRole('master')) {
+            \App\Models\ActivityLog::create([
+                'user_id' => $event->user->id,
+                'event_type' => 'logout',
+                'description' => 'User logged out',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'route' => request()->path(),
+            ]);
+        }
     }
 }
