@@ -79,10 +79,11 @@ class DocumentController extends Controller
             }
             return $query->orderBy('account_creation_date', 'desc');
         };
-        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString();
+        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/loan"));
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/aof"));
+    
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
@@ -455,8 +456,9 @@ class DocumentController extends Controller
 
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::pluck('name', 'id');
+        $type = 'proceed';
     
-         return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters'));
+         return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters', 'type'));
     }
     
     

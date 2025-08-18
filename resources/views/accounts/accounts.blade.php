@@ -36,7 +36,7 @@
                     </button>
                 </li>
                 @hasanyrole('bo-maker|bo-checker')
-                    @if (!in_array($type, ['received', 'rejected']))
+                    @if (!in_array($type, ['received']))
                         <li class="ms-auto">
                             <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                                 @csrf
@@ -46,7 +46,7 @@
                     @endif
                 @endhasanyrole
                 @hasanyrole('master|super_admin|admin')
-                    @if (!in_array($type, ['received', 'rejected']))
+                    @if (!in_array($type, ['received']))
                         <li style="margin-left: 38%;">
                             <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                                 @csrf
@@ -83,16 +83,16 @@
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
-                    <div class="table-responsive table-fixed-header">
+                    <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     @hasrole('master|super_admin|admin')
-                                        @if ($type != 'rejected')
+                                        {{-- @if ($type != 'rejected') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
-                                        @endif
+                                        {{-- @endif --}}
                                     @elsehasanyrole('bo-maker|bo-checker')
-                                        @if (in_array($type, ['pending', 'all']))
+                                        @if (in_array($type, ['pending', 'all', 'rejected']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="loan_all" /></th>
                                         @endif
                                     @elsehasrole('ro-supervisor')
@@ -141,11 +141,11 @@
                                     @foreach ($loan_document as $row)
                                         <tr>
                                             @hasrole('master|super_admin|admin')
-                                                @if ($type != 'rejected')
+                                                {{-- @if ($type != 'rejected') --}}
                                                     <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
-                                                @endif
+                                                {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
-                                                @if (in_array($type, ['pending', 'all']))
+                                                @if (in_array($type, ['pending', 'all', 'rejected']))
                                                     <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
@@ -224,6 +224,8 @@
                     </div>
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
@@ -235,11 +237,11 @@
                             <thead>
                                 <tr>
                                     @hasrole('master|super_admin|admin')
-                                        @if ($type !== 'rejected')
+                                        {{-- @if ($type !== 'rejected') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all" /></th>
-                                        @endif
+                                        {{-- @endif --}}
                                     @elsehasanyrole('bo-maker|bo-checker')
-                                        @if (in_array($type, ['pending', 'all']))
+                                        @if (in_array($type, ['pending', 'all', 'rejected']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="goldloan_all" /></th>
                                         @endif
                                     @elsehasrole('ro-supervisor')
@@ -285,11 +287,11 @@
                                     @foreach ($gold_loan_document as $row)
                                         <tr>
                                             @hasrole('master|super_admin|admin')
-                                                @if ($type !== 'rejected')
+                                                {{-- @if ($type !== 'rejected') --}}
                                                     <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
-                                                @endif
+                                                {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
-                                                @if (in_array($type, ['pending', 'all']))
+                                                @if (in_array($type, ['pending', 'all', 'rejected']))
                                                     <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
@@ -364,6 +366,8 @@
                     </div>
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                        @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p> 
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
@@ -375,11 +379,11 @@
                             <thead>
                                 <tr>
                                     @hasrole('master|super_admin|admin')
-                                        @if ($type !== 'rejected')
+                                        {{-- @if ($type !== 'rejected') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /></th>
-                                        @endif
+                                        {{-- @endif --}}
                                     @elsehasanyrole('bo-maker|bo-checker')
-                                        @if (in_array($type, ['pending', 'all']))
+                                        @if (in_array($type, ['pending', 'all', 'rejected']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="aof_all" /></th>
                                         @endif
                                     @elsehasrole('ro-supervisor')
@@ -427,11 +431,11 @@
                                     @foreach ($account_opening_document as $row)
                                         <tr>
                                             @hasrole('master|super_admin|admin')
-                                                @if ($type !== 'rejected')
+                                                {{-- @if ($type !== 'rejected') --}}
                                                     <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
-                                                @endif
+                                                {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
-                                                @if (in_array($type, ['pending', 'all']))
+                                                @if (in_array($type, ['pending', 'all', 'rejected']))
                                                     <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
@@ -508,6 +512,8 @@
                     </div>
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
@@ -519,11 +525,11 @@
                             <thead>
                                 <tr>
                                     @hasrole('master|super_admin|admin')
-                                        @if ($type !== 'rejected')
+                                        {{-- @if ($type !== 'rejected') --}}
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all" /></th>
-                                        @endif
+                                        {{-- @endif --}}
                                     @elsehasanyrole('bo-maker|bo-checker')
-                                        @if (in_array($type, ['pending', 'all']))
+                                        @if (in_array($type, ['pending', 'all', 'rejected']))
                                             <th scope="col" class="text-nowrap"><input type="checkbox" class="dtrf_all" /></th>
                                         @endif
                                     @elsehasrole('ro-supervisor')
@@ -564,11 +570,11 @@
                                     @foreach ($dtrf_document as $row)
                                         <tr>
                                             @hasrole('master|super_admin|admin')
-                                                @if ($type !== 'rejected')
+                                                {{-- @if ($type !== 'rejected') --}}
                                                     <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
-                                                @endif
+                                                {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
-                                                @if (in_array($type, ['pending', 'all']))
+                                                @if (in_array($type, ['pending', 'all', 'rejected']))
                                                     <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
@@ -638,6 +644,8 @@
                     </div>
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
             </div>
