@@ -23,7 +23,6 @@ Route::middleware('guest')->group(function () {
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/reports',[DocumentController::class, 'reports']);
     Route::get('/accounts-index', function () {
         return view('sample.index');
     });
@@ -50,6 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
         // Route::get('/{id}/{type}/{dtype}', [DocumentController::class, 'revertStatus'])->name('accounts.revert');
     });
+    Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
     Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');

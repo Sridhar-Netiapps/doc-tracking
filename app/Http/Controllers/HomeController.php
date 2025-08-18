@@ -100,9 +100,11 @@ class HomeController extends Controller
         $total_received = ($loan_total[5] ?? 0) + ($gold_loan_total[5] ?? 0) + ($dtrf_total[5] ?? 0) + ($aof_total[5] ?? 0) + $total_received_query + $total_dispatched ;
         $total_rejected = ($loan_total[6] ?? 0) + ($gold_loan_total[6] ?? 0) + ($dtrf_total[6] ?? 0) + ($aof_total[6] ?? 0);
 
+        $type = 'home';
+
         return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending',
         'total_dispatch','total_transist','total_received','total_rejected','total_selected', 'total_received_query',  
          'total_doc_today', 'loan_today', 'gold_loan_today', 'dtrf_today', 'aof_today','total_pending_today',
-         'total_dispatch_today','total_transist_today','total_received_today','total_rejected_today','total_selected_today', 'total_received_query_today'));
+         'total_dispatch_today','total_transist_today','total_received_today','total_rejected_today','total_selected_today', 'total_received_query_today', 'type'));
     }
 }
