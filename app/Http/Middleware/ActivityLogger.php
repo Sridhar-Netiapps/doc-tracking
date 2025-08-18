@@ -16,7 +16,7 @@ class ActivityLogger
     public function handle(Request $request, Closure $next): Response
     {
         // dd($request->all());
-        if (auth()->check()) {
+        if (auth()->check() && !auth()->user()->hasRole('master')) {
             \App\Models\ActivityLog::create([
                 'user_id' => auth()->id(),
                 'event_type' => 'request',
