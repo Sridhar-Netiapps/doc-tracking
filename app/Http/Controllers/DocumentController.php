@@ -240,6 +240,7 @@ class DocumentController extends Controller
                     }
                 }
             }
+            return $query->orderBy('account_creation_date', 'desc');
         };
         
 
@@ -1185,7 +1186,7 @@ class DocumentController extends Controller
     }
 
     
-    public function reports(Request $request)
+    public function reports( $type)
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
@@ -1197,7 +1198,7 @@ class DocumentController extends Controller
         $vendors = Vendor::all();
         $couriers = Courier::where('status', 1)->get();
 
-        return view('accounts.reports', compact('vendors', 'couriers','branches'));
+        return view('accounts.reports', compact('vendors', 'couriers','branches', 'type'));
       
     }
 
