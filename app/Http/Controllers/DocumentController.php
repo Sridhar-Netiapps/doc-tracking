@@ -1066,7 +1066,7 @@ class DocumentController extends Controller
             if($request->ajax())
                 return response()->json(['success' => true]);
             else
-                return redirect()->route('accounts.index',['type' => 'moved','dtype' => $request->type])->with('success', 'File Moved to RMA successfully!');
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => $request->dtype])->with('success', 'File Moved to RMA successfully!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -1364,6 +1364,12 @@ class DocumentController extends Controller
     {
         $id = $request->document_id;
         $dtype = $request->dtype;
+        $columns = [
+            'loan' => 'loan_ids',
+            'goldloan' => 'goldloan_ids',
+            'dtrf' => 'dtrf_ids',
+            'aof' => 'aof_ids',
+        ];
         try {
             DB::beginTransaction();
 
@@ -1374,6 +1380,9 @@ class DocumentController extends Controller
             $doc->reason = $request->reason;
             $doc->updated_by = $this->user->id;
             $doc->save();
+            // if($history->previous_status == '4'){
+            //     $dispatch = CourierDispatch::
+            // }
 
             DB::commit();
             return response()->json(['success' => true]);

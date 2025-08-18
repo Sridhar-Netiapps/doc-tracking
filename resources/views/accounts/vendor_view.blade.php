@@ -487,7 +487,7 @@
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => 'loan']) }}" class="btn btn-secondary">Clear</a> 
+                    <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Clear</a> 
                 </div>
             </div>
         </form>
@@ -553,8 +553,6 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Status</label>
-                        <input type="hidden" name="id">
-                        <input type="hidden" name="type">
                         <select name="status" class="form-control select2" id="status_input" required>
                             {{-- <option value=''>Select Status</option> --}}
                             <option value='8'>IN</option>
@@ -704,6 +702,7 @@
             submitHandler: function (form) {
 
                 let filter = $('input[name="is_filtered"]').val();
+                let tab = $('input[name="dtype"]').val();
                 $.ajax({
                     url: $(form).attr("action"),
                     type: $(form).attr("method"),
@@ -718,8 +717,10 @@
                         }).then(() => {
                             if(filter == '1')
                                 $('#doc-filter').submit();
-                            else
-                                location.reload();
+                            else{
+                                let redirectUrl = "{{ route('accounts.index', ['type' => 'moved', 'dtype' => ':tab']) }}";
+                                window.location.href = redirectUrl.replace(':tab', tab);
+                            }
                         });
                     },
                     error: function(xhr) {
