@@ -30,13 +30,52 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
+     public function getTatData(Request $request)
+     {
+         if ($request->boolean('reset') || (blank($request->input('tat')) && blank($request->input('region')))) {
+             session()->forget('filters'); 
+             return response()->json(['success' => true, 'reset' => true]);
+         }
+         session()->put('filters', [
+            'search_type' => $request->get('search_type'),
+             'tat'    => $request->input('tat'),
+             'region' => $request->input('region'),
+         ]);
+     
+         return response()->json(['success' => true]);
+     }
+     
+
+     
+
     public function index(Request $request)
     {
-        // Set date range for the previous week
+        if ($request->ajax()) {
+            session()->put('filters', [
+                'tat' => $request->get('tat'),
+                'region' => $request->get('region')
+            ]);
+        }
+    
+        $filters = session()->get('filters', []);
+        $tat = $filters['tat'] ?? null;
+        $region = $filters['region'] ?? null;
+// dd($filters);
         $start_date = Carbon::now()->subWeek()->startOfWeek();
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
-        $filter = function ($query) {
+        $filter = function ($query) use($tat, $region) {
+            if ($tat) {
+                $startDate = Carbon::now()->subDays($tat)->startOfDay();
+                $endDate = Carbon::now()->endOfDay();
+                $query->whereBetween('account_creation_date', [$startDate, $endDate]);
+            }
+        
+            // Apply Region filter
+            if ($region) {
+                $query->where('region', $region);
+            }
             if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
                 $query->where('region', $this->user->region);
             }
@@ -47,6 +86,7 @@ class HomeController extends Controller
 
             return $query;
         };
+        // dd($filter);
         $loan_total = $filter(LoanDocument::query())->pluck('total', 'status')->toArray();
         $gold_loan_total = $filter(GoldLoanDocument::query())->pluck('total', 'status')->toArray();
         $dtrf_total = $filter(DtrfDocument::query())->pluck('total', 'status')->toArray();
@@ -107,4 +147,34 @@ class HomeController extends Controller
          'total_doc_today', 'loan_today', 'gold_loan_today', 'dtrf_today', 'aof_today','total_pending_today',
          'total_dispatch_today','total_transist_today','total_received_today','total_rejected_today','total_selected_today', 'total_received_query_today', 'type'));
     }
+
+
+    // public function getTatData(Request $request)
+    // {
+    //     try {
+    //         $tat = $request->query('tat');
+    //         $now = Carbon::now();
+    
+    //         if ($tat == 30) {
+    //             $startDate = $now->copy()->subDays(30);
+    //             $endDate = $now;
+    //         } elseif ($tat == 60) {
+    //             $startDate = $now->copy()->subDays(60);
+    //             $endDate = $now->copy()->subDays(31);
+    //         } else {
+    //             return response()->json([]);
+    //         }
+    
+    //         $data = DB::table('loan_documents')
+    //             ->select('unique_ref_no', 'cif_id', 'account_creation_date')
+    //             ->whereBetween('account_creation_date', [$startDate, $endDate])
+    //             ->get();
+    
+    //         return response()->json($data);
+    
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
+
 }
