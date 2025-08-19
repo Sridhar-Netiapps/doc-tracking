@@ -103,7 +103,7 @@
                             <div class="label">OUT <span class="value">{{($loan_total[9] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            <div class="label">Permout <span class="value">{{($loan_total[9] ?? 0)}}</span></div>
+                            <div class="label">Permout <span class="value">{{($loan_total[10] ?? 0)}}</span></div>
                         </li>
                     </ul>
                 </div>
@@ -177,7 +177,7 @@
                             <div class="label">OUT <span class="value">{{($gold_loan_total[9] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            <div class="label">Permout <span class="value">{{($gold_loan_total[9] ?? 0)}}</span></div>
+                            <div class="label">Permout <span class="value">{{($gold_loan_total[10] ?? 0)}}</span></div>
                         </li>
                     </ul>
                 </div>
@@ -250,7 +250,7 @@
                             <div class="label">OUT <span class="value">{{($aof_total[9] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            <div class="label">Permout <span class="value">{{($aof_total[9] ?? 0)}}</span></div>
+                            <div class="label">Permout <span class="value">{{($aof_total[10] ?? 0)}}</span></div>
                         </li>
                     </ul>
                 </div>
@@ -323,7 +323,7 @@
                             <div class="label">OUT <span class="value">{{($dtrf_total[9] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            <div class="label">Permout <span class="value">{{($dtrf_total[9] ?? 0)}}</span></div>
+                            <div class="label">Permout <span class="value">{{($dtrf_total[10] ?? 0)}}</span></div>
                         </li>
                     </ul>
                 </div>
