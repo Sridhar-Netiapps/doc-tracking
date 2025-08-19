@@ -898,7 +898,7 @@
 
 
 $(document).on('click', '.confirm-link', function(e) {
-    if (!confirm('Are you sure you want to delete this?')) {
+    if (!confirm('You are cloning/duplicating the Lead details')) {
         e.preventDefault(); // stop navigation
     }
 });

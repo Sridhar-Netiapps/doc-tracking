@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class extends Migrations
 {
     /**
      * Run the migrations.
@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('insurance_products', function (Blueprint $table) {
             $table->id();
+            $table->string('partner_id'); 
             $table->string('product');
             $table->string('type');
             $table->string('folder_name')->nullable();
