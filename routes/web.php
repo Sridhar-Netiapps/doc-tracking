@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::post('reports', [DocumentController::class,'export'])->name('reports');
+    Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController

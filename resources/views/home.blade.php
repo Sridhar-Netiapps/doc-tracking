@@ -676,5 +676,4 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
-
 @endsection
