@@ -128,7 +128,7 @@
       </div>
     </div>
 </div> --}}
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         // $(document).on('click', '#exportBtn', function () {
         //     let formData = $('#exportForm').serialize();

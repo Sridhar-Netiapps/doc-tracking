@@ -47,7 +47,7 @@
                 @endhasanyrole
                 @hasanyrole('master|super_admin|admin')
                     @if (!in_array($type, ['received']))
-                        <li style="margin-left: 38%;">
+                        <li>
                             <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                                 @csrf
                                 <button class="btn btn-primary proceed" type="button">Proceed</button>
@@ -882,7 +882,7 @@
     </div>
 </div>
    
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         let dtype = '{{$dtype}}';
         let activeTab = null;

@@ -68,7 +68,7 @@
 
 
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {   
         $("#roles").validate({
             rules: {

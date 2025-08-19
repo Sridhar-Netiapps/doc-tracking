@@ -241,7 +241,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         flatpickr(".flatpickr-date", {
             dateFormat: "d-m-Y",        

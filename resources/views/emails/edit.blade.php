@@ -38,7 +38,7 @@
         </div>
     </form>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         $("#emailForm").on("submit", function () {
             $(".text-danger").html(""); // Clear previous errors

@@ -672,7 +672,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
         var loancount = $('td.loan').length;
@@ -835,7 +835,11 @@
                 },
                 success: function () {
                     if (type === 'all') { 
-                        Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                        Swal.fire({
+                            title: "Success",
+                            text: "Update successful",
+                            icon: "success"
+                        }).then(() => { location.reload(); });
                     } else {
                         location.reload(); 
                     }

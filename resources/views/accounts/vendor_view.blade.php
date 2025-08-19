@@ -590,7 +590,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         let dtype = '{{$dtype}}';
         let activeTab = null;

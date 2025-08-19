@@ -122,7 +122,7 @@
     </div>
 </div>
 
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {   
         $("#users").validate({
             rules: {

@@ -56,7 +56,7 @@
 
 </div>
 
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         // Form Validation Setup
         $('#permissionEditForm').validate({

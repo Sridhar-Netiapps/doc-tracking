@@ -1,4 +1,4 @@
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         $('[data-bs-toggle="tooltip"]').tooltip();
         @if(session('success'))
