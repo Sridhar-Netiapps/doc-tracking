@@ -7,9 +7,9 @@
 
         
 		<div class="ms-auto">
-			<a href="{{ route('view_claim_details',encrypt($data->id))}}" id="btn_view_details"><button class="btn btn-sm btn-info btn-text p-2" >View Details</button> </a>
+			<a href="{{ route('view_claim_details',encrypt($data->id))}}" ><button class="btn btn-sm btn-info btn-text p-2" id="btn_view_details" >View Details</button> </a>
 
-			<a href="{{ route('insurance_list')}}" id="btn_view_list"><button class="btn btn-sm btn-dark btn-text p-2" >View Lead List</button> </a>
+			<a href="{{ route('insurance_list')}}" ><button class="btn btn-sm btn-dark btn-text p-2" id="btn_view_list">View Lead List</button> </a>
 		</div>
 	</div>
 
