@@ -743,7 +743,7 @@ class DocumentController extends Controller
         ]);
         DB::beginTransaction(); // Start Transaction
         try {
-            $sequence = CourierDispatch::whereNotNull('dispatch_no')->whereDate('created_at', now()->format('Y-m-d'))->count();
+            $sequence = CourierDispatch::whereNotNull('dispatch_no')->where('dispatch_date', now()->format('Y-m-d'))->count();
             // dd($sequence);
             // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
             // ->whereDate('created_at', now()->format('Y-m-d'))->first();
@@ -761,7 +761,10 @@ class DocumentController extends Controller
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
-                $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $sequence,now());
+                // $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $sequence,now());
+                if (empty($dispatch->dispatch_no)) {
+                    $dispatch->dispatch_no = $this->buildDispatchNumber($this->user->branch_id, $sequence, now());
+                }                
                 $dispatch->save();
                 if($dispatch->loan_ids != null){
                     LoanDocument::whereIn('id',explode(',', $dispatch->loan_ids))->get()->each(function ($doc) {

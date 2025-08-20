@@ -551,11 +551,11 @@
                                 window.location.href = `{{ route('dispatches','list') }}`;
                             });
                         } else {
-                            Swal.fire("Error!", "Failed to save courier details.", "error");
+                            Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
                         }
                     },
                     error: function () {
-                        Swal.fire("Error!", "Something went wrong!", "error");
+                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
                     }
                 });
             }
@@ -684,7 +684,7 @@
         try {
             data = [collectRowData(row)];
         } catch (err) {
-            Swal.fire("Alert", err, "warning");
+            Swal.fire({title: "Alert!", text: err, icon: "warning"});
             return;
         }
 
@@ -729,10 +729,10 @@
                 updates: payload
             },
             success: function () {
-                Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
             },
             error: function () {
-                Swal.fire("Error", "Update failed", "error");
+                Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
             }
         });
     }
@@ -746,7 +746,7 @@
             try {
                 data.push(collectRowData($(this)));
             } catch (err) {
-                Swal.fire("Alert", err, "warning");
+                Swal.fire({title: "Alert!", text: err, icon: "warning"});
                 hasError = true;
                 return false; // stop loop
             }
@@ -767,10 +767,10 @@
                 updates: payload
             },
             success: function () {
-                Swal.fire("Success", "Update successful", "success").then(() => location.reload());
+                Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
             },
             error: function () {
-                Swal.fire("Error", "Update failed", "error");
+                Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
             }
         });
     }

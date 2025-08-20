@@ -264,7 +264,7 @@
             }).get();
 
             if (!selectedDocuments.length) {
-                Swal.fire("Warning!", "Please select at least one Document.", "warning");
+                Swal.fire({title: "Warning!", text: "Please select at least one Document.", icon: "warning"});
                 return;
             }
 
@@ -286,13 +286,12 @@
 
             $.post("{{ route('courier.update') }}", formData)
                 .done(function (res) {
-                    console.log("Response:", res);
-                    Swal.fire("Success!", "Courier created successfully.", "success")
+                    Swal.fire({title: "Success!", text: "Courier created successfully.", icon: "success"})
                         .then(() => window.location.href = `{{ route('dispatches', 'ready') }}`);
                 })
                 .fail(function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    Swal.fire("Error!", "Request failed.", "error");
+                    Swal.fire({title: "Error!", text: "Request failed.", icon: "error"});
                 });
         });
 

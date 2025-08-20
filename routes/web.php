@@ -49,8 +49,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
         // Route::get('/{id}/{type}/{dtype}', [DocumentController::class, 'revertStatus'])->name('accounts.revert');
     });
-    Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
-
     Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
     Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
     Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
@@ -74,6 +72,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::post('reports', [DocumentController::class,'export'])->name('reports');
+    Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
+    Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
     // Route::get('home', [HomeController::class, 'index'])->name('home');
     // Route::get('home', function () { return view('home'); })->name('home');
     // ProcessStatus resource routes for the ProcessStatusController

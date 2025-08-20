@@ -87,7 +87,7 @@
                 <div class="input-group-prepend ms-3">
                    <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
 
-                    <button class="btn btn-warning rounded-2 ms-3"  name="action" value="export" value="export">Export</button> 
+                    <button class="btn btn-warning rounded-2 ms-3" id="btn_export"  name="action" value="export" value="export">Export</button> 
                 </div>
                </div>
              </form>
