@@ -7,9 +7,9 @@
 
         
 		<div class="ms-auto">
-			<a href="{{ route('view_claim_details',encrypt($data->id))}}"><button class="btn btn-sm btn-info btn-text p-2" >View Details</button> </a>
+			<a href="{{ route('view_claim_details',encrypt($data->id))}}" id="btn_view_details"><button class="btn btn-sm btn-info btn-text p-2" >View Details</button> </a>
 
-			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >View Lead List</button> </a>
+			<a href="{{ route('insurance_list')}}" id="btn_view_list"><button class="btn btn-sm btn-dark btn-text p-2" >View Lead List</button> </a>
 		</div>
 	</div>
 
@@ -365,8 +365,8 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Re-submission to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date', $data->re_submit_to_partner_date)}}">
-					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					    <input type="date" class="form-control form-control-design  valid-date" name="resubmission_to_partner_date" value="{{ old('resubmission_to_partner_date', $data->re_submit_to_partner_date)}}">
+					    @error('resubmission_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					
@@ -606,7 +606,7 @@
         @if(auth::user()->branch_id == '1100')
 		<div class="d-flex mt-3">
 			<div class="ms-auto">
-				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
+				<button type="submit" class="btn btn-sm btn-success btn-text p-2" id="btn_update_ho">Update</button>
 			</div>
 	    </div>
 	    @endif
@@ -771,7 +771,7 @@
          <input type="hidden" name="lead_id" value="{{ encrypt($data->id) }}">
 			<div class="d-flex py-4">
 				<div class="ms-auto">
-					<button type="submit" class="btn btn-sm btn-success btn-text p-2">Update</button>
+					<button type="submit" class="btn btn-sm btn-success btn-text p-2" id="btn_update_bo">Update</button>
 				</div>
 		    </div>
 

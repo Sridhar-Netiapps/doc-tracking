@@ -5,7 +5,7 @@
 	<div class=" d-flex">
 		<label class="label-font-header">Create New Lead</label>
 		<a class="ms-auto nav-link" href="{{ route('insurance_list')}}">
-		  <button class="btn btn-sm btn-secondary btn-text p-2 me-4">Back to List</button>
+		  <button class="btn btn-sm btn-secondary btn-text p-2 me-4" id="btn_back_to_list">Back to List</button>
 	   </a>
 	</div>
 
@@ -330,8 +330,8 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Re-submision to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="re_submit_to_partner_date" value="{{ old('re_submit_to_partner_date')}}" max="{{ date('Y-m-d')}}">
-					    @error('re_submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
+					    <input type="date" class="form-control form-control-design  valid-date" name="resubmission_to_partner_date" value="{{ old('resubmission_to_partner_date')}}" max="{{ date('Y-m-d')}}">
+					    @error('resubmission_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>	
 
 					 <div class="col-6 mb-3">
@@ -570,7 +570,7 @@
 		<div class="d-flex mt-3">
 			<div class="ms-auto">
 				
-				<button type="submit" class="btn btn-sm btn-success btn-text p-2">Submit</button>
+				<button type="submit" class="btn btn-sm btn-success btn-text p-2" id="btn_save_lead">Submit</button>
 
 			</div>
 	    </div>

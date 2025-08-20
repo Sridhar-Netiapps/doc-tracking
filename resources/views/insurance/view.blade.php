@@ -9,9 +9,9 @@
 		<div class="ms-auto">
 			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Completed')
 				@if($data->products->type == 'MB')
-				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
+				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}" id="btn_download_claim_form"><button class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button> </a>
 				@else
-				  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2">Download Claim Form</button>        
+				  <button id="openFilesBtn" class="btn btn-sm btn-danger btn-text p-2" id="btn_download_NMB_claim_form">Download Claim Form</button>        
 				@endif
 	            
 				<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
@@ -19,9 +19,9 @@
 				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			@endif
 
-			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}"><button class="btn btn-sm btn-success btn-text p-2" >Clone</button> </a>
+			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}" id="btn_clone"><button class="btn btn-sm btn-success btn-text p-2" >Clone</button> </a>
 			
-			<a href="{{ route('insurance_list')}}"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
+			<a href="{{ route('insurance_list')}}" id="btn_go_back"><button class="btn btn-sm btn-dark btn-text p-2" >Go Back</button> </a>
 		</div>
 	</div>
 
@@ -898,7 +898,7 @@
 
 
 $(document).on('click', '.confirm-link', function(e) {
-    if (!confirm('Are you sure you want to delete this?')) {
+    if (!confirm('You are cloning/duplicating the Lead details')) {
         e.preventDefault(); // stop navigation
     }
 });
