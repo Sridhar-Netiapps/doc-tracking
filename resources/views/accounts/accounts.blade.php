@@ -1044,7 +1044,7 @@
                         reason: result.value,
                     })
                     .done(() => {
-                        Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                        Swal.fire({title: "Deleted!", text: "Document removed successfully.", icon: "success"}).then(() => {
                             $selected.closest('tr').remove();
                             // $badge.text(doc_count - $selected.length);
                             Object.entries(docMap).forEach(([type, ids]) => {

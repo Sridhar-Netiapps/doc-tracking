@@ -732,7 +732,7 @@
 
 
             if (!docId || !type || !dispatchId) {
-                Swal.fire("Warning!", "Missing document data.", "warning");
+                Swal.fire({title: "Warning!", text: "Missing document data.", icon: "warning"});
                 return;
             }
 
@@ -763,7 +763,7 @@
                         $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
                     })
                     .fail(function (xhr) {
-                        Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+                        Swal.fire({title: "Error!", text: "Something went wrong: " + xhr.responseText, icon: "error"});
                     });
                 }
             });
@@ -777,7 +777,8 @@
             try {
                 data = [collectRowData(row)];
             } catch (err) {
-                Swal.fire("Alert", err, "warning");
+                // Swal.fire({title: "Alert!", text: err, icon: "warning"});
+                Swal.fire({title: "Alert!", text: err, icon: "warning"});
                 return;
             }
 
@@ -812,7 +813,7 @@
                 try {
                     data.push(collectRowData($(this)));
                 } catch (err) {
-                    Swal.fire("Alert", err, "warning");
+                    Swal.fire({title: "Alert!", text: err, icon: "warning"});
                     hasError = true;
                     return false; // stop loop
                 }
@@ -835,17 +836,13 @@
                 },
                 success: function () {
                     if (type === 'all') { 
-                        Swal.fire({
-                            title: "Success",
-                            text: "Update successful",
-                            icon: "success"
-                        }).then(() => { location.reload(); });
+                        Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
                     } else {
                         location.reload(); 
                     }
                 },
                 error: function () {
-                    Swal.fire("Error", "Update failed", "error");
+                    Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
                 }
             });
         }

@@ -198,10 +198,10 @@
                         reason: result.value,
                     })
                     .done(() => {
-                        Swal.fire("Reverted!", "Document reverted successfully.", "success").then(() => { location.reload(); });
+                        Swal.fire({title: "Reverted!", text: "Document reverted successfully.", icon: "success"}).then(() => { location.reload(); });
                     })
                     .fail(() => {
-                        Swal.fire("Error!", "Something went wrong!", "error");
+                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
                     });
                 }
             });

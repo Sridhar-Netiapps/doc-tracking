@@ -338,7 +338,7 @@
                         // });
                     })
                     .fail(() => {
-                        Swal.fire("Error!", "Something went wrong!", "error");
+                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
                     });
                 }
             });

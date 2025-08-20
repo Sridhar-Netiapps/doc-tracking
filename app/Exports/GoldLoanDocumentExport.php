@@ -81,7 +81,7 @@ class GoldLoanDocumentExport implements FromCollection, WithHeadings, WithMappin
             $doc->status >= 4 ? (optional($doc->dispatch)->status >= 4 ? optional($doc->dispatch->dispatcher)->employee_id . ' - ' . optional($doc->dispatch->dispatcher)->first_name : '-') : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name : '-') : '-',
-            $doc->status >= 4 ? optional(optional($doc->dispatch)->statusName)->name : '-',
+            $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
             $doc->reason != null ? ($doc->reason) : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
