@@ -326,7 +326,7 @@
                         reason: result.value,
                     })
                     .done(() => {
-                        // Swal.fire("Deleted!", "Document removed successfully.", "success").then(() => {
+                        // 
                         //     $selected.closest('tr').remove();
                         //     // $badge.text(doc_count - $selected.length);
                         //     Object.entries(docMap).forEach(([type, ids]) => {
@@ -335,7 +335,6 @@
                         //         const newCount = Math.max(current - ids.length, 0);
                         //         $badge.text(newCount);
                         //     });
-                        // });
                     })
                     .fail(() => {
                         Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});

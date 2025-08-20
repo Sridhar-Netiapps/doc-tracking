@@ -488,41 +488,6 @@
                 courier_name: { required: "Courier name is required" },
                 mmrp_barcode: { required: "Barcode is required" }
             },
-            // submitHandler: function (form) {
-            //     const formData = {
-            //         _token: $('input[name="_token"]').val(),
-            //         dispatch_id: $('input[name="dispatch_id"]').val(),
-            //         courier_name: $('select[name="courier_name"]').val(),
-            //         mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-            //         awb_pod: $('input[name="awb_pod"]').val(),
-            //         dispatch_date: $('input[name="dispatch_date"]').val(),
-            //     };
-
-
-            //     $.post($(form).attr('action'), formData)
-            //         .done(function (res) {
-            //             if (res.success) {
-            //                 Swal.fire({
-            //                     title: "Success!",
-            //                     text: "Courier created successfully.",
-            //                     icon: "success",
-            //                     confirmButtonText: "OK"
-            //                 }).then(() => {
-            //                     window.location.href = `{{ route('dispatches','list') }}`;
-            //                 });
-            //             } else {
-            //                 Swal.fire("Error!", "Failed to create courier.", "error");
-            //             }
-            //         })
-            //         .fail(function () {
-            //             Swal.fire({
-            //                 title: "Error!",
-            //                 text: "Something went wrong!",
-            //                 icon: "error",
-            //                 confirmButtonText: "OK"
-            //             });
-            //         });
-            // }
             submitHandler: function (form) {
                 const formData = {
                     _token: $('input[name="_token"]').val(),
