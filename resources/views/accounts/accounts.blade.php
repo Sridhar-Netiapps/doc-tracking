@@ -67,7 +67,7 @@
                         </li>
                     {{-- @endif --}}
                     @if ($type == 'received')
-                    <li style="margin-left: 10px;">
+                    <li>
                         <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
                     </li>
                     @endif
@@ -225,7 +225,7 @@
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
@@ -367,7 +367,7 @@
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                         @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p> 
+                        <p class="text-center text-muted">No documents found.</p> 
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
@@ -513,7 +513,7 @@
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
@@ -645,7 +645,7 @@
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
             </div>
