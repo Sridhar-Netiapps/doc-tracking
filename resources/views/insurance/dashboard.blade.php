@@ -5,7 +5,7 @@
   <div class="d-flex">
      <div class="ms-auto">
       <div class="d-flex">
-         <a class="nav-link form-btn" href="{{ route('insurance_list') }}" id="btn_leads"><button class="btn btn-danger text-white btn-text p-2">Insurance Leads</button></a>
+         <a class="nav-link form-btn" href="{{ route('insurance_list') }}"><button class="btn btn-danger text-white btn-text p-2" id="btn_leads">Insurance Leads</button></a>
          <div class="ms-auto">
           <form method="GET" action="{{ route('insurance_dashboard')}}">
             <select class="form-control" name="fy" id="finaceyear">

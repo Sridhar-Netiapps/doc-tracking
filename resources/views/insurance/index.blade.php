@@ -7,9 +7,9 @@
 			<div class="d-flex">
 
 			@if(auth::user()->branch_id == '1100')
-				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn" id="btn_open_import_module" ><button class="btn btn-secondary btn-text p-2">Import</button></a>
+				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn"  ><button class="btn btn-secondary btn-text p-2" id="btn_open_import_module">Import</button></a>
 
-				<a class="nav-link form-btn" href="{{route('create_insurance')}}" id="btn_create_lead"><button class="btn btn-success btn-text p-2">Create Lead</button></a>
+				<a class="nav-link form-btn" href="{{route('create_insurance')}}" ><button class="btn btn-success btn-text p-2" id="btn_create_lead">Create Lead</button></a>
 
 			@endif
 
@@ -145,9 +145,9 @@
 					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td>
 						<div class="d-flex">
-							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" id="btn_view"><button class="btn btn-sm btn-warning me-2">View</button></a>
+							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
 							@if($value->cliam_status !='Completed')
-							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" id="btn_edit"><button class="btn btn-sm btn-danger">Edit</button></a>
+							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" ><button class="btn btn-sm btn-danger" id="btn_edit">Edit</button></a>
 							@endif
 						</div>
 					</td>
