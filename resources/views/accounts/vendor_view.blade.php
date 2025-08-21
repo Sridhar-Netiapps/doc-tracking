@@ -580,7 +580,8 @@
                 </div>
                 <div class="modal-body">
                     <label for="excel_file" class="form-label">Upload File</label>  <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a>
-                    <input type="file" name="excel_file" class="form-control" required> 
+                    <input type="file" name="excel_file" class="form-control file-validate"  data-ext="csv,xls,xlsx" required> 
+                    <label class="text-danger mt-3" id="excel_file-error"></label>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
