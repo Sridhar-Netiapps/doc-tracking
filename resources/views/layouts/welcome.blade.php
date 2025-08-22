@@ -1,16 +1,8 @@
-@php
-    $filters = session('filters', []);
-    $selectedTat = $filters['tat'] ?? '';
-    $selectedRegion = $filters['region'] ?? '';
-    $selectedSearchType = $filters['search_type'] ?? '';
-@endphp
-
 <div class="bg">
     <div class="container-fluid">
         <div class="row justify-content-start align-items-center">
             <div class="col-1"></div>
             <div class="col-7">
-                {{-- <p>Hi! Welcome {{ auth()->user()->first_name }} (ID: {{ auth()->user()->id }})</p> --}}
                 <p>
                     Hi! Welcome
                    <b> {{ Auth::user()->first_name }}
@@ -23,7 +15,6 @@
             </div>
             @role('ho-user|master')
             <div class="col-1">
-                {{-- <label for="search_type">Search</label> --}}
                 <select id="search_type" name="search_type" class="form-select">
                     <option value="">-- Select --</option>
                     <option value="region" {{ $selectedSearchType == 'region' ? 'selected' : '' }}>Region</option>
@@ -31,14 +22,13 @@
                 </select>               
             </div>
             @endrole
-            <div class="col-1" id="dynamic-dropdown" style="display:none;"></div>
-            <div class="col-1" id="reset-btn-container" style="display:none;">
+            <div class="col-1" id="dynamic-dropdown"  class="d-none"></div>
+            <div class="col-1" id="reset-btn-container"  class="d-none">
                 <button type="button" id="reset-btn" class="btn btn-secondary w-100">Reset</button>
             </div>
             <div class="col-1"></div>
         </div>
-        <div id="template-region" style="display:none;">
-            {{-- <label>Region</label> --}}
+        <div id="template-region"  class="d-none">
             <select id="region" name="region" class="form-select">
                 <option value="">-- Region --</option>
                 <option value="South" {{ $selectedRegion == 'South' ? 'selected' : '' }}>South</option>
@@ -48,8 +38,7 @@
             </select>
         </div>
         
-        <div id="template-tat" style="display:none;">
-            {{-- <label>TAT</label> --}}
+        <div id="template-tat" class="d-none">
             <select id="tat" name="tat" class="form-select">
                 <option value="">-- TAT --</option>
                 <option value="30" {{ $selectedTat == '30' ? 'selected' : '' }}>30 days</option>
@@ -57,7 +46,6 @@
             </select>
         </div>
             
-            <!-- Placeholder for results -->
             <div id="result-container"></div>
                        
     </div>
@@ -143,6 +131,13 @@
         let tat = $('#tat').val();
         let region = $('#region').val();
         let searchType = $('#search_type').val(); 
+
+        // If filtering by region, clear tat; if filtering by tat, clear region
+        if ($(this).attr('id') === 'region') {
+            tat = ''; // clear TAT
+        } else if ($(this).attr('id') === 'tat') {
+            region = ''; // clear Region
+        }
 
         $.ajax({
             url: "{{ route('tat.data') }}",
