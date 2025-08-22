@@ -25,21 +25,21 @@
     <form action="{{ route('couriers.update', $courier->id) }}" method="POST">
         @csrf @method('PUT')
         <div class="mb-3">
-            <label>Courier ID</label>
+            <label>Courier ID <span class="text-danger">*</span></label>
             <input type="text" name="courier_id" class="form-control" value="{{ $courier->courier_id }}" required>
         </div>
         <div class="mb-3">
-            <label>Name</label>
+            <label>Name <span class="text-danger">*</span></label>
             <input type="text" name="name" class="form-control" value="{{ $courier->name }}" required>
         </div>
         <div class="mb-3">
-            <label>Number</label>
+            <label>Number <span class="text-danger">*</span></label>
             <input type="text" name="number" class="form-control" required 
                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                    maxlength="10" value="{{ $courier->number }}">
         </div> 
         <div class="mb-3">
-            <label>Address</label>
+            <label>Address <span class="text-danger">*</span></label>
             <textarea name="address" class="form-control" required>{{ $courier->address }}</textarea>
         </div>
         <div class="mb-3">

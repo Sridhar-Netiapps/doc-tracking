@@ -215,7 +215,7 @@
                 </div>
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name *</label>
+                        <label for="status" class="form-label">Courier Name <span class="text-danger">*</span></label>
                         <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
                             @foreach($couriers as $key => $courier)
@@ -229,7 +229,7 @@
                         <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No *</label>
+                        <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
                         <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
                     </div>
                 </div>
@@ -299,7 +299,6 @@
             rules: {
                 awb_pod: {
                     alphanumeric: true,
-                    required: true,
                     sanitize: true
                 },
                 courier_name: {
@@ -316,9 +315,6 @@
                 awb_pod: {
                     required: "AWB/POD is required",
                     alphanumeric: "Only letters and numbers allowed"
-                },
-                courier_name: {
-                    required: "Courier name is required"
                 },
                 courier_name: {
                     required: "Courier name is required"

@@ -192,15 +192,6 @@
         <form method="POST" action="{{ route('dispatches.filter', $type) }}">
             @csrf
             <div class="row">
-                {{-- <div class="col-12 mt-3">
-                    <select class="form-select document_type" name="document_type">
-                        <option value="">Select Document Type</option>
-                        <option value="loan" {{ ($filters['document_type'] ?? '') == 'loan' ? 'selected' : '' }}>MB Loan Docs</option>
-                        <option value="goldloan" {{ ($filters['document_type'] ?? '') == 'goldloan' ? 'selected' : '' }}>Gold Loan Docs</option>
-                        <option value="aof" {{ ($filters['document_type'] ?? '') == 'aof' ? 'selected' : '' }}>Liablities Docs</option>
-                        <option value="dtrf" {{ ($filters['document_type'] ?? '') == 'dtrf' ? 'selected' : '' }}>DTR Files</option>
-                    </select>
-                </div> --}}
                 <div class="col-12 mt-3">
                     <input type="number" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no" min="0">
                 </div>
@@ -228,52 +219,9 @@
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Dispatched Date" value="{{ old('dispatch_date', $filters['dispatch_date'] ?? '') }}" name="dispatch_date">
                 </div>
-                {{-- <div class="col-12 mt-3">mmrp_code
-                    <input type="search" class="form-control account_number" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
-                </div> --}}
-                {{-- <div class="col-12 mt-3 d-none">
-                    <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
-                </div>
-                <div class="col-12 mt-3 d-none">
-                    <select class="form-select scheme" name="scheme">
-                        <option value="">Select Scheme</option>
-                        <option value="GL" {{ ($filters['scheme'] ?? '') == 'GL' ? 'selected' : '' }}>GL</option>
-                        <option value="IL" {{ ($filters['scheme'] ?? '') == 'IL' ? 'selected' : '' }}>IL</option>
-                    </select>
-                </div> --}}
-                {{-- <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
-                </div> --}}
-                {{-- <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="From Date" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
-                </div>
-                <div class="col-12 mt-3">
-                    <input type="text" readonly class="form-control datepicker" placeholder="To Date" value="{{ old('to_date', $filters['to_date'] ?? '') }}" name="to_date">
-                </div> --}}
-                {{-- <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control channel" placeholder="Channel" value="{{ old('channel', $filters['channel'] ?? '') }}" name="channel">
-                </div>
-                <div class="col-12 mt-3 d-none">
-                    <select class="form-select" name="type">
-                        <option value="">Loan Disbursement/Account Opening</option>
-                        <option value="Esign" {{ ($filters['type'] ?? '') == 'Esign' ? 'selected' : '' }}>Esign</option>
-                        <option value="Manual" {{ ($filters['type'] ?? '') == 'Manual' ? 'selected' : '' }}>Manual</option>
-                    </select>
-                </div>
-                <div class="col-12 mt-3 d-none">
-                    <input type="date" class="form-control" placeholder="DTR File Date" value="{{ old('dtr_file_date', $filters['dtr_file_date'] ?? '') }}" name="dtr_file_date">
-                </div> --}}
-                {{-- <div class="col-12 mt-3">
-                    <input type="text" class="form-control" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
-                </div> --}}
                 <div class="col-12 mt-3">
                     <select class="form-select" name="status">
                         <option value="">Select Status</option>
-                        {{-- @foreach ($process_statuses as $status)
-                            <option value="{{ $status->id }}" {{ ($filters['status'] ?? '') == $status->id ? 'selected' : '' }}>
-                                {{ $status->name }}
-                            </option>
-                        @endforeach --}}
                         <option value="3" {{ ($filters['status'] ?? '') == '3' ? 'selected' : '' }}> Awaiting checker Approval </option>
                         <option value="4" {{ ($filters['status'] ?? '') == '4' ? 'selected' : '' }}> Dispatched </option>
                         <option value="5" {{ ($filters['status'] ?? '') == '5' ? 'selected' : '' }}> Received </option>
@@ -290,73 +238,6 @@
                 </div>
             </div>
         </form>
-    </div>
-</div>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="/accounts-update" method="POST">
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Upload Vendor Movement Information</h5>
-                </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-4">
-                        <label>Unique Number</label>
-                        <h5 class="unique_number">UJJ029921</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Customer Name</label>
-                        <h5 class="customer_name">Cali</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Channel</label>
-                        <h5 class="channel">GL</h5>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Lot No.</label>
-                        <input type="text" name="lot_no" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Work Order No.</label>
-                        <input type="text" name="work_order_no" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Vendor Name</label>
-                        <input type="text" name="vendor_name" class="form-control" required>
-                    </div>
-                     <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Dispatched Date</label>
-                        <input type="text" readonly class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}" name="vendor_movement_date" id="vendor_movement_date" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">File barcode againt Lot No.</label>
-                        <input type="file" name="file_barcode" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Box Barcode</label>
-                        <input type="file" name="box_barcode" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Date of addition vendor Data</label>
-                        <input type="date" name="vendor_addition_date" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="In">In</option>
-                            <option value="Out">Out</option>
-                            <option value="Permout">Permout</option>
-                            <option value="Destroyed">Destroyed</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <a href="/accounts-update" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
-                    {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 <div class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
@@ -378,7 +259,7 @@
                 <input type="hidden" name="dispatch_id" />
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name *</label>
+                        <label for="status" class="form-label">Courier Name <span class="text-danger">*</span></label>
                         <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
                             @foreach($couriers as $courier)
@@ -392,7 +273,7 @@
                         <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No *</label>
+                        <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
                         <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
                     </div>
                 </div>
@@ -414,7 +295,7 @@
                 </div>
                 <div class="modal-body p-4 row">
                     <div class="col pb-2">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                         <input type="hidden" name="dispatch_id" class="revert-reason"/>
                         <select name="status" class="form-select" required>
                             <option value="4">Dispatched</option>
@@ -424,7 +305,7 @@
                         </select>
                     </div>
                     <div class="col pb-2">
-                        <label for="reason" class="form-label">Reason</label>
+                        <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
                         <input type="text" name="reason" class="form-control alphanumeric" required>
                     </div>
                 </div>
@@ -480,49 +361,14 @@
 
         $('#update-courier').validate({
             rules: {
-                awb_pod: { alphanumeric: true },
-                courier_name: { required: true },
-                mmrp_barcode: { alphanumeric: true, required: true }
+                awb_pod: { alphanumeric: true, sanitize: true },
+                courier_name: { required: true, sanitize: true },
+                mmrp_barcode: { alphanumeric: true, required: true, sanitize: true }
             },
             messages: {
                 courier_name: { required: "Courier name is required" },
                 mmrp_barcode: { required: "Barcode is required" }
             },
-            // submitHandler: function (form) {
-            //     const formData = {
-            //         _token: $('input[name="_token"]').val(),
-            //         dispatch_id: $('input[name="dispatch_id"]').val(),
-            //         courier_name: $('select[name="courier_name"]').val(),
-            //         mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-            //         awb_pod: $('input[name="awb_pod"]').val(),
-            //         dispatch_date: $('input[name="dispatch_date"]').val(),
-            //     };
-
-
-            //     $.post($(form).attr('action'), formData)
-            //         .done(function (res) {
-            //             if (res.success) {
-            //                 Swal.fire({
-            //                     title: "Success!",
-            //                     text: "Courier created successfully.",
-            //                     icon: "success",
-            //                     confirmButtonText: "OK"
-            //                 }).then(() => {
-            //                     window.location.href = `{{ route('dispatches','list') }}`;
-            //                 });
-            //             } else {
-            //                 Swal.fire("Error!", "Failed to create courier.", "error");
-            //             }
-            //         })
-            //         .fail(function () {
-            //             Swal.fire({
-            //                 title: "Error!",
-            //                 text: "Something went wrong!",
-            //                 icon: "error",
-            //                 confirmButtonText: "OK"
-            //             });
-            //         });
-            // }
             submitHandler: function (form) {
                 const formData = {
                     _token: $('input[name="_token"]').val(),
@@ -651,7 +497,7 @@
         $('#revert-courier-status').validate({
             rules: {
                 status: { required: true },
-                reason: { alphanumeric: true, required: true }
+                reason: { alphanumeric: true, required: true, sanitize: true }
             },
             messages: {
                 courier_name: { required: "Status is required" },

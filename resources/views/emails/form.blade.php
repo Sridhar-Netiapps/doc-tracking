@@ -1,12 +1,12 @@
 <!-- resources/views/emails/form.blade.php -->
 
 <div class="mb-3">
-    <label for="sender" class="form-label">Sender</label>
+    <label for="sender" class="form-label">Sender <span class="text-danger">*</span></label>
     <input type="email" name="sender" class="form-control" value="{{ old('sender', $email->sender ?? '') }}" required>
 </div>
 
 <div class="mb-3">
-    <label for="to" class="form-label">To</label>
+    <label for="to" class="form-label">To <span class="text-danger">*</span></label>
     <input type="email" name="to" class="form-control" value="{{ old('to', $email->to ?? '') }}" required>
 </div>
 
@@ -21,12 +21,12 @@
 </div>
 
 <div class="mb-3">
-    <label for="subject" class="form-label">Subject</label>
+    <label for="subject" class="form-label">Subject <span class="text-danger">*</span></label>
     <input type="text" name="subject" class="form-control" value="{{ old('subject', $email->subject ?? '') }}" required>
 </div>
 
 <div class="mb-3">
-    <label for="message" class="form-label">Message</label>
+    <label for="message" class="form-label">Message <span class="text-danger">*</span></label>
     <textarea name="message" class="form-control" rows="4" required>{{ old('message', $email->message ?? '') }}</textarea>
 </div>
 

@@ -507,11 +507,11 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="dtype">
                         <input type="hidden" name="is_filtered" value="{{ isset($filters) ? 1 : 0 }}">
-                        <label for="lot_no" class="form-label">Lot No</label>
-                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric">
+                        <label for="lot_no" class="form-label">Lot No <span class="text-danger">*</span></label>
+                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="category_of_document" class="form-label">Doc. Category</label>
+                        <label for="category_of_document" class="form-label">Doc. Category <span class="text-danger">*</span></label>
                         <select class="form-select document_type" name="category_of_document" id="category_input" required>
                             <option value="">Select Doc. Category</option>
                             <option value="CAT A1" {{ ($doc->category_of_document ?? '') == 'CAT A1' ? 'selected' : '' }}>CAT A1</option>
@@ -521,11 +521,11 @@
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="work_order_no" class="form-label">Work Order No</label>
-                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric">
+                        <label for="work_order_no" class="form-label">Work Order No <span class="text-danger">*</span></label>
+                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_name" class="form-label">Vendor Name</label>
+                        <label for="vendor_name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
                         <select class="form-select" name="vendor_name" id="vendor_input" required>
                             <option value="">Select Vendor Name</option>
                             @foreach ($vendors as $vendor)
@@ -536,23 +536,23 @@
                         </select>                                                
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Movement</label>
-                        <input type="date" id="vendor_movement_date_input" name="vendor_movement_date" class="form-control flatpickr-date">
+                        <label for="vendor_movement_date" class="form-label">Date of Movement <span class="text-danger">*</span></label>
+                        <input type="date" id="vendor_movement_date_input" name="vendor_movement_date" class="form-control flatpickr-date" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode</label>
-                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric">
+                        <label for="file_barcode" class="form-label">File barcode <span class="text-danger">*</span></label>
+                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="box_barcode" class="form-label">Box Barcode</label>
-                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric">
+                        <label for="box_barcode" class="form-label">Box Barcode <span class="text-danger">*</span></label>
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="date_added_to_vendor" class="form-label">Date of addition</label>
-                        <input type="date" id="date_added_input" name="date_added_to_vendor" class="form-control flatpickr-date">
+                        <label for="date_added_to_vendor" class="form-label">Date of addition <span class="text-danger">*</span></label>
+                        <input type="date" id="date_added_input" name="date_added_to_vendor" class="form-control flatpickr-date" required>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                         <select name="status" class="form-control select2" id="status_input" required>
                             {{-- <option value=''>Select Status</option> --}}
                             <option value='8'>IN</option>
@@ -649,15 +649,6 @@
             // $('#add-vendor').modal('show');
         });
 
-        // $('.retrive').click(function () {
-        //     $('input[name="id"]').val($(this).data('id'));
-        //     $('input[name="type"]').val($(this).data('type'));
-
-        //     $('#retrive').modal({
-        //         backdrop: 'static',
-        //         keyboard: false
-        //     }).modal('show');;
-        // });
         flatpickr(".flatpickr-date", {
             dateFormat: "d-m-Y",        
             maxDate: "today",         
@@ -729,38 +720,7 @@
                     }
                 });
                 return false;
-
-            //     let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
-            //     let hasSelection = false;
-            //     loan_total
-            //     $('#doc-retrive').find('input[name$="_ids[]"]').remove();
-
-            //     documentTypes.forEach(function (type) {
-            //         let ids = [];
-
-            //         $('input.' + type + ':checked').each(function () {
-            //             ids.push($(this).data('id'));
-            //         });
-
-            //         if (ids.length > 0) {
-            //             hasSelection = true;
-
-            //             ids.forEach(function (id) {
-            //                 $('#doc-retrive').append(
-            //                     '<input type="hidden" name="' + type + '_ids[]" value="' + id + '">'
-            //                 );
-            //             });
-            //         }
-            //     });
-
-            //     $('#doc-retrive').submit();
             }
-            // rules: {
-            //     status: {
-            //         required: true,
-            //         sanitize: true
-            //     }
-            // }
         });
 
         $('.retrive').click(function () {
@@ -804,17 +764,6 @@
                 }
             });
         });
-        // $('.vendor-upload').click(function () {
-        //     $('#upload-vendor').modal('show');
-        //     // $('#add-vendor').modal('show');
-        // });
-        // $(document).ready(function () {
-        //     $('.cancel-modal').on('click', function () {
-        //         $('#yourModalId').modal('hide');
-        //         $('.modal-backdrop').remove();
-        //         $('body').removeClass('modal-open').css('padding-right', '');
-        //     });
-        // });
     });
 </script>
 

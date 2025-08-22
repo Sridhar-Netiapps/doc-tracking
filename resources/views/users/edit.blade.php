@@ -36,7 +36,7 @@
 
                 <!-- First Name Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="first_name">First Name</label>
+                    <label for="first_name">First Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" required>
                     @error('first_name')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -54,7 +54,7 @@
 
                 <!-- Last Name Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="last_name">Last Name</label>
+                    <label for="last_name">Last Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
                     @error('last_name')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -63,21 +63,28 @@
 
                 <!-- Employee ID Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="employee_id">Employee ID</label>
+                    <label for="employee_id">Employee ID <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" value="{{ old('employee_id', $user->employee_id) }}" required>
                     @error('employee_id')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
-                    <label for="branch_id">Branch Code</label>
+                    <label for="region">Region <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->region) }}" required>
+                    @error('region')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-4 mb-4 form-group">
+                    <label for="branch_id">Branch Code <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" value="{{ old('branch_id', $user->branch_id) }}" required>
                     @error('branch_id')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
-                    <label for="email">Email Id</label>
+                    <label for="email">Email Id <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
                     @error('email')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -99,7 +106,7 @@
 
                 <!-- Date of Birth Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="dob">Date of Birth</label>
+                    <label for="dob">Date of Birth <span class="text-danger">*</span></label>
                     <input type="date" class="form-control @error('dob') is-invalid @enderror" id="dob" name="dob" value="{{ old('dob', $user->dob) }}" required>
                     @error('dob')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -120,7 +127,7 @@
 
                 <!-- Mobile Number Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="mobile_number">Mobile Number</label>
+                    <label for="mobile_number">Mobile Number <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('mobile_number') is-invalid @enderror" id="mobile_number" name="mobile_number" value="{{ old('mobile_number', $user->mobile_number) }}" required>
                     @error('mobile_number')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -129,7 +136,7 @@
 
                 <!-- Date of Joining Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="doj">Date of Joining</label>
+                    <label for="doj">Date of Joining <span class="text-danger">*</span></label>
                     <input type="date" class="form-control @error('doj') is-invalid @enderror" id="doj" name="doj" value="{{ old('doj', $user->doj) }}" required>
                     @error('doj')
                         <span class="invalid-feedback">{{ $message }}</span>
