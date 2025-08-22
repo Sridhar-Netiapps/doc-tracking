@@ -339,7 +339,7 @@
         			
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Document Received</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="doc_rec_date" value="{{ old('doc_rec_date', $data->doc_rec_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="doc_rec_date" value="{{ old('doc_rec_date', $data->doc_rec_date)}}">
 					    @error('doc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -357,7 +357,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Submision to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="submit_to_partner_date" value="{{ old('submit_to_partner_date', $data->submit_to_partner_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="submit_to_partner_date" value="{{ old('submit_to_partner_date', $data->submit_to_partner_date)}}">
 					    @error('submit_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -365,7 +365,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Re-submission to Partner</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="resubmission_to_partner_date" value="{{ old('resubmission_to_partner_date', $data->re_submit_to_partner_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="resubmission_to_partner_date" value="{{ old('resubmission_to_partner_date', $data->re_submit_to_partner_date)}}">
 					    @error('resubmission_to_partner_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -453,13 +453,13 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Date of Settlement</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="settlement_date" value="{{ old('settlement_date', $data->settlement_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="settlement_date" value="{{ old('settlement_date', $data->settlement_date)}}">
 					    @error('settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">NEFT Rejection Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="neft_rejection_date" value="{{ old('neft_rejection_date', $data->neft_rejection_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="neft_rejection_date" value="{{ old('neft_rejection_date', $data->neft_rejection_date)}}">
 					    @error('neft_rejection_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -471,7 +471,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Final Settlement Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="final_settlement_date" value="{{ old('final_settlement_date', $data->final_settlement_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="final_settlement_date" value="{{ old('final_settlement_date', $data->final_settlement_date)}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 					<div class="col-3"></div>
@@ -516,13 +516,13 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Deposit Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="chq_deposit_date" value="{{ old('chq_deposit_date', $data->chq_deposit_date)}}" max="{{ date('Y-m-d')}}">
+					    <input type="date" class="form-control form-control-design  " name="chq_deposit_date" value="{{ old('chq_deposit_date', $data->chq_deposit_date)}}" max="{{ date('Y-m-d')}}">
 					    @error('chq_deposit_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Bounced Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="bounced_chq_date" value="{{ old('bounced_chq_date', $data->bounced_chq_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="bounced_chq_date" value="{{ old('bounced_chq_date', $data->bounced_chq_date)}}">
 					    @error('bounced_chq_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -548,13 +548,13 @@
         			
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Acknowledgement Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="ack_rec_date" value="{{ old('ack_rec_date', $nomineedata->ack_rec_date)}}">
+					    <input type="date" class="form-control form-control-design  " name="ack_rec_date" value="{{ old('ack_rec_date', $nomineedata->ack_rec_date)}}">
 					    @error('ack_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">SPDC Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="spdc_rec_date" value="{{ old('spdc_rec_date', $nomineedata->spdc_rec_date )}}">
+					    <input type="date" class="form-control form-control-design  " name="spdc_rec_date" value="{{ old('spdc_rec_date', $nomineedata->spdc_rec_date )}}">
 					    @error('spdc_rec_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -576,7 +576,7 @@
         		<div class="row">
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Write off Received Date</label>
-					    <input type="date" class="form-control form-control-design  valid-date" name="write_off_rec" value="{{ old('write_off_rec', $data->write_off_rec)}}">
+					    <input type="date" class="form-control form-control-design  " name="write_off_rec" value="{{ old('write_off_rec', $data->write_off_rec)}}">
 					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -646,8 +646,9 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">IFSC Code</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC" minlength="11" maxlength="11">
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc" id="ifscInput" value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC" minlength="11" maxlength="11">
 				    @error('ifsc')<div class="text-error">{{ $message }}</div>@enderror
+				    <div id="ifscError" class="text-error d-none">IFSC code must be exactly 11 characters.</div>
 				</div>
 
 				<div class="col-3 mb-3">
@@ -682,8 +683,9 @@
 
 				<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+					    <input type="text" class="form-control form-control-design2  numbersonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" id="mobile_input" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+					    <div id="ifscError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
 					</div>
 
 				<div class="col-3 mb-3">
@@ -1149,6 +1151,40 @@ $(document).ready(function() {
 	        });
 	    }
 	});
+
+
+$(document).ready(function(){
+    $('#ifscInput').on('input', function() {
+        let val = $(this).val();
+
+        if(val.length < 11) {
+            $('#ifscError').removeClass('d-none').text("Minimum 11 characters required.");
+        } 
+        else if(val.length > 11) {
+            $('#ifscError').removeClass('d-none').text("Maximum 11 characters allowed.");
+            $(this).val(val.substring(0, 11)); // trim extra chars
+        } 
+        else {
+            $('#ifscError').addClass('d-none'); // hide error if valid
+        }
+    });
+
+    $('#mobile_Input').on('input', function() {
+        let val = $(this).val();
+
+        if(val.length < 11) {
+            $('#mobileError').removeClass('d-none').text("Minimum 10 characters required.");
+        } 
+        else if(val.length > 11) {
+            $('#mobileError').removeClass('d-none').text("Maximum 10 characters allowed.");
+            $(this).val(val.substring(0, 11)); // trim extra chars
+        } 
+        else {
+            $('#mobileError').addClass('d-none'); // hide error if valid
+        }
+    });
+});
+
 
 
 
