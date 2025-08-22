@@ -45,12 +45,12 @@
 
         $("#emailForm").validate({
             rules: {
-                sender: { required: true, email: true },
-                to: { required: true, email: true },
-                cc: { email: true },
-                bcc: { email: true },
-                subject: { required: true },
-                message: { required: true },
+                sender: { required: true, email: true, sanitize: true },
+                to: { required: true, email: true, sanitize: true },
+                cc: { email: true, sanitize: true },
+                bcc: { email: true, sanitize: true },
+                subject: { required: true, sanitize: true },
+                message: { required: true, sanitize: true },
             },
             messages: {
                 sender: { required: "Sender email is required", email: "Enter a valid email" },

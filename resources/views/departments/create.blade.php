@@ -37,13 +37,13 @@
             
                     <div class="row">
                         <div class="col-4 mb-4">
-                            <label for="name">Department Name</label>
+                            <label for="name">Department Name <span class="text-danger">*</span></label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $department->name ?? '') }}" required>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
             
                         <div class="col-4 mb-4">
-                            <label for="slug">Short Name</label>
+                            <label for="slug">Short Name <span class="text-danger">*</span></label>
                             <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $department->slug ?? '') }}" required>
                             @error('slug') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
@@ -65,8 +65,8 @@
     
         $("#departments").validate({
             rules: {
-                name: { required: true },
-                slug: { required: true },
+                name: { required: true, sanitize: true },
+                slug: { required: true, sanitize: true },
             },
             messages: {
                 name: { required: "Department name is required" },

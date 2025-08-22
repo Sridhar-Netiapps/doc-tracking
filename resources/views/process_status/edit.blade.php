@@ -35,14 +35,14 @@
                     @method('PUT')
 
                     <div class="mb-4">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" id="name" required pattern="^[a-zA-Z\s]+$" maxlength="55" value="{{ old('name', $status->name) }}">
                     </div>
 
                     <div class="row">
                         <div class="col-6">
                             <div class="mb-4">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                 <select name="status" class="form-select" required>
                                     <option value="1" {{ $status->status == 1 ? 'selected' : '' }}>Active</option>
                                     <option value="0" {{ $status->status == 0 ? 'selected' : '' }}>Inactive</option>
@@ -83,7 +83,7 @@
     $(document).ready(function () {   
         $("#process-status").validate({
             rules: {
-                name: { required: true },
+                name: { required: true, sanitize: true },
             },
             messages: {
                 name: { required: "Process Status is required" },

@@ -22,7 +22,7 @@
                     @csrf
                     <div class="row">
                         <div class="col mt-2">
-                            <label for="doc_type">Document Type</label>
+                            <label for="doc_type">Document Type <span class="text-danger">*</span></label>
                             <select id="doc_type" name="doc_type" class="form-select">
                                 <option value="">-- Select --</option>
                                 <option value="loan">MB Loan</option>
@@ -70,87 +70,10 @@
                                 <label>Account Number</label>
                                 <input type="text" id="account_number" name="account_number" class="form-control alphanumeric">
                             </div>
-                            {{-- <div class="col-3 mt-2 doc-fields loan goldloan aof">
-                                <label>Customer Name</label>
-                                <input type="text" name="customer_name" class="form-control">
-                            </div> --}}
-                            {{-- DTRF Fields --}}
-                            {{-- <div class="col-3 mt-2 doc-fields dtrf">
-                                <label>Barcode</label>
-                                <input type="text" name="barcode" class="form-control">
-                            </div> --}}
-
-                            {{-- Unique Fields --}}
-                            {{-- <div class="col-3 mt-2 doc-fields goldloan loan">
-                                <label>Loan Amount</label>
-                                <input type="text" name="loan_amount" class="form-control">
-                            </div> --}}
                             <div class="col-3 mt-2 doc-fields goldloan loan aof">
                                 <label>Channel</label>
                                 <input type="text" name="channel" class="form-control">
                             </div>
-                            {{-- <div class="col-3 mt-2 doc-fields ">
-                                <label>Channel</label>
-                                <input type="text" name="channel_loan" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields loan">
-                                <label>Loan Cycle</label>
-                                <input type="text" name="loan_cycle" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields loan">
-                                <label>Glow Application ID</label>
-                                <input type="text" name="glow_application_id" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields loan">
-                                <label>Loan Disbursement Type</label>
-                                <input type="text" name="loan_disbursement_type" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields aof">
-                                <label>Scheme</label>
-                                <input type="text" name="scheme" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields ">
-                                <label>Channel (Swagat/HHD/CRM)</label>
-                                <input type="text" name="channel_aof" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields aof">
-                                <label>PGK No</label>
-                                <input type="text" name="pgk_no" class="form-control">
-                            </div> --}}
-                            {{-- <div class="col-3 mt-2 doc-fields aof">
-                                <label>Account Opening Type</label>
-                                <input type="text" name="type_of_account_opening" class="form-control">
-                            </div> --}}
-                            {{-- @foreach ([
-                                'awb_pod' => 'AWB/POD',
-                                'courier_name' => 'Courier Name',
-                                ] as $field => $label)
-                                <div class="col-3 mt-2 courier">
-                                    <label>{{ $label }}</label>
-                                    <input type="text" name="{{ $field }}" class="form-control">
-                                </div>
-                            @endforeach --}}
-                            {{-- @foreach ([
-                                'awb_pod' => 'AWB/POD',
-                                'courier_name' => 'Courier Name',
-                            ] as $field => $label)
-                                <div class="col-3 mt-2 courier">
-                                    <label>{{ $label }}</label>
-                            
-                                    @if ($field === 'courier_name')
-                                        <select id="courier_name" name="courier_name" class="form-control select2" required>
-                                            <option value="">Select</option>
-                                            @foreach ($couriers as $courier)
-                                                <option value="{{ $courier->id }}" {{ ($doc->courier_name ?? '') == $courier->id ? 'selected' : '' }}>
-                                                    {{ $courier->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <input type="text" name="{{ $field }}" class="form-control" value="{{ $doc->$field ?? '' }}">
-                                    @endif
-                                </div>
-                            @endforeach --}}
 
                             @foreach ([
                                 'awb_pod' => 'AWB/POD',
@@ -176,20 +99,6 @@
                                 </div>
                             @endforeach
 
-                            
-                            {{-- @foreach ([
-                                'lot_no' => 'Lot No',
-                                'category' => 'Document Category',
-                                'work_order_no' => 'Work Order No.',
-                                'vendor_name' => 'Vendor Name',
-                                'file_barcode' => 'File Barcode Against Lot',
-                                'box_barcode' => 'Box Barcode No.',
-                            ] as $field => $label)
-                                <div class="col-3 mt-2 vendor">
-                                    <label>{{ $label }}</label>
-                                    <input type="text" name="{{ $field }}" class="form-control">
-                                </div>
-                            @endforeach --}}
                             @foreach ([
                                 'lot_no' => 'Lot No',
                                 'category' => 'Document Category',
@@ -298,19 +207,23 @@
                         depends: function () {
                             return $('#account_number').val().trim() !== '';
                         }
-                    }
+                    },
+                    sanitize: true
                 },
                 date_field: {
                     required: function () {
                         return $.trim($('#from_date').val()) !== '' || $.trim($('#to_date').val()) !== '';
-                    }
+                    },
+                    sanitize: true
                 },
                 from_date: {
-                    customDate: true
+                    customDate: true,
+                    sanitize: true
                 },
                 to_date: {
                     customDate: true,
-                    greaterThanOrEqual: "#from_date"
+                    greaterThanOrEqual: "#from_date",
+                    sanitize: true
                 }
             },
             messages: {

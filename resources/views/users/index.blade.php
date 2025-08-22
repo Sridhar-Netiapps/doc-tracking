@@ -41,6 +41,7 @@
                                 <th>Status</th>
                                 <th>Mobile Number</th>
                                 <th>Date of Joining</th>
+                                <th>Designation</th>
                                 @role('master|super_admin|admin')
                                 <th>Roles</th>
                                 {{-- <th>Permissions</th> --}}
@@ -64,6 +65,7 @@
                                     <td>{{ ucfirst($user->status) }}</td>
                                     <td>{{ $user->mobile_number }}</td>
                                     <td>{{ $user->doj }}</td>
+                                    <td></td>
                                     @role('master|super_admin|admin')
                                         <td>
                                             @foreach ($user->roles as $role)

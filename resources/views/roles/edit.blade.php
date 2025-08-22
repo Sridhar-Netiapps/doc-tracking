@@ -40,7 +40,7 @@
 
         <!-- Role Name -->
         <div class="form-group">
-            <label for="name">Role Name</label>
+            <label for="name">Role Name <span class="text-danger">*</span></label>
             <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
         </div>
 

@@ -804,11 +804,11 @@
                         <input type="hidden" name="id">
                         <input type="hidden" name="dtype">
                         <input type="hidden" name="status" value="8">
-                        <label for="lot_no" class="form-label">Lot No</label>
+                        <label for="lot_no" class="form-label">Lot No <span class="text-danger">*</span></label>
                         <input type="text" name="lot_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="category_of_document" class="form-label">Doc. Category</label>
+                        <label for="category_of_document" class="form-label">Doc. Category <span class="text-danger">*</span></label>
                         {{-- <input type="text" name="category_of_document" class="form-control"> --}}
                         <select class="form-select document_type" name="category_of_document" required>
                             <option value="">Select Doc. Category</option>
@@ -819,11 +819,11 @@
                         </select>                                               
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="work_order_no" class="form-label">Work Order No</label>
+                        <label for="work_order_no" class="form-label">Work Order No <span class="text-danger">*</span></label>
                         <input type="text" name="work_order_no" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_name" class="form-label">Vendor Name</label>
+                        <label for="vendor_name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
                         {{-- <input type="text" name="vendor_name" class="form-control"> --}}
                         <select class="form-select" name="vendor_name" required>
                             <option value="">Select Vendor Name</option>
@@ -835,19 +835,19 @@
                         </select>                                                
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Movement</label>
+                        <label for="vendor_movement_date" class="form-label">Date of Movement <span class="text-danger">*</span></label>
                         <input type="text" readonly name="vendor_movement_date" class="form-control flatpickr-date vendor_movement_date" value="{{ request('vendor_movement_date') }}" placeholder="Select date" autocomplete="off" readonly>
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="file_barcode" class="form-label">File barcode</label>
+                        <label for="file_barcode" class="form-label">File barcode <span class="text-danger">*</span></label>
                         <input type="text" name="file_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="box_barcode" class="form-label">Box Barcode</label>
+                        <label for="box_barcode" class="form-label">Box Barcode <span class="text-danger">*</span></label>
                         <input type="text" name="box_barcode" class="form-control alphanumeric">
                     </div>
                     <div class="col-4 pb-2">
-                        <label for="date_added_to_vendor" class="form-label">Date of addition</label>
+                        <label for="date_added_to_vendor" class="form-label">Date of addition <span class="text-danger">*</span></label>
                         <input type="text" readonly name="date_added_to_vendor" class="form-control flatpickr-date date_added_to_vendor" value="{{ request('vendor_movement_date') }}"  placeholder="Select date" autocomplete="off" readonly>
                     </div>
                 </div>
@@ -871,7 +871,8 @@
                 </div>
                 <div class="modal-body">
                     <label for="excel_file" class="form-label">Upload File</label>  <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a>
-                    <input type="file" name="excel_file" class="form-control" required> 
+                    <input type="file" name="excel_file" class="form-control file-validate"  data-ext="csv,xls,xlsx" required> 
+                    <label class="text-danger mt-3" id="excel_file-error"></label>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
