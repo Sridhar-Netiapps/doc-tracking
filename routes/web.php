@@ -156,6 +156,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
     Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
+    
 
    
    

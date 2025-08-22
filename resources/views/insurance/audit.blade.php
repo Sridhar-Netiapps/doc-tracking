@@ -10,18 +10,22 @@
             </div>
 
             <div class="ms-auto">
+                 <div class="card">
+                             <div id="reportrange" class="pull-right datepiker p-2" >
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
+                                <span name="daterange"></span> <b class="caret"></b>
+                               
+                             </div> 
+                           </div>
                 <div class="d-flex">
-                     <form class="me-3" method="GET" action="{{route('audit')}}">
-                       <div class="input-group mb-3">
-                        <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
-                        <button class="btn btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
+                 <form class="me-3" method="GET" action="{{route('audit')}}">
+                   <div class="input-group mb-3">
+                    <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
+                    <button class="btn btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
 
-                        <button class="btn btn-dark" name="type" value="export" id="btn_export_audits">Export</button>
-                       </div>
-                     </form>
-                  
-                    
-             
+                    <button class="btn btn-dark" name="type" value="export" id="btn_export_audits">Export</button>
+                   </div>
+                 </form>
            </div>
         </div>
  

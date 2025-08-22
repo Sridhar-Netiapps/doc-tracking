@@ -15,6 +15,9 @@ use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
 use App\Models\InsuranceDocument;
+use App\Models\Region;
+use App\Models\AdditionalField;
+
 
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
@@ -323,9 +326,9 @@ class InsuranceHomeController extends Controller
           'load_acc_id' => 'required',
           'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
           'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
-          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
              
       ]);
 
@@ -333,7 +336,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-\/&]*$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -576,7 +579,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-\/&]*$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -982,7 +985,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-\/&]*$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -1208,7 +1211,7 @@ class InsuranceHomeController extends Controller
             if (is_string($value)) {
                 if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                     $errors[$key] = 'Script tags are not allowed.';
-                } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-\/&]*$/', $value)) {
                     $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
                 }
             }
@@ -1313,13 +1316,14 @@ class InsuranceHomeController extends Controller
     }
 
     public function audit(Request $request){
-
+    
       if($request->search == ''){
         $search='';
       }else{
         $search=$request->search;
       }
-      if($request->type == 'filter'){
+
+      if($request->type == 'filter' || !isset($request->type) ){
           $data = AuditLog::when($search,function($query)use($search){
                $query->where('note','LIKE','%'.$search.'%');
                $query->orWhere('user_id','LIKE','%'.$search.'%');
@@ -1510,11 +1514,14 @@ class InsuranceHomeController extends Controller
         $relationship = InsuranceRelationship::get();
         $deathcause = InsuranceCauseOfDeath::get();
         $claimstatus = InsuranceClaimStatus::get();
+        $region = Region::get();
 
-        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus'));
+        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus' , 'region'));
     }
 
     public function add_new_insurance_item(Request $request){
+
+     // print_r($request->input());die();
       $module = $request->modulename;
 
       $inputdata = $request->all();
@@ -1524,7 +1531,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-\/&]*$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -1535,6 +1542,10 @@ class InsuranceHomeController extends Controller
       }
 
       //print_r($request->input());die();
+
+      if($module == 'Region'){
+        Region::create(['name'=> $request->title]);
+      }
 
       if($module == 'Partner'){
         InsurancePartner::create(['partner'=> $request->title]);

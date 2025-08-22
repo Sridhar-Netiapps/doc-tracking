@@ -7,7 +7,7 @@
 
         
 		<div class="ms-auto">
-			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Completed')
+			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible [Having outstanding]' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
 				@if($data->products->type == 'MB')
 				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Download Claim Form</button> </a>
 				@else
@@ -253,7 +253,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date Of Death Intimation</label>
+					    <label class="form-label label-bold">Death Intimation Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ $data->intimation_date}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -438,6 +438,12 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recovered Amount</label>
+					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}" placeholder="Enter Rcovered Amount">
+					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Payable to Nominee</label>
 					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}" placeholder="Enter the Amount Payable to Nominee">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
@@ -466,8 +472,7 @@
 					    <input type="date" class="form-control form-control-design  valid-date" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
-					<div class="col-3"></div>
-
+					
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">UTRN of MPH</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_mph" value="{{ $data->utrn_mph}}" placeholder="Enter UTRN of MPH">
@@ -524,11 +529,7 @@
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Recovered Amount</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}" placeholder="Enter Rcovered Amount">
-					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
         	    </div>
         	</div>    		
         </div>
@@ -667,7 +668,7 @@
 				</div>
  -->
 				<div class="col-3 mb-3">
-				    <label class="form-label">Remarks</label>
+				    <label class="form-label">Branch Remarks</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{$nomineedata->bo_remarks ?? ''}}" placeholder="Remarks...">
 				</div>
 

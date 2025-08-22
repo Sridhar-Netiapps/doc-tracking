@@ -136,7 +136,7 @@
         		<div class="row">
         		  <div class="row">
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Region</label>
+					    <label class="form-label label-bold">Region *</label>
 					    <select class="form-control form-control-design  form-select" name="region"  >
 					    	<option value="">Select</option>
 					    	<option {{(old('region', $data->region )== 'South')?'selected':''}} value="South" >South</option>
@@ -148,7 +148,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Branch ID-Name</label>
+					    <label class="form-label label-bold">Branch ID-Name *</label>
 					    <select class="form-control form-control-design form-select" name="branch" >
 				    	<option value="">Select</option>
 				    	@foreach($branch as $key=>$val)
@@ -159,7 +159,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Partner</label>
+					    <label class="form-label label-bold">Partner *</label>
 					    <select class="form-control form-control-design  form-select" name="partner" id="partner" >
 					    	<option value="">Select</option>
 					    	@foreach($partners as $key=>$value)
@@ -170,7 +170,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Product</label>
+					    <label class="form-label label-bold">Product *</label>
 					    <select class="form-control form-control-design  form-select" name="product"  id="product">
 					    	<option value="">Select</option>
 					    	
@@ -191,7 +191,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Policy Covered</label>
+					    <label class="form-label label-bold">Policy Covered *</label>
 					    <input type="date" class="form-control form-control-design" name="policy_covered_date" value="{{ old('policy_covered_date', $data->policy_covered_date)}}">
 					    @error('policy_covered_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -209,13 +209,13 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Actual ID</label>
+					    <label class="form-label label-bold">Actual ID *</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="actual_id" value="{{ old('actual_id', $data->actual_id )}}" placeholder="Enter Actual ID">
 					    @error('actual_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Deceased Name</label>
+					    <label class="form-label label-bold">Deceased Name *</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="deceased_name" value="{{ old('deceased_name',  $data->deceased_name )}}" placeholder="Enter Deceased Name">
 					    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -227,7 +227,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date of Death</label>
+					    <label class="form-label label-bold">Date of Death *</label>
 					    <input type="date" class="form-control form-control-design" name="date_of_death" value="{{ old('date_of_death', $data->date_of_death )}}" max="{{date('Y-m-d')}}">
 					    @error('date_of_death')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -261,7 +261,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date Of Death Intimation</label>
+					    <label class="form-label label-bold">Death Intimation Date</label>
 					    <input type="date" class="form-control form-control-design" name="intimation_date" value="{{ old('intimation_date', $data->intimation_date )}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -291,7 +291,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Loan Account ID</label>
+					    <label class="form-label label-bold">Loan Account ID *</label>
 					    <input type="text" class="form-control form-control-design numbersonly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID">
 					    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -303,7 +303,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Claim Amount</label>
+					    <label class="form-label label-bold">Claim Amount *</label>
 					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="claim_amount" value="{{ old('claim_amount', $data->claim_amount)}}" placeholder="Enter Claim Amount">
 					    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -446,6 +446,12 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recovered Amount</label>
+					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ old('recovered_amount', $data->recovered_amount)}}" placeholder="Enter Rcovered Amount">
+					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Payable to Nominee</label>
 					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ old('payable_to_nominee', $data->payable_to_nominee)}}" placeholder="Enter the Amount Payable to Nominee">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
@@ -474,8 +480,7 @@
 					    <input type="date" class="form-control form-control-design  " name="final_settlement_date" value="{{ old('final_settlement_date', $data->final_settlement_date)}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
-					<div class="col-3"></div>
-
+					
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">UTRN of MPH</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_mph" value="{{ old('utrn_mph', $data->utrn_mph)}}" placeholder="Enter UTRN of MPH">
@@ -532,11 +537,7 @@
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Recovered Amount</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ old('recovered_amount', $data->recovered_amount)}}" placeholder="Enter Rcovered Amount">
-					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
         	    </div>
         	</div>    		
         </div>
@@ -685,11 +686,11 @@
 					    <label class="form-label label-bold">Nominee Contact No</label>
 					    <input type="text" class="form-control form-control-design2  numbersonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" id="mobile_input" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-					    <div id="ifscError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
+					    <div id="mobileError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
 					</div>
 
 				<div class="col-3 mb-3">
-				    <label class="form-label label-bold">Remarks</label>
+				    <label class="form-label label-bold">Branch Remarks</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{ old('bo_remarks',$nomineedata->bo_remarks) ?? ''}}" placeholder="Remarks...">
 				    @error('bo_remarks')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
@@ -1092,7 +1093,7 @@ $(document).ready(function() {
     const dodInput = document.querySelector('input[name="date_of_death"]');
 
     function RestrictDocReceivedDate() {
-       documentReceivedDateInput.min = intimationReceivedDateInput.value;
+      // documentReceivedDateInput.min = intimationReceivedDateInput.value;
     }
     intimationReceivedDateInput.addEventListener('change', RestrictDocReceivedDate);
 
