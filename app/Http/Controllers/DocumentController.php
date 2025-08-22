@@ -1312,7 +1312,7 @@ class DocumentController extends Controller
                 }
             }
             
-            
+            return $query->orderBy('account_creation_date', 'desc');
         };
 
         if ($request->doc_type === 'loan') {

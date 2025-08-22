@@ -116,30 +116,30 @@
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         @if(Auth::user()->branch_id != '1100')
-                                        <a class="dropdown-item" href="{{ route('home') }}">
+                                        <a class="dropdown-item" href="{{ route('home') }}" id="link_doctrack">
                                             {{ __('Doc Track') }}
                                         </a>
                                         @endif
 
                                         @if(Auth::user()->branch_id == '1100')
-                                        <a class="dropdown-item" href="{{ route('audit') }}">
+                                        <a class="dropdown-item" href="{{ route('audit') }}" id="link_audit_logs">
                                             {{ __('Audit Logs') }}
                                         </a>
                                         @endif
 
-                                        <a class="dropdown-item" href="{{ route('leads_report') }}">
+                                        <a class="dropdown-item" href="{{ route('leads_report') }}" id="link_report">
                                             {{ __('Report') }}
                                         </a>
                                        
                                          @if(Auth::user()->branch_id == '1100')
-                                        <a class="dropdown-item" href="{{ route('insurance_settings') }}">
+                                        <a class="dropdown-item" href="{{ route('insurance_settings') }}" id="link_settings">
                                             {{ __('Settings') }}
                                         </a>
                                         @endif
 
                                         <a class="dropdown-item" href=""
                                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                                     document.getElementById('logout-form').submit();" id="btn_logout">
                                             {{ __('Logout') }}
                                         </a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

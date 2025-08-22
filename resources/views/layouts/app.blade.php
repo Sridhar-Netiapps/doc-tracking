@@ -30,7 +30,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand border-0" href="{{ url('/home') }}">
+                <a class="navbar-brand border-0">
                     {{-- <img src="/images/logo1.svg" /> --}}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -88,7 +88,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}" id="link_insurance">
                                             {{ __('Insurance') }}
                                         </a>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))

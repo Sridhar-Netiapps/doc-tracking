@@ -16,7 +16,7 @@
                         <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
                         <button class="btn btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
 
-                        <button class="btn btn-dark" name="type" value="export">Export</button>
+                        <button class="btn btn-dark" name="type" value="export" id="btn_export_audits">Export</button>
                        </div>
                      </form>
                   

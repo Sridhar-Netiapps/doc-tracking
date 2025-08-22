@@ -630,49 +630,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow">
-            {{-- <form id="update-courier" action="/accounts-update" method="POST"> --}}
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Update Details</h5>
-                </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-4">
-                        <label>Unique Number</label>
-                        <h5 class="unique_number">UJJ029921</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Customer Name</label>
-                        <h5 class="customer_name">Cali</h5>
-                    </div>
-                    <div class="col-4 pb-4">
-                        <label>Channel</label>
-                        <h5 class="channel">GL</h5>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name</label>
-                        <input type="text" name="courier_name" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control" required>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Dispatch Date</label>
-                        <input type="Date" name="dispatch_date" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a>
-                    {{-- <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button> --}}
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            {{-- </form> --}}
-        </div>
-    </div>
-</div>
-<script nonce='{{ env("CSP_NONCE") }}'>
+<script>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
         var loancount = $('td.loan').length;

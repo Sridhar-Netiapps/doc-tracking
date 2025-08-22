@@ -295,7 +295,7 @@ class InsuranceHomeController extends Controller
         $branch = Branch::get();
 
         $procesedby=['NA','Vindhya','HO'];  
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
 
         return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch'));
     }
@@ -324,7 +324,7 @@ class InsuranceHomeController extends Controller
           'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
-          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
+          'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
           'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
              
       ]);
@@ -342,6 +342,14 @@ class InsuranceHomeController extends Controller
       if (!empty($errors)) {
           return redirect()->back()->withErrors($errors)->withInput();
       }
+
+        $request->merge([
+          'claim_amount' => preg_replace('/[^0-9.]/', '', $request->claim_amount), 
+          'loan_amount' => preg_replace('/[^0-9.]/', '', $request->loan_amount),
+          'loan_outstanding' => preg_replace('/[^0-9.]/', '', $request->loan_outstanding),
+          'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
+          
+        ]);
 
         $utrn = rand('000000','999999');
         $claimdata = new InsuranceClaimDetail;
@@ -376,7 +384,7 @@ class InsuranceHomeController extends Controller
         $claimdata->ho_remark = $request->ho_remark;
         $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
         $claimdata->ho_remark2 = $request->ho_remark2;
-        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->re_submit_to_partner_date = $request->resubmission_to_partner_date;
         $claimdata->cliam_status = $request->cliam_status;
         $claimdata->cas_status = $request->cas_status;
         $claimdata->rl_status = $request->rl_status;
@@ -502,7 +510,7 @@ class InsuranceHomeController extends Controller
         $procesedby=['NA','Vindhya','HO'];
          $branch = Branch::get();
         
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
@@ -547,7 +555,7 @@ class InsuranceHomeController extends Controller
           'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
-          're_submit_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
+          'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
           'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
          
          
@@ -607,7 +615,7 @@ class InsuranceHomeController extends Controller
         $claimdata->submit_to_partner_date = $request->submit_to_partner_date;
         $claimdata->processed_by = $request->processed_by;
         $claimdata->doc_rec_date = $request->doc_rec_date;
-        $claimdata->re_submit_to_partner_date = $request->re_submit_to_partner_date;
+        $claimdata->re_submit_to_partner_date = $request->resubmission_to_partner_date;
         $claimdata->ho_remark = $request->ho_remark;
         $claimdata->ho_remark2 = $request->ho_remark2;
         $claimdata->cliam_status = $request->cliam_status;
@@ -967,8 +975,7 @@ class InsuranceHomeController extends Controller
 
        $request->validate([
           'nominee_name_bank' => 'required',
-          'bank_name' => 'required'
-          
+         
       ]);
 
       foreach ($inputdata as $key => $value) {
