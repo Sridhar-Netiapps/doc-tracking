@@ -304,7 +304,8 @@
             var type = $(this).data('type');
 
             Swal.fire({
-                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                // title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                title: 'Reason Required',
                 input: "text",
                 inputLabel: "Enter reason for restore the document:",
                 inputPlaceholder: "Reason...",
@@ -313,6 +314,7 @@
                 cancelButtonText: "Cancel",
                 customClass: {
                     popup: 'rounded-3 shadow',
+                    title: 'mb-0 text-primary',
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
                 },

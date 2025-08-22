@@ -104,19 +104,16 @@ $(document).ready(function(){
             }
         }
     });
-
     $(document).on('keypress','.lettersonly', function (e) {
         if (!/[a-zA-Z\s]/.test(String.fromCharCode(e.which))) {
             e.preventDefault();
         }
     });
-
     // $(document).on('keypress', '.capsonly', function (e) {
     //     if (!/[A-Z0-9\s]/.test(String.fromCharCode(e.which))) {
     //         e.preventDefault();
     //     }
     // });
-
     $(document).on('input', '.capsonly, .alphanumeric', function () {
         let value = $(this).val();
     
@@ -132,29 +129,23 @@ $(document).ready(function(){
     
         $(this).val(value);
     });
-    
-    
-
     $(document).on('keypress','.alphanumeric', function (e) {
         if (!/^[\w\s]+$/.test(String.fromCharCode(e.which))) {
             e.preventDefault();
         }
     });
-
     $('.length_15').on('input', function () {
         var maxLength = 15;
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().slice(0, maxLength));
         }
     });
-
     $('.length_8').on('input', function () {
         var maxLength = 8;
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().slice(0, maxLength));
         }
     });
-
     $('.length_7').on('input', function () {
         var maxLength = 7;
         if ($(this).val().length > maxLength) {
@@ -250,20 +241,29 @@ $(document).ready(function(){
         return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
     }
 
-
-      // Show button when scrolled down 100px
-    window.onscroll = function() {
-        const btn = document.getElementById("backToTopBtn");
-        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-            btn.style.display = "block";
+    $(window).on('scroll', function() {
+        const $btn = $("#backToTopBtn");
+        if ($(this).scrollTop() > 100) {
+            $btn.show();
         } else {
-            btn.style.display = "none";
+            $btn.hide();
         }
-    };
-
-    // Scroll to top when clicked
-    document.getElementById("backToTopBtn").addEventListener("click", function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    
+    $("#backToTopBtn").on('click', function() {
+        $('html, body').animate({ scrollTop: 0 }, 'slow');
+    });
+    $(document).on("contextmenu", function(event) {
+        event.preventDefault();
+        return false;
+    });
+    $(document).on("keydown", function(event) {
+        if (event.ctrlKey && (
+            event.key === "u" || event.key === "U" ||
+            event.key === "j" || event.key === "J" ||
+            event.key === "s" || event.key === "S" ||
+            event.key === "h" || event.key === "H"
+        )) {
+            event.preventDefault();
+        }
+    });
 });

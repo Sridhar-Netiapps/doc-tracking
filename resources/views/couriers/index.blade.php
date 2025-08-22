@@ -56,7 +56,7 @@
             @role('admin|super_admin|master')
             <td>
                 <a href="{{ route('couriers.edit', $courier->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                {{-- <form action="{{ route('couriers.destroy', $courier->id) }}" method="POST" style="display:inline">
+                {{-- <form action="{{ route('couriers.destroy', $courier->id) }}" method="POST">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this courier?')">Delete</button>
                 </form> --}}

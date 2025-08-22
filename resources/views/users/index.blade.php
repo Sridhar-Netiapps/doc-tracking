@@ -83,7 +83,7 @@
                                                 <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
                                                 @endcan
                                                 {{-- @can('delete-user')
-                                                <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline;">
+                                                <form action="{{ route('users.destroy', $user) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>

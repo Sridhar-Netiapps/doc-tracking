@@ -17,6 +17,7 @@ use App\Http\Controllers\InsuranceHomeController;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
+    Route::get('get-key', [LoginController::class, 'getEncryptedAESKey'])->name('get-key');
     Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
 });
 

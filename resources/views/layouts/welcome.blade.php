@@ -31,13 +31,13 @@
                 </select>               
             </div>
             @endrole
-            <div class="col-1" id="dynamic-dropdown" style="display:none;"></div>
-            <div class="col-1" id="reset-btn-container" style="display:none;">
+            <div class="col-1" id="dynamic-dropdown" class="d-none"></div>
+            <div class="col-1" id="reset-btn-container" class="d-none">
                 <button type="button" id="reset-btn" class="btn btn-secondary w-100">Reset</button>
             </div>
             <div class="col-1"></div>
         </div>
-        <div id="template-region" style="display:none;">
+        <div id="template-region" class="d-none">
             {{-- <label>Region</label> --}}
             <select id="region" name="region" class="form-select">
                 <option value="">-- Region --</option>
@@ -48,7 +48,7 @@
             </select>
         </div>
         
-        <div id="template-tat" style="display:none;">
+        <div id="template-tat" class="d-none">
             {{-- <label>TAT</label> --}}
             <select id="tat" name="tat" class="form-select">
                 <option value="">-- TAT --</option>
@@ -62,102 +62,92 @@
                        
     </div>
 </div>
-<script>
-    document.getElementById('search_type').addEventListener('change', function () {
-        let value = this.value;
-        let container = document.getElementById('dynamic-dropdown');
+<script nonce='{{ env("CSP_NONCE") }}'>
+    $(document).ready(function () {
+        let $searchType = $('#search_type');
+        let $container = $('#dynamic-dropdown');
+        let $resetContainer = $('#reset-btn-container');
 
-        container.innerHTML = ''; // Clear previous
-        if (value === 'region') {
-            container.innerHTML = document.getElementById('template-region').innerHTML;
-            container.style.display = 'block';
-        } else if (value === 'tat') {
-            container.innerHTML = document.getElementById('template-tat').innerHTML;
-            container.style.display = 'block';
-        } else {
-            container.style.display = 'none';
-        }
+        // When dropdown changes
+        $searchType.on('change', function () {
+            let value = $(this).val();
+            $container.empty(); // Clear previous
 
-        toggleResetButton(); // update reset visibility when switching dropdown type
-    });
+            if (value === 'region') {
+                $container.html($('#template-region').html()).show();
+            } else if (value === 'tat') {
+                $container.html($('#template-tat').html()).show();
+            } else {
+                $container.hide();
+            }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        let selectedSearchType = "{{ $selectedSearchType }}"
+            toggleResetButton(); // update reset visibility
+        });
+
+        // Pre-fill based on server values
+        let selectedSearchType = "{{ $selectedSearchType }}";
         let selectedRegion = "{{ $selectedRegion }}";
         let selectedTat = "{{ $selectedTat }}";
-        let container = document.getElementById('dynamic-dropdown');
-        let resetContainer = document.getElementById('reset-btn-container');
 
         if (selectedSearchType) {
-            document.getElementById('search_type').dispatchEvent(new Event('change'));
+            $searchType.trigger('change');
         }
 
         if (selectedRegion) {
-            container.innerHTML = document.getElementById('template-region').innerHTML;
-            container.style.display = 'block';
+            $container.html($('#template-region').html()).show();
         } else if (selectedTat) {
-            container.innerHTML = document.getElementById('template-tat').innerHTML;
-            container.style.display = 'block';
+            $container.html($('#template-tat').html()).show();
         }
 
         toggleResetButton();
 
         // Click -> RESET (clear session filters then reload)
         $(document).on('click', '#reset-btn', function () {
-            $.ajax({
-                url: "{{ route('tat.data') }}",
-                type: 'POST',
-                data: {
-                    reset: true, // <-- explicit reset flag
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function (response) {
-                    if (response.success) {
-                        // Clear UI instantly (optional)
-                        $('#search_type').val('');
-                        $('#dynamic-dropdown').hide().empty();
-                        $('#reset-btn-container').hide();
-
-                        // Reload to fetch original data
-                        location.reload();
-                    }
+            $.post("{{ route('tat.data') }}", {
+                reset: true,
+                _token: "{{ csrf_token() }}"
+            }, function (response) {
+                if (response.success) {
+                    // Clear UI instantly (optional)
+                    $searchType.val('');
+                    $container.hide().empty();
+                    $resetContainer.hide();
+                    
+                    // Reload to fetch original data
+                    location.reload();
                 }
             });
         });
-    });
 
-    // Show/hide reset if any filter currently has a value
-    function toggleResetButton() {
-        const hasRegion = $('#region').length && $('#region').val();
-        const hasTat    = $('#tat').length && $('#tat').val();
-        if (hasRegion || hasTat) {
-            $('#reset-btn-container').show();
-        } else {
-            $('#reset-btn-container').hide();
+        // Show/hide reset if any filter currently has a value
+        function toggleResetButton() {
+            const hasRegion = $('#region').length && $('#region').val();
+            const hasTat = $('#tat').length && $('#tat').val();
+            if (hasRegion || hasTat) {
+                $resetContainer.show();
+            } else {
+                $resetContainer.hide();
+            }
         }
-    }
 
-    $(document).on('change', '#region, #tat', function () {
-        toggleResetButton();
+        // When region/tat dropdowns change -> reload
+        $(document).on('change', '#region, #tat', function () {
+            toggleResetButton();
 
-        let tat = $('#tat').val();
-        let region = $('#region').val();
-        let searchType = $('#search_type').val(); 
+            let tat = $('#tat').val();
+            let region = $('#region').val();
+            let searchType = $searchType.val();
 
-        $.ajax({
-            url: "{{ route('tat.data') }}",
-            type: 'POST',
-            data: {
+            $.post("{{ route('tat.data') }}", {
                 tat: tat,
                 region: region,
                 search_type: searchType,
                 _token: "{{ csrf_token() }}"
-            },
-            success: function(response) {
+            }, function (response) {
                 if (response.success) {
-                    location.reload(); 
+                    location.reload();
                 }
-            }
+            });
         });
     });
 </script>

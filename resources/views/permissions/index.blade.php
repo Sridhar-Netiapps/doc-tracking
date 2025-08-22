@@ -40,7 +40,7 @@
                                 <td>
                                     <div class="d-flex">
                                         <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm me-3">Edit</a>
-                                        {{-- <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
+                                        {{-- <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
