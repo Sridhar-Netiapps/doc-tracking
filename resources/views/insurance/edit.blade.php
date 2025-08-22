@@ -646,8 +646,9 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">IFSC Code</label>
-				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc"  value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC" minlength="11" maxlength="11">
+				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="ifsc" id="ifscInput" value="{{ old('ifsc',$nomineedata->ifsc ) ?? ''}}" placeholder="Enter IFSC" minlength="11" maxlength="11">
 				    @error('ifsc')<div class="text-error">{{ $message }}</div>@enderror
+				    <div id="ifscError" class="text-error d-none">IFSC code must be exactly 11 characters.</div>
 				</div>
 
 				<div class="col-3 mb-3">
@@ -682,8 +683,9 @@
 
 				<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+					    <input type="text" class="form-control form-control-design2  numbersonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" id="mobile_input" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
 					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+					    <div id="ifscError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
 					</div>
 
 				<div class="col-3 mb-3">
@@ -1149,6 +1151,40 @@ $(document).ready(function() {
 	        });
 	    }
 	});
+
+
+$(document).ready(function(){
+    $('#ifscInput').on('input', function() {
+        let val = $(this).val();
+
+        if(val.length < 11) {
+            $('#ifscError').removeClass('d-none').text("Minimum 11 characters required.");
+        } 
+        else if(val.length > 11) {
+            $('#ifscError').removeClass('d-none').text("Maximum 11 characters allowed.");
+            $(this).val(val.substring(0, 11)); // trim extra chars
+        } 
+        else {
+            $('#ifscError').addClass('d-none'); // hide error if valid
+        }
+    });
+
+    $('#mobile_Input').on('input', function() {
+        let val = $(this).val();
+
+        if(val.length < 11) {
+            $('#mobileError').removeClass('d-none').text("Minimum 10 characters required.");
+        } 
+        else if(val.length > 11) {
+            $('#mobileError').removeClass('d-none').text("Maximum 10 characters allowed.");
+            $(this).val(val.substring(0, 11)); // trim extra chars
+        } 
+        else {
+            $('#mobileError').addClass('d-none'); // hide error if valid
+        }
+    });
+});
+
 
 
 

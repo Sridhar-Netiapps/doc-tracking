@@ -375,13 +375,13 @@
           
           <div class="checkbox-group">
             <span class="content-label">Cause of Death (Please tick):</span>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'HEART ATTACK')?'checked':''}}> Heart Disease</label>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'KIDNEY FAILURE')?'checked':''}}> Kidney Disease</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Heart Attack')?'checked':''}}> Heart Disease</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Kidney Failure')?'checked':''}}> Kidney Disease</label>
             <label><input type="checkbox" {{ ($data->cause_of_death == 'Liver Disease')?'checked':''}}> Liver Disease</label>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'CANCER')?'checked':''}}> Cancer</label>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'ACCIDENT' || $data->cause_of_death == 'ACCIDENT(BURNING)')?'checked':''}}> Accidental</label>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'SUICIDE')?'checked':''}}> Suicide</label>
-            <label><input type="checkbox" {{ ($data->cause_of_death == 'NATURAL')?'checked':''}}> Natural</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Cancer')?'checked':''}}> Cancer</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Accident' || $data->cause_of_death == 'ACCIDENT(BURNING)')?'checked':''}}> Accidental</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Suicide')?'checked':''}}> Suicide</label>
+            <label><input type="checkbox" {{ ($data->cause_of_death == 'Natural')?'checked':''}}> Natural</label>
           </div>
 
         </div>

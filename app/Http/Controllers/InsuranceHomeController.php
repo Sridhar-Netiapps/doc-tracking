@@ -295,7 +295,7 @@ class InsuranceHomeController extends Controller
         $branch = Branch::get();
 
         $procesedby=['NA','Vindhya','HO'];  
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
 
         return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch'));
     }
@@ -342,6 +342,14 @@ class InsuranceHomeController extends Controller
       if (!empty($errors)) {
           return redirect()->back()->withErrors($errors)->withInput();
       }
+
+        $request->merge([
+          'claim_amount' => preg_replace('/[^0-9.]/', '', $request->claim_amount), 
+          'loan_amount' => preg_replace('/[^0-9.]/', '', $request->loan_amount),
+          'loan_outstanding' => preg_replace('/[^0-9.]/', '', $request->loan_outstanding),
+          'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
+          
+        ]);
 
         $utrn = rand('000000','999999');
         $claimdata = new InsuranceClaimDetail;
@@ -502,7 +510,7 @@ class InsuranceHomeController extends Controller
         $procesedby=['NA','Vindhya','HO'];
          $branch = Branch::get();
         
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
@@ -967,8 +975,7 @@ class InsuranceHomeController extends Controller
 
        $request->validate([
           'nominee_name_bank' => 'required',
-          'bank_name' => 'required'
-          
+         
       ]);
 
       foreach ($inputdata as $key => $value) {
