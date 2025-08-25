@@ -72,8 +72,10 @@ class LoginController extends Controller
                         return back()->withErrors(['username' => 'You are not authorized.']);
                     }
                     Session::flush();
-                    Auth::logoutOtherDevices($password);
+                    // Auth::logoutOtherDevices($password);
                     Auth::login($user);
+                    //  $user->session_id = Session::getId();
+                    //  $user->save();
                     if ($user->hasrole('super_admin')) {
                         return redirect()->route('users.index');
                     }
@@ -86,8 +88,11 @@ class LoginController extends Controller
         }
         else{
             if (Auth::attempt(['employee_id' => $username, 'password' => $password])) {
-                Auth::logoutOtherDevices($password);
+                // Auth::logoutOtherDevices($password);
                 $user = Auth::user();
+                $user->session_id = Session::getId();
+                $user->save();
+                // dd($user);
                 if ($user->hasrole('super_admin')) {
                     return redirect()->route('users.index');
                 }

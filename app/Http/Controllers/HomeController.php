@@ -37,17 +37,19 @@ class HomeController extends Controller
              session()->forget('filters'); 
              return response()->json(['success' => true, 'reset' => true]);
          }
-         session()->put('filters', [
-            'search_type' => $request->get('search_type'),
-             'tat'    => $request->input('tat'),
-             'region' => $request->input('region'),
-         ]);
+     
+         $filters = ['search_type' => $request->get('search_type')];
+     
+         if ($request->get('search_type') === 'region') {
+             $filters['region'] = $request->input('region');
+         } elseif ($request->get('search_type') === 'tat') {
+             $filters['tat'] = $request->input('tat');
+         }
+     
+         session()->put('filters', $filters);
      
          return response()->json(['success' => true]);
-     }
-     
-
-     
+     }     
 
     public function index(Request $request)
     {
@@ -58,12 +60,15 @@ class HomeController extends Controller
             ]);
         }
     
-        $filters = session()->get('filters', []);
+        $filters = session()->pull('filters', []);
         $tat = $filters['tat'] ?? null;
         $region = $filters['region'] ?? null;
-// dd($filters);
         $start_date = Carbon::now()->subWeek()->startOfWeek();
         $end_date = Carbon::now()->subWeek()->endOfWeek();
+
+        $selectedTat = $filters['tat'] ?? '';
+        $selectedRegion = $filters['region'] ?? '';
+        $selectedSearchType = $filters['search_type'] ?? '';
 
         $filter = function ($query) use($tat, $region) {
             if ($tat) {
@@ -105,7 +110,7 @@ class HomeController extends Controller
             $query->select('status', DB::raw('count(*) as total'))->groupBy('status');
             return $query;
         };
-            
+
         $loan_today = $dailyFilter(LoanDocument::query())->pluck('total', 'status')->toArray();
         $gold_loan_today = $dailyFilter(GoldLoanDocument::query())->pluck('total', 'status')->toArray();
         $dtrf_today = $dailyFilter(DtrfDocument::query())->pluck('total', 'status')->toArray();
@@ -145,7 +150,7 @@ class HomeController extends Controller
         return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending',
         'total_dispatch','total_transist','total_received','total_rejected','total_selected', 'total_received_query',  
          'total_doc_today', 'loan_today', 'gold_loan_today', 'dtrf_today', 'aof_today','total_pending_today',
-         'total_dispatch_today','total_transist_today','total_received_today','total_rejected_today','total_selected_today', 'total_received_query_today', 'type'));
+         'total_dispatch_today','total_transist_today','total_received_today','total_rejected_today','total_selected_today', 'total_received_query_today', 'type', 'selectedTat', 'selectedRegion', 'selectedSearchType'));
     }
 
 
