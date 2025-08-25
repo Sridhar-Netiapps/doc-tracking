@@ -1,5 +1,9 @@
 <script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
+        $('a.logout').click(function(e){
+            e.preventDefault();
+            $('#logout-form').submit();
+        })
         $('[data-bs-toggle="tooltip"]').tooltip();
         @if(session('success'))
             Swal.fire({

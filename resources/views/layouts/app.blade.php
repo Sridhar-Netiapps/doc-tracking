@@ -13,9 +13,7 @@
     <link rel="stylesheet" href="{{ asset('css/material_green.css') }}">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}" nonce="wUDPhZ1Z60inspnMCukimCi">
-
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="{{ asset('js/sweetalert2.all.min.js') }}" nonce="wUDPhZ1Z60inspnMCukimCi"></script>
@@ -23,8 +21,7 @@
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/apexchart.js') }}"></script>
     <script src="{{ asset('js/flatpickr.js') }}"></script>
-    <script src="{{ asset('js/flatpickr.min.js') }}"></script>
-    
+    <script src="{{ asset('js/flatpickr.min.js') }}"></script>    
 </head>
 <body>
     <div id="app">
@@ -94,11 +91,7 @@
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         @endunless
-                                        <a class="dropdown-item" href=""
-                                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
-                                        </a>
+                                        <a class="dropdown-item logout">{{ __('Logout') }} </a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
@@ -115,7 +108,6 @@
         </main>
     </div>
     @include('layouts.scripts')
-
     <button id="backToTopBtn" title="Go to top">↑</button>
 </body>
 </html>
