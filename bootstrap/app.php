@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ActivityLogger::class,
+            // \App\Http\Middleware\Authenticate::class,
         ]);
 
         // Middleware group: api
@@ -39,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Route middleware aliases
         $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
             'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
             'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
             'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
