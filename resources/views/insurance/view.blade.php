@@ -8,6 +8,8 @@
         
 		<div class="ms-auto">
 			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible [Having outstanding]' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
+
+			  @if($data->nominee->nominee_data_verified == 'Yes')
 				@if($data->products->type == 'MB')
 				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Download Claim Form</button> </a>
 				@else
@@ -16,7 +18,24 @@
 	            
 				<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
 
-				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
+               @endif
+               
+               @if( (Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == 'Yes' && $nomineedata->spdc_data_verified == 'Yes' && $data->cliam_status != 'Pending From Branch') 
+               ||(Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == '' && $nomineedata->spdc_data_verified == '') 
+               ||(Auth::user()->branch_id != '1100' && $data->cliam_status == 'Pending From Branch') )
+				  <button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
+			   @endif
+
+			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified))
+              <a class="confirm-nominee_verification" href="{{ route('verify_nominee_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify Nominee Details</button> </a>
+                 
+			@endif
+            
+			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified))
+              <a class="confirm-spdc_verification" href="{{ route('verify_pod_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify POD Details</button> </a>
+                 
+			@endif
+
 			@endif
 
 			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}" ><button class="btn btn-sm btn-success btn-text p-2" id="btn_clone">Clone</button> </a>
@@ -593,6 +612,23 @@
         	    </div>
         	</div>    		
         </div>
+
+        <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">Additional Fields (Optional)</div>
+        	<div class="card-body">
+        		<div class="row">
+        			@foreach($additionalLeadfields as $key=>$val)
+        			<div class="col-3 mb-3">
+					    <label class="form-label label-bold">{{$val->settingData->field_name}}</label>
+					    <input class="form-control form-control-design" value="{{ $val->param_value}}">
+					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+					@endforeach
+
+					
+        	    </div>
+        	</div>    		
+        </div>
         
         </fieldset>
 
@@ -900,6 +936,18 @@
 
 $(document).on('click', '.confirm-link', function(e) {
     if (!confirm('You are cloning/duplicating the Lead details')) {
+        e.preventDefault(); // stop navigation
+    }
+});
+
+$(document).on('click', '.confirm-nominee_verification', function(e) {
+    if (!confirm('You are Confirming that all Nominee bank details are correct . ')) {
+        e.preventDefault(); // stop navigation
+    }
+});
+
+$(document).on('click', '.confirm-spdc_verification', function(e) {
+    if (!confirm('You are Confirming that SPDC and POD details are correct . ')) {
         e.preventDefault(); // stop navigation
     }
 });

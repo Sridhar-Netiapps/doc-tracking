@@ -156,6 +156,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
     Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
+
+    Route::get('insurance/view-claim-details/verify-nominee-details/{id}',[InsuranceHomeController::class,'verify_nominee_details'])->name('verify_nominee_details');
+
+    Route::get('insurance/view-claim-details/verify-pod-details/{id}',[InsuranceHomeController::class,'verify_pod_details'])->name('verify_pod_details');
     
 
    

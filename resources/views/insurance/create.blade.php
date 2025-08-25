@@ -566,6 +566,23 @@
         	</div>    		
         </div>
 
+        <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">Additional Fields (Optional)</div>
+        	<div class="card-body">
+        		<div class="row">
+        			@foreach($additionalfields as $key=>$val)
+        			<div class="col-3 mb-3">
+					    <label class="form-label label-bold">{{$val->field_name}}</label>
+					    <input class="form-control form-control-design {{ $val->allowed_chars}} " name="af_{{$val->id}}" value="{{ old('af_{{$val->id')}}">
+					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+					@endforeach
+
+					
+        	    </div>
+        	</div>    		
+        </div>
+
 		
 
 		<div class="d-flex mt-3">

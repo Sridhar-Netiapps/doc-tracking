@@ -20,6 +20,7 @@
 	                  <button class="btn btn-secondary">GO</button>	                 
 	                 </div>
 	               </form>
+	               <a class="nav-link" href="{{route('insurance_list')}}"><i class="fa fa-sync m-3"></i></a>
 				</div>
 			</div>
 			

@@ -601,6 +601,29 @@
         	    </div>
         	</div>    		
         </div>
+
+        <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">Additional Fields (Optional)</div>
+        	<div class="card-body">
+        		<div class="row">
+        			@foreach($allSettings as $setting)
+				    @php
+				        $field = $existingFields->get($setting->id); // child if exists
+				    @endphp
+				    <div class="col-3 mb-3">
+				        <label class="form-label label-bold">{{ $setting->field_name }}</label>
+				        <input type="text"
+				               class="form-control form-control-design"
+				               name="af_{{ $setting->id }}"
+				               value="{{ old('af_'.$setting->id, $field ? $field->param_value : '') }}">
+				    </div>
+				    @endforeach
+
+
+					
+        	    </div>
+        	</div>    		
+        </div>
         
         </fieldset>
 

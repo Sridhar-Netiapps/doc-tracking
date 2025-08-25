@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('additional_fields', function (Blueprint $table) {
+        Schema::create('additional_field_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('insurance_claim_details_id');
-            $table->string('additional_field_settings_id');
-            $table->string('param_name');
-            $table->string('param_value')->nullable();
+            $table->string('field_name');
+            $table->string('field_type');
+            $table->string('allowed_chars');
+            $table->string('module')->nullable();
             $table->string('creator');
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('additional_fields');
+        Schema::dropIfExists('additional_field_settings');
     }
 };
