@@ -21,11 +21,11 @@
                     <option value="tat" {{ $selectedSearchType == 'tat' ? 'selected' : '' }}>TAT</option>
                 </select>               
             </div>
-            @endrole
             <div class="col-1" id="dynamic-dropdown"  class="d-none"></div>
             <div class="col-1" id="reset-btn-container"  class="d-none">
                 <button type="button" id="reset-btn" class="btn btn-secondary w-100">Reset</button>
             </div>
+            @endrole
             <div class="col-1"></div>
         </div>
         <div id="template-region"  class="d-none">
