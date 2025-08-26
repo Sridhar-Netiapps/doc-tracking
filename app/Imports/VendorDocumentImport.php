@@ -34,32 +34,6 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
 
     protected $total = 0;
     protected $success = 0;
-
-    
-    public function parseFlexibleDate($value)
-    {
-        // Handle Excel serial number
-        if (is_numeric($value)) {
-            return Carbon::instance(Date::excelToDateTimeObject($value))->format('Y-m-d');
-        }
-
-        // Clean string
-        $value = trim($value);
-
-        // Preferred string formats
-        $formats = ['d-m-Y', 'd/m/Y', 'd.m.Y', 'Y-m-d'];
-
-        foreach ($formats as $format) {
-            try {
-                // Corrected format: Y-m-d
-                return Carbon::createFromFormat($format, $value)->format('Y-m-d');
-            } catch (\Exception $e) {
-                continue;
-            }
-        }
-
-        return null;
-    }
     
     function parseExcelDate($value)
     {
@@ -73,6 +47,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
 
     public function collection(Collection $rows)
     {
+        dd($rows);
         $table = [
             'MB LOAN' => LoanDocument::class,
             'GOLD LOAN' => GoldLoanDocument::class,

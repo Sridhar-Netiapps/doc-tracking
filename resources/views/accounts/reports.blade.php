@@ -201,7 +201,16 @@
         $('#doc_type').on('change', docfields);
         $('#search_type').on('change', docfields);
         $('#reportForm').validate({
-            rules: {
+            rules: {<div class="col-12 mt-3">
+                    <label for="excel_file" class="form-label">Document Type</label> 
+                    <select class="form-select document_type" name="document_type" required>
+                        <option value="">Select Document Type</option>
+                        <option value="loan">MB Loan Docs</option>
+                        <option value="goldloan">Gold Loan Docs</option>
+                        <option value="aof">Liabilities Docs</option>
+                        <option value="dtrf">DTR Files</option>
+                    </select>
+                </div>
                 account_number: {
                     alphanumeric: {
                         depends: function () {

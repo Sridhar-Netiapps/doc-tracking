@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Upload;
 use App\Imports\VendorDocumentImport;
+use App\Imports\ImportData;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -24,14 +25,21 @@ class UploadController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'doc_type' => 'nullable|string',
             'excel_file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
         $file = $request->file('excel_file');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $filePath = $file->storeAs('uploads/excel', $fileName, 'public');
-
-        $import = new VendorDocumentImport();
+// dd($file);
+        if ($request->doc_type) {
+            $import = new ImportData($request->doc_type);
+        }else {
+            $import = new VendorDocumentImport();
+        }
+        // dd($import);    
+        // $import = new VendorDocumentImport();
         Excel::import($import, $file);
 
         $upload = Upload::create([
@@ -42,13 +50,21 @@ class UploadController extends Controller
             'successful_rows' => $import->getSuccessCount(),
             'failed_rows' => count($import->failures()),
         ]);
-        
+        // dd($import->failures());
         if($import->failures()->isNotEmpty()){
             session()->flash('upload_failures', $import->failures());
-            return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Upload Unsuccessfull.');
+            if($request->doc_type){
+                return redirect()->route('accounts.data_import')->with('error', 'Upload Unsuccessfull.');
+            } else {
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Upload Unsuccessfull.');
+            }
         }
         else{
-            return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Upload completed Successfully.');
+            if($request->doc_type){
+                return redirect()->route('accounts.data_import')->with('success', 'Upload completed Successfully.');
+            } else {
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Upload completed Successfully.');
+            }
         }
 
     }
