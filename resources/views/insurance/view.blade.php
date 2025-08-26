@@ -4,7 +4,11 @@
 <div class="container">
 	<div class="d-flex py-4">
 		<label class="label-font-header">Insurance Lead Details- {{ $data->utrn }}</label>
-
+        @php
+          $checker = ['CRM','ACRM','BOM','BM','Branch Manager','Branch Operation Manager','Customer Relationship Manager','Assistant Customer Relationship Manager','Senior Branch Manager'];
+          $maker = ['Cashier','CCR','Customer Care Representative','Customer Care Representative-URC'];
+          $HO = ['Head Of Operations','National Manager-Banking Operations /Regional Operations Manager','Officer-Insurance and TPP Operations','Specialist-Insurance and TPP Operations','Manager-Insurance and TPP Operations'];
+        @endphp
         
 		<div class="ms-auto">
 			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible [Having outstanding]' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
@@ -22,23 +26,27 @@
                
                @if( (Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == 'Yes' && $nomineedata->spdc_data_verified == 'Yes' && $data->cliam_status != 'Pending From Branch') 
                ||(Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == '' && $nomineedata->spdc_data_verified == '') 
-               ||(Auth::user()->branch_id != '1100' && $data->cliam_status == 'Pending From Branch') )
+               || (Auth::user()->branch_id != '1100' && $data->cliam_status == 'Pending From Branch' &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) ) ) )
 				  <button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			   @endif
 
-			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified))
-              <a class="confirm-nominee_verification" href="{{ route('verify_nominee_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify Nominee Details</button> </a>
+			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified) && ( in_array(auth::user()->hrmData->current_designation, $checker ) ) )
+             <!--  <a class="confirm-nominee_verification" href="{{ route('verify_nominee_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify Nominee Details</button> </a> -->
+             <button type="button" class="btn btn-danger p-2" data-bs-toggle="modal" data-bs-target="#nomineeModal" data-bs-whatever="Region">Verify Nominee Details</button>
                  
 			@endif
             
-			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified))
-              <a class="confirm-spdc_verification" href="{{ route('verify_pod_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify POD Details</button> </a>
+			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified) && ( in_array(auth::user()->hrmData->current_designation , $checker ) ))
+            
+              <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#podModal" data-bs-whatever="Region">Verify POD Details</button>
                  
 			@endif
 
 			@endif
-
+            
+            @if(auth::user()->branch_id == '1100')
 			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}" ><button class="btn btn-sm btn-success btn-text p-2" id="btn_clone">Clone</button> </a>
+			@endif
 			
 			<a href="{{ route('insurance_list')}}" ><button class="btn btn-sm btn-dark btn-text p-2" id="btn_go_back">Go Back</button> </a>
 		</div>
@@ -769,6 +777,68 @@
 	</div>
 </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="nomineeModal" tabindex="-1" aria-labelledby="nomineeModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('verify_nominee_details') }}" enctype="multipart/form-data" id="nomineeForm">
+        @csrf
+        <div class="modal-header bg-success">
+          <h5 class="modal-title label-bold text-white">Nominee Details Verification</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" name="modulename" id="recipient-name">
+
+          <div class="form-group">
+            <label>Checker Remarks</label>
+            <textarea class="form-control" name="nominee_remarks" id="nominee_remarks" placeholder="Enter comments here"></textarea>
+          </div>
+
+        </div>
+        <input type="hidden" name="nominee_id" value="{{ $nomineedata->id}}">
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" name="action" value="Accepted">Accept</button>
+          <button type="submit" class="btn btn-danger" name="action" value="Rework" id="btn_rework">Rework</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--POD Modal -->
+<div class="modal fade" id="podModal" tabindex="-1" aria-labelledby="podModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('verify_pod_details') }}" enctype="multipart/form-data" id="podForm">
+        @csrf
+        <div class="modal-header bg-success">
+          <h5 class="modal-title label-bold text-white">SPDC, POD Details Verification</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" name="modulename" id="recipient-name">
+
+          <div class="form-group">
+            <label>Checker Remarks</label>
+            <textarea class="form-control" name="pod_remarks" id="pod_remarks" placeholder="Enter comments here"></textarea>
+          </div>
+
+        </div>
+        <input type="hidden" name="nominee_id" value="{{ $nomineedata->id}}">
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" name="action" value="Accepted">Accept</button>
+          <button type="submit" class="btn btn-danger" name="action" value="Rework" id="btn_pod_rework">Rework</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 
 	document.querySelectorAll(".btn-toggle").forEach(button => {
@@ -950,6 +1020,33 @@ $(document).on('click', '.confirm-spdc_verification', function(e) {
     if (!confirm('You are Confirming that SPDC and POD details are correct . ')) {
         e.preventDefault(); // stop navigation
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("nomineeForm");
+    const remarks = document.getElementById("nominee_remarks");
+    const reworkBtn = document.getElementById("btn_rework");
+
+    reworkBtn.addEventListener("click", function (e) {
+        if (remarks.value.trim() === "") {
+            e.preventDefault(); // stop form submit
+            alert("Comments are mandatory for Rework!");
+            remarks.focus();
+        }
+    });
+
+    const podform = document.getElementById("podForm");
+    const podremarks = document.getElementById("pod_remarks");
+    const podreworkBtn = document.getElementById("btn_pod_rework");
+
+    podreworkBtn.addEventListener("click", function (e) {
+        if (podremarks.value.trim() === "") {
+            e.preventDefault(); // stop form submit
+            alert("Comments are mandatory for Rework!");
+            podremarks.focus();
+        }
+    });
+
 });
 
 </script>

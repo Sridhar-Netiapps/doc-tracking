@@ -104,4 +104,8 @@ class InsuranceClaimDetail extends Model
         return $this->belongsTo(User::class , 'latest_editor','employee_id');
     }
 
+    public function additionalfields(){
+        return $this->hasMany(AdditionalField::class ,'insurance_claim_details_id');
+    }
+
 }

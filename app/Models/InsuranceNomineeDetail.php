@@ -29,8 +29,10 @@ class InsuranceNomineeDetail extends Model
         'pkt_no',
         'nominee_data_verified',
         'nominee_data_verifier',
+        'nominee_checker_comments',
         'spdc_data_verified',
-        'spdc_data_verfier'
+        'spdc_data_verfier',
+        'spdc_checker_comments'
     ];
 
     public function lead(){

@@ -493,7 +493,7 @@ class InsuranceHomeController extends Controller
         $procesedby=['NA','Vindhya','HO'];
         $branch = Branch::get();
         $landingTab = (Auth::user()->branch_id == '1100' ? 'ho' :'bo'); 
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
@@ -1071,6 +1071,14 @@ class InsuranceHomeController extends Controller
        $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($request->lead_id))->first();
        if($insurancenomineedata) {
            $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
+
+           if($nomineedetail->nominee_data_verified == 'No'){
+                  $nomineedetail->nominee_data_verified = '';
+           }
+
+           if($nomineedetail->spdc_data_verified == 'No'){
+                  $nomineedetail->spdc_data_verified = '';
+           }
        }else{
          $nomineedetail = new InsuranceNomineeDetail;
          $nomineedetail->insurance_claim_details_id = decrypt($request->lead_id);
@@ -1094,6 +1102,7 @@ class InsuranceHomeController extends Controller
        $nomineedetail->ack_rec_date = $request->ack_rec_date;
        $nomineedetail->pkt_no = $request->pkt_no;
 
+
        $nomineedetail->save();
 
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
@@ -1110,7 +1119,7 @@ class InsuranceHomeController extends Controller
 
              $module = 'Insurance'; 
              $operation = 'Update';
-             $note = 'Updated Nominee Details - '.$claimdata->utrn;
+             $note = 'Maker Updated Nominee Details - '.$claimdata->utrn;
              $link = url('/').'/insurance/view_claim_details/'.encrypt($request->lead_id);
 
             $this->auditlogs($module , $operation ,$note , $link);
@@ -1496,7 +1505,7 @@ class InsuranceHomeController extends Controller
               ->when($branch,function($q)use($branch){
                  $q->where('branch',$branch);
               })
-              
+              ->with('additionalfields')
               ->orderBy('id','DESC')->get();
 
     // print_r(json_encode($data));die();
@@ -1531,7 +1540,9 @@ class InsuranceHomeController extends Controller
 
          $this->auditlogs($module , $operation ,$note , $link);
 
-         return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.xlsx');
+         $additionl_fileds = AdditionalFieldSetting::get();
+
+         return Excel::download(new ExportInsuranceLeads($data,$additionl_fileds), 'insurance_leads_'.date('Ymdhis').'.xlsx');
      }
 
     }
@@ -1892,50 +1903,53 @@ class InsuranceHomeController extends Controller
                   
         }
 
-        public function verify_nominee_details($leadID){
-              InsuranceNomineeDetail::where('id',decrypt($leadID))->update([
-                'nominee_data_verified' => 'Yes',
+        public function verify_nominee_details(Request $request){
+
+              InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
+                'nominee_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
+                'nominee_checker_comments' => $request->nominee_remarks,
                 'nominee_data_verifier' => Auth::user()->employee_id
               ]); 
 
-              $nomineeData =InsuranceNomineeDetail::where('id',decrypt($leadID))->first();
+              $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();
               $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->first();
 
 
               $module = 'Insurance';
-              $operation = 'Nominee Details';
-              $note = 'Nominee details are verified for Lead ID - '.$leadData->utrn;
+              $operation = 'Nominee Details Verification';
+              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
               $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
 
               $this->auditlogs($module, $operation, $note, $link);
 
-              return redirect()->back()->with('success','Nominee Details Verified' );
+              return redirect()->back()->with('success','Thank You . Your consent has been updated' );
         }
 
-        public function verify_pod_details($leadID){
-              InsuranceNomineeDetail::where('id',decrypt($leadID))->update([
-                'spdc_data_verified' => 'Yes',
+        public function verify_pod_details(Request $request){
+              InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
+                'spdc_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
+                'spdc_checker_comments' => $request->pod_remarks,
                 'spdc_data_verfier' => Auth::user()->employee_id
               ]); 
 
-               $nomineeData =InsuranceNomineeDetail::where('id',decrypt($leadID))->first();
+               $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();
              
 
               $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->update([
-                'cliam_status' => 'Document Sent to HO to Process']);
+                'cliam_status' => ($request->action == 'Accepted') ? 'Document Sent to HO to Process' : 'Pending From Branch']);
 
 
               $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->first();
 
 
               $module = 'Insurance';
-              $operation = 'Nominee Details';
-              $note = 'Nominee details are verified for Lead ID - '.$leadData->utrn;
+              $operation = 'POD Details Verification';
+              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
               $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
 
               $this->auditlogs($module, $operation, $note, $link);
 
-              return redirect()->back()->with('success','SPDC details verified' );
+              return redirect()->back()->with('success','Thank You . Your consent has been updated' );
         }
 
 
