@@ -231,9 +231,9 @@ $(document).ready(function(){
 
       // Show button when scrolled down 100px
     
-    //   document.addEventListener('change', function (e) {
-    //     const input = e.target.closest('.file-validate');
-    //     if (!input) return;
+      document.addEventListener('change', function (e) {
+        const input = e.target.closest('.file-validate');
+        if (!input) return;
     
     //     const allowedExtensions = input.dataset.ext.split(',').map(ext => ext.trim().toLowerCase());
     //     const allowedMimeTypes = {
@@ -328,34 +328,18 @@ $(document).ready(function(){
     // }
     
 
-    //   window.onscroll = function() {
-    //     const btn = document.getElementById("backToTopBtn");
-    //     if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-    //         btn.style.display = "block";
-    //     } else {
-    //         $btn.hide();
-    //     }
-    // }
-    $("#backToTopBtn").on('click', function() {
-        $('html, body').animate({ scrollTop: 0 }, 'slow');
-    });
-    $(document).on("contextmenu", function(event) {
-        event.preventDefault();
-        return false;
-    });
-    $(document).on("keydown", function(e) {
-        if (e.ctrlKey) {
-            const key = e.key.toLowerCase(); 
-            
-            if (e.shiftKey && key === 'i') {
-              e.preventDefault();
-              return false;
-            }
-            
-            if (['u', 'j', 's', 'h'].includes(key)) {
-              e.preventDefault();
-              return false;
-            }
+      window.onscroll = function() {
+        const btn = document.getElementById("backToTopBtn");
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
         }
+    };
+
+    // Scroll to top when clicked
+    document.getElementById("backToTopBtn").addEventListener("click", function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    
 });

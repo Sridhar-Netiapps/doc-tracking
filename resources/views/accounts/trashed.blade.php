@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
-            <h3>Reports</h3>
+<div class="rightPanel">
+    <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
+        <div>
+            <div class="d-flex justify-content-center align-items-center">
+                <h3 class="me-3">Reports</h3>
+            </div>
         </div>
-    </div>
 </div>
 <div class="container-fluid mt-3">
     <div class="row">

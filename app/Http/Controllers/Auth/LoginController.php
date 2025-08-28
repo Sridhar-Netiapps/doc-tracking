@@ -233,8 +233,9 @@ class LoginController extends Controller
                     Session::flush();
                     // Auth::logoutOtherDevices($password);
                     Auth::login($user);
-                    //  $user->session_id = Session::getId();
-                    //  $user->save();
+                    //  $user = Auth::user();
+                     $user->session_id = Session::getId();
+                     $user->save();
                     if ($user->hasrole('super_admin')) {
                         return redirect()->route('users.index');
                     }
