@@ -231,9 +231,9 @@ $(document).ready(function(){
 
       // Show button when scrolled down 100px
     
-      document.addEventListener('change', function (e) {
-        const input = e.target.closest('.file-validate');
-        if (!input) return;
+    //   document.addEventListener('change', function (e) {
+    //     const input = e.target.closest('.file-validate');
+    //     if (!input) return;
     
     //     const allowedExtensions = input.dataset.ext.split(',').map(ext => ext.trim().toLowerCase());
     //     const allowedMimeTypes = {
