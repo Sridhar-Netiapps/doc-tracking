@@ -343,14 +343,19 @@ $(document).ready(function(){
         event.preventDefault();
         return false;
     });
-    $(document).on("keydown", function(event) {
-        if (event.ctrlKey && (
-            event.key === "u" || event.key === "U" ||
-            event.key === "j" || event.key === "J" ||
-            event.key === "s" || event.key === "S" ||
-            event.key === "h" || event.key === "H"
-        )) {
-            event.preventDefault();
+    $(document).on("keydown", function(e) {
+        if (e.ctrlKey) {
+            const key = e.key.toLowerCase(); 
+            
+            if (e.shiftKey && key === 'i') {
+              e.preventDefault();
+              return false;
+            }
+            
+            if (['u', 'j', 's', 'h'].includes(key)) {
+              e.preventDefault();
+              return false;
+            }
         }
     });
 });
