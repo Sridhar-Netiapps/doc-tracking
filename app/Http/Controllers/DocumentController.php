@@ -958,12 +958,13 @@ class DocumentController extends Controller
     
     public function updateCourierDetails(Request $request, $id)
     {
+        dd($request->all());
         $request->validate([
             'courier_name' => 'required',
             'mmrp_barcode' => 'required|alpha_num',
         ]);
 
-        $courier = Dispatch::findOrFail($id);
+        $courier = CourierDispatch::findOrFail($id);
 
         $courier->courier_name = $request->courier_name;
         $courier->mmrp_barcode = $request->mmrp_barcode;

@@ -367,30 +367,25 @@
             },
             messages: {
                 courier_name: { required: "Courier name is required" },
-                mmrp_barcode: { required: "Barcode is required" }
+                mmrp_barcode: { required: "MMRP Barcode is required" }
             },
             submitHandler: function (form) {
-                const formData = {
-                    _token: $('input[name="_token"]').val(),
-                    dispatch_id: $('input[name="dispatch_id"]').val(),
-                    courier_name: $('select[name="courier_name"]').val(),
-                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-                    awb_pod: $('input[name="awb_pod"]').val(),
-                    dispatch_date: $('input[name="dispatch_date"]').val(),
-                };
-
-                const actionUrl = $(form).attr('action');
-                const method = actionUrl.includes('update-updateDetails') ? 'PUT' : 'POST';
+                const formData = new FormData(form);
+                const isUpdate = actionUrl.includes('update-courier');
+                formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
 
                 $.ajax({
                     url: actionUrl,
-                    type: method,
+                    type: 'POST', 
                     data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function (res) {
                         if (res.success) {
                             Swal.fire({
                                 title: "Success!",
-                                text: method === 'POST' ? "Courier created successfully." : "Courier updated successfully.",
+                                // text: "Courier details saved successfully.",
+                                text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
@@ -405,8 +400,9 @@
                     }
                 });
             }
-        });
 
+        });
+        
         $(document).on('click', '.edit-courier', function () {
             const courierId = $(this).data('id');
             const courierName = $(this).data('courier-name');
@@ -423,8 +419,12 @@
 
             $('#add-courier').modal('show');
 
-            $('#update-courier').attr('action', `{{ url('dispatches/update-courier') }}/${courierId}`);
+            $('#update-courier').attr('action', `{{ url('dispatches/update-updateDetails') }}/${courierId}`);
+
+            $('#update-courier').find('input[name="_method"]').remove();
+            $('#update-courier').append('<input type="hidden" name="_method" value="PUT">');
         });
+
 
 
         $('.awb_pod').on('focus', function () {
