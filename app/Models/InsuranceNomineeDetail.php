@@ -26,7 +26,13 @@ class InsuranceNomineeDetail extends Model
     	'latest_editor',
         'spdc_rec_date',
         'ack_rec_date',
-        'pkt_no'
+        'pkt_no',
+        'nominee_data_verified',
+        'nominee_data_verifier',
+        'nominee_checker_comments',
+        'spdc_data_verified',
+        'spdc_data_verfier',
+        'spdc_checker_comments'
     ];
 
     public function lead(){

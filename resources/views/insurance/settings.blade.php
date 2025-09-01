@@ -52,26 +52,47 @@
     @endif
 
 
+    @if ($errors->any())
+
+         <script nonce='{{ env("CSP_NONCE") }}'>
+            document.addEventListener('DOMContentLoaded', function () {
+                let errorList = `<ul style="text-align:left;">@foreach ($errors->messages() as $field => $messages)
+                    <li><strong>Error - {{$loop->iteration}} </strong>: {{ $messages[0] }}</li>
+                @endforeach</ul>`;
+
+                Swal.fire({
+                    title: 'Validation Errors',
+                    html: errorList,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    @endif  
+
+
+
+
+
 <div class="mt-3 p-4">
 
 
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <div class="accordion-item">
     <h2 class="accordion-header">
-      <button class="accordion-button collapsed settings-bg text-white label-bold " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" id="partners">
-        Partners
+      <button class="accordion-button collapsed settings-bg text-white label-bold " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapsesix" aria-expanded="false" aria-controls="flush-collapsesix" id="region">Region
       </button>
     </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+    <div id="flush-collapsesix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
       	<div class="d-flex">
-      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Partner">Add New Partner</button>
+      		<button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Region">Add New Region</button>
       	</div>
       	<div class="row py-4">
-          @foreach($partners as $key => $val)
+          @foreach($region as $key => $val)
              <div class="col-3  mb-3">
              	<div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-             	  <h6 class="card-header text-center">{{$val->partner}}</h6>
+             	  <h6 class="card-header text-center">{{$val->name}}</h6>
              	</div>
              </div>
           @endforeach
@@ -79,6 +100,55 @@
       </div>
     </div>
   </div>
+
+
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed settings-bg text-white label-bold " type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseseven" aria-expanded="false" aria-controls="flush-collapseseven" id="region">Additional Input Fields
+      </button>
+    </h2>
+    <div id="flush-collapseseven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <div class="d-flex">
+          <button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#newFieldModal" >Add New Input Field</button>
+        </div>
+        <div class="row py-4">
+          @foreach($additionalfields as $key => $val)
+             <div class="col-3  mb-3">
+              <div class="shadow p-2 mb-2 bg-white rounded border border-dark">
+                <h6 class="card-header text-center">{{$val->field_name}}</h6>
+              </div>
+             </div>
+          @endforeach
+        </div>  
+      </div>
+    </div>
+  </div>
+
+<div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" id="products">
+        Products
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+         <div class="d-flex">
+          <button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Product">Add New Product</button>
+        </div>
+        <div class="row py-4">
+          @foreach($products as $key => $val)
+             <div class="col-3  mb-3">
+              <div class="shadow p-2 mb-2 bg-white rounded border border-dark">
+                <h6 class="card-header text-center">{{$val->product}}</h6>
+              </div>
+             </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" id="products">
@@ -188,14 +258,14 @@
         <div class="modal-body">
           <input type="hidden" class="form-control" name="modulename" id="recipient-name">
           <div class="form-group">
-            <label>Partner Name</label>
-            <input class="form-control form-control-design" type="text" name="title" placeholder="Enter text here" required>
+            <label>Title</label>
+            <input class="form-control form-control-design clsAlphaNoOnly" type="text" name="title" placeholder="Enter text here" required>
           </div>
 
           <div class="form-group d-none mt-4" id="product">
              <div class="form-group">
               <label>Partner Name</label>
-              <select class="form-control form-select form-control-design" name="partner" id="partner">
+              <select class="form-control form-select form-control-design " name="partner" id="partner">
                 <option value="">Select</option>
                 @foreach($partners as $key=>$partner)
                   <option value="{{ $partner->id}}">{{ $partner->partner}}</option>
@@ -208,6 +278,52 @@
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" id="btn_submit_modal">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- New Field Modal -->
+<div class="modal fade" id="newFieldModal" tabindex="-1" aria-labelledby="newFieldModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('add_new_insurance_item') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title label-bold text-white" >Add New Input Fields</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" name="modulename" value="new_field">
+          <div class="form-group">
+            <label>Input Field Title</label>
+            <input class="form-control form-control-design clsAlphaNoOnly" type="text" name="title" placeholder="Enter text here" required>
+          </div>
+
+
+          <div class="form-group mt-3">
+            <label>validation</label>
+            <select class="form-control form-select" name="allowed_chars">
+              <option value="">Select validation type</option>
+              <option value="numbersonly">Only Numbers</option>
+              <option value="clsAlphaNoOnly">Aplha Numericals</option>
+            </select>
+          </div>
+
+          <!-- <div class="form-group mt-3">
+            <label>Module Name</label>
+            <select class="form-control form-select" name="module">
+              <option value="">Select module</option>
+              <option value="ho">HO</option>
+              <option value="bo">BO</option>
+            </select>
+          </div> -->
+
+          
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >Submit</button>
         </div>
       </form>
     </div>

@@ -109,7 +109,7 @@ class SyncHRMdata extends Command
                         "Manager-Operations MSE",
                         "Manager-Payments",
                         "Manager-Payments and Settlements",
-                        "Manager-Secured Loan Operations",
+                        "Manager-Secured Loan Operations",  
                         "Manager-Vehicle Loan Operations",
                         "Specialist-Banking Operations",
                         "Specialist-NR Operations",
@@ -129,7 +129,12 @@ class SyncHRMdata extends Command
                      $bo_readonly_designations = ['Branch Sales Manager',
                         'Assistant Customer Relationship Manager',
                         'Customer Relationship Manager'
-                       ];             
+                       ]; 
+
+                   
+                    $ins_ho_user = ['Officer-Insurance and TPP Operations','Specialist-Insurance and TPP Operations'];
+
+                    $ins_admin= ['Manager-Insurance and TPP Operations'];
 
                     $designation = trim($value->current_designation);
 
@@ -168,6 +173,14 @@ class SyncHRMdata extends Command
 
                      if(in_array($designation , $bo_readonly_designations)){
                          $role = 'branch-user';
+                    }
+             
+                    if(in_array($designation , $ins_ho_user)){
+                         $role = 'ins-ho-user';
+                    }
+
+                    if(in_array($designation , $ins_admin)){
+                         $role = 'ins-admin';
                     }
 
                  

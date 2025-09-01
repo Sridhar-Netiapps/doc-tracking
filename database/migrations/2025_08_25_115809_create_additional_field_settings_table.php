@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('insurance_products', function (Blueprint $table) {
+        Schema::create('additional_field_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('partner_id'); 
-            $table->string('product');
-            $table->string('type');
-            $table->string('folder_name')->nullable();
-            $table->string('description')->nullable();
+            $table->string('field_name');
+            $table->string('field_type');
+            $table->string('allowed_chars');
+            $table->string('module')->nullable();
+            $table->string('creator');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('insurance_products');
+        Schema::dropIfExists('additional_field_settings');
     }
 };

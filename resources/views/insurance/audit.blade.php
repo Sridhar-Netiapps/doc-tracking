@@ -9,22 +9,33 @@
                 <strong>Audit Logs</strong> 
             </div>
 
-            <div class="ms-auto">
-                <div class="d-flex">
-                     <form class="me-3" method="GET" action="{{route('audit')}}">
-                       <div class="input-group mb-3">
-                        <input class="form-control clsAlphaNoOnly" type="text" name="search" placeholder="Search here" value="{{$search}}">
-                        <button class="btn btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
+            <div class="ms-auto d-flex align-items-center">
+              <!-- Date Range Card -->
+              <a class="nav-link" href="{{route('audit')}}"><i class="fa fa-sync m-3"></i></a>
+                  <div class="card me-3 p-2">
+                    <div id="reportrange" class="datepiker">
+                      <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d'); ?>"></i>&nbsp;
+                      <span name="daterange"></span> <b class="caret"></b>
+                    </div>
+                  </div>
 
-                        <button class="btn btn-dark" name="type" value="export" id="btn_export_audits">Export</button>
-                       </div>
-                     </form>
-                  
-                    
-             
-           </div>
-        </div>
- 
+                  <!-- Search Form -->
+                  <form class="d-flex" method="GET" action="{{ route('audit') }}">
+                    <div class="input-group">
+                      <input class="form-control clsAlphaNoOnly" 
+                             type="text" 
+                             name="search" 
+                             placeholder="Search here" 
+                             value="{{ $search }}">
+
+                      <input type="hidden" name="start" id="start" value="{{$start_date}}">  
+                      <input type="hidden" name="end" id="end" value="{{$end_date}}">   
+
+                      <button class="btn btn-secondary me-1" name="type" type="submit" value="filter">GO</button>
+                      <button class="btn btn-dark" name="type" value="export" id="btn_export_audits">Export</button>
+                    </div>
+                  </form>
+                </div>
         </div>
 	    
 
@@ -71,6 +82,66 @@
 	
 </div>
 </div>
+
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
+$(function() {  
+   
+    var startdate = $('#start').val();
+    var enddate = $('#end').val();
+
+
+    var today = moment(); // Current date
+
+    if(startdate === ''){
+   var start = moment().startOf('month'); // 1st day of current month
+    var end = moment().endOf('month');     // Last day of current month
+   }
+   else{
+    var start = moment(startdate);
+    var end = moment(enddate);
+   }
+
+
+
+   
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        const formattedStart = start.format('YYYY-MM-DD');
+        const formattedEnd = end.format('YYYY-MM-DD');
+
+        $('#start').val(formattedStart);
+        $('#end').val(formattedEnd);
+
+
+        
+        
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+
+
+    $('select').on('change', function() {
+      cb(start, end);
+     
+    });
+    
+});
+
+
+</script>
 
 
 @endsection

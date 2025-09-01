@@ -32,6 +32,7 @@ class ExportAuditLogs implements FromCollection,WithHeadings
             	$value->operation,
             	$value->note,
             	$value->user->first_name.''.$value->user->middle_name.''.$value->user->last_name,
+                $value->user->employee_id,
             	$value->link 
             ]);
         }
@@ -42,7 +43,7 @@ class ExportAuditLogs implements FromCollection,WithHeadings
 
     public function headings(): array
     {
-        return [ 'Date','operation','Action','User Name','Employee ID','Link'];
+        return [ 'Date','Operation','Action','User Name','Employee ID','Link'];
     }    
 
 }

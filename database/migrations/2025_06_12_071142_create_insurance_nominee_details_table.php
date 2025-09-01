@@ -33,6 +33,12 @@ return new class extends Migration
             $table->string('ack_rec_date')->nullable();
             $table->string('spdc_rec_date')->nullable();
             $table->string('pkt_no')->nullable();
+            $table->string('nominee_data_verified')->nullable();
+            $table->string('nominee_data_verifier')->nullable();
+            $table->string('nominee_checker_comments')->nullable();
+            $table->string('spdc_data_verified')->nullable();
+            $table->string('spdc_data_verfier')->nullable();
+            $table->string('spdc_checker_comments')->nullable();
             $table->timestamps();
         });
     }
