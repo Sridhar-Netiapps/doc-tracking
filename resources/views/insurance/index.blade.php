@@ -20,6 +20,7 @@
 	                  <button class="btn btn-secondary">GO</button>	                 
 	                 </div>
 	               </form>
+	               <a class="nav-link" href="{{route('insurance_list')}}"><i class="fa fa-sync m-3"></i></a>
 				</div>
 			</div>
 			
@@ -110,8 +111,9 @@
 
 
 
-	<div class="py-4">
+	<div class="py-1">
 		<table class="table table-resnponsive table-bordered table-striped">
+
 			<thead class="table-dark">
 				<th class="text-table-head">Intimation Date</th>
 				<th class="text-table-head">Lead ID</th>
@@ -146,7 +148,7 @@
 					<td>
 						<div class="d-flex">
 							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
-							@if($value->cliam_status !='Completed')
+							@if( ($value->cliam_status !='Completed' && auth::user()->branch_id == '1100' ) || auth::user()->hrmData->current_designation =='Manager-Insurance and TPP Operations')
 							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" ><button class="btn btn-sm btn-danger" id="btn_edit">Edit</button></a>
 							@endif
 						</div>

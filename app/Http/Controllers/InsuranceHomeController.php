@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use PDF;
+use Illuminate\Support\Str;
+
 use App\Models\InsuranceProduct;
 use App\Models\InsuranceCauseOfDeath;
 use App\Models\InsuranceClaimStatus;
@@ -15,6 +17,10 @@ use App\Models\InsuranceClaimDetail;
 use App\Models\InsuranceNomineeDetail;
 use App\Models\InsuranceChecklist;
 use App\Models\InsuranceDocument;
+use App\Models\Region;
+use App\Models\AdditionalField;
+use App\Models\AdditionalFieldSetting;
+
 
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
@@ -291,13 +297,14 @@ class InsuranceHomeController extends Controller
         $deathcause = InsuranceCauseOfDeath::get();
         $claimstatus = InsuranceClaimStatus::get();
         $rlStat=InsuranceRequestLetterStatus::get();
-
+        $additionalfields = AdditionalFieldSetting::get();
         $branch = Branch::get();
+        $regions = Region::get();
 
         $procesedby=['NA','Vindhya','HO'];  
         $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
 
-        return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch'));
+        return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch','additionalfields', 'regions'));
     }
 
     /**
@@ -323,9 +330,9 @@ class InsuranceHomeController extends Controller
           'load_acc_id' => 'required',
           'claim_amount' => 'required',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
+          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
           'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
-          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
              
       ]);
 
@@ -333,7 +340,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9 ,._\/&-]+$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -426,6 +433,26 @@ class InsuranceHomeController extends Controller
                 'pkt_no' => $request->pkt_no 
               ]);
 
+            $dynamicData = collect($request->all())
+              ->filter(function ($value, $key) {
+                  return Str::startsWith($key, 'af_');
+              })
+              ->mapWithKeys(function ($value, $key) {
+                  // Extract numeric ID from the name af_1 => 1
+                  $fieldId = (int) str_replace('af_', '', $key);
+                  return [$fieldId => $value];
+              })
+              ->toArray();
+
+           
+            foreach ($dynamicData as $fieldId => $fieldValue) {
+               $setting = AdditionalFieldSetting::where('id',$fieldId)->first();
+                AdditionalField::create(
+                    ['insurance_claim_details_id' => $claimdata->id,'additional_field_settings_id'=>$fieldId, 'param_name' => $setting->field_name,'param_value' => $fieldValue,'creator'=>Auth::user()->employee_id]
+                   
+                );
+            }
+
            
            // InsuranceChecklist::create(['insurance_claim_details_id' => $claimdata->id]);
 
@@ -466,8 +493,10 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
         $branch = Branch::get();
+        $regions = Region::get();
+
         $landingTab = (Auth::user()->branch_id == '1100' ? 'ho' :'bo'); 
-        $deceased=['APPLICANT','CO-APPLICANT','SPOUSE','CUSTOMER'];
+        $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $nomineedata = InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
         $documentdata = InsuranceDocument::where('insurance_claim_details_id',decrypt($id))->where('status','1')->orderBy('id','ASC')->get();
@@ -487,10 +516,10 @@ class InsuranceHomeController extends Controller
 
         }
 
+        $additionalLeadfields = AdditionalField::where('insurance_claim_details_id',decrypt($id))->with('settingData')->get();
+         //print_r(json_encode($additionalLeadfields));die();
         
-        
-      // print_r($formArray);die();
-        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab'));
+        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab','additionalLeadfields','regions'));
     }
 
     /**
@@ -509,6 +538,7 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
          $branch = Branch::get();
+          $regions = Region::get();
         
         $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
@@ -530,11 +560,18 @@ class InsuranceHomeController extends Controller
 
         }
 
+       $allSettings = AdditionalFieldSetting::all();
+
+      // get existing child values for this claim
+      $existingFields = AdditionalField::where('insurance_claim_details_id', decrypt($id))
+          ->get()
+          ->keyBy('additional_field_settings_id'); // key by parent id
+
         session()->forget('message');
         session()->forget('failures');
         
       // print_r($formArray);die();
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec'));
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec','allSettings','existingFields','regions'));
     }
 
     /**
@@ -542,6 +579,7 @@ class InsuranceHomeController extends Controller
      */
     public function update(Request $request, string $id)
     {
+     // print_r($request->input());die();
         $request->validate([
           'region' => 'required',
           'branch' => 'required',
@@ -572,11 +610,18 @@ class InsuranceHomeController extends Controller
         $inputdata = $request->all();
         $errors = [];
 
+        //print_r($request->claim_amount);die();
+
         foreach ($inputdata as $key => $value) {
+
+          if (is_null($value) || $value === '') {
+              continue;
+          }
+
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9 ,._\/&-]+$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -670,6 +715,35 @@ class InsuranceHomeController extends Controller
 
        $nomineedetail->save();
 
+       $dynamicData = collect($request->all())
+            ->filter(function ($value, $key) {
+                return Str::startsWith($key, 'af_');
+            })
+            ->mapWithKeys(function ($value, $key) {
+                // Extract numeric ID from the name af_1 => 1
+                $fieldId = (int) str_replace('af_', '', $key);
+                return [$fieldId => $value];
+            })
+            ->toArray();
+
+        foreach ($dynamicData as $settingId => $fieldValue) {
+            $setting = AdditionalFieldSetting::find($settingId);
+
+            if ($setting) {
+                AdditionalField::updateOrCreate(
+                    [
+                        'insurance_claim_details_id'    => $claimdata->id,
+                        'additional_field_settings_id'  => $setting->id,
+                    ],
+                    [
+                        'param_name'  => $setting->field_name,
+                        'param_value' => $fieldValue,
+                        'creator'     => Auth::user()->employee_id,
+                    ]
+                );
+            }
+        }
+ 
         $mailData=['message' => 'The Lead details are updated to the Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
         $reciepients=array();
         $reciepients=['druva@netiapps.com'];
@@ -982,7 +1056,7 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9 ,._\/&-]+$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
@@ -992,9 +1066,23 @@ class InsuranceHomeController extends Controller
           return redirect()->back()->withErrors($errors)->withInput();
       }
 
+      /*$nominee_verified = '';
+
+      if(!empty($request->nominee_name_bank) && !empty($request->bank_name) && !empty($request->acc_number) && !empty($request->ifsc) && !empty($request->branch_name) && !empty($request->nominee_number) ){
+
+      }*/
+
        $insurancenomineedata=InsuranceNomineeDetail::where('insurance_claim_details_id',decrypt($request->lead_id))->first();
        if($insurancenomineedata) {
            $nomineedetail = InsuranceNomineeDetail::find($insurancenomineedata->id);
+
+           if($nomineedetail->nominee_data_verified == 'No'){
+                  $nomineedetail->nominee_data_verified = '';
+           }
+
+           if($nomineedetail->spdc_data_verified == 'No'){
+                  $nomineedetail->spdc_data_verified = '';
+           }
        }else{
          $nomineedetail = new InsuranceNomineeDetail;
          $nomineedetail->insurance_claim_details_id = decrypt($request->lead_id);
@@ -1012,12 +1100,16 @@ class InsuranceHomeController extends Controller
        $nomineedetail->nominee_number =$request->nominee_number;
       // $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
        $nomineedetail->bo_remarks =$request->bo_remarks;
-       $nomineedetail->bo_maker =$request->bo_maker;
-       $nomineedetail->bo_checker =$request->bo_checker;
+       /*$nomineedetail->bo_maker =$request->bo_maker;
+       $nomineedetail->bo_checker =$request->bo_checker;*/
        $nomineedetail->spdc_rec_date = $request->spdc_rec_date;
        $nomineedetail->ack_rec_date = $request->ack_rec_date;
        $nomineedetail->pkt_no = $request->pkt_no;
 
+       if(Auth::user()->branch_ic != '1100'){
+          $nomineedetail->bo_maker = Auth::user()->employee_id;
+       }
+       
        $nomineedetail->save();
 
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
@@ -1034,7 +1126,7 @@ class InsuranceHomeController extends Controller
 
              $module = 'Insurance'; 
              $operation = 'Update';
-             $note = 'Updated Nominee Details - '.$claimdata->utrn;
+             $note = 'Maker Updated Nominee Details - '.$claimdata->utrn;
              $link = url('/').'/insurance/view_claim_details/'.encrypt($request->lead_id);
 
             $this->auditlogs($module , $operation ,$note , $link);
@@ -1208,7 +1300,7 @@ class InsuranceHomeController extends Controller
             if (is_string($value)) {
                 if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                     $errors[$key] = 'Script tags are not allowed.';
-                } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+                } elseif (!preg_match('/^[a-zA-Z0-9 ,._\/&-]+$/', $value)) {
                     $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
                 }
             }
@@ -1313,29 +1405,44 @@ class InsuranceHomeController extends Controller
     }
 
     public function audit(Request $request){
-
+   // print_r($request->input());die();
       if($request->search == ''){
         $search='';
       }else{
         $search=$request->search;
       }
-      if($request->type == 'filter'){
-          $data = AuditLog::when($search,function($query)use($search){
+
+      if(!isset($request->start)){
+         $start_date = date('Y-m-').'01 00:00:01';
+         $end_date =  date('Y-m-d').' 23:59:59';
+
+      }
+      else{
+         $start_date = $request->start.' 00:00:01';
+         $end_date = $request->end.' 23:59:59';
+
+      }
+
+      if($request->type == 'filter' || !isset($request->type) ){
+          $data = AuditLog::whereBetween('created_at',[$start_date , $end_date])
+          ->when($search,function($query)use($search){
                $query->where('note','LIKE','%'.$search.'%');
                $query->orWhere('user_id','LIKE','%'.$search.'%');
                $query->orWhere('operation','LIKE','%'.$search.'%');
           })
           ->orderBy('id','DESC')->paginate(50);
-          return view('insurance.audit',compact('data','search'));
+          return view('insurance.audit',compact('data','search','start_date','end_date'));
       }
       else{
-         $data = AuditLog::when($search,function($query)use($search){
+        $data = AuditLog::whereBetween('created_at',[$start_date , $end_date])
+          ->when($search,function($query)use($search){
                $query->where('note','LIKE','%'.$search.'%');
                $query->orWhere('user_id','LIKE','%'.$search.'%');
                $query->orWhere('operation','LIKE','%'.$search.'%');
           })
           ->orderBy('id','DESC')->get();
 
+        
          return Excel::download(new ExportAuditLogs($data), 'audit_logs_'.date('Ymdhis').'.xlsx'); 
 
       }
@@ -1405,7 +1512,7 @@ class InsuranceHomeController extends Controller
               ->when($branch,function($q)use($branch){
                  $q->where('branch',$branch);
               })
-              
+              ->with('additionalfields')
               ->orderBy('id','DESC')->get();
 
     // print_r(json_encode($data));die();
@@ -1440,7 +1547,9 @@ class InsuranceHomeController extends Controller
 
          $this->auditlogs($module , $operation ,$note , $link);
 
-         return Excel::download(new ExportInsuranceLeads($data), 'insurance_leads_'.date('Ymdhis').'.xlsx');
+         $additionl_fileds = AdditionalFieldSetting::get();
+
+         return Excel::download(new ExportInsuranceLeads($data,$additionl_fileds), 'insurance_leads_'.date('Ymdhis').'.xlsx');
      }
 
     }
@@ -1510,11 +1619,15 @@ class InsuranceHomeController extends Controller
         $relationship = InsuranceRelationship::get();
         $deathcause = InsuranceCauseOfDeath::get();
         $claimstatus = InsuranceClaimStatus::get();
+        $additionalfields = AdditionalFieldSetting::get();
+        $region = Region::get();
 
-        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus'));
+        return view('insurance.settings',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus' , 'region','additionalfields'));
     }
 
     public function add_new_insurance_item(Request $request){
+
+     // print_r($request->input());die();
       $module = $request->modulename;
 
       $inputdata = $request->all();
@@ -1524,21 +1637,29 @@ class InsuranceHomeController extends Controller
           if (is_string($value)) {
               if (preg_match('/<script\b[^>]*>(.*?)<\/script>/i', $value)) {
                   $errors[$key] = 'Script tags are not allowed.';
-              } elseif (!preg_match('/^[a-zA-Z0-9\s,.\-]*$/', $value)) {
+              } elseif (!preg_match('/^[a-zA-Z0-9 ,._\/&-]+$/', $value)) {
                   $errors[$key] = 'Only letters, numbers, spaces, and , . - are allowed.';
               }
           }
       }
 
+
+
       if (!empty($errors)) {
+        //print_r($errors);die();
           return redirect()->back()->withErrors($errors)->withInput();
       }
 
-      //print_r($request->input());die();
+     // print_r($request->input());die();
+      if($module == 'Region'){
+        Region::create(['name'=> $request->title]);
+      }
 
       if($module == 'Partner'){
         InsurancePartner::create(['partner'=> $request->title]);
       }
+
+
 
       if($module == 'Product'){
         $folderName = "FOLD_".date('YmdHi');
@@ -1604,6 +1725,14 @@ class InsuranceHomeController extends Controller
 
       if($module == 'Claim Status'){
         InsuranceClaimStatus::create(['claim_status'=> $request->title]);
+      }
+
+      if($module == 'new_field'){
+       AdditionalFieldSetting::create([
+          'field_name' => $request->title,
+          'field_type' => 'input' ,
+          'allowed_chars' => $request->allowed_chars,
+          'module' => 'HO']);
       }
 
         $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
@@ -1779,6 +1908,57 @@ class InsuranceHomeController extends Controller
               return redirect()->back()->with('failure','Lead details not found');
           }
                   
+        }
+
+        public function verify_nominee_details(Request $request){
+
+              InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
+                'nominee_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
+                'nominee_checker_comments' => $request->nominee_remarks,
+                'nominee_data_verifier' => Auth::user()->employee_id,
+                'bo_checker' => Auth::user()->employee_id
+              ]); 
+
+              $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();
+              $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->first();
+
+
+              $module = 'Insurance';
+              $operation = 'Nominee Details Verification';
+              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
+              $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
+
+              $this->auditlogs($module, $operation, $note, $link);
+
+              return redirect()->back()->with('success','Thank You . Your consent has been updated' );
+        }
+
+        public function verify_pod_details(Request $request){
+              InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
+                'spdc_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
+                'spdc_checker_comments' => $request->pod_remarks,
+                'spdc_data_verfier' => Auth::user()->employee_id,
+                'bo_checker' => Auth::user()->employee_id
+              ]); 
+
+               $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();
+             
+
+              $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->update([
+                'cliam_status' => ($request->action == 'Accepted') ? 'Document Sent to HO to Process' : 'Pending From Branch']);
+
+
+              $leadData = InsuranceClaimDetail::where('id',$nomineeData->insurance_claim_details_id)->first();
+
+
+              $module = 'Insurance';
+              $operation = 'POD Details Verification';
+              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
+              $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
+
+              $this->auditlogs($module, $operation, $note, $link);
+
+              return redirect()->back()->with('success','Thank You . Your consent has been updated' );
         }
 
 

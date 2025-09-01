@@ -4,7 +4,7 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use App\Models\InsuranceNomineeDetail;
+use App\Models\AdditionalField;
 
 
 class ExportInsuranceLeads implements FromCollection,WithHeadings
@@ -14,9 +14,10 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
     */
     private $data;
 
-    public function __construct($data ) 
+    public function __construct($data ,$additionl_fileds) 
     {
         $this->data = $data;
+        $this->additionl_fileds = $additionl_fileds;
         
     } 
 
@@ -24,9 +25,16 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
     {
          $data = $this->data;
         $formattedData = collect();
+
+        $fields = $this->additionl_fileds;
+        /*$dynamicfielValues =array();
+        foreach ($fields as $key => $value) {
+           $dynamicfielids[] = $value->id;
+        }*/
         
          foreach($data as $key=>$value){
-           
+
+            
             $formattedData->push([
                 date('d-m-Y',strtotime($value->created_at)),
                 date('d-m-Y',strtotime($value->updated_at)),    
@@ -109,6 +117,9 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
                 
             ]);
          }
+
+          
+
          return $formattedData ;
     }
 
@@ -116,22 +127,28 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
 
     {
 
-        return [
+        $fields = $this->additionl_fileds;
+        $dynamicfielNames =array();
+        foreach ($fields as $key => $value) {
+           $dynamicfielNames[] = $value->field_name;
+        }
+
+        $fields = array_merge([
         'Creation Date',
         'Last Modified Date',
         "Reference ID ",
         "Lead ID",
         "REgion",
         "Branch ID - Name",
-        "Partner",	
+        "Partner",  
         "Product" ,
         "Member Code",
-        "Policy Number"	,
+        "Policy Number" ,
         "Policy Covered Date",
         "Policy Expired Date",
-        "Customer ID",	
-        "Actual ID",	
-        "Deceased Name"	,
+        "Customer ID",  
+        "Actual ID",    
+        "Deceased Name" ,
         "Date of Birth",
         "Date of Death",
         "Gender",
@@ -188,10 +205,16 @@ class ExportInsuranceLeads implements FromCollection,WithHeadings
         "Ack Received Date",
         "SPDC Received Date",
         "Packet Number",
-        "Maker at Branch",	
+        "Maker at Branch",  
         "Checker at Branch",
         "Created By",
-        "Modified By"];
+        "Modified By"],
+       // $dynamicfielNames
+    );
+
+
+    
+        return $fields;
 
     }
 }

@@ -4,10 +4,16 @@
 <div class="container">
 	<div class="d-flex py-4">
 		<label class="label-font-header">Insurance Lead Details- {{ $data->utrn }}</label>
-
+        @php
+          $checker = ['CRM','ACRM','BOM','BM','Branch Manager','Branch Operation Manager','Customer Relationship Manager','Assistant Customer Relationship Manager','Senior Branch Manager'];
+          $maker = ['Cashier','CCR','Customer Care Representative','Customer Care Representative-URC'];
+          $HO = ['Head Of Operations','National Manager-Banking Operations /Regional Operations Manager','Officer-Insurance and TPP Operations','Specialist-Insurance and TPP Operations','Manager-Insurance and TPP Operations'];
+        @endphp
         
 		<div class="ms-auto">
-			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Completed')
+			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible [Having outstanding]' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
+
+			  @if($data->nominee->nominee_data_verified == 'Yes')
 				@if($data->products->type == 'MB')
 				<a target="_blank"  href="{{ route('download_claim_form',encrypt($data->id))}}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Download Claim Form</button> </a>
 				@else
@@ -16,10 +22,31 @@
 	            
 				<a target="_blank" href="{{ URL::to('/')}}/template/checklist.pdf"><button class="btn btn-sm btn-info btn-text p-2" id="btnChecklist">Download Checklist</button> </a>
 
-				<button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
+               @endif
+               
+               @if( (Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == 'Yes' && $nomineedata->spdc_data_verified == 'Yes' && $data->cliam_status != 'Pending From Branch') 
+               ||(Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == '' && $nomineedata->spdc_data_verified == '') 
+               || (Auth::user()->branch_id != '1100' && $data->cliam_status == 'Pending From Branch' &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) ) ) )
+				  <button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
+			   @endif
+
+			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified) && ( in_array(auth::user()->hrmData->current_designation, $checker ) ) )
+             <!--  <a class="confirm-nominee_verification" href="{{ route('verify_nominee_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify Nominee Details</button> </a> -->
+             <button type="button" class="btn btn-danger p-2" data-bs-toggle="modal" data-bs-target="#nomineeModal" data-bs-whatever="Region">Verify Nominee Details</button>
+                 
+			@endif
+            
+			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified) && ( in_array(auth::user()->hrmData->current_designation , $checker ) ))
+            
+              <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#podModal" data-bs-whatever="Region">Verify POD Details</button>
+                 
 			@endif
 
+			@endif
+            
+            @if(auth::user()->branch_id == '1100')
 			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}" ><button class="btn btn-sm btn-success btn-text p-2" id="btn_clone">Clone</button> </a>
+			@endif
 			
 			<a href="{{ route('insurance_list')}}" ><button class="btn btn-sm btn-dark btn-text p-2" id="btn_go_back">Go Back</button> </a>
 		</div>
@@ -134,10 +161,9 @@
 					    <label class="form-label label-bold">Region</label>
 					    <select class="form-control form-control-design  form-select" name="region"  >
 					    	<option value="">Select</option>
-					    	<option {{($data->region == 'South')?'selected':''}} value="South" >South</option>
-					    	<option {{($data->region == 'North')?'selected':''}} value="North">North</option>
-					    	<option {{($data->region == 'East')?'selected':''}} value="East">East</option>
-					    	<option {{($data->region == 'West')?'selected':''}} value="West">West</option>	
+					    	@foreach($regions as $region)
+	                          <option {{(old('region',$data->region) == $region->name)?'selected':''}} value="{{$region->name}}">{{$region->name}}</option>
+					    	@endforeach
 					    </select>
 					    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -253,7 +279,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Date Of Death Intimation</label>
+					    <label class="form-label label-bold">Death Intimation Date</label>
 					    <input type="date" class="form-control form-control-design  valid-date" name="intimation_date" value="{{ $data->intimation_date}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -438,6 +464,12 @@
 					</div>
 
 					<div class="col-3 mb-3">
+					    <label class="form-label label-bold">Recovered Amount</label>
+					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}" placeholder="Enter Rcovered Amount">
+					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+
+					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Payable to Nominee</label>
 					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ $data->payable_to_nominee}}" placeholder="Enter the Amount Payable to Nominee">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
@@ -466,8 +498,7 @@
 					    <input type="date" class="form-control form-control-design  valid-date" name="final_settlement_date" value="{{ $data->final_settlement_date}}">
 					    @error('final_settlement_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
-					<div class="col-3"></div>
-
+					
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">UTRN of MPH</label>
 					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="utrn_mph" value="{{ $data->utrn_mph}}" placeholder="Enter UTRN of MPH">
@@ -524,11 +555,7 @@
 					    @error('bounced_chq_reason')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
-					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Recovered Amount</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ $data->recovered_amount}}" placeholder="Enter Rcovered Amount">
-					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+					
         	    </div>
         	</div>    		
         </div>
@@ -592,6 +619,23 @@
         	    </div>
         	</div>    		
         </div>
+
+        <div class="card mt-3">
+        	<div class="card-header label-font-header bg-card-header text-white">Additional Fields (Optional)</div>
+        	<div class="card-body">
+        		<div class="row">
+        			@foreach($additionalLeadfields as $key=>$val)
+        			<div class="col-3 mb-3">
+					    <label class="form-label label-bold">{{$val->settingData->field_name}}</label>
+					    <input class="form-control form-control-design" value="{{ $val->param_value}}">
+					    @error('write_off_rec')<div class="text-error">{{ $message }}</div>@enderror
+					</div>
+					@endforeach
+
+					
+        	    </div>
+        	</div>    		
+        </div>
         
         </fieldset>
 
@@ -636,6 +680,12 @@
 				</div>
 
 				<div class="col-3 mb-3">
+				    <label class="form-label">Nominee Contact No</label>
+				    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+				    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
+
+				<div class="col-3 mb-3">
 				    <label class="form-label">SPDC-Bank Name</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_bank_name"  value="{{$nomineedata->spdc_bank_name ?? ''}}" placeholder="Enter Bank Name">
 				</div>
@@ -655,11 +705,7 @@
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{$nomineedata->pod_no ?? ''}}" placeholder="Enter POD Number">
 				</div>
 
-				<div class="col-3 mb-3">
-					    <label class="form-label">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
-					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+				
 
 				<!-- <div class="col-3 mb-3">
 				    <label class="form-label label-bold">Cheque Sent Date</label>
@@ -667,18 +713,18 @@
 				</div>
  -->
 				<div class="col-3 mb-3">
-				    <label class="form-label">Remarks</label>
+				    <label class="form-label">Branch Remarks</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_remarks"  value="{{$nomineedata->bo_remarks ?? ''}}" placeholder="Remarks...">
 				</div>
 
 				<div class="col-3"></div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label">Maker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{$nomineedata->bo_maker ?? ''}}" placeholder="Enter Maker EMP ID and Name">
 				</div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label">Checker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{$nomineedata->bo_checker ?? ''}}" placeholder="Enter Checker EMP ID and Name">
 				</div>
@@ -731,6 +777,68 @@
 	    <button id="scrollBottomBtn" title="Go to bottom">↓</button>
 	</div>
 </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="nomineeModal" tabindex="-1" aria-labelledby="nomineeModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('verify_nominee_details') }}" enctype="multipart/form-data" id="nomineeForm">
+        @csrf
+        <div class="modal-header bg-success">
+          <h5 class="modal-title label-bold text-white">Nominee Details Verification</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" name="modulename" id="recipient-name">
+
+          <div class="form-group">
+            <label>Checker Remarks</label>
+            <textarea class="form-control" name="nominee_remarks" id="nominee_remarks" placeholder="Enter comments here"></textarea>
+          </div>
+
+        </div>
+        <input type="hidden" name="nominee_id" value="{{ $nomineedata->id}}">
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" name="action" id="btn_accept" value="Accepted">Accept</button>
+          <button type="submit" class="btn btn-danger" name="action" value="Rework" id="btn_rework">Rework</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--POD Modal -->
+<div class="modal fade" id="podModal" tabindex="-1" aria-labelledby="podModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('verify_pod_details') }}" enctype="multipart/form-data" id="podForm">
+        @csrf
+        <div class="modal-header bg-success">
+          <h5 class="modal-title label-bold text-white">SPDC, POD Details Verification</h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" name="modulename" id="recipient-name">
+
+          <div class="form-group">
+            <label>Checker Remarks</label>
+            <textarea class="form-control" name="pod_remarks" id="pod_remarks" placeholder="Enter comments here"></textarea>
+          </div>
+
+        </div>
+        <input type="hidden" name="nominee_id" value="{{ $nomineedata->id}}">
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" name="action" value="Accepted">Accept</button>
+          <button type="submit" class="btn btn-danger" name="action" value="Rework" id="btn_pod_rework">Rework</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
 
@@ -901,6 +1009,46 @@ $(document).on('click', '.confirm-link', function(e) {
     if (!confirm('You are cloning/duplicating the Lead details')) {
         e.preventDefault(); // stop navigation
     }
+});
+
+$(document).on('click', '.confirm-nominee_verification', function(e) {
+    if (!confirm('You are Confirming that all Nominee bank details are correct . ')) {
+        e.preventDefault(); // stop navigation
+    }
+});
+
+$(document).on('click', '.confirm-spdc_verification', function(e) {
+    if (!confirm('You are Confirming that SPDC and POD details are correct . ')) {
+        e.preventDefault(); // stop navigation
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("nomineeForm");
+    const remarks = document.getElementById("nominee_remarks");
+    const reworkBtn = document.getElementById("btn_rework");
+
+    reworkBtn.addEventListener("click", function (e) {
+        if (remarks.value.trim() === "") {
+            e.preventDefault(); // stop form submit
+            $('#btn_accept').addClass('display','none');
+            alert("Comments are mandatory for Rework!");
+            remarks.focus();
+        }
+    });
+
+    const podform = document.getElementById("podForm");
+    const podremarks = document.getElementById("pod_remarks");
+    const podreworkBtn = document.getElementById("btn_pod_rework");
+
+    podreworkBtn.addEventListener("click", function (e) {
+        if (podremarks.value.trim() === "") {
+            e.preventDefault(); // stop form submit
+            alert("Comments are mandatory for Rework!");
+            podremarks.focus();
+        }
+    });
+
 });
 
 </script>

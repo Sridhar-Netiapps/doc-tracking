@@ -240,7 +240,7 @@ function formatNumber(input) {
 
  function clsAlphaNoOnly (e) {  // Accept only alpha numerics, no special characters 
  // alert("ll");
-       var regex = new RegExp("^[a-zA-Z0-9 ,._-]+$");
+       var regex = new RegExp("^[a-zA-Z0-9 ,./_-]+$");
 
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
         if (regex.test(str)) {

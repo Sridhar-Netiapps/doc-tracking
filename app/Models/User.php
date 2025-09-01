@@ -38,5 +38,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function hrmData(){
+        return $this->hasOne(HRMData::class,'employee_id','employee_id');
+    }
 }
 
