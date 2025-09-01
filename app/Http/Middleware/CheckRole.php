@@ -59,30 +59,29 @@ class CheckRole
                 'process-status',
                 'couriers',
                 'document/trashed',
-                'users/activities',
                 'roles',
                 'permissions'
             ],
             'ro-officer' => [
+                'users/activities',
+                'users/create',
                 'vendor',
                 'emails',
                 'process-status',
                 'couriers',
                 'document/trashed',
-                'users/activities',
                 'roles',
-                'users/create',
                 'permissions'
             ],
             'ro-supervisor' => [
+                'users/activities',
+                'users/create',
                 'vendor',
                 'emails',
                 'process-status',
                 'couriers',
                 'document/trashed',
-                'users/activities',
                 'roles',
-                'users/create',
                 'permissions'
             ],
             'branch-user' => [
@@ -147,7 +146,6 @@ class CheckRole
             if ($user->hasRole($role)) {
                 foreach ($routes as $route) {
                     if ($request->is($route) || $request->is($route.'/*')) {
-        
                         // Role-based redirect
                         if ($user->hasRole('super_admin')) {
                             return redirect('/users')->with('error', 'Access Denied');
