@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ProcessStatus;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class ProcessStatusController extends Controller
 {
@@ -56,7 +58,14 @@ class ProcessStatusController extends Controller
     public function edit($id)
     {
         // Find the process status by ID
-        $status = ProcessStatus::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $status = ProcessStatus::findOrFail($decryptedId);
+        // $status = ProcessStatus::findOrFail($id);
         return view('process_status.edit', compact('status'));
     }
 

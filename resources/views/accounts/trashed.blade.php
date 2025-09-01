@@ -98,7 +98,8 @@
                                             <td>{{ $row->box_barcode }}</td>
                                             <td>{{ date('d-m-Y', strtotime($row->date_added_to_vendor)) }}</td>
                                             <td>{{ $row->statusName->name ?? '-' }}</td>
-                                            <td><button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Restore</button></td>
+                                            {{-- <td><button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary retrive" data-bs-toggle="modal" data-bs-target="#doc-retrive">Restore</button></td> --}}
+                                            <td><button type="submit" data-id="{{ $row->id }}" data-type="loan" class="btn btn-primary restore">Restore</button></td>
                                         </tr>
                                     @endforeach
                                 @endif

@@ -728,6 +728,19 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document->total();
         $aof_total = $account_opening_document->total();
 
+        // if($this->user->branch_id != $dispatch->branch_code){
+        //     return redirect('/home')->with('error', 'Access Denied');
+        // }
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            if($this->user->branch_id != $dispatch->branch_code){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+            if($this->user->region != $dispatch->region){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        }
+
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
     
@@ -803,7 +816,12 @@ class DocumentController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->getMessage()]);
+            // return response()->json(['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Courier created successfully.'
+            ], 200);
+            
         }
 
     }
@@ -962,17 +980,22 @@ class DocumentController extends Controller
             'courier_name' => 'required',
             'mmrp_barcode' => 'required|alpha_num',
         ]);
+        try {
+            DB::beginTransaction();
+            $courier = CourierDispatch::findOrFail($id);
 
-        $courier = Dispatch::findOrFail($id);
-
-        $courier->courier_name = $request->courier_name;
-        $courier->mmrp_barcode = $request->mmrp_barcode;
-        $courier->awb_pod = $request->awb_pod;
-        $courier->dispatch_date = $request->dispatch_date;
-
-        $courier->save();
-
-        return response()->json(['success' => true]);
+            $courier->courier_name = $request->courier_name;
+            $courier->mmrp_barcode = $request->mmrp_barcode;
+            $courier->awb_pod = $request->awb_pod;
+            $courier->save();
+            DB::commit();
+            return redirect()->route('dispatches','list')->with('success', 'Courier updated successfully.');
+            // return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('dispatches.list')->with('error', 'Courier Not Updated');
+            // return response()->json(['' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -1098,6 +1121,15 @@ class DocumentController extends Controller
     public function viewHistory($id,$type,$dtype)
     {
         $document = $this->table[$dtype]::find($id);
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            if($this->user->branch_id != $document->branch_code){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+            if($this->user->region != $document->region){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        }
         $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$dtype]))->get();
 
         return view('accounts.doc_history', compact('document','history','dtype','type'));

@@ -30,16 +30,21 @@ class UploadController extends Controller
         ]);
 
         $file = $request->file('excel_file');
+        $collection = \Maatwebsite\Excel\Facades\Excel::toCollection(null, $file);
+        $rows = $collection->first();
+
+        if ($rows->count() <= 1) {
+            return back()->with('error', 'The uploaded file has no data rows beyond the header.');
+        }
+        
         $fileName = time() . '_' . $file->getClientOriginalName();
         $filePath = $file->storeAs('uploads/excel', $fileName, 'public');
-// dd($file);
         if ($request->doc_type) {
             $import = new ImportData($request->doc_type);
         }else {
             $import = new VendorDocumentImport();
         }
-        // dd($import);    
-        // $import = new VendorDocumentImport();
+       
         Excel::import($import, $file);
 
         $upload = Upload::create([

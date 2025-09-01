@@ -48,7 +48,7 @@
                             <td>{{ $vendor->location }}</td>
                             <td>
                                 @role('admin|super_admin|master')
-                                <a href="{{ route('vendor.edit', $vendor->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ route('vendor.edit', Crypt::encryptString($vendor->id)) }}" class="btn btn-warning btn-sm">Edit</a>
                                 @endrole
                                 {{-- @role('super_admin|master')
                                 <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" style="display:inline-block;">
