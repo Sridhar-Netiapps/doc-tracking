@@ -9,7 +9,14 @@ use Carbon\Carbon;
 class EmailController extends Controller
 {
     // app/Http/Controllers/EmailController.php
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->user();
+            return $next($request);
 
+        });
+    }
     public function index()
     {
         // Fetch emails from the database
@@ -33,7 +40,8 @@ class EmailController extends Controller
             'subject' => 'required|string',
             'message' => 'required|string',
         ]);
-
+        $validated['created_by'] = $this->user->id;
+        // dd($validated);
         $email = Email::create($validated);
 
         // Simulate sending

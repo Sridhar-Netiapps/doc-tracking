@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class VendorController extends Controller
 {
@@ -36,8 +38,15 @@ class VendorController extends Controller
     }
 
 
-    public function edit(Vendor $vendor)
+    public function edit($id)
     {
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $vendor = Vendor::findOrFail($decryptedId);
         return view('vendor.edit', compact('vendor'));
     }
 

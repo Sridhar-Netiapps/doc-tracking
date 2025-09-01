@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class RoleController extends Controller
 {
@@ -55,7 +57,14 @@ class RoleController extends Controller
     public function edit($id)
     {
         // Find the role and get all permissions
-        $role = Role::findOrFail($id);
+        // $role = Role::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $role = Role::findOrFail($decryptedId);
         $permissions = Permission::all();
 
         // Get the permissions assigned to this role

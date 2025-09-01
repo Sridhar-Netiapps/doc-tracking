@@ -130,7 +130,7 @@
                                                     <option value=7>Received with Query</option>
                                                     <option value=6>Rejected</option>
                                                 </select>
-                                                <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                <textarea name="reason_for_rejection" class="form-control reason d-none alphanumeric" rows="2"></textarea>
                                             </td>
                                             @endunless
                                         @endif
