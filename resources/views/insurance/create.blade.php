@@ -105,10 +105,13 @@
 				    <label class="form-label label-bold">Region *</label>
 				    <select class="form-control form-control-design  form-select" name="region"  >
 				    	<option value="">Select</option>
-				    	<option {{(old('region') == 'South')?'selected':''}} value="South" >South</option>
+				    	<!-- <option {{(old('region') == 'South')?'selected':''}} value="South" >South</option>
 				    	<option {{(old('region') == 'North')?'selected':''}} value="North">North</option>
 				    	<option {{(old('region') == 'East')?'selected':''}} value="East">East</option>
-				    	<option {{(old('region') == 'West')?'selected':''}} value="West">West</option>	
+				    	<option {{(old('region') == 'West')?'selected':''}} value="West">West</option> -->	
+				    	@foreach($regions as $region)
+                          <option {{(old('region') == $region->name)?'selected':''}} value="{{$region->name}}">{{$region->name}}</option>
+				    	@endforeach
 				    </select>
 				    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 				</div>

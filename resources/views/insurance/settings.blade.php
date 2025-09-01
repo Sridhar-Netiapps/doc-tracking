@@ -311,14 +311,14 @@
             </select>
           </div>
 
-          <div class="form-group mt-3">
+          <!-- <div class="form-group mt-3">
             <label>Module Name</label>
             <select class="form-control form-select" name="module">
               <option value="">Select module</option>
               <option value="ho">HO</option>
               <option value="bo">BO</option>
             </select>
-          </div>
+          </div> -->
 
           
         </div>

@@ -299,11 +299,12 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $additionalfields = AdditionalFieldSetting::get();
         $branch = Branch::get();
+        $regions = Region::get();
 
         $procesedby=['NA','Vindhya','HO'];  
         $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
 
-        return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch','additionalfields'));
+        return view('insurance/create',compact('partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','branch','additionalfields', 'regions'));
     }
 
     /**
@@ -492,6 +493,8 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
         $branch = Branch::get();
+        $regions = Region::get();
+
         $landingTab = (Auth::user()->branch_id == '1100' ? 'ho' :'bo'); 
         $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
@@ -516,7 +519,7 @@ class InsuranceHomeController extends Controller
         $additionalLeadfields = AdditionalField::where('insurance_claim_details_id',decrypt($id))->with('settingData')->get();
          //print_r(json_encode($additionalLeadfields));die();
         
-        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab','additionalLeadfields'));
+        return view('insurance.view',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','landingTab','additionalLeadfields','regions'));
     }
 
     /**
@@ -535,6 +538,7 @@ class InsuranceHomeController extends Controller
         $rlStat=InsuranceRequestLetterStatus::get();
         $procesedby=['NA','Vindhya','HO'];
          $branch = Branch::get();
+          $regions = Region::get();
         
         $deceased=['Applicant','Co-Applicant','Spouse','Customer'];
         $checklistdata = InsuranceChecklist::where('insurance_claim_details_id',decrypt($id))->orderBy('id','DESC')->first();
@@ -567,7 +571,7 @@ class InsuranceHomeController extends Controller
         session()->forget('failures');
         
       // print_r($formArray);die();
-        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec','allSettings','existingFields'));
+        return view('insurance.edit',compact('data','partners','products','placeofdeath','relationship','deathcause','claimstatus','procesedby','rlStat','deceased','checklistdata','nomineedata','formArray','branch','documentdata','spec','allSettings','existingFields','regions'));
     }
 
     /**
@@ -1096,13 +1100,16 @@ class InsuranceHomeController extends Controller
        $nomineedetail->nominee_number =$request->nominee_number;
       // $nomineedetail->cheq_sent_date =$request->cheq_sent_date;
        $nomineedetail->bo_remarks =$request->bo_remarks;
-       $nomineedetail->bo_maker =$request->bo_maker;
-       $nomineedetail->bo_checker =$request->bo_checker;
+       /*$nomineedetail->bo_maker =$request->bo_maker;
+       $nomineedetail->bo_checker =$request->bo_checker;*/
        $nomineedetail->spdc_rec_date = $request->spdc_rec_date;
        $nomineedetail->ack_rec_date = $request->ack_rec_date;
        $nomineedetail->pkt_no = $request->pkt_no;
 
-
+       if(Auth::user()->branch_ic != '1100'){
+          $nomineedetail->bo_maker = Auth::user()->employee_id;
+       }
+       
        $nomineedetail->save();
 
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
@@ -1725,7 +1732,7 @@ class InsuranceHomeController extends Controller
           'field_name' => $request->title,
           'field_type' => 'input' ,
           'allowed_chars' => $request->allowed_chars,
-          'module' => $request->module]);
+          'module' => 'HO']);
       }
 
         $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
@@ -1908,7 +1915,8 @@ class InsuranceHomeController extends Controller
               InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
                 'nominee_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
                 'nominee_checker_comments' => $request->nominee_remarks,
-                'nominee_data_verifier' => Auth::user()->employee_id
+                'nominee_data_verifier' => Auth::user()->employee_id,
+                'bo_checker' => Auth::user()->employee_id
               ]); 
 
               $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();
@@ -1929,7 +1937,8 @@ class InsuranceHomeController extends Controller
               InsuranceNomineeDetail::where('id',$request->nominee_id)->update([
                 'spdc_data_verified' => ($request->action == 'Accepted') ? 'Yes':'No',
                 'spdc_checker_comments' => $request->pod_remarks,
-                'spdc_data_verfier' => Auth::user()->employee_id
+                'spdc_data_verfier' => Auth::user()->employee_id,
+                'bo_checker' => Auth::user()->employee_id
               ]); 
 
                $nomineeData =InsuranceNomineeDetail::where('id',$request->nominee_id)->first();

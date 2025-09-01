@@ -161,10 +161,9 @@
 					    <label class="form-label label-bold">Region</label>
 					    <select class="form-control form-control-design  form-select" name="region"  >
 					    	<option value="">Select</option>
-					    	<option {{($data->region == 'South')?'selected':''}} value="South" >South</option>
-					    	<option {{($data->region == 'North')?'selected':''}} value="North">North</option>
-					    	<option {{($data->region == 'East')?'selected':''}} value="East">East</option>
-					    	<option {{($data->region == 'West')?'selected':''}} value="West">West</option>	
+					    	@foreach($regions as $region)
+	                          <option {{(old('region',$data->region) == $region->name)?'selected':''}} value="{{$region->name}}">{{$region->name}}</option>
+					    	@endforeach
 					    </select>
 					    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -681,6 +680,12 @@
 				</div>
 
 				<div class="col-3 mb-3">
+				    <label class="form-label">Nominee Contact No</label>
+				    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+				    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+				</div>
+
+				<div class="col-3 mb-3">
 				    <label class="form-label">SPDC-Bank Name</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_bank_name"  value="{{$nomineedata->spdc_bank_name ?? ''}}" placeholder="Enter Bank Name">
 				</div>
@@ -700,11 +705,7 @@
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="pod_no"  value="{{$nomineedata->pod_no ?? ''}}" placeholder="Enter POD Number">
 				</div>
 
-				<div class="col-3 mb-3">
-					    <label class="form-label">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numberonly" name="nominee_number" value="{{ $nomineedata->nominee_number}}" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
-					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-					</div>
+				
 
 				<!-- <div class="col-3 mb-3">
 				    <label class="form-label label-bold">Cheque Sent Date</label>
@@ -718,12 +719,12 @@
 
 				<div class="col-3"></div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label">Maker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{$nomineedata->bo_maker ?? ''}}" placeholder="Enter Maker EMP ID and Name">
 				</div>
 
-				<div class="col-3 mb-3">
+				<div class="col-6 mb-3">
 				    <label class="form-label">Checker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{$nomineedata->bo_checker ?? ''}}" placeholder="Enter Checker EMP ID and Name">
 				</div>
@@ -800,7 +801,7 @@
         <input type="hidden" name="nominee_id" value="{{ $nomineedata->id}}">
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" name="action" value="Accepted">Accept</button>
+          <button type="submit" class="btn btn-success" name="action" id="btn_accept" value="Accepted">Accept</button>
           <button type="submit" class="btn btn-danger" name="action" value="Rework" id="btn_rework">Rework</button>
         </div>
       </form>
@@ -1030,6 +1031,7 @@ document.addEventListener("DOMContentLoaded", function () {
     reworkBtn.addEventListener("click", function (e) {
         if (remarks.value.trim() === "") {
             e.preventDefault(); // stop form submit
+            $('#btn_accept').addClass('display','none');
             alert("Comments are mandatory for Rework!");
             remarks.focus();
         }

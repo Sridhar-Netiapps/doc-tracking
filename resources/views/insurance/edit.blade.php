@@ -139,10 +139,13 @@
 					    <label class="form-label label-bold">Region *</label>
 					    <select class="form-control form-control-design  form-select" name="region"  >
 					    	<option value="">Select</option>
-					    	<option {{(old('region', $data->region )== 'South')?'selected':''}} value="South" >South</option>
+					    	<!-- <option {{(old('region', $data->region )== 'South')?'selected':''}} value="South" >South</option>
 					    	<option {{(old('region', $data->region) == 'North')?'selected':''}} value="North">North</option>
 					    	<option {{(old('region', $data->region )== 'East')?'selected':''}} value="East">East</option>
-					    	<option {{(old('region', $data->region) == 'West')?'selected':''}} value="West">West</option>	
+					    	<option {{(old('region', $data->region) == 'West')?'selected':''}} value="West">West</option>	 -->
+					    	@foreach($regions as $region)
+	                          <option {{(old('region',$data->region) == $region->name)?'selected':''}} value="{{$region->name}}">{{$region->name}}</option>
+					    	@endforeach
 					    </select>
 					    @error('region')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -180,7 +183,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Member Code</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="mp_no" value="{{ old('mp_no', $data->mp_no)}}" placeholder="Enter Member Code">
+					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="mp_no" value="{{ old('mp_no', $data->mp_no)}}" placeholder="Enter Member Code">
 					    @error('mp_no')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -292,7 +295,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Account ID *</label>
-					    <input type="text" class="form-control form-control-design numbersonly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID">
+					    <input type="text" class="form-control form-control-design clsAlphaNoOnly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID">
 					    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -682,6 +685,13 @@
 				</div>
 
 				<div class="col-3 mb-3">
+				    <label class="form-label label-bold">Nominee Contact No</label>
+				    <input type="text" class="form-control form-control-design2  numbersonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" id="mobile_input" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
+				    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
+				    <div id="mobileError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
+				</div>
+
+				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">SPDC-Bank Name</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="spdc_bank_name"  value="{{ old('spdc_bank_name',$nomineedata->spdc_bank_name )?? ''}}" placeholder="Enter Bank Name">
 				    @error('spdc_bank_name')<div class="text-error">{{ $message }}</div>@enderror
@@ -705,12 +715,7 @@
 				    @error('pod_no')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
-				<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Nominee Contact No</label>
-					    <input type="text" class="form-control form-control-design2  numbersonly" name="nominee_number" value="{{ old('nominee_number',$nomineedata->nominee_number) ?? '' }}" id="mobile_input" minlength="10" maxlength="10" placeholder="Enter Nominee Contact Number">
-					    @error('nominee_number')<div class="text-error">{{ $message }}</div>@enderror
-					    <div id="mobileError" class="text-error d-none">Contact Number must be exactly 10 Digits.</div>
-					</div>
+				
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Branch Remarks</label>
@@ -720,7 +725,7 @@
 
 				<div class="col-3"></div>
 
-				<div class="col-6 mb-3">
+				<!-- <div class="col-6 mb-3">
 				    <label class="form-label label-bold">Maker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_maker"  value="{{ old('bo_maker',$nomineedata->bo_maker )?? ''}}" placeholder="Enter Maker EMP ID and Name">
 				    @error('bo_maker')<div class="text-error">{{ $message }}</div>@enderror
@@ -730,7 +735,7 @@
 				    <label class="form-label label-bold">Checker at Branch</label>
 				    <input type="text" class="form-control form-control-design2  clsAlphaNoOnly" name="bo_checker"  value="{{ old('bo_checker',$nomineedata->bo_checker) ?? ''}}" placeholder="Enter Checker EMP ID and Name">
 				    @error('bo_checker')<div class="text-error">{{ $message }}</div>@enderror
-				</div>
+				</div> -->
 
 			  </div>
 		     </div>
