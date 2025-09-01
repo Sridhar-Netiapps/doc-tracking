@@ -36,7 +36,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $role->name }}</td>
                                 <td>
-                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{{ route('roles.edit', Crypt::encryptString($role->id)) }}" class="btn btn-warning btn-sm">Edit</a>
                                     {{-- <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
                                         @csrf
                                         @method('DELETE')

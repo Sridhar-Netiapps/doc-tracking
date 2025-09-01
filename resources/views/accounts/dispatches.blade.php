@@ -130,7 +130,7 @@
                                                     <option value=7>Received with Query</option>
                                                     <option value=6>Rejected</option>
                                                 </select>
-                                                <textarea name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                <textarea name="reason_for_rejection" class="form-control reason d-none alphanumeric" rows="2"></textarea>
                                             </td>
                                             @endunless
                                         @endif
@@ -370,9 +370,10 @@
                 mmrp_barcode: { required: "MMRP Barcode is required" }
             },
             submitHandler: function (form) {
-                const formData = new FormData(form);
-                const isUpdate = actionUrl.includes('update-courier');
-                formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
+                // event.preventDefault();
+                const formData = new FormData(form); 
+                formData.append('_method', actionUrl.includes('update-courier') ? 'PUT' : 'POST');
+
 
                 $.ajax({
                     url: actionUrl,
@@ -380,12 +381,13 @@
                     data: formData,
                     contentType: false,
                     processData: false,
+                    dataType: 'json',
                     success: function (res) {
                         if (res.success) {
                             Swal.fire({
                                 title: "Success!",
                                 // text: "Courier details saved successfully.",
-                                text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
+                                text: res.message,
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {

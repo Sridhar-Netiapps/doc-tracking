@@ -39,7 +39,7 @@
                                 <td>{{ $permission->name }}</td>
                                 <td>
                                     <div class="d-flex">
-                                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm me-3">Edit</a>
+                                        <a href="{{ route('permissions.edit', Crypt::encryptString($permission->id)) }}" class="btn btn-warning btn-sm me-3">Edit</a>
                                         {{-- <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')

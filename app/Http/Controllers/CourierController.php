@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Courier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class CourierController extends Controller
 {
@@ -48,7 +50,14 @@ class CourierController extends Controller
     // Show the form for editing the specified courier
     public function edit($id)
     {
-        $courier = Courier::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $courier = Courier::findOrFail($decryptedId);
+        // $courier = Courier::findOrFail($id);
         return view('couriers.edit', compact('courier'));
     }
 

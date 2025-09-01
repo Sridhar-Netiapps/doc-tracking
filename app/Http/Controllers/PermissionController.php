@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class PermissionController extends Controller
 {
@@ -44,8 +46,15 @@ class PermissionController extends Controller
     }
 
     // Edit a permission
-    public function edit(Permission $permission)
+    public function edit($id)
     {
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $permission = Permission::findOrFail($decryptedId);
         return view('permissions.edit', compact('permission'));
     }
 

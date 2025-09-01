@@ -12,6 +12,8 @@ use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class UserController extends Controller
 {
@@ -96,11 +98,18 @@ class UserController extends Controller
     }
 
     // Show the form for editing a user
-    public function edit(User $user)
+    public function edit($id)
     {
         // Fetching roles and permissions for the user
         $roles = Role::all();
         $permissions = Permission::all();
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $user = User::findOrFail($decryptedId);
 
         // Passing the user, roles, and permissions to the edit view
         return view('users.edit', compact('user', 'roles', 'permissions'));
@@ -146,13 +155,6 @@ class UserController extends Controller
 
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
-    }
-
-    public function destroy(User $user)
-    {
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
     public function assignRole(Request $request, User $user)
