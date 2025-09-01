@@ -958,7 +958,6 @@ class DocumentController extends Controller
     
     public function updateCourierDetails(Request $request, $id)
     {
-        dd($request->all());
         $request->validate([
             'courier_name' => 'required',
             'mmrp_barcode' => 'required|alpha_num',
@@ -969,8 +968,6 @@ class DocumentController extends Controller
         $courier->courier_name = $request->courier_name;
         $courier->mmrp_barcode = $request->mmrp_barcode;
         $courier->awb_pod = $request->awb_pod;
-        $courier->dispatch_date = $request->dispatch_date;
-
         $courier->save();
 
         return response()->json(['success' => true]);
