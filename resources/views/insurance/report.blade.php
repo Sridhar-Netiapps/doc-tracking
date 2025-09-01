@@ -87,7 +87,7 @@
                 <div class="input-group-prepend ms-3">
                    <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
 
-                    <button class="btn btn-warning rounded-2 ms-3"  name="action" value="export" value="export">Export</button> 
+                    <button class="btn btn-warning rounded-2 ms-3" id="btn_export"  name="action" value="export" value="export">Export</button> 
                 </div>
                </div>
              </form>
@@ -106,7 +106,6 @@
                 <th class="text-nowrap">Created Date</th>
                 <th class="text-nowrap">Last Modified Date</th>
                 <th class="text-nowrap">Lead ID</th>
-                <th class="text-nowrap">Creation Date</th>
                 <th class="text-nowrap">Intimation Date</th>
                 <th class="text-nowrap">Region</th>
                 <th class="text-nowrap">Branch</th> 
@@ -134,8 +133,7 @@
                     <td>{{ date('d-m-Y',strtotime($value->created_at))}}</td>
                     <td>{{ date('d-m-Y',strtotime($value->updated_at))}}</td>
                     <td>{{ $value->utrn}}</td>
-                    <td>{{ date('d M,Y',strtotime($value->created_at))}}</td>
-                    <td>{{ date('d M,Y',strtotime($value->intimation_date))}}</td>
+                    <td>{{ date('d-m-Y',strtotime($value->intimation_date))}}</td>
                     <td>{{ $value->region}}</td>
                     <td>{{ $value->branch}}</td> 
                     <td>{{ $value->partner}}</td>
@@ -148,7 +146,7 @@
                     
                     <td>{{ $value->cause_of_death}}</td>
                     <td>{{ $value->loan_tenure}}</td>
-                    <td>{{ date('d M,Y',strtotime($value->date_of_death))}}</td>
+                    <td>{{ date('d-m-Y',strtotime($value->date_of_death))}}</td>
                     <td>{{ $value->cliam_status}}</td>
                     <td>{{ $value->processed_by}}</td>
                     <td>{{ $value->cas_status}}</td>

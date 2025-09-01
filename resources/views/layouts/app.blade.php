@@ -102,7 +102,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
+                                         <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}" id="link_insurance">
                                             {{ __('Insurance') }}
                                         </a>
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
