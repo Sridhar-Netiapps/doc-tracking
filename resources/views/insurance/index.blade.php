@@ -7,9 +7,9 @@
 			<div class="d-flex">
 
 			@if(auth::user()->branch_id == '1100')
-				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn" ><button class="btn btn-secondary btn-text p-2">Import</button></a>
+				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn"  ><button class="btn btn-secondary btn-text p-2" id="btn_open_import_module">Import</button></a>
 
-				<a class="nav-link form-btn" href="{{route('create_insurance')}}"><button class="btn btn-success btn-text p-2">Create Lead</button></a>
+				<a class="nav-link form-btn" href="{{route('create_insurance')}}" ><button class="btn btn-success btn-text p-2" id="btn_create_lead">Create Lead</button></a>
 
 			@endif
 
@@ -20,6 +20,7 @@
 	                  <button class="btn btn-secondary">GO</button>	                 
 	                 </div>
 	               </form>
+	               <a class="nav-link" href="{{route('insurance_list')}}"><i class="fa fa-sync m-3"></i></a>
 				</div>
 			</div>
 			
@@ -44,9 +45,9 @@
                         </div>
                     </div>
                     <div class="d-flex">
-                    <button class="btn btn-danger">Import</button>
+                    <button class="btn btn-danger" id="btn_import">Import</button>
                     
-                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.xlsx"><span class="btn btn-outline-secondary">Download Template</span></a>
+                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.xlsx" id="btn_download_template"><span class="btn btn-outline-secondary">Download Template</span></a>
                     </div>
                     
                 </form>
@@ -110,8 +111,9 @@
 
 
 
-	<div class="py-4">
+	<div class="py-1">
 		<table class="table table-resnponsive table-bordered table-striped">
+
 			<thead class="table-dark">
 				<th class="text-table-head">Intimation Date</th>
 				<th class="text-table-head">Lead ID</th>
@@ -145,9 +147,9 @@
 					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td>
 						<div class="d-flex">
-							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}"><button class="btn btn-sm btn-warning me-2">View</button></a>
-							@if($value->cliam_status !='Completed')
-							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}"><button class="btn btn-sm btn-danger">Edit</button></a>
+							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
+							@if( ($value->cliam_status !='Completed' && auth::user()->branch_id == '1100' ) || auth::user()->hrmData->current_designation =='Manager-Insurance and TPP Operations')
+							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" ><button class="btn btn-sm btn-danger" id="btn_edit">Edit</button></a>
 							@endif
 						</div>
 					</td>
