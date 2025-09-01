@@ -82,7 +82,8 @@
                                         <td>
                                             <div class="btn-actions">
                                                 @can('edit-user')
-                                                <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                {{-- <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a> --}}
+                                                <a href="{{ route('users.edit', Crypt::encryptString($user->id)) }}" class="btn btn-warning btn-sm">Edit</a>
                                                 @endcan
                                                 {{-- @can('delete-user')
                                                 <form action="{{ route('users.destroy', $user) }}" method="POST">

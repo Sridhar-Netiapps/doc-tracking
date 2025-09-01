@@ -62,7 +62,7 @@
                                 @role('admin|super_admin|master')
                                 <td>
                                     <div class="btn-actions">
-                                        <a href="{{ route('process_status.edit', $status->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('process_status.edit', Crypt::encryptString($status->id)) }}" class="btn btn-primary btn-sm">Edit</a>
                                         {{-- <form action="{{ route('process_status.destroy', $status->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')

@@ -448,7 +448,7 @@
                                                                 <option value=7>Received with Query</option>
                                                                 <option value=6>Rejected</option>
                                                             </select>
-                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none" rows="2"></textarea>
+                                                            <textarea placeholder="Mention the Reason here..." name="reason_for_rejection" class="form-control reason d-none alphanumeric" rows="2"></textarea>
                                                         </td>
                                                         <td class="border-start">
                                                             <button type="button" class="btn btn-primary update-row">Update</button>
