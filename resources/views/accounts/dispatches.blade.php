@@ -368,39 +368,37 @@
             messages: {
                 courier_name: { required: "Courier name is required" },
                 mmrp_barcode: { required: "MMRP Barcode is required" }
-            },
-            submitHandler: function (form) {
-                const formData = new FormData(form);
-                const isUpdate = actionUrl.includes('update-courier');
-                formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
-
-                $.ajax({
-                    url: actionUrl,
-                    type: 'POST', 
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        if (res.success) {
-                            Swal.fire({
-                                title: "Success!",
-                                // text: "Courier details saved successfully.",
-                                text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
-                                icon: "success",
-                                confirmButtonText: "OK"
-                            }).then(() => {
-                                window.location.href = `{{ route('dispatches','list') }}`;
-                            });
-                        } else {
-                            Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
-                    }
-                });
+            // },
+            // submitHandler: async function (form) {
+            //     const formData = new FormData(form);
+            //     const isUpdate = actionUrl.includes('update-courier');
+            //     formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
+            //     try {
+            //         const response = await $.ajax({
+            //             url: actionUrl,
+            //             type: 'POST', 
+            //             data: formData,
+            //             contentType: false,
+            //             processData: false,
+            //         });
+            //         if (response.success) {
+            //             await Swal.fire({
+            //                 title: "Success!",
+            //                 // text: "Courier details saved successfully.",
+            //                 text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
+            //                 icon: "success",
+            //                 confirmButtonText: "OK"
+            //             }).then(() => {
+            //                 window.location.href = `{{ route('dispatches','list') }}`;
+            //             });
+            //         } else {
+            //             Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
+            //         }
+            //     } catch (error) {
+            //         console.error("AJAX Error:", error);
+            //         Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
+            //     }
             }
-
         });
         
         $(document).on('click', '.edit-courier', function () {
