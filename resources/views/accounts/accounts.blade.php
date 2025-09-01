@@ -142,16 +142,16 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type != 'rejected') --}}
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                 {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -166,7 +166,7 @@
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -288,15 +288,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -311,7 +311,7 @@
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -432,15 +432,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -455,7 +455,7 @@
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -571,15 +571,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -594,7 +594,7 @@
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => $row->id,'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>

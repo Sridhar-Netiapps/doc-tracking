@@ -147,7 +147,7 @@
                                         <td class="border-start">
                                             {{-- <a href="{{ route('dispatches.edit', $row->id) }}" class="btn btn-primary btn-sm">Edit</a> --}}
                                             <div class="">
-                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=>$row->id]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=> Crypt::encryptString($row->id)]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
                                                 @hasrole('bo-checker|master')
                                                 <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>

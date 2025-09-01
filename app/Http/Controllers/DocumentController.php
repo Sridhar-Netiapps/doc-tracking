@@ -26,6 +26,8 @@ use App\Exports\GoldLoanDocumentExport;
 use App\Exports\DtrfExport;
 use App\Exports\AccountOpeningDocumentExport;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class DocumentController extends Controller
 {
@@ -317,6 +319,7 @@ class DocumentController extends Controller
     
     public function bulkReview(Request $request)
     {
+        // dd($request->all());
         if(isset($request->loan_ids)){
             LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) {
                 $doc->status = 2;
@@ -613,11 +616,11 @@ class DocumentController extends Controller
 
 
         $filter = function ($query) use ($type, $filters, $dispatchDate) {
-            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
                 $query->where('region_id', $this->user->region_id);
             }
 
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
             if (!empty($filters['courier'])) {
@@ -713,7 +716,23 @@ class DocumentController extends Controller
 
     public function viewDispatches($type,$id)
     {
-        $dispatch = CourierDispatch::find($id);
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+        $dispatch = CourierDispatch::findOrFail($decryptedId);
+
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
+            if($this->user->branch_id != $dispatch->branch_code){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
+            if($this->user->region_id != $dispatch->region_id){
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        }
+        // $dispatch = CourierDispatch::find($id);
         // // $type = 'dispatch';
         // $previousUrl = url()->previous(); 
         // $type = Str::afterLast($previousUrl, '/');
@@ -731,15 +750,6 @@ class DocumentController extends Controller
         // if($this->user->branch_id != $dispatch->branch_code){
         //     return redirect('/home')->with('error', 'Access Denied');
         // }
-        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
-            if($this->user->branch_id != $dispatch->branch_code){
-                return redirect('/home')->with('error', 'Access Denied');
-            }
-        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
-            if($this->user->region != $dispatch->region){
-                return redirect('/home')->with('error', 'Access Denied');
-            }
-        }
 
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
@@ -816,11 +826,11 @@ class DocumentController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // return response()->json(['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Courier created successfully.'
-            ], 200);
+            return response()->json(['error' => $e->getMessage()]);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Courier created successfully.'
+            // ], 200);
             
         }
 
@@ -1120,17 +1130,25 @@ class DocumentController extends Controller
     }
     public function viewHistory($id,$type,$dtype)
     {
-        $document = $this->table[$dtype]::find($id);
-        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+        try {
+            $decryptedId = Crypt::decryptString($id);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
+    
+        $history = DocumentHistory::findOrFail($decryptedId);
+
+        $document = $this->table[$dtype]::find($decryptedId);
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
             if($this->user->branch_id != $document->branch_code){
                 return redirect('/home')->with('error', 'Access Denied');
             }
-        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
             if($this->user->region != $document->region){
                 return redirect('/home')->with('error', 'Access Denied');
             }
         }
-        $history = DocumentHistory::where('document_id',$id)->where('document_type',class_basename($this->table[$dtype]))->get();
+        $history = DocumentHistory::where('document_id',$decryptedId)->where('document_type',class_basename($this->table[$dtype]))->get();
 
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
