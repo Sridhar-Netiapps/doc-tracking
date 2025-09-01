@@ -994,17 +994,16 @@ class DocumentController extends Controller
             DB::beginTransaction();
             $courier = CourierDispatch::findOrFail($id);
 
+            $courier->courier_id = $request->courier_name;
             $courier->courier_name = $request->courier_name;
             $courier->mmrp_barcode = $request->mmrp_barcode;
             $courier->awb_pod = $request->awb_pod;
             $courier->save();
             DB::commit();
             return redirect()->route('dispatches','list')->with('success', 'Courier updated successfully.');
-            // return response()->json(['success' => true]);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('dispatches.list')->with('error', 'Courier Not Updated');
-            // return response()->json(['' => $e->getMessage()], 500);
         }
     }
 

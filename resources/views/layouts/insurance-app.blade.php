@@ -115,13 +115,13 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        @if(Auth::user()->branch_id != '1100')
+                                        @if(auth()->user()->hasAnyRole(['bo-maker','bo-checker']))
                                         <a class="dropdown-item" href="{{ route('home') }}" id="link_doctrack">
                                             {{ __('Doc Track') }}
                                         </a>
                                         @endif
 
-                                        @if(Auth::user()->branch_id == '1100')
+                                        @if(auth()->user()->hasAnyRole(['ins-admin']))
                                         <a class="dropdown-item" href="{{ route('audit') }}" id="link_audit_logs">
                                             {{ __('Audit Logs') }}
                                         </a>
@@ -131,7 +131,7 @@
                                             {{ __('Report') }}
                                         </a>
                                        
-                                         @if(Auth::user()->branch_id == '1100')
+                                         @if(auth()->user()->hasAnyRole(['ins-admin']))
                                         <a class="dropdown-item" href="{{ route('insurance_settings') }}" id="link_settings">
                                             {{ __('Settings') }}
                                         </a>
