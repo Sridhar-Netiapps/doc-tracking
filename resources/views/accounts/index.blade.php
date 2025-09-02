@@ -63,7 +63,7 @@
                                 @foreach ($allDocuments as $doc)
                                     <tr>
                                         @unless(auth()->user()->hasAnyRole(['ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
-                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ Crypt::encryptString($doc->id) }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                         @endunless
                                         <td>
                                             @if ($doc->doc_type == 'loan')

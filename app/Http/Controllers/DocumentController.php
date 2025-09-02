@@ -764,6 +764,11 @@ class DocumentController extends Controller
             'mmrp_barcode' => 'required|string',
             'dispatch_id' => 'required'
         ]);
+        try {
+            $decryptedId = Crypt::decryptString($validated['dispatch_id']);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
         DB::beginTransaction(); // Start Transaction
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->where('dispatch_date', now()->format('Y-m-d'))->count();
@@ -771,7 +776,7 @@ class DocumentController extends Controller
             // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
             // ->whereDate('created_at', now()->format('Y-m-d'))->first();
             // dd($sequence);
-            $dispatched = CourierDispatch::where('id',$validated['dispatch_id'])->get();
+            $dispatched = CourierDispatch::where('id',$decryptedId)->get();
             // $dispatched = CourierDispatch::find('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
@@ -1135,7 +1140,7 @@ class DocumentController extends Controller
             abort(404, 'Invalid ID');
         }
     
-        $history = DocumentHistory::findOrFail($decryptedId);
+        // $history = DocumentHistory::findOrFail($decryptedId);
 
         $document = $this->table[$dtype]::find($decryptedId);
         if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
