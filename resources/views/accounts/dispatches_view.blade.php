@@ -630,7 +630,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
         var loancount = $('td.loan').length;
