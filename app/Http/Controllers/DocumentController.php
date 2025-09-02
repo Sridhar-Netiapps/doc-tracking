@@ -319,30 +319,29 @@ class DocumentController extends Controller
     
     public function bulkReview(Request $request)
     {
-        // dd($request->all());
         if(isset($request->loan_ids)){
-            LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) {
+            LoanDocument::whereIn('id',$this->decryptIds($request->loan_ids))->get()->each(function ($doc) {
                 $doc->status = 2;
                 $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->goldloan_ids)){
-            GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) {
+            GoldLoanDocument::whereIn('id',$this->decryptIds($request->goldloan_ids))->get()->each(function ($doc) {
                 $doc->status = 2;
                 $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->dtrf_ids)){
-            DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) {
+            DtrfDocument::whereIn('id',$this->decryptIds($request->dtrf_ids))->get()->each(function ($doc) {
                 $doc->status = 2;
                 $doc->updated_by = $this->user->id;
                 $doc->save();
             });
         }
         if(isset($request->aof_ids)){
-            AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) {
+            AccountOpeningDocument::whereIn('id',$this->decryptIds($request->aof_ids))->get()->each(function ($doc) {
                 $doc->status = 2;
                 $doc->updated_by = $this->user->id;
                 $doc->save();
@@ -501,7 +500,7 @@ class DocumentController extends Controller
     
     
                 if(isset($request->loan_ids)){
-                    LoanDocument::whereIn('id',$request->loan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                    LoanDocument::whereIn('id',$this->decryptIds($request->loan_ids))->get()->each(function ($doc) use($dispatch_id) {
                         $doc->status = 3;
                         $doc->dispatch_id = $dispatch_id;
                         $doc->updated_by = $this->user->id;
@@ -509,7 +508,7 @@ class DocumentController extends Controller
                     });
                 }
                 if(isset($request->goldloan_ids)){
-                    GoldLoanDocument::whereIn('id',$request->goldloan_ids)->get()->each(function ($doc) use($dispatch_id) {
+                    GoldLoanDocument::whereIn('id',$this->decryptIds($request->goldloan_ids))->get()->each(function ($doc) use($dispatch_id) {
                         $doc->status = 3;
                         $doc->dispatch_id = $dispatch_id;
                         $doc->updated_by = $this->user->id;
@@ -517,7 +516,7 @@ class DocumentController extends Controller
                     });
                 }
                 if(isset($request->dtrf_ids)){
-                    DtrfDocument::whereIn('id',$request->dtrf_ids)->get()->each(function ($doc) use($dispatch_id) {
+                    DtrfDocument::whereIn('id',$this->decryptIds($request->dtrf_ids))->get()->each(function ($doc) use($dispatch_id) {
                         $doc->status = 3;
                         $doc->dispatch_id = $dispatch_id;
                         $doc->updated_by = $this->user->id;
@@ -525,7 +524,7 @@ class DocumentController extends Controller
                     });
                 }
                 if(isset($request->aof_ids)){
-                    AccountOpeningDocument::whereIn('id',$request->aof_ids)->get()->each(function ($doc) use($dispatch_id) {
+                    AccountOpeningDocument::whereIn('id',$this->decryptIds($request->aof_ids))->get()->each(function ($doc) use($dispatch_id) {
                         $doc->status = 3;
                         $doc->dispatch_id = $dispatch_id;
                         $doc->updated_by = $this->user->id;
@@ -1467,5 +1466,16 @@ class DocumentController extends Controller
             DB::rollBack();
             return redirect()->route('dispatches','tracking')->with('error',$e->getMessage());
         }
+    }
+
+    protected function decryptIds(array $encryptedIds)
+    {
+        return collect($encryptedIds)->map(function ($id) {
+            try {
+                return Crypt::decryptString($id);
+            } catch (DecryptException $e) {
+                return null; // ignore tampered IDs
+            }
+        })->filter()->toArray();
     }
 }
