@@ -155,7 +155,7 @@
                                                 @endif
                                                 @if ($type == 'tracking')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
-                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ Crypt::encryptString($row->id) }}" id="update-btn-{{ Crypt::encryptString($row->id) }}">Update</button>
+                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                     @hasanyrole('ro-supervisor|admin|master')
                                                         <button data-id="{{ Crypt::encryptString($row->id) }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
