@@ -489,10 +489,10 @@ class DocumentController extends Controller
                 $dispatch = new CourierDispatch;
                 $dispatch->branch_code = $this->user->branch_id; 
                 $dispatch->region_id = $this->user->region_id; 
-                $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $validated['loan_ids']):null;
-                $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $validated['goldloan_ids']):null;
-                $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $validated['dtrf_ids']):null;
-                $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $validated['aof_ids']):null;
+                $dispatch->loan_ids= isset($validated['loan_ids']) ? implode(',', $this->decryptIds($validated['loan_ids'])):null;
+                $dispatch->goldloan_ids= isset($validated['goldloan_ids']) ? implode(',', $this->decryptIds($validated['goldloan_ids'])):null;
+                $dispatch->dtrf_ids= isset($validated['dtrf_ids']) ? implode(',', $this->decryptIds($validated['dtrf_ids'])):null;
+                $dispatch->aof_ids= isset($validated['aof_ids']) ? implode(',', $this->decryptIds($validated['aof_ids'])):null;
                 $dispatch->status = 3;
                 $dispatch->created_by = $this->user->id;
                 $dispatch->save();
@@ -763,6 +763,11 @@ class DocumentController extends Controller
             'mmrp_barcode' => 'required|string',
             'dispatch_id' => 'required'
         ]);
+        try {
+            $decryptedId = Crypt::decryptString($validated['dispatch_id']);
+        } catch (DecryptException $e) {
+            abort(404, 'Invalid ID');
+        }
         DB::beginTransaction(); // Start Transaction
         try {
             $sequence = CourierDispatch::whereNotNull('dispatch_no')->where('dispatch_date', now()->format('Y-m-d'))->count();
@@ -770,7 +775,7 @@ class DocumentController extends Controller
             // $sequence = CourierDispatch::where('branch_code',$this->user->branch_id)->whereNotNull('dispatch_no')->
             // ->whereDate('created_at', now()->format('Y-m-d'))->first();
             // dd($sequence);
-            $dispatched = CourierDispatch::where('id',$validated['dispatch_id'])->get();
+            $dispatched = CourierDispatch::where('id',$decryptedId)->get();
             // $dispatched = CourierDispatch::find('id',$validated['readytodispatch_ids'])->get();
             $dispatchNumbers = [];
             foreach ($dispatched as $dispatch) {
@@ -991,7 +996,12 @@ class DocumentController extends Controller
         ]);
         try {
             DB::beginTransaction();
-            $courier = CourierDispatch::findOrFail($id);
+            try {
+                $decryptedId = Crypt::decryptString($id);
+            } catch (DecryptException $e) {
+                abort(404, 'Invalid ID');
+            }
+            $courier = CourierDispatch::findOrFail($decryptedId);
 
             $courier->courier_id = $request->courier_name;
             $courier->courier_name = $request->courier_name;
@@ -1134,7 +1144,7 @@ class DocumentController extends Controller
             abort(404, 'Invalid ID');
         }
     
-        $history = DocumentHistory::findOrFail($decryptedId);
+        // $history = DocumentHistory::findOrFail($decryptedId);
 
         $document = $this->table[$dtype]::find($decryptedId);
         if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
@@ -1447,8 +1457,12 @@ class DocumentController extends Controller
     {
         try {
             DB::beginTransaction();
-
-            $doc = CourierDispatch::find($request->dispatch_id);
+            try {
+                $decryptedId = Crypt::decryptString($request->dispatch_id);
+            } catch (DecryptException $e) {
+                abort(404, 'Invalid ID');
+            }
+            $doc = CourierDispatch::find($decryptedId);
             $doc->status = $request->status;
             $doc->comments = $request->reason;
             $doc->updated_by = $this->user->id;

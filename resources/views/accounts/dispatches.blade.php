@@ -150,7 +150,7 @@
                                                 <a href="{{ route('dispatches.view',['type'=>$type,'id'=> Crypt::encryptString($row->id)]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
                                                 @hasrole('bo-checker|master')
-                                                <button class="btn btn-primary proceed" data-id="{{ $row->id }}" type="button">Add Courier Details</button>
+                                                <button class="btn btn-primary proceed" data-id="{{ Crypt::encryptString($row->id) }}" type="button">Add Courier Details</button>
                                                 @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
@@ -158,7 +158,7 @@
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                     @hasanyrole('ro-supervisor|admin|master')
-                                                        <button data-id="{{ $row->id }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
+                                                        <button data-id="{{ Crypt::encryptString($row->id) }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
                                                     @endhasanyrole
                                                 @endif
                                                 @if ($type == 'list')
@@ -166,7 +166,7 @@
                                                         <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                     @hasrole('bo-checker|admin|master')
-                                                        <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ $row->id }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
+                                                        <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ Crypt::encryptString($row->id) }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
                                                             Edit
                                                         </button>
                                                     @endhasrole
