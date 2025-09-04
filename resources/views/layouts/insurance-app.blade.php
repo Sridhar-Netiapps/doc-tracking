@@ -137,11 +137,7 @@
                                         </a>
                                         @endif
 
-                                        <a class="dropdown-item" href=""
-                                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();" id="btn_logout">
-                                            {{ __('Logout') }}
-                                        </a>
+                                        <a class="dropdown-item" href="#" id="btn_logout">{{ __('Logout') }}</a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
@@ -166,3 +162,9 @@
     @include('layouts.scripts')
 </body>
 </html>
+<script nonce='{{ env("CSP_NONCE") }}'>
+    document.getElementById("btn_logout").addEventListener("click", function(e) {
+        e.preventDefault();
+        document.getElementById("logout-form").submit();
+    });
+</script>
