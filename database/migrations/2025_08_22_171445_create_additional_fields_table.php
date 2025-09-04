@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('additional_field_settings_id');
             $table->string('param_name');
             $table->string('param_value')->nullable();
-            $table->string('creator');
+            $table->string('creator')->nullable();
             $table->timestamps();
         });
     }

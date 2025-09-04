@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('field_type');
             $table->string('allowed_chars');
             $table->string('module')->nullable();
-            $table->string('creator');
+            $table->string('creator')->nullable();
             $table->timestamps();
         });
     }
