@@ -101,9 +101,11 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        @if(Auth::user()->ins_user == '1')
                                          <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
                                         </a>
+                                        @endif
                                         @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         @endunless
