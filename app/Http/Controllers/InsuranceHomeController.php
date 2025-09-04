@@ -1926,7 +1926,7 @@ class InsuranceHomeController extends Controller
 
               $module = 'Insurance';
               $operation = 'Nominee Details Verification';
-              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
+              $note = 'Checker updated Nominee details consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action . (($request->action != 'Accepted') ? '. Remarks : '.$request->nominee_remarks : '' );
               $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
 
               $this->auditlogs($module, $operation, $note, $link);
@@ -1954,9 +1954,12 @@ class InsuranceHomeController extends Controller
 
               $module = 'Insurance';
               $operation = 'POD Details Verification';
-              $note = 'Checker updated consent for Lead ID - '.$leadData->utrn .' - Consent:'.$request->action;
+              $note = 'Checker updated SPDC/POD details consent for Lead ID - ' . $leadData->utrn .' - Consent: ' . $request->action .
+                     (($request->action != 'Accepted') ? '. Remarks : ' . $request->pod_remarks : '');
+
               $link = url('/').'/insurance/view_claim_details/'.encrypt($leadData->id);
 
+             
               $this->auditlogs($module, $operation, $note, $link);
 
               return redirect()->back()->with('success','Thank You . Your consent has been updated' );
