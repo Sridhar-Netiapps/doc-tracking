@@ -1732,7 +1732,8 @@ class InsuranceHomeController extends Controller
           'field_name' => $request->title,
           'field_type' => 'input' ,
           'allowed_chars' => $request->allowed_chars,
-          'module' => 'HO']);
+          'module' => 'HO',
+          'creator' => Auth::user()->employee_id]);
       }
 
         $mailData=['message' => 'New '.$module.' added to Insurance Module . - '.$request->title ];
