@@ -53,7 +53,7 @@
 			@endif
 
 			@if($nomineedata->spdc_data_verified == 'No' && in_array(auth::user()->hrmData->current_designation , $maker ))
-			<button class="btn btn-sm btn-success btn-text p-2 btn_pod_remarks" id="btn_pod_remarks">Checker Remarks - SPDC Details</button> 
+			<button class="btn btn-sm btn-success btn-text p-2 btn_pod_remarks" id="btn_pod_remarks">Checker Remarks - POD Details</button> 
 			@endif
 			
 			<a href="{{ route('insurance_list')}}" ><button class="btn btn-sm btn-dark btn-text p-2" id="btn_go_back">Go Back</button> </a>
