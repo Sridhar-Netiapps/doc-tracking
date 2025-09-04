@@ -27,7 +27,7 @@ class InsuranceClaimStatusSeeder extends Seeder
             ['claim_status' => 'NEFT Rejected-Sent for Re-processing'],
 			['claim_status' => 'NEFT Re-processed'],
 			['claim_status' => 'Not Eligible'],
-			['claim_status' => 'Not Eligible [Having outstanding]'],
+			['claim_status' => 'Not Eligible-Having outstanding'],
 			['claim_status' => 'Not Eligible-Not Insured'],
 			['claim_status' => 'Rejected'],
 			['claim_status' => 'Removed'],
