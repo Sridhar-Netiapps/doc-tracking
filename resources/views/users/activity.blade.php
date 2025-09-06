@@ -42,9 +42,9 @@
                                 <th>Region</th>
                                 <th>Branch Code</th>
                                 <th>Email</th>
+                                <th>IP Address</th>
                                 <th>Event Type</th>
                                 <th>description</th>
-                                {{-- <th>IP Address</th> --}}
                                 <th>Activity on</th>
                             </tr>
                         </thead>
@@ -57,8 +57,13 @@
                                     <td>{{ $row->user->region }}</td>
                                     <td>{{ $row->user->branch_id }}</td>
                                     <td>{{ $row->user->email }}</td>
+                                    <td>{{ ucfirst($row->ip_address) }}</td>
                                     <td>{{ ucfirst($row->event_type) }}</td>
-                                    <td>{{ $row->description }}</td>
+                                    <td>
+                                        <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->description }}">
+                                            <i>{{ \Illuminate\Support\Str::words($row->description, 1, '...') }}</i>
+                                        </span>
+                                    </td>
                                     {{-- <td>{{ $row->ip_address }}</td> --}}
                                     <td>{{ date('d-m-Y h:i A', strtotime($row->created_at)) }}</td>
                                 </tr>
