@@ -1032,6 +1032,7 @@
                 cancelButtonText: "Cancel",
                 customClass: {
                     popup: 'rounded-3 shadow',
+                    input: 'alphanumeric',
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
                 },

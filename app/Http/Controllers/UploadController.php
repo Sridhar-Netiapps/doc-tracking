@@ -87,4 +87,54 @@ class UploadController extends Controller
         }
         return response()->download($filePath, 'vendor_documents_sample.csv');
     }
+
+    public function uploadFile(Request $request)
+    {
+        // Allowed MIME types & extensions (whitelist)
+        $allowedMimes = [
+            'image/jpeg',
+            'image/png',
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
+            'application/msword',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/csv'
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'file' => [
+                'required',
+                'file',
+                'max:2048', // 2MB limit
+                function ($attribute, $value, $fail) use ($allowedMimes) {
+                    if (!in_array($value->getMimeType(), $allowedMimes)) {
+                        $fail('Invalid file type.');
+                    }
+                }
+            ]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 422);
+        }
+
+        $file = $request->file('file');
+
+        // Double check extension (prevents image.jpg.php trick)
+        $ext = strtolower($file->getClientOriginalExtension());
+        $allowedExt = ['jpg','jpeg','png','pdf','doc','docx','xls','xlsx','csv'];
+
+        if (!in_array($ext, $allowedExt)) {
+            return response()->json(['error' => 'Invalid file extension'], 422);
+        }
+
+        // Generate secure filename
+        $newFileName = Str::uuid()->toString() . '.' . $ext;
+
+        // Store securely (never public path directly)
+        $path = $file->storeAs('uploads', $newFileName, 'private');
+
+        return response()->json(['success' => true, 'path' => $path]);
+    }
 }
