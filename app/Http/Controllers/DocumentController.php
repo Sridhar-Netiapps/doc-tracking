@@ -870,30 +870,35 @@ class DocumentController extends Controller
                 $dispatch->save();
 
                 if ((int)$update['remarks'] === 6) {
+                    $reason = $update['reason_for_rejection'] ?? null;
                     if (!empty($dispatch->loan_ids)) {
-                        LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->get()->each(function ($doc) {
+                        LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->get()->each(function ($doc) use ($reason) {
                             $doc->status = 6;
+                            $doc->reason = $reason;
                             $doc->updated_by = $this->user->id;
                             $doc->save();
                         });
                     }
                     if (!empty($dispatch->goldloan_ids)) {
-                        GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->get()->each(function ($doc) {
+                        GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->get()->each(function ($doc) use ($reason) {
                             $doc->status = 6;
+                            $doc->reason = $reason;
                             $doc->updated_by = $this->user->id;
                             $doc->save();
                         });
                     }
                     if (!empty($dispatch->aof_ids)) {
-                        AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->get()->each(function ($doc) {
+                        AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->get()->each(function ($doc) use ($reason) {
                             $doc->status = 6;
+                            $doc->reason = $reason;
                             $doc->updated_by = $this->user->id;
                             $doc->save();
                         });
                     }
                     if (!empty($dispatch->dtrf_ids)) {
-                        DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->get()->each(function ($doc) {
+                        DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->get()->each(function ($doc) use ($reason) {
                             $doc->status = 6;
+                            $doc->reason = $reason;
                             $doc->updated_by = $this->user->id;
                             $doc->save();
                         });

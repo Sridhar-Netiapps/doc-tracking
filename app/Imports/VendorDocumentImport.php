@@ -47,7 +47,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
 
     public function collection(Collection $rows)
     {
-        dd($rows);
+        // dd($rows);
         $table = [
             'MB LOAN' => LoanDocument::class,
             'GOLD LOAN' => GoldLoanDocument::class,
