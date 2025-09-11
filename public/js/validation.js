@@ -184,10 +184,7 @@ $(document).ready(function(){
     
         for (let file of files) {
             const fileExtension = file.name.split('.').pop().toLowerCase();
-            const fileMimeType = file.type;
-            console.log(fileExtension);
-            console.log(fileMimeType);
-            
+            const fileMimeType = file.type;            
             
             if (!allowedExtensions.includes(fileExtension)) {
                 $(`label[id="${file_name}-error"]`).text(`Invalid file type! Allowed: ${allowedExtensions.join(', ').toUpperCase()}.`);
@@ -212,19 +209,26 @@ $(document).ready(function(){
                 event.target.value = '';
                 return;
             }
-            // $.ajax({
-            //     url: '/file-validation',
-            //     type: 'POST',
-            //     data: formData,
-            //     processData:false,
-            //     contentType:false,
-            //     success: function(response) {
-            //         formData.append('files[]',file);
-            //     },
-            //     error: function(xhr) {
-            //         alert(xhr.responseJSON.error);
-            //     }
-            // });
+            formData.append('file',file);
+            $.ajax({
+                url: '/file-validation',
+                type: 'POST',
+                data: formData,
+                processData:false,
+                contentType:false,
+                success: function(response) {
+                    if (response.success) {
+                        formData.append('excel_file',file);
+                    } else {
+                        event.target.value = '';
+                        $(`label[id="${file_name}-error"]`).text(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    $(`label[id="${file_name}-error"]`).text(xhr.responseJSON.error);
+
+                }
+            });
         }
         
     });
