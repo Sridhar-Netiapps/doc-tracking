@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -53,10 +55,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'role.access' => \App\Http\Middleware\CheckRole::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        // Exception handling configuration
+    ->withExceptions(function ($exceptions) {
+        $exceptions->render(function (HttpException $e, $request) {
+            if ($e->getStatusCode() == 419) {
+                return redirect('login')->withErrors(['username' => 'Your session has expired. Please log in again.']);
+            }
+        });
     })
-
     /* ->withSchedule(function () {
         Schedule::command('app:sync-h-r-mdata')->everyMinute();
     })*/
