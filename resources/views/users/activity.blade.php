@@ -52,12 +52,24 @@
                             @foreach ($activites as $row)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
+                                    {{-- <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
                                     <td>{{ $row->user->employee_id }}</td>
                                     <td>{{ $row->user->region }}</td>
                                     <td>{{ $row->user->branch_id }}</td>
-                                    <td>{{ $row->user->email }}</td>
-                                    <td>{{ ucfirst($row->ip_address) }}</td>
+                                    <td>{{ $row->user->email }}</td> --}}
+                                    @if(!empty($row->user))
+                                        <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
+                                        <td>{{ $row->user->employee_id }}</td>
+                                        <td>{{ $row->user->region }}</td>
+                                        <td>{{ $row->user->branch_id }}</td>
+                                        <td>{{ $row->user->email }}</td>
+                                    @else
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                    @endif
                                     <td>{{ ucfirst($row->event_type) }}</td>
                                     <td>
                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->description }}">

@@ -1034,6 +1034,7 @@
                 customClass: {
                     popup: 'rounded-3 shadow',
                     title: 'mb-0 text-primary',
+                    input: 'alphanumeric',
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
                 },

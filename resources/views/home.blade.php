@@ -7,7 +7,7 @@
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
-                <h2>{{$total_doc}}</h2>
+                <h2>{{ Crypt::decrypt($total_doc) }}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col-2 cardBox Yellow">
@@ -676,4 +676,110 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
+<script>
+    document.getElementById('search_type').addEventListener('change', function () {
+        let value = this.value;
+        let container = document.getElementById('dynamic-dropdown');
+
+        container.innerHTML = ''; // Clear previous
+        if (value === 'region') {
+            container.innerHTML = document.getElementById('template-region').innerHTML;
+            container.style.display = 'block';
+        } else if (value === 'tat') {
+            container.innerHTML = document.getElementById('template-tat').innerHTML;
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+
+        toggleResetButton(); // update reset visibility when switching dropdown type
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let selectedSearchType = "{{ $selectedSearchType }}"
+        let selectedRegion = "{{ $selectedRegion }}";
+        let selectedTat = "{{ $selectedTat }}";
+        let container = document.getElementById('dynamic-dropdown');
+        let resetContainer = document.getElementById('reset-btn-container');
+
+        if (selectedSearchType) {
+            document.getElementById('search_type').dispatchEvent(new Event('change'));
+        }
+
+        if (selectedRegion) {
+            container.innerHTML = document.getElementById('template-region').innerHTML;
+            container.style.display = 'block';
+        } else if (selectedTat) {
+            container.innerHTML = document.getElementById('template-tat').innerHTML;
+            container.style.display = 'block';
+        }
+
+        toggleResetButton();
+
+        // Click -> RESET (clear session filters then reload)
+        $(document).on('click', '#reset-btn', function () {
+            $.ajax({
+                url: "{{ route('tat.data') }}",
+                type: 'POST',
+                data: {
+                    reset: true, // <-- explicit reset flag
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Clear UI instantly (optional)
+                        $('#search_type').val('');
+                        $('#dynamic-dropdown').hide().empty();
+                        $('#reset-btn-container').hide();
+
+                        // Reload to fetch original data
+                        location.reload();
+                    }
+                }
+            });
+        });
+    });
+
+    // Show/hide reset if any filter currently has a value
+    function toggleResetButton() {
+        const hasRegion = $('#region').length && $('#region').val();
+        const hasTat    = $('#tat').length && $('#tat').val();
+        if (hasRegion || hasTat) {
+            $('#reset-btn-container').show();
+        } else {
+            $('#reset-btn-container').hide();
+        }
+    }
+
+    $(document).on('change', '#region, #tat', function () {
+        toggleResetButton();
+
+        let tat = $('#tat').val();
+        let region = $('#region').val();
+        let searchType = $('#search_type').val(); 
+
+        // If filtering by region, clear tat; if filtering by tat, clear region
+        if ($(this).attr('id') === 'region') {
+            tat = ''; // clear TAT
+        } else if ($(this).attr('id') === 'tat') {
+            region = ''; // clear Region
+        }
+
+        $.ajax({
+            url: "{{ route('tat.data') }}",
+            type: 'POST',
+            data: {
+                tat: tat,
+                region: region,
+                search_type: searchType,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload(); 
+                }
+            }
+        });
+    });
+</script>
 @endsection
