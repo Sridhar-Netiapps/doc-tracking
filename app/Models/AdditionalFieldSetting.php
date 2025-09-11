@@ -11,7 +11,7 @@ class AdditionalFieldSetting extends Model
         'field_type',
         'allowed_chars',
         'module',
-        'creator'
+        'creator',
     ];
     
      public function Additional_fileds(){
