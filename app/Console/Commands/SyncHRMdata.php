@@ -47,6 +47,7 @@ class SyncHRMdata extends Command
                     $branchData = $value->office_loc_code;
                     $branch_data = explode('-',$branchData);
                     $region_id = '';
+                    $is_ins_user = '0';
 
                     $role = 'branch-user';
 
@@ -131,7 +132,20 @@ class SyncHRMdata extends Command
                         'Customer Relationship Manager'
                        ]; 
 
-                   
+
+                    $ins_users = ['Officer-Insurance and TPP Operations',
+                        'Specialist-Insurance and TPP Operations',
+                        'Manager-Insurance and TPP Operations',
+                        'Customer Care Representative',
+                        'Cashier',
+                        'Customer Relationship Manager',
+                        'Assistant Customer Relationship Manager',
+                        'Branch Operation Manager',
+                        'Branch Manager',
+                        'Head Of Operations',
+                        'National Manager-Banking Operations/Regional Operations Manager'
+                    ];
+
                     $ins_ho_user = ['Officer-Insurance and TPP Operations','Specialist-Insurance and TPP Operations'];
 
                     $ins_admin= ['Manager-Insurance and TPP Operations'];
@@ -174,7 +188,7 @@ class SyncHRMdata extends Command
                      if(in_array($designation , $bo_readonly_designations)){
                          $role = 'branch-user';
                     }
-             
+
                     if(in_array($designation , $ins_ho_user)){
                          $role = 'ins-ho-user';
                     }
@@ -183,12 +197,16 @@ class SyncHRMdata extends Command
                          $role = 'ins-admin';
                     }
 
+                    if(in_array($designation , $ins_users)){
+                         $is_ins_user = '1';
+                    }
+             
                  
                     if($value->office_region == 'South') $region_id = '1';
                     if($value->office_region == 'North') $region_id = '2';
                     if($value->office_region == 'East') $region_id = '3';
                     if($value->office_region == 'West') $region_id = '4';
-
+                    
                     
                     $user->first_name = $value->first_name;
                     $user->last_name = $value->last_name;
@@ -202,9 +220,10 @@ class SyncHRMdata extends Command
                     $user->dob =  date('Y-m-d',strtotime($value->dob));
                     $user->gender =  $value->gender;
                     $user->status = $value->employee_status;
-                    $user->branch_id = is_int($branch_data[0]) ? $branch_data[0] : '0000';
+                    $user->branch_id = $branch_data[0];
                     $user->region = $value->office_region;  
                     $user->region_id = (int)$region_id;
+                    $user->ins_user = $is_ins_user;
                     $user->save();
 
 
