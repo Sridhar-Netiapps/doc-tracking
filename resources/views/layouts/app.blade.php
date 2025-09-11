@@ -85,7 +85,7 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        @if(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker','ins-ho-user','ins-admin']) && Auth::user()->ins_user == '1')
+                                        @if(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker','ins-ho-user','ins-admin','master','ro-user']) && Auth::user()->ins_user == '1')
                                          <a target="_blank" class="dropdown-item" href="{{ route('insurance_dashboard') }}">
                                             {{ __('Insurance') }}
                                         </a>
