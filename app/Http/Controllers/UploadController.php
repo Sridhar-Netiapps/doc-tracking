@@ -28,7 +28,7 @@ class UploadController extends Controller
             'doc_type' => 'nullable|string',
             'excel_file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
-
+        // dd($request->doc_type);
         $file = $request->file('excel_file');
         $collection = \Maatwebsite\Excel\Facades\Excel::toCollection(null, $file);
         $rows = $collection->first();
