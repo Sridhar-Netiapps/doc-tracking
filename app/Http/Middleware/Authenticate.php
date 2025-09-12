@@ -26,13 +26,12 @@ class Authenticate extends Middleware
         $user = $request->user();
        
         // Add debug logs
-        \Log::debug('Current Session ID:', [$request->session()->getId()]);
-        \Log::debug('Stored Session ID for User:', [$user->session_id]);
+
         //Check if the user is authenticated and has a session ID
         // print_r($user->session_id);
         // dd($request->session()->getId());
         if ($user && $user->session_id !== $request->session()->getId()) {
-            \Log::debug('Session mismatch detected. Logging out user.');
+            
             Session::flush();
             Auth::logout();
             return redirect('login')->withErrors(['username' => 'This User Logged in Another System']);

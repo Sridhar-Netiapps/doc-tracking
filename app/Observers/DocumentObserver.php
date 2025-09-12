@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 class DocumentObserver
 {
     public function created(Model $model)
-    {
+    { 
+        Log::info('entered in create observer');
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
@@ -24,6 +25,7 @@ class DocumentObserver
     }
     public function updating(Model $model)
     {
+        Log::info('entered in edit observer');
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
