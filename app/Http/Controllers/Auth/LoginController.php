@@ -82,6 +82,9 @@ class LoginController extends Controller
                     if ($user->hasrole('super_admin')) {
                         return redirect()->route('users.index');
                     }
+                    if ($user->hasrole('ins-ho-user') || $user->hasrole('ins-admin')) {
+                        return redirect()->route('insurance/dashboard');
+                    }
                     return redirect()->intended('/home');
                 } 
                 // else {
@@ -107,9 +110,12 @@ class LoginController extends Controller
                 $user = Auth::user();
                 $user->session_id = Session::getId();
                 $user->save();
-                // dd($user);
+                 //dd($user);
                 if ($user->hasrole('super_admin')) {
                     return redirect()->route('users.index');
+                }
+                if ($user->hasrole('ins-ho-user') || $user->hasrole('ins-admin')) {
+                    return redirect()->route('insurance_dashboard');
                 }
                 return redirect()->intended('/home');
             }
