@@ -5,12 +5,14 @@ namespace App\Observers;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\DocumentHistory;
 use Illuminate\Support\Facades\Auth;
-
+use Log;
 class DocumentObserver
 {
     public function created(Model $model)
     { 
-        Log::info('entered in create observer');
+        if (auth()->check() && auth()->user()->hasRole('master')) {
+            return;
+        }    
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
@@ -25,7 +27,9 @@ class DocumentObserver
     }
     public function updating(Model $model)
     {
-        Log::info('entered in edit observer');
+        if (auth()->check() && auth()->user()->hasRole('master')) {
+            return;
+        }    
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
@@ -40,21 +44,27 @@ class DocumentObserver
     }
     public function deleting(Model $model)
     {
-        if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
-            DocumentHistory::create([
-                'document_id'     => $model->id,
-                'document_type'   => class_basename($model),
-                'previous_status' => $model->getOriginal('status'),
-                'current_status'  => 'Moved to Trash',
-                'remarks'         => $model->reason ?? 'Moved to Trash',
-                'created_by'      => $model->deleted_by ?? 0,
-                'created_at'      => now(),
-            ]);
+        if (auth()->check() && auth()->user()->hasRole('master')) {
+            return;
         }
-    }
+        if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
+                DocumentHistory::create([
+                    'document_id'     => $model->id,
+                    'document_type'   => class_basename($model),
+                    'previous_status' => $model->getOriginal('status'),
+                    'current_status'  => 'Moved to Trash',
+                    'remarks'         => $model->reason ?? 'Moved to Trash',
+                    'created_by'      => $model->deleted_by ?? 0,
+                    'created_at'      => now(),
+                ]);
+            }
+        }
 
     public function restored(Model $model)
     {
+        if (auth()->check() && auth()->user()->hasRole('master')) {
+            return;
+        }    
         DocumentHistory::create([
             'document_id'     => $model->id,
             'document_type'   => class_basename($model),
