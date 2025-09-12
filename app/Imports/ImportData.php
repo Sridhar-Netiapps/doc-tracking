@@ -41,13 +41,14 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     public function __construct($doc_type)
     {
         $this->doc_type = $doc_type;
-        // dd($doc_type);
     }
     function parseExcelDate($value)
     {
         if (is_numeric($value)) {
+            // dd($value);
             return date('Y-m-d', ($value - 25569) * 86400);
         } else {
+            // dd(date('Y-m-d', $timestamp));
             $timestamp = strtotime($value);
             return $timestamp ? date('Y-m-d', $timestamp) : null;
         }
@@ -55,7 +56,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
 
     public function collection(Collection $rows)
     {
-        // dd($rows);
+        // dd($this->doc_type);
         $table = [
             'loan' => LoanDocument::class,
             'goldloan' => GoldLoanDocument::class,
@@ -97,6 +98,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
                 $document = new $table[$this->doc_type];
+                // dd($document);
                 // if (!$document) {
                 //     throw new \Exception($doc_unique_no." Document not found");
                 // }
@@ -161,7 +163,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     {
         return [
             'unique_ref_no'           => ['required', 'string'],
-            'doc_type'                => ['required', 'string'],
+            // 'doc_type'                => ['required', 'string'],
             'region'                  => ['required', 'string'],
             'branch_code'             => ['required'],
             'branch_name'             => ['required'],
