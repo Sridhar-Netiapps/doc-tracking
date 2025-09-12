@@ -119,6 +119,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('couriers', CourierController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
+        Route::post('users/get', [UserController::class, 'getUser'])->name('users.get');
         Route::resource('users', UserController::class);
         Route::post('activity/filter', [UserController::class, 'filter'])->name('activity.filter');
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
@@ -145,44 +146,17 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
 
     //insurance
-
-Route::middleware(['auth', 'insuranceOnly:1'])->group(function () {
-    Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');
-    Route::get('insurance/settings',[InsuranceHomeController::class,'settings'])->name('insurance_settings');
-    Route::post('insurance/add_new_insurance_item',[InsuranceHomeController::class,'add_new_insurance_item'])->name('add_new_insurance_item');
-
-   
-});
-
-Route::middleware(['auth', 'insuranceOnly:1,2'])->group(function () {
-    Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
-    Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
-
-    Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
-
-    Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
-    Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
-
-    
-});
-
-Route::middleware(['auth', 'insuranceOnly:3'])->group(function () {
-    Route::post('insurance/view-claim-details/verify-nominee-details',[InsuranceHomeController::class,'verify_nominee_details'])->name('verify_nominee_details');
-
-    Route::post('insurance/view-claim-details/verify-pod-details',[InsuranceHomeController::class,'verify_pod_details'])->name('verify_pod_details');
-});
-
-Route::middleware(['auth', 'insuranceOnly:1,2,3'])->group(function () {
     Route::get('insurance/dashboard',[InsuranceHomeController::class,'index'])->name('insurance_dashboard');
     Route::get('insurance/claim_forms',[InsuranceHomeController::class,'list'])->name('insurance_list');
-    
+    Route::get('insurance/create_insurance',[InsuranceHomeController::class,'create'])->name('create_insurance');
+    Route::post('save_claim_details',[InsuranceHomeController::class,'store'])->name('save_claim_details');
     Route::get('insurance/view_claim_details/{id}',[InsuranceHomeController::class,'show'])->name('view_claim_details');
     Route::get('insurance/edit_claim_details/{spec}/{id}',[InsuranceHomeController::class,'edit'])->name('edit_claim_details');
 
 
     Route::get('insurance/download_claim_form/{id}',[InsuranceHomeController::class,'download_claim_form'])->name('download_claim_form');
     Route::get('insurance/download_checklist/{id}',[InsuranceHomeController::class,'download_checklist'])->name('download_checklist');
-    
+    Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
     Route::post('update_claim_details/{id}',[InsuranceHomeController::class,'update'])->name('update_claim_details');
 
     Route::post('save_claim_checklist',[InsuranceHomeController::class,'save_claim_checklist'])->name('save_claim_checklist');
@@ -191,14 +165,23 @@ Route::middleware(['auth', 'insuranceOnly:1,2,3'])->group(function () {
     Route::post('save_documents',[InsuranceHomeController::class,'save_documents'])->name('save_documents');
     Route::post('update_documents',[InsuranceHomeController::class,'update_documents'])->name('update_documents');
 
+
+    Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');
+    Route::get('insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
     Route::post('/audit/download-claim', [InsuranceHomeController::class, 'downloadClaim'])->name('audit.download.claim');
     Route::post('/audit/download-checklist', [InsuranceHomeController::class, 'downloadChecklist'])->name('audit.download.checklist');
 
-    Route::get('insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
+    Route::get('insurance/settings',[InsuranceHomeController::class,'settings'])->name('insurance_settings');
+    Route::post('insurance/add_new_insurance_item',[InsuranceHomeController::class,'add_new_insurance_item'])->name('add_new_insurance_item');
+
     Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
 
-});
-   
+    Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
+    Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
+
+    Route::post('insurance/view-claim-details/verify-nominee-details',[InsuranceHomeController::class,'verify_nominee_details'])->name('verify_nominee_details');
+
+    Route::post('insurance/view-claim-details/verify-pod-details',[InsuranceHomeController::class,'verify_pod_details'])->name('verify_pod_details');
     
 
    

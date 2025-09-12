@@ -40,7 +40,7 @@
                                     <div class="mb-3">
                                         <label for="username" class="col-form-label">{{ __('Employee ID') }}</label>
                                         <div class="">
-                                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"  autofocus>
+                                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" autocomplete="off" autofocus>
                                             @error('username')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -51,7 +51,7 @@
                                     <div class="mb-3">
                                         <label for="password" class=" col-form-label ">{{ __('Password') }}</label>
                                         <div class="">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="current-password">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="off">
                                             @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
