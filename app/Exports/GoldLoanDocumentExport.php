@@ -45,7 +45,7 @@ class GoldLoanDocumentExport implements FromCollection, WithHeadings, WithMappin
             'Tracked by (User ID)',
             'Remarks',
             'RO Received Status',
-            'Reason for Rejection',
+            'Reasons',
             'RO Received Date',
             'RO Tracked by (User ID)',
             'Lot No',
