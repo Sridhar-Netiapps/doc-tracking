@@ -161,7 +161,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     {
         return [
             'unique_ref_no'           => ['required', 'string'],
-            'doc_type'                => ['required', 'string'],
+            // 'doc_type'                => ['required', 'string'],
             'region'                  => ['required', 'string'],
             'branch_code'             => ['required'],
             'branch_name'             => ['required'],
@@ -192,7 +192,6 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     {
         return [
             'unique_ref_no.required'           => 'Document Unique Number is required.',
-            'doc_type.required'                => 'Document Type is required.',
             'region.required'                  => 'Region is required.',
             'branch_code.required'             => 'Branch Code is required.',
             'branch_name.required'             => 'Branch Name is required.',
