@@ -47,6 +47,14 @@
             @if(auth::user()->branch_id == '1100')
 			<a class="confirm-link" href="{{ route('clone_lead_details',$data->id)}}" ><button class="btn btn-sm btn-success btn-text p-2" id="btn_clone">Clone</button> </a>
 			@endif
+
+			@if($nomineedata->nominee_data_verified == 'No' && in_array(auth::user()->hrmData->current_designation , $maker ))
+			<button class="btn btn-sm btn-success btn-text p-2 btn_nominee_remarks" id="btn_nominee_remarks">Checker Remarks - Nominee Details</button> 
+			@endif
+
+			@if($nomineedata->spdc_data_verified == 'No' && in_array(auth::user()->hrmData->current_designation , $maker ))
+			<button class="btn btn-sm btn-success btn-text p-2 btn_pod_remarks" id="btn_pod_remarks">Checker Remarks - POD Details</button> 
+			@endif
 			
 			<a href="{{ route('insurance_list')}}" ><button class="btn btn-sm btn-dark btn-text p-2" id="btn_go_back">Go Back</button> </a>
 		</div>
@@ -1022,6 +1030,24 @@ $(document).on('click', '.confirm-spdc_verification', function(e) {
         e.preventDefault(); // stop navigation
     }
 });
+
+$(document).on('click', '.btn_nominee_remarks', function(e) {
+	const remarks = '{{ $nomineedata->nominee_checker_comments }}';
+    Swal.fire({
+        html: remarks,
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
+});
+
+$(document).on('click', '.btn_pod_remarks', function(e) {
+	const remarks = '{{ $nomineedata->spdc_checker_comments }}';
+    Swal.fire({
+        html: remarks,
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
+})
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("nomineeForm");

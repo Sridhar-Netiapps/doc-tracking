@@ -162,80 +162,101 @@ $(document).ready(function(){
         }
     });
     
-    // $(document).on('change', '.file-validate', async function (event) {
-    //     var tkn = $('input[name="_token"]').val();
-    //     const files = event.target.files;
-    //     let file_name = $(this).attr('name');
-    //     if (!files.length) return;
+    $(document).on('change', '.file-validate', async function (event) {
+        var tkn = $('input[name="_token"]').val();
+        const files = event.target.files;
+        let file_name = $(this).attr('name');
+        if (!files.length) return;
+        $(`label[id="${file_name}-error"]`).text('');
     
-    //     const allowedExtensions = $(this).data('ext').split(',').map(ext => ext.trim().toLowerCase());
-    //     const allowedMimeTypes = {
-    //         'png': 'image/png', 'jpg': 'image/jpeg',
-    //         'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    //         'doc': 'application/msword',
-    //         'xls': 'application/vnd.ms-excel', 'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //         'xlsx': 'application/vnd.ms-excel', 'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //         'csv': 'text/csv', 'pdf': 'application/pdf', 'eml': 'message/rfc822'
-    //     };
-    //     const formData = new FormData();
-    //     formData.append('_token',tkn);
-    //     formData.append('process',file_name);
+        const allowedExtensions = $(this).data('ext').split(',').map(ext => ext.trim().toLowerCase());
+        const allowedMimeTypes = {
+            'png': 'image/png', 'jpg': 'image/jpeg',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'doc': 'application/msword',
+            'xls': 'application/vnd.ms-excel', 'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'xlsx': 'application/vnd.ms-excel', 'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'csv': 'text/csv', 'pdf': 'application/pdf', 'eml': 'message/rfc822'
+        };
+        const formData = new FormData();
+        formData.append('_token',tkn);
+        formData.append('process',file_name);
     
-    //     for (let file of files) {
-    //         const fileExtension = file.name.split('.').pop().toLowerCase();
-    //         const fileMimeType = file.type;
+        for (let file of files) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const fileMimeType = file.type;            
             
-    //         if (!allowedExtensions.includes(fileExtension)) {
-    //             $(`label[id="${file_name}-error"]`).text(`Invalid file type! Allowed: ${allowedExtensions.join(', ').toUpperCase()}.`);
-    //             // alert('Invalid file type! Allowed: ' + allowedExtensions.join(', '));
-    //             event.target.value = '';
-    //             return;
-    //         }
+            if (!allowedExtensions.includes(fileExtension)) {
+                $(`label[id="${file_name}-error"]`).text(`Invalid file type! Allowed: ${allowedExtensions.join(', ').toUpperCase()}.`);
+                // alert('Invalid file type! Allowed: ' + allowedExtensions.join(', '));
+                event.target.value = '';
+                return;
+            }
             
-    //         if (allowedMimeTypes[fileExtension] && allowedMimeTypes[fileExtension] !== fileMimeType) {
-    //             $(`label[id="${file_name}-error"]`).text(`Invalid file format! Please select a valid ${fileExtension.toUpperCase()} file.`);
-    //             // alert('Invalid file format! Please select a valid file.');
-    //             event.target.value = '';
-    //             return;
-    //         }
+            if (allowedMimeTypes[fileExtension] && allowedMimeTypes[fileExtension] !== fileMimeType) {
+                $(`label[id="${file_name}-error"]`).text(`Invalid file format! Please select a valid ${fileExtension.toUpperCase()} file.`);
+                // alert('Invalid file format! Please select a valid file.');
+                event.target.value = '';
+                return;
+            }
             
-    //         const magicBytes = await readMagicBytes(file);
-    //         if (!validateFileSignature(magicBytes, fileExtension)) {
-    //             $(`label[id="${file_name}-error"]`).text(`Invalid file! The file type does not match its extension.`);
-    //             // alert('Invalid file! This file type does not match its extension.');
-    //             event.target.value = '';
-    //             return;
-    //         }
-    //     formData.append('files[]',file);
-    //     }
+            const magicBytes = await readMagicBytes(file);
+            console.log(magicBytes);
+            
+            if (!validateFileSignature(magicBytes, fileExtension)) {
+                $(`label[id="${file_name}-error"]`).text(`Invalid file! The file type does not match its extension.`);
+                // alert('Invalid file! This file type does not match its extension.');
+                event.target.value = '';
+                return;
+            }
+            formData.append('file',file);
+            $.ajax({
+                url: '/file-validation',
+                type: 'POST',
+                data: formData,
+                processData:false,
+                contentType:false,
+                success: function(response) {
+                    if (response.success) {
+                        formData.append('excel_file',file);
+                    } else {
+                        event.target.value = '';
+                        $(`label[id="${file_name}-error"]`).text(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    $(`label[id="${file_name}-error"]`).text(xhr.responseJSON.error);
+
+                }
+            });
+        }
         
-    // });
+    });
     
     // Function to Read Magic Bytes
-    // async function readMagicBytes(file) {
-    //     return new Promise((resolve) => {
-    //         const reader = new FileReader();
-    //         reader.onloadend = function (event) {
-    //             if (event.target.readyState === FileReader.DONE) {
-    //                 const uint8Array = new Uint8Array(event.target.result);
-    //                 const hexSignature = Array.from(uint8Array).slice(0, 4).map(byte => byte.toString(16).padStart(2, '0')).join('');
-    //                 resolve(hexSignature);
-    //             }
-    //         };
-    //         reader.readAsArrayBuffer(file.slice(0, 4));
-    //     });
-    // }
+    async function readMagicBytes(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = function (event) {
+                if (event.target.readyState === FileReader.DONE) {
+                    const uint8Array = new Uint8Array(event.target.result);
+                    const hexSignature = Array.from(uint8Array).slice(0, 4).map(byte => byte.toString(16).padStart(2, '0')).join('');
+                    resolve(hexSignature);
+                }
+            };
+            reader.readAsArrayBuffer(file.slice(0, 4));
+        });
+    }
     
     // Function to Validate File Signature
-    // function validateFileSignature(magicBytes, extension) {
-    //     const fileSignatures = {
-    //         'pdf': '25504446', 'doc': 'd0cf11e0', 'docx': '504b0304',
-    //         'jpg': 'ffd8ffe0', 'png': '89504e47', 'xls': 'd0cf11e0',
-    //         'xlsx': '504b0304', 'csv': '', 'eml': ''
-    //     };
-    
-    //     return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
-    // }
+    function validateFileSignature(magicBytes, extension) {
+        const fileSignatures = {
+            'pdf': '25504446', 'doc': 'd0cf11e0', 'docx': '504b0304',
+            'jpg': 'ffd8ffe0', 'png': '89504e47', 'xls': 'd0cf11e0',
+            'xlsx': '504b0304', 'csv': '446f6375', 'eml': ''
+        };    
+        return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
+    }
 
 
       // Show button when scrolled down 100px
