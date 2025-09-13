@@ -10,7 +10,9 @@ class DocumentObserver
 {
     public function created(Model $model)
     { 
-        Log::info('entered in create observer');
+        if (auth()->check() && auth()->user()->hasRole('admin')) {
+            return;
+        }    
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
@@ -25,7 +27,9 @@ class DocumentObserver
     }
     public function updating(Model $model)
     {
-        Log::info('entered in edit observer');
+        if (auth()->check() && auth()->user()->hasRole('admin')) {
+            return;
+        }
         if ($model->isDirty('status')) {
             DocumentHistory::create([
                 'document_id'    => $model->id,
@@ -40,6 +44,9 @@ class DocumentObserver
     }
     public function deleting(Model $model)
     {
+        if (auth()->check() && auth()->user()->hasRole('admin')) {
+            return;
+        }    
         if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
             DocumentHistory::create([
                 'document_id'     => $model->id,
@@ -55,6 +62,9 @@ class DocumentObserver
 
     public function restored(Model $model)
     {
+        if (auth()->check() && auth()->user()->hasRole('admin')) {
+            return;
+        }    
         DocumentHistory::create([
             'document_id'     => $model->id,
             'document_type'   => class_basename($model),

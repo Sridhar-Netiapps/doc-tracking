@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
-
+use App\Models\HRMData;
 class UserController extends Controller
 {
     // Constructor for middleware
@@ -46,9 +46,7 @@ class UserController extends Controller
     }
 
     // Show the form for creating a new user
-    public function create()
-    {
-        // Returning the view for creating a user
+    public function create(){        
         return view('users.create');
     }
 
@@ -62,6 +60,7 @@ class UserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'employee_id' => 'required|string|max:255',
+            'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
             'email' => 'required|string|max:255',
             'gender' => 'required|string|max:10',
@@ -70,8 +69,30 @@ class UserController extends Controller
             'mobile_number' => 'required|string|max:15',
             'doj' => 'required|date',
             'dor' => 'nullable|date',
-            'designation_id' => 'required|string|max:255',
-            'department_id' => 'required|string|max:255',
+            'employee_type' => 'nullable|string|max:255',
+            'current_designation' => 'nullable|string|max:255',
+            'grade' => 'nullable|string|max:255',
+            'confirmation_status' => 'nullable|string|max:255',
+            'date_of_confirmation' => 'nullable|string|max:255',
+            'current_location_type' => 'nullable|string|max:255',
+            'direct_manager_name' => 'nullable|string|max:255',
+            'direct_manager_emp_id' => 'nullable|string|max:255',
+            'direct_manager_email' => 'nullable|string|max:255',
+            'office_location' => 'nullable|string|max:255',
+            'current_department' => 'nullable|string|max:255',
+            'top_department' => 'nullable|string|max:255',
+            'department_hierarchy_1_name' => 'nullable|string|max:255',
+            'department_hierarchy_2_name' => 'nullable|string|max:255',
+            'department_hierarchy_3_name' => 'nullable|string|max:255',
+            'functional_head' => 'nullable|string|max:255',
+            'functional_head_emp_id' => 'nullable|string|max:255',
+            'work_flow_role' => 'nullable|string|max:255',
+            'prac_designation' => 'nullable|string|max:255',
+            'prac_role' => 'nullable|string|max:255',
+            'pac_designation' => 'nullable|string|max:255',
+            'pac_role' => 'nullable|string|max:255',
+            // 'designation_id' => 'nullable|string|max:255',
+            // 'department_id' => 'nullable|string|max:255',
         ]);
 
         // Creating the new user
@@ -81,6 +102,7 @@ class UserController extends Controller
             'last_name' => $request->input('last_name'),
             'password' => Hash::make('password'),
             'employee_id' => $request->input('employee_id'),
+            'region' => $request->imput('region'),
             'branch_id' => $request->input('branch_id'),
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
@@ -89,8 +111,30 @@ class UserController extends Controller
             'mobile_number' => $request->input('mobile_number'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
-            'designation_id' => $request->input('designation_id'),
-            'department_id' => $request->input('department_id'),
+            'employee_type' => $request->input('employee_type'),
+            'current_designation' => $request->input('current_designation'),
+            'grade' => $request->input('grade'),
+            'confirmation_status' => $request->input('confirmation_status'),
+            'date_of_confirmation' => $request->input('date_of_confirmation'),
+            'current_location_type' => $request->input('current_location_type'),
+            'direct_manager_name' => $request->input('direct_manager_name'),
+            'direct_manager_emp_id' => $request->input('direct_manager_emp_id'),
+            'direct_manager_email' => $request->input('direct_manager_email'),
+            'office_location' => $request->input('office_location'),
+            'current_department' => $request->input('current_department'),
+            'top_department' => $request->input('top_department'),
+            'department_hierarchy_1_name' => $request->input('department_hierarchy_1_name'),
+            'department_hierarchy_2_name' => $request->input('department_hierarchy_2_name'),
+            'department_hierarchy_3_name' => $request->input('department_hierarchy_3_name'),
+            'functional_head' => $request->input('functional_head'),
+            'functional_head_emp_id' => $request->input('functional_head_emp_id'),
+            'work_flow_role' => $request->input('work_flow_role'),
+            'prac_designation' => $request->input('prac_designation'),
+            'prac_role' => $request->input('prac_role'),
+            'pac_designation' => $request->input('pac_designation'),
+            'pac_role' => $request->input('pac_role'),
+            // 'designation_id' => $request->input('designation_id'),
+            // 'department_id' => $request->input('department_id'),
         ]);
 
         // Redirecting back with success message
@@ -288,4 +332,13 @@ class UserController extends Controller
         return $query;
     }
 
+    public function getUser(Request $request)
+    {
+        if($request->id != null){
+            $roles = Role::all();
+            $permissions = Permission::all();
+            $user = HRMData::where('employee_id',$request->id)->orderBy('load_date', 'desc')->first();
+            return view('users.create', compact('user', 'roles', 'permissions'));
+        }
+    }
 }

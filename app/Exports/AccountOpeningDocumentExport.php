@@ -46,7 +46,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             'Tracked by (User ID)',
             'Remarks',
             'RO Received Status',
-            'Reason for Rejection',
+            'Reasons',
             'RO Received Date',
             'RO Tracked by (User ID)',
             'Lot No',

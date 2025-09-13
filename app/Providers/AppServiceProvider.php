@@ -29,13 +29,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (auth()->check() && !auth()->user()->hasRole('master')) {
-            Event::listen(Login::class, [LogUserLogin::class, 'handle']);
-            Event::listen(Logout::class, [LogUserLogout::class, 'handle']);
-            LoanDocument::observe(DocumentObserver::class);
-            GoldLoanDocument::observe(DocumentObserver::class);
-            DtrfDocument::observe(DocumentObserver::class);
-            AccountOpeningDocument::observe(DocumentObserver::class);
-        }
+        Event::listen(Login::class, [LogUserLogin::class, 'handle']);
+        Event::listen(Logout::class, [LogUserLogout::class, 'handle']);
+        LoanDocument::observe(DocumentObserver::class);
+        GoldLoanDocument::observe(DocumentObserver::class);
+        DtrfDocument::observe(DocumentObserver::class);
+        AccountOpeningDocument::observe(DocumentObserver::class);
     }
 }
