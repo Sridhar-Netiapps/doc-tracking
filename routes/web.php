@@ -119,8 +119,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('couriers', CourierController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
-        Route::post('users/get', [UserController::class, 'getUser'])->name('users.get');
         Route::resource('users', UserController::class);
+        Route::post('users/get', [UserController::class, 'getUser'])->name('users.get');
         Route::post('activity/filter', [UserController::class, 'filter'])->name('activity.filter');
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');

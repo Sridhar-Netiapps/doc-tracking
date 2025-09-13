@@ -15,20 +15,19 @@
                 </nav> --}}
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
                  {{-- <form id="exportForm" method="GET" action="{{ route('activity.export') }}"> --}}
-        <form method="GET" action="{{ route('activity.export') }}">
-            @foreach(($filters ?? []) as $key => $value)
-                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-            @endforeach        
-            {{-- <button type="button" id="exportBtn" class="btn btn-success"> --}}
-            <button type="submit" class="btn btn-sm btn-success">
-                Export
-            </button>
-        </form>
+                @if(Request::segment(2) == 'filter')
+                <form method="GET" action="{{ route('activity.export') }}">
+                    @foreach(($filters ?? []) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-sm btn-success">
+                        Export
+                    </button>
+                </form>
+                @endif
             </div>
         </div>
     </div>
-
-
     <div class="row">
         <div class="col-12">
             <div class="form-card">

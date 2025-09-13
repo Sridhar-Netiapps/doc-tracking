@@ -17,10 +17,6 @@
         </div>
     </div>
     <div class="h-100 align-items-start align-content-lg-stretch">
-        @php
-            echo "<pre>";
-            print_r($user);
-        @endphp
         @if(isset($user))
             <form id="users" action="{{ route('users.store') }}" method="POST">
                 @csrf
