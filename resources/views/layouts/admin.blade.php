@@ -14,13 +14,16 @@
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/material_green.css') }}">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}" nonce="wUDPhZ1Z60inspnMCukimCi">
+    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}"> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}" nonce="wUDPhZ1Z60inspnMCukimCi"> --}}
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
-    <script src="{{ asset('js/sweetalert2.all.min.js') }}" nonce="wUDPhZ1Z60inspnMCukimCi"></script>
+    <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/sweetalert2.all.min.js') }}" nonce="wUDPhZ1Z60inspnMCukimCi"></script> --}}
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/apexchart.js') }}"></script>

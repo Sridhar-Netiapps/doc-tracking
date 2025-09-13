@@ -22,7 +22,7 @@
             <div class="row form-card">
                 <div class="form-group col-4 mb-4">
                     <label for="first_name">First Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" required>
+                    <input type="text" class="form-control alphanumeric @error('first_name') is-invalid @enderror" id="first_name" name="first_name" required>
                     @error('first_name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -30,12 +30,12 @@
 
                 <div class="form-group col-4 mb-4">
                     <label for="middle_name">Middle Name</label>
-                    <input type="text" class="form-control" id="middle_name" name="middle_name">
+                    <input type="text" class="form-control alphanumeric" id="middle_name" name="middle_name">
                 </div>
 
                 <div class="form-group col-4 mb-4">
                     <label for="last_name">Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" required>
+                    <input type="text" class="form-control alphanumeric @error('last_name') is-invalid @enderror" id="last_name" name="last_name" required>
                     @error('last_name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -43,7 +43,7 @@
 
                 <div class="form-group col-4 mb-4">
                     <label for="employee_id">Employee ID <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" required>
+                    <input type="text" class="form-control alphanumeric @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" required>
                     @error('employee_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -51,12 +51,12 @@
 
                 <div class="form-group col-4 mb-4">
                     <label for="region">Region <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="region" name="region" required>
+                    <input type="text" class="form-control alphanumeric" id="region" name="region" required>
                 </div>
 
                 <div class="form-group col-4 mb-4">
                     <label for="branch_id">Branch Code <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" required>
+                    <input type="text" class="form-control alphanumeric @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" required>
                     @error('branch_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -86,12 +86,12 @@
 
                 <div class="form-group col-4 mb-4">
                     <label for="designation">Designation</label>
-                    <input type="text" class="form-control" id="designation" name="designation" >
+                    <input type="text" class="form-control alphanumeric" id="designation" name="designation" >
                 </div>
  
                 <div class="form-group col-4 mb-4">
                     <label for="designation_id">Designation ID <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="designation_id" name="designation_id" required>
+                    <input type="text" class="form-control alphanumeric" id="designation_id" name="designation_id" required>
                 </div>
 
                 <div class="form-group col-4 mb-4">
@@ -104,7 +104,7 @@
 
                 <div class="form-group col-4 mb-4">
                     <label for="mobile_number">Mobile Number <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="mobile_number" name="mobile_number" required>
+                    <input type="number" class="form-control" id="mobile_number" name="mobile_number" required min="0">
                 </div>
 
                 <div class="form-group col-4 mb-4">
@@ -119,7 +119,7 @@
                
                 <div class="form-group col-4 mb-4">
                     <label for="department_id">Department ID <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="department_id" name="department_id" required>
+                    <input type="text" class="form-control alphanumeric" id="department_id" name="department_id" required>
                 </div>
 
                 <!-- Buttons -->

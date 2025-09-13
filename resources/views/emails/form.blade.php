@@ -27,7 +27,7 @@
 
 <div class="mb-3">
     <label for="message" class="form-label">Message <span class="text-danger">*</span></label>
-    <textarea name="message" class="form-control" rows="4" required>{{ old('message', $email->message ?? '') }}</textarea>
+    <textarea name="message" class="form-control alphanumeric" rows="4" required>{{ old('message', $email->message ?? '') }}</textarea>
 </div>
 
 @if(isset($email))

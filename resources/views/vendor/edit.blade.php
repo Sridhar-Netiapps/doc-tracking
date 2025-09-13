@@ -37,12 +37,12 @@
 
         <div class="mb-3">
             <label for="name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" value="{{ old('name', $vendor->name) }}" required>
+            <input type="text" name="name" class="form-control alphanumeric" value="{{ old('name', $vendor->name) }}" required>
         </div>
 
         <div class="mb-3">
             <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
-            <input type="text" name="location" class="form-control" value="{{ old('location', $vendor->location) }}" required>
+            <input type="text" name="location" class="form-control alphanumeric" value="{{ old('location', $vendor->location) }}" required>
         </div>
 
         <div class="d-flex">
