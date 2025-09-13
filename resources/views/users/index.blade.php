@@ -55,7 +55,7 @@
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $loop->iteration + ($users->perPage() * ($users->currentPage() - 1)) }}</td>
                                     <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $user->employee_id }}</td>
                                     <td>{{ $user->region }}</td>
@@ -111,28 +111,12 @@
 <div class="modal fade" id="add-user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            {{-- <form id="rma-upload" action="{{ route('users.create') }}" method="GET">
-                @csrf
-                <div class="modal-header text-center">
-                    <h5 class="mb-0 text-primary" id="modal-title">Upload Vendor Movement Information</h5>
-                </div>
-                <div class="modal-body">
-                    <label for="excel_file" class="form-label">Upload File</label>  <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a>
-                    <input type="file" name="excel_file" class="form-control file-validate"  data-ext="csv,xls,xlsx" required> 
-                    <label class="text-danger mt-3" id="excel_file-error"></label>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form> --}}
             <form id="rma-upload" action="{{ route('users.get') }}" method="POST">
                 @csrf
                 <div class="modal-header text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Get User Information</h5>
                 </div>
                 <div class="modal-body">
-                {{-- <div class="col-6 row form-card"> --}}
                     <input type="text" name="id" class="form-control alphanumeric capsonly" placeholder="Enter Employee ID" required>
                 </div>
                 <div class="modal-footer border-0">
@@ -145,62 +129,8 @@
 
 <script>
     $(document).ready(function () {   
-        $("#users").validate({
-            rules: {
-                first_name: { required: true, sanitize: true },
-                last_name: { required: true, sanitize: true },
-                email: { required: true, sanitize: true },
-                employee_id: { required: true, sanitize: true },
-                region: { required: true, sanitize: true },
-                mobile_number: { 
-                    required: true,
-                    digits: true,
-                    minlength: 10,
-                    maxlength: 10,
-                    sanitize: true
-                }
-            },
-            messages: {
-                first_name: { required: "First name is required" },
-                last_name: { required: "Last name is required" },
-                email: { required: "email is required" },
-                employee_id: { required: "Employee ID is required" },
-                region: { required: "region is required" },
-                mobile_number: { 
-            required: "Mobile number is required",
-            pattern: "Mobile number must be exactly 10 digits"
-            }
-            },
-            submitHandler: function(form) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to submit this form?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#f78f35',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, submit it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-                // event.preventDefault();
-                // $('#confirmModal').modal('show');
-                // $('button.yes').on('click', function() {
-                //     form.submit();
-                // });
-                // $('button.no').on('click', function() {
-                //     $('#confirmModal').modal('hide');
-                // });
-            }
-        });
-
         $('.get-user').click(function () {
             $('#add-user').modal('show');
-            // const id = $('input[name="emp-id"]').val();
-            // let url = "{{ url('users/create') }}/" + id;
-            // $.get(url);
         });
     });
 </script>
