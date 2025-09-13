@@ -676,7 +676,7 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(function () {
         const container = $('#dynamic-dropdown');
         const resetBtn  = $('#reset-btn-container');
