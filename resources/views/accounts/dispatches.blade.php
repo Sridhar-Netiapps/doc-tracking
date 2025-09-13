@@ -196,7 +196,7 @@
                     <input type="number" class="form-control dispatch_no" placeholder="Dispatch No" value="{{ old('dispatch_no', $filters['dispatch_no'] ?? '') }}" name="dispatch_no" min="0">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control awb_pod alphanumeric" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
+                    <input type="text" class="form-control awb_pod alphanumeric capsonly" placeholder="AWB/POD No" value="{{ old('awb_pod', $filters['awb_pod'] ?? '') }}" name="awb_pod">
                 </div>
                 <div class="col-12 mt-3">
                     <select class="form-select" name="courier" id="courierSelect">
@@ -209,7 +209,7 @@
                     </select>                  
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="number" class="form-control mmrp_barcode" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode" min="0">
+                    <input type="number" class="form-control alphanumeric capsonly" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode" min="0">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <div class="col-12 mt-3">
@@ -270,11 +270,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
-                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
+                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

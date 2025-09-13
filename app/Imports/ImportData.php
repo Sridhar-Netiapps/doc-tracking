@@ -73,7 +73,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'RECEIVED WITH QUERY' => 7,
             'IN' => 8,
             'OUT' => 9,
-            'PERMOUNT' => 10,
+            'PERMOUT' => 10,
             'DESTROYED' => 11,
         ];
         

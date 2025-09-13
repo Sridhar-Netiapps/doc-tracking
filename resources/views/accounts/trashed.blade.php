@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2 headerTitle">
         <div>
             <div class="d-flex justify-content-center align-items-center">
-                <h3 class="me-3">Reports</h3>
+                <h3 class="me-3">Trashed Documents</h3>
             </div>
         </div>
 </div>
@@ -41,34 +41,37 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade show active" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col">Unique Number</th>
-                                    <th scope="col">Branch Code</th>
-                                    <th scope="col">Branch Name</th>
-                                    <th scope="col">CIF ID</th>
-                                    <th scope="col">A/C No</th>
-                                    <th scope="col">Loan Cycle</th>
-                                    <th scope="col">Loan Amount</th>
-                                    <th scope="col">Barcode</th>
-                                    <th scope="col">Glow Application ID</th>
-                                    <th scope="col">Customer Name</th>
-                                    <th scope="col">Creation Date</th>
-                                    <th scope="col">Channel</th>
-                                    <th scope="col">Type of Loan<br>Disbursement</th>
-                                    <th scope="col">Business Category</th>
-                                    <th scope="col">Lot No</th>
-                                    <th scope="col">Document Category</th>
-                                    <th scope="col">Work Order No</th>
-                                    <th scope="col">Vendor Name</th>
-                                    <th scope="col">Date of  Vendor Movement</th>
-                                    <th scope="col">File Barcode</th>
-                                    <th scope="col">Box Barcode</th>
-                                    <th scope="col">Date of addition to Vendor Data</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap">Loan Cycle</th>
+                                    <th scope="col" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap">Glow Application ID</th>
+                                    <th scope="col" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap">Type of Loan<br>Disbursement</th>
+                                    <th scope="col" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap">Lot No</th>
+                                    <th scope="col" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap">Work Order No</th>
+                                    <th scope="col" class="text-nowrap">Vendor Name</th>
+                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap">File Barcode</th>
+                                    <th scope="col" class="text-nowrap">Box Barcode</th>
+                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap">Status</th>
+                                    <th scope="col" class="text-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,33 +109,39 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
                 <div class="tab-pane fade" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
+                    @if(isset($gold_loan_document) && $gold_loan_document->count())
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="text-nowrap">Unique Number</th>
-                                    <th scope="col" class="text-nowrap">Branch Code</th>
-                                    <th scope="col" class="text-nowrap">Branch Name</th>
-                                    <th scope="col" class="text-nowrap">CIF ID</th>
-                                    <th scope="col" class="text-nowrap">A/C No</th>
-                                    <th scope="col" class="text-nowrap">Customer Name</th>
-                                    <th scope="col" class="text-nowrap">Creation Date</th>
-                                    <th scope="col" class="text-nowrap">Channel</th>
-                                    <th scope="col" class="text-nowrap">Loan Amount</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">Business Category</th>
-                                    <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
-                                    <th scope="col" class="text-nowrap">Work Order No</th>
-                                    <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
-                                    <th scope="col" class="text-nowrap">File Barcode</th>
-                                    <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
-                                    <th scope="col" class="text-nowrap">Status</th>
-                                    <th scope="col" class="text-nowrap">Action</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Loan Amount</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Lot No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Work Order No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Vendor Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">File Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Box Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Status</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,35 +179,41 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($gold_loan_document) && $gold_loan_document->count())
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
                 <div class="tab-pane fade" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
+                    @if(isset($account_opening_document) && $account_opening_document->count())
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="text-nowrap">Unique Number</th>
-                                    <th scope="col" class="text-nowrap">Branch Code</th>
-                                    <th scope="col" class="text-nowrap">Branch Name</th>
-                                    <th scope="col" class="text-nowrap">CIF ID</th>
-                                    <th scope="col" class="text-nowrap">A/C No</th>
-                                    <th scope="col" class="text-nowrap">Customer Name</th>
-                                    <th scope="col" class="text-nowrap">Creation Date</th>
-                                    <th scope="col" class="text-nowrap">Channel</th>
-                                    <th scope="col" class="text-nowrap">Scheme</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">PGK No</th>
-                                    <th scope="col" class="text-nowrap">Type of Account Opening</th>
-                                    <th scope="col" class="text-nowrap">Business Category</th>
-                                    <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
-                                    <th scope="col" class="text-nowrap">Work Order No</th>
-                                    <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
-                                    <th scope="col" class="text-nowrap">File Barcode</th>
-                                    <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
-                                    <th scope="col" class="text-nowrap">Status</th>
-                                    <th scope="col" class="text-nowrap">Action</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">CIF ID</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">A/C No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Customer Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Creation Date</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Channel</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Scheme</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">PGK No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Type of Account Opening</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Lot No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Work Order No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Vendor Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">File Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Box Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Status</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -238,28 +253,34 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($account_opening_document) && $account_opening_document->count())
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
                 <div class="tab-pane fade" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
+                    @if(isset($dtrf_document) && $dtrf_document->count())
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="text-nowrap">Unique Number</th>
-                                    <th scope="col" class="text-nowrap">Branch Code</th>
-                                    <th scope="col" class="text-nowrap">Branch Name</th>
-                                    <th scope="col" class="text-nowrap">DTR File Date</th>
-                                    <th scope="col" class="text-nowrap">Business Category</th>
-                                    <th scope="col" class="text-nowrap">Lot No</th>
-                                    <th scope="col" class="text-nowrap">Barcode</th>
-                                    <th scope="col" class="text-nowrap">Document Category</th>
-                                    <th scope="col" class="text-nowrap">Work Order No</th>
-                                    <th scope="col" class="text-nowrap">Vendor Name</th>
-                                    <th scope="col" class="text-nowrap">Date of  Vendor Movement</th>
-                                    <th scope="col" class="text-nowrap">File Barcode</th>
-                                    <th scope="col" class="text-nowrap">Box Barcode</th>
-                                    <th scope="col" class="text-nowrap">Date of addition to Vendor Data</th>
-                                    <th scope="col" class="text-nowrap">Status</th>
-                                    <th scope="col" class="text-nowrap">Action</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Unique Number</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Code</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Branch Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">DTR File Date</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Business Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Lot No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Document Category</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Work Order No</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Vendor Name</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of  Vendor Movement</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">File Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Box Barcode</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Date of addition to Vendor Data</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Status</th>
+                                    <th scope="col" class="text-nowrap" class="text-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -292,6 +313,9 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($dtrf_document) && $dtrf_document->count())
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
             </div>
         {{-- </div>

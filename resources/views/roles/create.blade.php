@@ -41,7 +41,7 @@
                     <!-- Role Name -->
                     <div class="form-group mb-3">
                         <label for="name">Role Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" placeholder="Type Role Name" class="form-control" value="{{ old('name') }}" required>
+                        <input type="text" name="name" placeholder="Type Role Name" class="form-control alphanumeric" value="{{ old('name') }}" required>
                     </div>
 
                     <!-- Permissions Checkboxes -->

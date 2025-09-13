@@ -38,35 +38,35 @@
                     <div class="row">
                         <div class="col-4 mb-4">
                             <label for="name">Branch Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $branch->name ?? '') }}" required>
+                            <input type="text" name="name" id="name" class="form-control alphanumeric" value="{{ old('name', $branch->name ?? '') }}" required>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
             
                         <div class="col-4 mb-4">
                             <label for="code">Branch Code <span class="text-danger">*</span></label>
-                            <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $branch->code ?? '') }}" required>
+                            <input type="text" name="code" id="code" class="form-control alphanumeric" value="{{ old('code', $branch->code ?? '') }}" required>
                             @error('code') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-4 mb-4">
                             <label for="region_id">Region ID <span class="text-danger">*</span></label>
-                            <input type="text" name="region_id" id="region_id" class="form-control" value="{{ old('region_id', $branch->region_id ?? '') }}" required>
+                            <input type="text" name="region_id" id="region_id" class="form-control alphanumeric" value="{{ old('region_id', $branch->region_id ?? '') }}" required>
                             @error('region_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
             
                         <div class="col-4 mb-4">
                             <label for="region_name">Region Name</label>
-                            <input type="text" name="region_name" id="region_name" class="form-control" value="{{ old('region_name', $branch->region_name ?? '') }}">
+                            <input type="text" name="region_name" id="region_name" class="form-control alphanumeric" value="{{ old('region_name', $branch->region_name ?? '') }}">
                             @error('region_name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="col-4 mb-4">
                             <label for="business_type">Business Type <span class="text-danger">*</span></label>
-                            <input type="text" name="business_type" id="business_type" class="form-control" value="{{ old('business_type', $branch->business_type ?? '') }}" required>
+                            <input type="text" name="business_type" id="business_type" class="form-control alphanumeric" value="{{ old('business_type', $branch->business_type ?? '') }}" required>
                             @error('business_type') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
             
                         <div class="col-4 mb-4">
                             <label for="rbi_classification">RBI Classification <span class="text-danger">*</span></label>
-                            <input type="text" name="rbi_classification" id="rbi_classification" class="form-control" value="{{ old('rbi_classification', $branch->rbi_classification ?? '') }}" required>
+                            <input type="text" name="rbi_classification" id="rbi_classification" class="form-control alphanumeric" value="{{ old('rbi_classification', $branch->rbi_classification ?? '') }}" required>
                             @error('rbi_classification') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>

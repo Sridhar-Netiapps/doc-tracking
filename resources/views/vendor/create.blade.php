@@ -35,12 +35,12 @@
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Enter vendor name" value="{{ old('name') }}" required>
+            <input type="text" name="name" class="form-control alphanumeric" placeholder="Enter vendor name" value="{{ old('name') }}" required>
         </div>
     
         <div class="mb-3">
             <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
-            <input type="text" name="location" class="form-control" placeholder="Enter location" value="{{ old('location') }}" required>
+            <input type="text" name="location" class="form-control alphanumeric" placeholder="Enter location" value="{{ old('location') }}" required>
         </div>
     
         <div class="d-flex">
