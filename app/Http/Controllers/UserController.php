@@ -45,11 +45,6 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    // Show the form for creating a new user
-    public function create(){        
-        return view('users.create');
-    }
-
     // Store a new user in the database
     public function store(Request $request)
     {
@@ -141,8 +136,8 @@ class UserController extends Controller
             'prac_role' => $request->input('prac_role'),
             'pac_designation' => $request->input('pac_designation'),
             'pac_role' => $request->input('pac_role'),
-            'designation_id' => ('0'),
-            'department_id' => ('0'),
+            // 'designation_id' => ('0'),
+            // 'department_id' => ('0'),
         ]);
 
         // Redirecting back with success message
@@ -402,11 +397,32 @@ class UserController extends Controller
 
     public function getUser(Request $request)
     {
-        if($request->id != null){
-            $roles = Role::all();
-            $permissions = Permission::all();
-            $user = HRMData::where('employee_id',$request->id)->orderBy('load_date', 'desc')->first();
-            return view('users.create', compact('user', 'roles', 'permissions'));
+        return redirect()->route('users.sync',Crypt::encrypt($request->id));
+    }
+    // Show the form for creating a new user
+    public function getUserInfo($id){     
+        
+        $id = Crypt::decrypt($id);
+        if($id != null){
+            $user = User::where('employee_id',$id)->count();
+            if($user > 0){
+                return redirect()->route('users.index')->with('error','This User has already access in Doc Tracker');
+            }
+            else{
+                $user = HRMData::where('employee_id',$id)->count();
+                if($user > 0){
+                    $user = HRMData::where('employee_id',$id)->orderBy('load_date', 'desc')->first();
+                    $roles = Role::all();
+                    $permissions = Permission::all();
+                    return view('users.create', compact('user', 'roles', 'permissions'));
+                }
+                else{
+                    return redirect()->route('users.index')->with('error','User Info Does not Exists');
+                }
+            }
+        }
+        else{
+            return redirect()->route('users.index')->with('error','Something Went Wrong');
         }
     }
 }
