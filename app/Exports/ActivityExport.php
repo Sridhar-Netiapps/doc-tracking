@@ -44,15 +44,15 @@ class ActivityExport implements FromCollection, WithHeadings, WithMapping
         $count++;
 
         return [
-            $count,
-            trim($row->user->first_name . ' ' . $row->user->middle_name . ' ' . $row->user->last_name),
-            $row->user->employee_id,
-            $row->user->region,
-            $row->user->branch_id,
-            $row->user->email,
-            ucfirst($row->event_type),
-            $row->description,
-            date('d-m-Y h:i A', strtotime($row->created_at)),
-        ];
+        $count,
+        !empty($row->user) ? trim(($row->user->first_name ?? '') . ' ' . ($row->user->middle_name ?? '') . ' ' . ($row->user->last_name ?? '')) : '-',
+        !empty($row->user) ? ($row->user->employee_id ?? '-') : '-',
+        !empty($row->user) ? ($row->user->region ?? '-') : '-',
+        !empty($row->user) ? ($row->user->branch_id ?? '-') : '-',
+        !empty($row->user) ? ($row->user->email ?? '-') : '-',
+        ucfirst($row->event_type),
+        $row->description,
+        date('d-m-Y h:i A', strtotime($row->created_at)),
+    ];
     }
 }

@@ -133,7 +133,7 @@
                 </div>
                 <div class="modal-body">
                 {{-- <div class="col-6 row form-card"> --}}
-                    <input type="text" name="id" class="form-control alphanumeric" placeholder="Enter Employee ID" required>
+                    <input type="text" name="id" class="form-control alphanumeric capsonly" placeholder="Enter Employee ID" required>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" class="btn btn-primary btn-lg get-user"><strong>Get User Details</strong></button>
