@@ -40,7 +40,7 @@
                     <!-- First Name Field -->
                     <div class="col-4 mb-4 form-group">
                         <label for="first_name">First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" required>
+                        <input type="text" class="form-control alphanumeric @error('first_name') is-invalid @enderror" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" required>
                         @error('first_name')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -49,7 +49,7 @@
                     <!-- Middle Name Field -->
                     <div class="col-4 mb-4 form-group">
                         <label for="middle_name">Middle Name</label>
-                        <input type="text" class="form-control @error('middle_name') is-invalid @enderror" id="middle_name" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}">
+                        <input type="text" class="form-control alphanumeric @error('middle_name') is-invalid @enderror" id="middle_name" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}">
                         @error('middle_name')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -58,7 +58,7 @@
                     <!-- Last Name Field -->
                     <div class="col-4 mb-4 form-group">
                         <label for="last_name">Last Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                        <input type="text" class="form-control alphanumeric @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
                         @error('last_name')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -67,21 +67,21 @@
                     <!-- Employee ID Field -->
                     <div class="col-4 mb-4 form-group">
                         <label for="employee_id">Employee ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" value="{{ old('employee_id', $user->employee_id) }}" required>
+                        <input type="text" class="form-control alphanumeric capsonly @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" value="{{ old('employee_id', $user->employee_id) }}" required>
                         @error('employee_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="col-4 mb-4 form-group">
                         <label for="region">Region <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->office_region) }}" required>
+                        <input type="text" class="form-control alphanumeric @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->office_region) }}" required>
                         @error('region')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="col-4 mb-4 form-group">
                         <label for="branch_id">Branch Code <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" value="{{ old('branch_id', $user->office_loc_code) }}" required>
+                        <input type="text" class="form-control alphanumeric @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" value="{{ old('branch_id', $user->office_loc_code) }}" required>
                         @error('branch_id')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -156,112 +156,112 @@
                     </div>
                     <div class="col-4 mb-4 form-group">
                         <label>Employee Type</label>
-                        <input type="text" name="employee_type"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="employee_type"  value="{{ old('employee_type', $user->employee_type) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Current Designation</label>
-                        <input type="text" name="current_designation"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="current_designation"  value="{{ old('current_designation', $user->current_designation) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Grade</label>
-                        <input type="text" name="grade"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="grade"  value="{{ old('grade', $user->grade) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Confirmation Status</label>
-                        <input type="text" name="confirmation_status"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="confirmation_status"  value="{{ old('confirmation_status', $user->confirmation_status) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Date of Confirmation</label>
-                        <input type="text" name="date_of_confirmation"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="date_of_confirmation"  value="{{ old('date_of_confirmation', $user->date_of_confirmation) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Current Location Type</label>
-                        <input type="text" name="current_location_type"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="current_location_type"  value="{{ old('current_location_type', $user->current_location_type) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Direct Manager Name</label>
-                        <input type="text" name="direct_manager_name"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="direct_manager_name"  value="{{ old('direct_manager_name', $user->direct_manager_name) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Direct Manager Emp ID</label>
-                        <input type="text" name="direct_manager_emp_id"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="direct_manager_emp_id"  value="{{ old('direct_manager_emp_id', $user->direct_manager_emp_id) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Direct Manager Email</label>
-                        <input type="email" name="direct_manager_email"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="email" readonly name="direct_manager_email"  value="{{ old('direct_manager_email', $user->direct_manager_email) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Office Location</label>
-                        <input type="text" name="office_location"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="office_location"  value="{{ old('office_location', $user->office_location) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Current Department</label>
-                        <input type="text" name="current_department"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="current_department"  value="{{ old('current_department', $user->current_department) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Top Department</label>
-                        <input type="text" name="top_department"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="top_department"  value="{{ old('top_department', $user->top_department) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Department Hierarchy 1</label>
-                        <input type="text" name="department_hierarchy_1_name"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="department_hierarchy_1_name"  value="{{ old('department_hierarchy_1_name', $user->department_hierarchy_1_name) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Department Hierarchy 2</label>
-                        <input type="text" name="department_hierarchy_2_name"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="department_hierarchy_2_name"  value="{{ old('department_hierarchy_2_name', $user->department_hierarchy_2_name) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Department Hierarchy 3</label>
-                        <input type="text" name="department_hierarchy_3_name"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="department_hierarchy_3_name"  value="{{ old('department_hierarchy_3_name', $user->department_hierarchy_3_name) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Functional Head</label>
-                        <input type="text" name="functional_head"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="functional_head"  value="{{ old('functional_head', $user->functional_head) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Functional Head Emp ID</label>
-                        <input type="text" name="functional_head_emp_id"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="functional_head_emp_id"  value="{{ old('functional_head_emp_id', $user->functional_head_emp_id) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>Work Flow Role</label>
-                        <input type="text" name="work_flow_role"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="work_flow_role"  value="{{ old('work_flow_role', $user->work_flow_role) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>PRAC Designation</label>
-                        <input type="text" name="prac_designation"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="prac_designation"  value="{{ old('prac_designation', $user->prac_designation) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>PRAC Role</label>
-                        <input type="text" name="prac_role"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="prac_role"  value="{{ old('prac_role', $user->prac_role) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>PAC Designation</label>
-                        <input type="text" name="pac_designation"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="pac_designation"  value="{{ old('pac_designation', $user->pac_designation) }}" class="form-control">
                     </div>
                 
                     <div class="col-4 mb-4 form-group">
                         <label>PAC Role</label>
-                        <input type="text" name="pac_role"  value="{{ old('dor', $user->doe) }}" class="form-control">
+                        <input type="text" readonly name="pac_role"  value="{{ old('pac_role', $user->pac_role) }}" class="form-control">
                     </div>
                     <!-- Submit Button -->
                 <div class="d-flex ">
