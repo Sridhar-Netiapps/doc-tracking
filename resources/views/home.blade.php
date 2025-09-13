@@ -676,7 +676,7 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     document.getElementById('search_type').addEventListener('change', function () {
         let value = this.value;
         let container = document.getElementById('dynamic-dropdown');

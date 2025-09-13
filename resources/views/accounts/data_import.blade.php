@@ -58,7 +58,7 @@
     @endif
 
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {   
         $("#rma-upload").validate({
                 rules: {
