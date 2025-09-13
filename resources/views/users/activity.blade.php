@@ -70,6 +70,7 @@
                                             <td>{{'-'}}</td>
                                             <td>{{'-'}}</td>
                                     @endif
+                                    <td>{{ ucfirst($row->ip_address) }}</td>
                                     <td>{{ ucfirst($row->event_type) }}</td>
                                     <td>
                                         <span data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ $row->description }}">
