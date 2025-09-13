@@ -1032,7 +1032,7 @@ class DocumentController extends Controller
 
             // Store reason if needed (optional, if reason column exists)
             foreach ($docIds as $key => $value) {
-                $this->table[$key]::whereIn('id',$value)->get()->each(function ($doc) use($reason) {
+                $this->table[$key]::whereIn('id',$this->decryptIds($value))->get()->each(function ($doc) use($reason) {
                     $doc->reason = $reason;
                     $doc->deleted_by = $this->user->id;
                     $doc->save();
