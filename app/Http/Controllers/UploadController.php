@@ -55,6 +55,7 @@ class UploadController extends Controller
                 $import = new VendorDocumentImport();
             }
             ini_set('max_execution_time', 3000);
+            ini_set('memory_limit', '2560M');
         
             Excel::import($import, $file);
 

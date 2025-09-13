@@ -27,9 +27,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-
-class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
+class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, WithValidation, SkipsOnFailure, SkipsOnError
 {
     use SkipsFailures;
 
@@ -219,6 +219,10 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
         ];
     }
     
+    public function chunkSize(): int
+    {
+        return 500;
+    }
 
     public function getTotal(): int
     {   
