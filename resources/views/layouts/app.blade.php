@@ -4,25 +4,30 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Doc_Tracking') }}</title>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/material_green.css') }}">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}" nonce="wUDPhZ1Z60inspnMCukimCi">
+    
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
-    <script src="{{ asset('js/sweetalert2.all.min.js') }}" nonce="wUDPhZ1Z60inspnMCukimCi"></script>
+    <script rel="stylesheet" src="{{ asset('js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/apexchart.js') }}"></script>
     <script src="{{ asset('js/flatpickr.js') }}"></script>
-    <script src="{{ asset('js/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('js/flatpickr.min.js') }}"></script>    
 </head>
 <body>
     <div id="app">
