@@ -26,22 +26,22 @@
         @csrf
         <div class="mb-3">
             <label>Courier ID <span class="text-danger">*</span></label>
-            <input type="text" name="courier_id" class="form-control" required>
+            <input type="text" name="courier_id" class="form-control alphanumeric" required>
         </div>
         <div class="mb-3">
             <label>Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" name="name" class="form-control alphanumeric" required>
         </div>
         <div class="mb-3">
             <label>Number <span class="text-danger">*</span></label>
-            <input type="text" name="number" class="form-control" required 
+            <input type="number" name="number" class="form-control" required 
                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                   maxlength="10" >
+                   maxlength="10" min="0">
         </div>               
         
         <div class="mb-3">
             <label>Address <span class="text-danger">*</span></label>
-            <textarea name="address" class="form-control" required></textarea>
+            <textarea name="address" class="form-control alphanumeric" required></textarea>
         </div>
         <div class="mb-3">
             <label>Status</label>

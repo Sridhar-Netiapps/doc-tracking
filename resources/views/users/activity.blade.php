@@ -109,7 +109,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="number" class="form-control branch_id" placeholder="Branch Code" value="{{ old('branch_id', $filters['branch_id'] ?? '') }}" name="branch_id" min="0">
+                    <input type="number" class="form-control branch_id alphanumeric" placeholder="Branch Code" value="{{ old('branch_id', $filters['branch_id'] ?? '') }}" name="branch_id" min="0">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control employee_id alphanumeric" placeholder="Employee ID" value="{{ old('employee_id', $filters['employee_id'] ?? '') }}" name="employee_id">
