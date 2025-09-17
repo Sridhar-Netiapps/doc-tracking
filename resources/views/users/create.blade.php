@@ -34,7 +34,7 @@
 
                 <!-- First Name Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="first_name">First Name <span class="text-danger">*</span></label>
+                    <label for="first_name">First Name</label>
                     <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" readonly>
                     @error('first_name')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -44,7 +44,7 @@
                 <!-- Middle Name Field -->
                 <div class="col-4 mb-4 form-group">
                     <label for="middle_name">Middle Name</label>
-                    <input type="text" class="form-control alphanumeric @error('middle_name') is-invalid @enderror" id="middle_name" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}">
+                    <input type="text" class="form-control @error('middle_name') is-invalid @enderror" id="middle_name" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}" readonly>
                     @error('middle_name')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -52,8 +52,8 @@
 
                 <!-- Last Name Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="last_name">Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control alphanumeric @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" readonly>
                     @error('last_name')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -61,29 +61,29 @@
 
                 <!-- Employee ID Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="employee_id">Employee ID <span class="text-danger">*</span></label>
+                    <label for="employee_id">Employee ID</label>
                     <input type="text" class="form-control @error('employee_id') is-invalid @enderror" id="employee_id" name="employee_id" value="{{ old('employee_id', $user->employee_id) }}" readonly>
                     @error('employee_id')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
-                    <label for="region">Region <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control alphanumeric @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->office_region) }}" readonly>
+                    <label for="region">Region</label>
+                    <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->office_region) }}" readonly>
                     @error('region')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
-                    <label for="branch_id">Branch Code <span class="text-danger">*</span></label>
+                    <label for="branch_id">Branch Code</label>
                     <input type="text" class="form-control @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id" value="{{ old('branch_id', $user->office_loc_code) }}" readonly>
                     @error('branch_id')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="col-4 mb-4 form-group">
-                    <label for="email">Email Id <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->office_email) }}" required>
+                    <label for="email">Email Id</label>
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->office_email) }}" readonly>
                     @error('email')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -104,8 +104,8 @@
 
                 <!-- Date of Birth Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="dob">Date of Birth <span class="text-danger">*</span></label>
-                    <input type="text" readonly class="form-control datepicker @error('dob') is-invalid @enderror" id="dob" name="dob" value="{{ old('dob', $user->dob) }}" required>
+                    <label for="dob">Date of Birth</label>
+                    <input type="text" readonly class="form-control datepicker @error('dob') is-invalid @enderror" id="dob" name="dob" value="{{ old('dob', $user->dob) }}" readonly>
                     @error('dob')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -125,8 +125,8 @@
 
                 <!-- Mobile Number Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="mobile_number">Mobile Number <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('mobile_number') is-invalid @enderror" id="mobile_number" name="mobile_number" value="{{ old('mobile_number', $user->office_mobile) }}" required>
+                    <label for="mobile_number">Mobile Number</label>
+                    <input type="text" class="form-control @error('mobile_number') is-invalid @enderror" id="mobile_number" name="mobile_number" value="{{ old('mobile_number', $user->office_mobile) }}" readonly>
                     @error('mobile_number')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -134,8 +134,8 @@
 
                 <!-- Date of Joining Field -->
                 <div class="col-4 mb-4 form-group">
-                    <label for="doj">Date of Joining <span class="text-danger">*</span></label>
-                    <input type="text" readonly class="form-control datepicker @error('doj') is-invalid @enderror" id="doj" name="doj" value="{{ old('doj', $user->doj) }}" required>
+                    <label for="doj">Date of Joining</label>
+                    <input type="text" readonly class="form-control datepicker @error('doj') is-invalid @enderror" id="doj" name="doj" value="{{ old('doj', $user->doj) }}" readonly>
                     @error('doj')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -257,79 +257,39 @@
                 <div class="col-4 mb-4 form-group">
                     <label>PAC Role</label>
                     <input type="text" name="pac_role"  value="{{ old('pac_role', $user->pac_role) }}" class="form-control" readonly>
+                </div>x
+                <h2 class="mt-5">Assign Roles</h2>
+                <div class="h-100 align-items-start align-content-lg-stretch">
+                    <form action="{{ route('users.assignRole', $user->id) }}" method="POST">
+                        @csrf
+                        <div class="form-card row">
+                            <div class="col-6 form-group">
+                                <label for="role">Roles</label>
+                                <select name="role" class="form-control">
+                                    @foreach ($roles as $role)
+                                        @if ($role->name !== 'master')
+                                            <option value="{{ $role->name }}">
+                                                {{-- {{ $role->name }} --}}
+                                                {{ $role->name === 'super_admin' ? 'id_maintenance' : $role->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>  
+                            </div>
+                            {{-- <div class="col-6 form-group mt-4">
+                                <button type="submit" class="btn btn-primary">Assign Role</button>
+                            </div> --}}
+                        </div>
+                    </form>
                 </div>
                 <!-- Submit Button -->
             <div class="d-flex ">
-                    <button type="submit" class="btn btn-primary">Update User</button>
-                    <button type="button" class="btn btn-secondary ms-3" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <a href="{{ route('users.index') }}" type="button" class="btn btn-secondary ms-3">Cancel</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {  
-        $(".datepicker").flatpickr({
-                dateFormat: "d-m-Y",
-                allowInput: true
-        }); 
-        $("#users").validate({
-            rules: {
-                first_name: { required: true, sanitize: true },
-                last_name: { required: true, sanitize: true },
-                email: { required: true, sanitize: true },
-                employee_id: { required: true, sanitize: true },
-                region: { required: true, sanitize: true },
-                mobile_number: { 
-                    required: true,
-                    digits: true,
-                    minlength: 10,
-                    maxlength: 10,
-                    sanitize: true
-                }
-            },
-            messages: {
-                first_name: { required: "First name is required" },
-                last_name: { required: "Last name is required" },
-                email: { required: "email is required" },
-                employee_id: { required: "Employee ID is required" },
-                region: { required: "region is required" },
-                mobile_number: { 
-            required: "Mobile number is required",
-            pattern: "Mobile number must be exactly 10 digits"
-            }
-            },
-            submitHandler: function(form) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to submit this form?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#f78f35',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Yes, submit it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-                // event.preventDefault();
-                // $('#confirmModal').modal('show');
-                // $('button.yes').on('click', function() {
-                //     form.submit();
-                // });
-                // $('button.no').on('click', function() {
-                //     $('#confirmModal').modal('hide');
-                // });
-            }
-        });
-
-        // $('.get-user').click(function () {
-        //     const id = $('input[name="emp-id"]').val();
-        //     let url = "{{ url('users/create') }}/" + id;
-        //     $.get(url);
-        // });
-    });
-</script>
 @endsection

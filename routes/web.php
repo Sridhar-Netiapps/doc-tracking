@@ -122,6 +122,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('users/get', [UserController::class, 'getUser'])->name('users.get');
         Route::get('sync/user/{id}', [UserController::class, 'getUserInfo'])->name('users.sync');
         Route::post('activity/filter', [UserController::class, 'filter'])->name('activity.filter');
+        Route::get('user/filter', [UserController::class, 'userFilter'])->name('user.filter');
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');

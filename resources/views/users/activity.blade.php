@@ -6,13 +6,6 @@
         <div>
             <div class="d-flex justify-content-center align-items-center">
                 <h3 class="me-3">Audit Logs</h3>
-                {{-- <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Data</li>
-                    </ol>
-                </nav> --}}
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
                  {{-- <form id="exportForm" method="GET" action="{{ route('activity.export') }}"> --}}
                 @if(Request::segment(2) == 'filter')
