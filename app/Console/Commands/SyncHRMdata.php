@@ -37,19 +37,31 @@ class SyncHRMdata extends Command
         $currentDateTime = Carbon::today();
         $currentDate = $currentDateTime->format('Y-m-d');
         
-        $hrmData = HRMData::where('load_date',$currentDate)->get();
+        $empIds = User::pluck('employee_id')->toArray();
+          //    dd($empIds);
+     
+        $hrmData = HRMData::whereIn('employee_id', $empIds)->where('load_date',$currentDate)->get();
         //$hrmData = HRMData::whereIn('id',['101','102'])->get();
-
+          // dd($hrmData);
         if($hrmData){
             foreach($hrmData as $key => $value){
                 
-                    $userDataRes = User::where('employee_id',$value->employee_id)->first();
+                    $user = User::where('employee_id',$value->employee_id)->first();
                     $branchData = $value->office_loc_code;
                     $branch_data = explode('-',$branchData);
                     $region_id = '';
                     $is_ins_user = '0';
 
                     $role = 'branch-user';
+
+                    $admin_designations = ["National Manager-Banking Operations",
+                    "Regional Operations Manager" ];
+
+                    $super_admin_designations = ["Specialist-IDAM",
+                    "Systems Analyst",
+                    "Engineering Graduate Trainee",
+                    "Manager-Identity Management",
+                    "Officer-IT Software Support" ];
 
                     $ho_designations = ["Chief of Staff-Branch Banking",
                         "National Manager-Branch Banking",
@@ -120,7 +132,7 @@ class SyncHRMdata extends Command
                         'Branch Operation Manager',
                         'Branch Operations and Service Manager',
                         'Customer Care Representative-URC',
-                        'Senior Branch Manager',
+                        'Senior Branch Manager',Officer-I
                        ];
 
                      $bo_maker_designations = ['Customer Care Representative',
@@ -152,19 +164,18 @@ class SyncHRMdata extends Command
 
                     $designation = trim($value->current_designation);
 
-                    // check for data existance
-                    if($userDataRes){
-                         $user = User::find($userDataRes->id);
-                       
-                    }else{
-                        $user = new User;                    
+                    if(in_array($designation , $admin_designations)){
+                         $role = 'admin';
                     }
-
-                   
+                    
+                    if(in_array($designation , $super_admin_designations)){
+                         $role = 'super_admin';
+                    }
 
                     if(in_array($designation , $ho_designations)){
                          $role = 'ho-user';
                     }
+
                     if(in_array($designation , $ro_supervisor_designations)){
                          $role = 'ro-supervisor';
                     }
@@ -223,7 +234,29 @@ class SyncHRMdata extends Command
                     $user->branch_id = $branch_data[0];
                     $user->region = $value->office_region;  
                     $user->region_id = (int)$region_id;
-                    $user->ins_user = $is_ins_user;
+                    // $user->ins_user = $is_ins_user;
+                    $user->employee_type = $value->employee_type;  
+                    $user->current_designation = $value->current_designation;  
+                    $user->grade = $value->grade;  
+                    $user->confirmation_status = $value->confirmation_status;  
+                    $user->date_of_confirmation = $value->date_of_confirmation;  
+                    $user->current_location_type = $value->current_location_type;  
+                    $user->direct_manager_name = $value->direct_manager_name;  
+                    $user->direct_manager_emp_id = $value->direct_manager_emp_id;  
+                    $user->direct_manager_email = $value->direct_manager_email;  
+                    $user->office_location = $value->office_location;  
+                    $user->current_department = $value->current_department;  
+                    $user->top_department = $value->top_department;  
+                    $user->department_hierarchy_1_name = $value->department_hierarchy_1_name;  
+                    $user->department_hierarchy_2_name = $value->department_hierarchy_2_name;  
+                    $user->department_hierarchy_3_name = $value->department_hierarchy_3_name;  
+                    $user->functional_head = $value->functional_head;  
+                    $user->functional_head_emp_id = $value->functional_head_emp_id;  
+                    $user->work_flow_role = $value->work_flow_role;  
+                    $user->prac_designation = $value->prac_designation;  
+                    $user->prac_role = $value->prac_role;  
+                    $user->pac_designation = $value->pac_designation;  
+                    $user->pac_role = $value->pac_role;
                     $user->save();
 
 

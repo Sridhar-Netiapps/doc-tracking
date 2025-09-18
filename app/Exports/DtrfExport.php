@@ -46,7 +46,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
             'Document Category',
             'Work Order No',
             'Vendor Name',
-            'Date of  Vendor Movement',
+            'Date of Vendor Movement',
             'File Barcode',
             'Box Barcode',
             'Date of addition to Vendor Data',

@@ -1362,15 +1362,27 @@ class DocumentController extends Controller
                         });
             
                         // Or non-dispatched docs with the main field
-                        $q->orWhereDoesntHave('dispatch', function ($nq) use ($mainField, $fromDate, $toDate) {
+                        // $q->orWhereDoesntHave('dispatch', function ($nq) use ($mainField, $fromDate, $toDate) {
+                        //     if ($fromDate && $toDate) {
+                        //         $nq->whereBetween($mainField, [$fromDate, $toDate]);
+                        //     } elseif ($fromDate) {
+                        //         $nq->whereDate($mainField, '>=', $fromDate);
+                        //     } elseif ($toDate) {
+                        //         $nq->whereDate($mainField, '<=', $toDate);
+                        //     }
+                        // });
+                        $q->orWhere(function ($sq) use ($mainField, $fromDate, $toDate) {
+                            $sq->doesntHave('dispatch');
+                        
                             if ($fromDate && $toDate) {
-                                $nq->whereBetween($mainField, [$fromDate, $toDate]);
+                                $sq->whereBetween($mainField, [$fromDate, $toDate]);
                             } elseif ($fromDate) {
-                                $nq->whereDate($mainField, '>=', $fromDate);
+                                $sq->whereDate($mainField, '>=', $fromDate);
                             } elseif ($toDate) {
-                                $nq->whereDate($mainField, '<=', $toDate);
+                                $sq->whereDate($mainField, '<=', $toDate);
                             }
                         });
+                        
                     });
                 }
             }
