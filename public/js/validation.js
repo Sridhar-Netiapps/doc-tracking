@@ -140,7 +140,7 @@ $(document).ready(function(){
 
     // Alphanumeric: allow only letters and numbers (case preserved)
     $(document).on('input', '.alphanumeric', function () {
-        $(this).val($(this).val().replace(/[^a-zA-Z0-9]/g, ''));
+    $(this).val($(this).val().replace(/[^a-zA-Z0-9\s]/g, ''));
     });
 
 
