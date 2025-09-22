@@ -21,10 +21,10 @@ class SyncDocumentRecords extends Command
     public function handle(): void
     {
         Log::info("Entered In to Doc Sync");
-        $this->syncLoanType(HrmLoanDocument::class, LoanDocument::class, 'MB', 'etl_date');
-        $this->syncLoanType(HrmGoldLoanDocument::class, GoldLoanDocument::class, 'GL', 'etl_date');
-        $this->syncLoanType(HrmAccountOpeningDocument::class, AccountOpeningDocument::class, 'LD', 'etl_date');
-        $this->syncLoanType(HrmDtrfDocument::class, DtrfDocument::class, 'DT', 'etl_date');
+        $this->syncLoanType(HrmLoanDocument::class, LoanDocument::class, 'MB', 'added_at');
+        $this->syncLoanType(HrmGoldLoanDocument::class, GoldLoanDocument::class, 'GL', 'added_at');
+        $this->syncLoanType(HrmAccountOpeningDocument::class, AccountOpeningDocument::class, 'LD', 'added_at');
+        $this->syncLoanType(HrmDtrfDocument::class, DtrfDocument::class, 'DT', 'added_at');
         Log::info("Completed Doc Sync");
         $this->info('All document records synced successfully with unique references.');
     }
