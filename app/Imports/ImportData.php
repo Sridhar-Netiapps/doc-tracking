@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation,
     SkipsOnFailure,
     SkipsOnError,
+    WithChunkReading,
     ToCollection
 };
 use Maatwebsite\Excel\Row;
@@ -29,7 +30,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
 
 
-class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
+class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
@@ -157,6 +158,11 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
                 );
             }
         }
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000; 
     }
 
     public function rules(): array
