@@ -685,7 +685,7 @@
             let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
             let row = $(this).closest('tr');
 
-            var doc_count = $(`#${type}-tab`).find('span.badge').text();
+            var doc_count = $(`#${type}`).find('span.badge').text();
             // console.log(doc_count);
 
 
@@ -718,7 +718,7 @@
                             showConfirmButton: false
                         });
                         row.remove(); 
-                        $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
+                        $(`#${type}`).find('span.badge').text(doc_count - 1);
                     })
                     .fail(function (xhr) {
                         Swal.fire({title: "Error!", text: "Something went wrong: " + xhr.responseText, icon: "error"});

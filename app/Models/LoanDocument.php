@@ -36,6 +36,6 @@ class LoanDocument extends Model
     {
         return $this->hasOne(DocumentHistory::class, 'document_id')
                     ->where('document_type', 'LoanDocument')
-                    ->whereIn('current_status', [5,7]);
+                    ->whereIn('current_status', [5,6,7]);
     }
 }

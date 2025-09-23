@@ -1280,8 +1280,9 @@ class DocumentController extends Controller
             $docType = $filters['doc_type'] ?? null;
             
             $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : null;
-
+            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay();
+            $date = [$fromDate, $toDate];
+            // dd($date);
             foreach ($filters as $field => $value) {
                 if (!empty($value) && \Schema::hasColumn($table, $field)) {
                     if (in_array($field, ['cif_id', 'account_number'])) {
@@ -1309,6 +1310,7 @@ class DocumentController extends Controller
                 $dispatchField = match ($dateField) {
                     'dispatch_date' => 'dispatch_date',
                     'received_date' => 'updated_at',
+                    'tracking_date' => 'updated_at',
                     default         => null,
                 };
             
@@ -1322,21 +1324,14 @@ class DocumentController extends Controller
                     default         => null,
                 };
 
-                if ($dateField === 'tracking_date') {
-                    $query->whereHas('getReceivedDetails', function ($q) use ($fromDate, $toDate) {
-                        if ($fromDate && $toDate) {
-                            $q->whereBetween('created_at', [$fromDate, $toDate]);
-                        } elseif ($fromDate) {
-                            $q->whereDate('created_at', '>=', $fromDate);
-                        } elseif ($toDate) {
-                            $q->whereDate('created_at', '<=', $toDate);
-                        }
-                    });
-                }
-            
                 // If filtering by dispatch date or received date → only dispatched docs
-                elseif ($dispatchField) {
-                    $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate) {
+                if ($dispatchField) {
+                    $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate, $dateField) {
+                        if ($dateField == 'received_date') {
+                            $q->whereIn('status', [5,6,7]);
+                        } elseif ($dateField == 'tracking_date'){
+                            $q->where('status', 12);
+                        }
                         if ($fromDate && $toDate) {
                             $q->whereBetween($dispatchField, [$fromDate, $toDate]);
                         } elseif ($fromDate) {
@@ -1361,16 +1356,18 @@ class DocumentController extends Controller
                             }
                         });
             
-                        // Or non-dispatched docs with the main field
-                        $q->orWhereDoesntHave('dispatch', function ($nq) use ($mainField, $fromDate, $toDate) {
+                        $q->orWhere(function ($sq) use ($mainField, $fromDate, $toDate) {
+                            $sq->doesntHave('dispatch');
+                
                             if ($fromDate && $toDate) {
-                                $nq->whereBetween($mainField, [$fromDate, $toDate]);
+                                $sq->whereBetween($mainField, [$fromDate, $toDate]);
                             } elseif ($fromDate) {
-                                $nq->whereDate($mainField, '>=', $fromDate);
+                                $sq->whereDate($mainField, '>=', $fromDate);
                             } elseif ($toDate) {
-                                $nq->whereDate($mainField, '<=', $toDate);
+                                $sq->whereDate($mainField, '<=', $toDate);
                             }
                         });
+                        
                     });
                 }
             }

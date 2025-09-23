@@ -94,7 +94,7 @@ class UserController extends Controller
         ]);
 
         // Creating the new user
-        User::create([
+        $user = User::create([
             'first_name' => $request->input('first_name'),
             'middle_name' => $request->input('middle_name'),
             'last_name' => $request->input('last_name'),
@@ -136,10 +136,14 @@ class UserController extends Controller
             'prac_role' => $request->input('prac_role'),
             'pac_designation' => $request->input('pac_designation'),
             'pac_role' => $request->input('pac_role'),
-            // 'designation_id' => ('0'),
-            // 'department_id' => ('0'),
+            'designation_id' => 0,
+            'department_id' => 0,
         ]);
 
+        $request->validate([
+            'role' => 'required|exists:roles,name',
+        ]);
+        $user->syncRoles([$request->input('role')]);
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -193,7 +197,7 @@ class UserController extends Controller
             'office_location' => 'nullable|string|max:255',
             'current_department' => 'nullable|string|max:255',
             'top_department' => 'nullable|string|max:255',
-            'department_hierarchy_1_name' => 'nullable|string|max:255',
+            'department_hierarchy_1_nNoame' => 'nullable|string|max:255',
             'department_hierarchy_2_name' => 'nullable|string|max:255',
             'department_hierarchy_3_name' => 'nullable|string|max:255',
             'functional_head' => 'nullable|string|max:255',
@@ -250,6 +254,11 @@ class UserController extends Controller
 
         ]);
 
+        $request->validate([
+            'role' => 'required|exists:roles,name',
+        ]);
+        $user->syncRoles([$request->input('role')]);
+
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -290,8 +299,13 @@ class UserController extends Controller
     {
         // Store filters in session
         session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
-    
-        return redirect()->route('activity.filterlist');
+        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email'])]);
+// dd($request->user);
+
+        if ($request->user == '1')
+            return redirect()->route('user.filter');
+        else
+            return redirect()->route('activity.filterlist');
     }
     
     public function filterList(Request $request)
@@ -339,6 +353,35 @@ class UserController extends Controller
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.activity', compact('activites', 'filters'));
+    }
+
+    public function userFilter(Request $request)
+    {
+        $filters = session('user_filters', []);
+        
+    
+        $query = User::query();
+    
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+      
+    
+        $users = $query->orderBy('created_at', 'desc')->paginate(100);
+    
+        return view('users.index', compact('users', 'filters'));
     }
     
     public function exportCheck(Request $request)

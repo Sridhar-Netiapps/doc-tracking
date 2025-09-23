@@ -44,13 +44,31 @@ class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, With
     }
     function parseExcelDate($value)
     {
-        if (is_numeric($value)) {
-            // dd($value);
-            return date('Y-m-d', ($value - 25569) * 86400);
-        } else {
-            // dd(date('Y-m-d', $timestamp));
-            $timestamp = strtotime($value);
-            return $timestamp ? date('Y-m-d', $timestamp) : null;
+        if (empty($dateValue)) {
+            return null;
+        }
+        try {
+            if (is_numeric($dateValue) && ExcelDate::isDateTime($dateValue)) {
+                $dateTimeObject = ExcelDate::excelToDateTimeObject((float) $dateValue);
+                return Carbon::instance($dateTimeObject);
+            }
+            $formats = [
+                'd-m-Y',    // Matches 13-09-2025
+                'd/m/Y',    // Matches 13/09/2025
+                'Y-m-d',    // The standard database format
+                'Y/m/d',
+            ];
+            foreach ($formats as $format) {
+                try {
+                    return Carbon::createFromFormat($format, $dateValue)->setTimezone(Config::get("app.timezone"));
+                } catch (\Exception $e) {
+                    Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+                }
+            }
+            return Carbon::parse($dateValue)->setTimezone(Config::get("app.timezone"));
+        } catch (\Exception $e) {
+            Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+            return null;
         }
     }
 
@@ -79,18 +97,12 @@ class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, With
         
         foreach ($rows as $row) {
             $this->total++;
+            // dd($row);
             try {
-                // $doc_type = !empty($row['document_type']) ? Str::upper(trim($row['document_type'])) : null;
                 $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
-                // $doc_status = $status[Str::upper(trim($row['status']))];
                 $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
 
-
                 DB::beginTransaction();
-
-                // if (empty($doc_unique_no) || empty($doc_type)) {
-                //     throw new \Exception("Missing required fields.");
-                // }
 
                 if (!isset($table[$this->doc_type])) {
                     throw new \Exception("Invalid document type.");
