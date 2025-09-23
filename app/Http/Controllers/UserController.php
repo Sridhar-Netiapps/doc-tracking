@@ -161,7 +161,6 @@ class UserController extends Controller
         }
     
         $user = User::findOrFail($decryptedId);
-
         // Passing the user, roles, and permissions to the edit view
         return view('users.edit', compact('user', 'roles', 'permissions'));
     }

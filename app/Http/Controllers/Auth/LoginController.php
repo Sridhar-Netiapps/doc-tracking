@@ -238,6 +238,8 @@ class LoginController extends Controller
                     //  $user = Auth::user();
                      $user->session_id = Session::getId();
                      $user->save();
+
+
                     if ($user->hasrole('super_admin')) {
                         return redirect()->route('users.index');
                     }
@@ -269,7 +271,7 @@ class LoginController extends Controller
                 $user = Auth::user();
                 $user->session_id = Session::getId();
                 $user->save();
-                 //dd($user);
+                // dd($user->hasrole('ins-admin'));
                 if ($user->hasrole('super_admin')) {
                     return redirect()->route('users.index');
                 }
