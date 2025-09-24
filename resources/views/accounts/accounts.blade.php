@@ -673,7 +673,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer']))
                 <div class="col-12 mt-3">
@@ -695,10 +695,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id alphanumeric" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="search" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number alphanumeric" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="search" class="form-control account_number alphanumeric capsonly" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
@@ -805,7 +805,7 @@
                         <input type="hidden" name="dtype">
                         <input type="hidden" name="status" value="8">
                         <label for="lot_no" class="form-label">Lot No <span class="text-danger">*</span></label>
-                        <input type="text" name="lot_no" class="form-control alphanumeric">
+                        <input type="text" name="lot_no" class="form-control alphanumeric capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Doc. Category <span class="text-danger">*</span></label>
@@ -820,7 +820,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No <span class="text-danger">*</span></label>
-                        <input type="text" name="work_order_no" class="form-control alphanumeric">
+                        <input type="text" name="work_order_no" class="form-control alphanumeric capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
@@ -840,11 +840,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode <span class="text-danger">*</span></label>
-                        <input type="text" name="file_barcode" class="form-control alphanumeric">
+                        <input type="text" name="file_barcode" class="form-control alphanumeric capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode <span class="text-danger">*</span></label>
-                        <input type="text" name="box_barcode" class="form-control alphanumeric">
+                        <input type="text" name="box_barcode" class="form-control alphanumeric capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition <span class="text-danger">*</span></label>
@@ -1032,6 +1032,7 @@
                 cancelButtonText: "Cancel",
                 customClass: {
                     popup: 'rounded-3 shadow',
+                    input: 'alphanumeric',
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
                 },

@@ -127,7 +127,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
                 <div class="col-12 mt-3">
@@ -149,14 +149,14 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id alphanumeric" 
+                    <input type="search" class="form-control cif_id alphanumeric capsonly" 
                            placeholder="CIF ID" 
                            value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" 
                            name="cif_id">
                 </div>
                 
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number alphanumeric" 
+                    <input type="search" class="form-control account_number alphanumeric capsonly" 
                            placeholder=" Account Number" 
                            value="{{ old('account_number', $filters['account_number'] ?? '') }}" 
                            name="account_number">
@@ -226,11 +226,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod">
+                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
-                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric" required>
+                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

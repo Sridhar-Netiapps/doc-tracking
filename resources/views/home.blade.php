@@ -7,7 +7,7 @@
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
-                <h2>{{$total_doc}}</h2>
+                <h2>{{ Crypt::decrypt($total_doc) }}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col-2 cardBox Yellow">
@@ -676,4 +676,70 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
+<script>
+    $(function () {
+        const container = $('#dynamic-dropdown');
+        const resetBtn  = $('#reset-btn-container');
+    
+        // Render dropdown by type
+        function renderDropdown(type) {
+            const templates = {
+                region: '#template-region',
+                tat: '#template-tat'
+            };
+            if (templates[type]) {
+                container.html($(templates[type]).html()).show();
+            } else {
+                container.empty().hide();
+            }
+        }
+    
+        // Show/hide reset button
+        function toggleResetButton() {
+            resetBtn.toggle(!!($('#region').val() || $('#tat').val()));
+        }
+    
+        // On search_type change
+        $('#search_type').on('change', function () {
+            renderDropdown($(this).val());
+            toggleResetButton();
+        });
+    
+        // Preload from backend
+        const selectedSearchType = "{{ $selectedSearchType }}";
+        const selectedRegion     = "{{ $selectedRegion }}";
+        const selectedTat        = "{{ $selectedTat }}";
+    
+        if (selectedSearchType) $('#search_type').trigger('change');
+        if (selectedRegion) renderDropdown('region');
+        if (selectedTat) renderDropdown('tat');
+        toggleResetButton();
+    
+        // Reset button
+        $(document).on('click', '#reset-btn', function () {
+            $.post("{{ route('tat.data') }}", { reset: true, _token: "{{ csrf_token() }}" }, res => {
+                if (res.success) {
+                    $('#search_type').val('');
+                    container.empty().hide();
+                    resetBtn.hide();
+                    location.reload();
+                }
+            });
+        });
+    
+        // Region/TAT change
+        $(document).on('change', '#region, #tat', function () {
+            const isRegion = this.id === 'region';
+            $.post("{{ route('tat.data') }}", {
+                tat: isRegion ? '' : $('#tat').val(),
+                region: isRegion ? $('#region').val() : '',
+                search_type: $('#search_type').val(),
+                _token: "{{ csrf_token() }}"
+            }, res => res.success && location.reload());
+    
+            toggleResetButton();
+        });
+    });
+</script>
+    
 @endsection

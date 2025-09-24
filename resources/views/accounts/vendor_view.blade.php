@@ -411,7 +411,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
                 <div class="col-12 mt-3 d-none">
@@ -433,10 +433,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control cif_id alphanumeric" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control account_number alphanumeric" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control alphanumeric" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
@@ -508,7 +508,7 @@
                         <input type="hidden" name="dtype">
                         <input type="hidden" name="is_filtered" value="{{ isset($filters) ? 1 : 0 }}">
                         <label for="lot_no" class="form-label">Lot No <span class="text-danger">*</span></label>
-                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric" required>
+                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Doc. Category <span class="text-danger">*</span></label>
@@ -522,7 +522,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No <span class="text-danger">*</span></label>
-                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric" required>
+                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
@@ -541,11 +541,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode <span class="text-danger">*</span></label>
-                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric" required>
+                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode <span class="text-danger">*</span></label>
-                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric" required>
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition <span class="text-danger">*</span></label>
@@ -747,8 +747,10 @@
                     }
                     $('#vendor_input').val(data.vendor_name).change();
 
-                    $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
-                    $('#date_added_input').val(data.date_added_to_vendor ?? '');
+                    // $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
+                    $('#vendor_movement_date_input').val(data.vendor_movement_date ? new Date(data.vendor_movement_date).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
+                    $('#date_added_input').val(data.date_added_to_vendor ? new Date(data.date_added_to_vendor).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
+                    // $('#date_added_input').val(data.date_added_to_vendor ?? '');
                     if ($('#status_input option[value="' + data.status + '"]').length === 0) {
                         $('#status_input').append(new Option(data.status, data.status));
                     }

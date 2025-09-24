@@ -6,29 +6,21 @@
         <div>
             <div class="d-flex justify-content-center align-items-center">
                 <h3 class="me-3">Audit Logs</h3>
-                {{-- <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/library">Library</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Data</li>
-                    </ol>
-                </nav> --}}
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
                  {{-- <form id="exportForm" method="GET" action="{{ route('activity.export') }}"> --}}
-        <form method="GET" action="{{ route('activity.export') }}">
-            @foreach(($filters ?? []) as $key => $value)
-                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-            @endforeach        
-            {{-- <button type="button" id="exportBtn" class="btn btn-success"> --}}
-            <button type="submit" class="btn btn-sm btn-success">
-                Export
-            </button>
-        </form>
+                @if(Request::segment(2) == 'filter')
+                <form method="GET" action="{{ route('activity.export') }}">
+                    @foreach(($filters ?? []) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-sm btn-success">
+                        Export
+                    </button>
+                </form>
+                @endif
             </div>
         </div>
     </div>
-
-
     <div class="row">
         <div class="col-12">
             <div class="form-card">
@@ -52,11 +44,24 @@
                             @foreach ($activites as $row)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
+                                    {{-- <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
                                     <td>{{ $row->user->employee_id }}</td>
                                     <td>{{ $row->user->region }}</td>
                                     <td>{{ $row->user->branch_id }}</td>
-                                    <td>{{ $row->user->email }}</td>
+                                    <td>{{ $row->user->email }}</td> --}}
+                                    @if(!empty($row->user))
+                                        <td>{{ $row->user->first_name }} {{ $row->user->middle_name }} {{ $row->user->last_name }}</td>
+                                        <td>{{ $row->user->employee_id }}</td>
+                                        <td>{{ $row->user->region }}</td>
+                                        <td>{{ $row->user->branch_id }}</td>
+                                        <td>{{ $row->user->email }}</td>
+                                    @else
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                            <td>{{'-'}}</td>
+                                    @endif
                                     <td>{{ ucfirst($row->event_type) }}</td>
                                     <td>{{ $row->description }}</td>
                                     {{-- <td>{{ $row->ip_address }}</td> --}}
@@ -96,7 +101,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="number" class="form-control branch_id" placeholder="Branch Code" value="{{ old('branch_id', $filters['branch_id'] ?? '') }}" name="branch_id" min="0">
+                    <input type="number" class="form-control branch_id alphanumeric" placeholder="Branch Code" value="{{ old('branch_id', $filters['branch_id'] ?? '') }}" name="branch_id" min="0">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control employee_id alphanumeric" placeholder="Employee ID" value="{{ old('employee_id', $filters['employee_id'] ?? '') }}" name="employee_id">

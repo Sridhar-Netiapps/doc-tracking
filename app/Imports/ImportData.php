@@ -41,21 +41,40 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     public function __construct($doc_type)
     {
         $this->doc_type = $doc_type;
-        // dd($doc_type);
     }
     function parseExcelDate($value)
     {
-        if (is_numeric($value)) {
-            return date('Y-m-d', ($value - 25569) * 86400);
-        } else {
-            $timestamp = strtotime($value);
-            return $timestamp ? date('Y-m-d', $timestamp) : null;
+        if (empty($dateValue)) {
+            return null;
+        }
+        try {
+            if (is_numeric($dateValue) && ExcelDate::isDateTime($dateValue)) {
+                $dateTimeObject = ExcelDate::excelToDateTimeObject((float) $dateValue);
+                return Carbon::instance($dateTimeObject);
+            }
+            $formats = [
+                'd-m-Y',    // Matches 13-09-2025
+                'd/m/Y',    // Matches 13/09/2025
+                'Y-m-d',    // The standard database format
+                'Y/m/d',
+            ];
+            foreach ($formats as $format) {
+                try {
+                    return Carbon::createFromFormat($format, $dateValue)->setTimezone(Config::get("app.timezone"));
+                } catch (\Exception $e) {
+                    Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+                }
+            }
+            return Carbon::parse($dateValue)->setTimezone(Config::get("app.timezone"));
+        } catch (\Exception $e) {
+            Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+            return null;
         }
     }
 
     public function collection(Collection $rows)
     {
-        // dd($rows);
+        // dd($this->doc_type);
         $table = [
             'loan' => LoanDocument::class,
             'goldloan' => GoldLoanDocument::class,
@@ -72,24 +91,18 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'RECEIVED WITH QUERY' => 7,
             'IN' => 8,
             'OUT' => 9,
-            'PERMOUNT' => 10,
+            'PERMOUT' => 10,
             'DESTROYED' => 11,
         ];
         
         foreach ($rows as $row) {
             $this->total++;
+            // dd($row);
             try {
-                // $doc_type = !empty($row['document_type']) ? Str::upper(trim($row['document_type'])) : null;
                 $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
-                // $doc_status = $status[Str::upper(trim($row['status']))];
                 $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
 
-
                 DB::beginTransaction();
-
-                // if (empty($doc_unique_no) || empty($doc_type)) {
-                //     throw new \Exception("Missing required fields.");
-                // }
 
                 if (!isset($table[$this->doc_type])) {
                     throw new \Exception("Invalid document type.");
@@ -97,6 +110,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
                 $document = new $table[$this->doc_type];
+                // dd($document);
                 // if (!$document) {
                 //     throw new \Exception($doc_unique_no." Document not found");
                 // }
@@ -161,7 +175,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     {
         return [
             'unique_ref_no'           => ['required', 'string'],
-            'doc_type'                => ['required', 'string'],
+            // 'doc_type'                => ['required', 'string'],
             'region'                  => ['required', 'string'],
             'branch_code'             => ['required'],
             'branch_name'             => ['required'],

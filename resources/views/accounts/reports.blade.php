@@ -64,15 +64,15 @@
                             {{-- CIF / Account --}}
                             <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>CIF ID</label>
-                                <input type="text" name="cif_id" class="form-control">
+                                <input type="text" name="cif_id" class="form-control alphanumeric capsonly">
                             </div>
                             <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Account Number</label>
-                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric">
+                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric capsonly">
                             </div>
                             <div class="col-3 mt-2 doc-fields goldloan loan aof">
                                 <label>Channel</label>
-                                <input type="text" name="channel" class="form-control">
+                                <input type="text" name="channel" class="form-control alphanumeric">
                             </div>
 
                             @foreach ([

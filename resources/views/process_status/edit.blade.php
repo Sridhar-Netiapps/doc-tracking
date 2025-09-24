@@ -36,7 +36,7 @@
 
                     <div class="mb-4">
                         <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" id="name" required pattern="^[a-zA-Z\s]+$" maxlength="55" value="{{ old('name', $status->name) }}">
+                        <input type="text" name="name" class="form-control alphanumeric" id="name" required pattern="^[a-zA-Z\s]+$" maxlength="55" value="{{ old('name', $status->name) }}">
                     </div>
 
                     <div class="row">

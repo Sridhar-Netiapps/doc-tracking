@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\LoginAudit;
 use LdapRecord\Container;
+use \App\Models\ActivityLog;
 
 class LoginController extends Controller
 {
@@ -65,9 +66,10 @@ class LoginController extends Controller
                 $ldap = Container::getDefaultConnection();
                 $ldap->connect();
                 $isValidLdap = $ldap->auth()->attempt($username,$password);
+                $user = User::where('employee_id', $username)->first();
 
                 if ($isValidLdap) {
-                    $user = User::where('employee_id', $username)->first();
+                    // $user = User::where('employee_id', $username)->first();
                     if (!$user) {
                         return back()->withErrors(['username' => 'You are not authorized.']);
                     }
@@ -84,8 +86,20 @@ class LoginController extends Controller
                         return redirect()->route('insurance/dashboard');
                     }
                     return redirect()->intended('/home');
-                }
-                return back()->withErrors(['username' => 'Invalid credentials.']);
+                } 
+                // else {
+                //     if ($user->hasRole('master')) {
+                //         ActivityLog::create([
+                //             'user_id' => $user->id,
+                //             'event_type' => 'failed login',
+                //             'description' => 'Invalid credentials.',
+                //             'ip_address' => request()->ip(),
+                //             'user_agent' => request()->userAgent(),
+                //             'route' => request()->path(),
+                //         ]);
+                //     }
+                //     return back()->withErrors(['username' => 'Invalid credentials.']);
+                // }
             } catch (\Exception $e) {
                 Log::error('LDAP Login Failed', ['error' => $e->getMessage()]);
             }
@@ -105,9 +119,34 @@ class LoginController extends Controller
                 }
                 return redirect()->intended('/home');
             }
+            else {
+                $user = User::where('employee_id', $username)->first();
+                // dd($user);
+                if (!$user) {
+                    ActivityLog::create([
+                        'user_id' => 0,
+                        'event_type' => 'failed login',
+                        'description' => 'Invalid Employee id: '.$username,
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'route' => request()->path(),
+                    ]);
+                    return back()->withErrors(['username' => 'Invalid Employee id: '.$username]);  
+                }
+                if (!$user->hasRole('master')) {
+                    ActivityLog::create([
+                        'user_id' => $user->id,
+                        'event_type' => 'failed login',
+                        'description' => 'Invalid credentials.',
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'route' => request()->path(),
+                    ]);
+                }
+                return back()->withErrors(['username' => 'Invalid credentials.']);
+            }
         }
 
-        return back()->withErrors(['username' => 'Invalid credentials']);
     }
 
     public function logout(Request $request)

@@ -26,11 +26,11 @@
         @csrf @method('PUT')
         <div class="mb-3">
             <label>Courier ID <span class="text-danger">*</span></label>
-            <input type="text" name="courier_id" class="form-control" value="{{ $courier->courier_id }}" required>
+            <input type="text" name="courier_id" class="form-control alphanumeric" value="{{ $courier->courier_id }}" required>
         </div>
         <div class="mb-3">
             <label>Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" value="{{ $courier->name }}" required>
+            <input type="text" name="name" class="form-control alphanumeric" value="{{ $courier->name }}" required>
         </div>
         <div class="mb-3">
             <label>Number <span class="text-danger">*</span></label>
@@ -40,7 +40,7 @@
         </div> 
         <div class="mb-3">
             <label>Address <span class="text-danger">*</span></label>
-            <textarea name="address" class="form-control" required>{{ $courier->address }}</textarea>
+            <textarea name="address" class="form-control alphanumeric" required>{{ $courier->address }}</textarea>
         </div>
         <div class="mb-3">
             <label>Status</label>
