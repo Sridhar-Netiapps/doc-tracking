@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('employee_type');
-            $table->string('current_designation');
-            $table->string('grade');
-            $table->string('confirmation_status');
-            $table->string('date_of_confirmation');
-            $table->string('current_location_type');
-            $table->string('direct_manager_name');
-            $table->string('direct_manager_emp_id');
-            $table->string('direct_manager_email');
-            $table->string('office_location');
-            $table->string('current_department');
-            $table->string('top_department');
+            $table->string('employee_type')->nullable();
+            $table->string('current_designation')->nullable();
+            $table->string('grade')->nullable();
+            $table->string('confirmation_status')->nullable();
+            $table->string('date_of_confirmation')->nullable();
+            $table->string('current_location_type')->nullable();
+            $table->string('direct_manager_name')->nullable();
+            $table->string('direct_manager_emp_id')->nullable();
+            $table->string('direct_manager_email')->nullable();
+            $table->string('office_location')->nullable();
+            $table->string('current_department')->nullable();
+            $table->string('top_department')->nullable();
             $table->string('department_hierarchy_1_name')->nullable();
             $table->string('department_hierarchy_2_name')->nullable();
             $table->string('department_hierarchy_3_name')->nullable();
