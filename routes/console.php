@@ -12,4 +12,4 @@ Artisan::command('inspire', function () {
 Schedule::command('documents:revert-draft')->dailyAt('06:00');
 Schedule::command('documents:sync')->dailyAt('06:30');
 Schedule::command('documents:sync-email')->dailyAt('07:00');
-Schedule::command('app:sync-h-r-mdata')->dailyAt('07:30');
+Schedule::command('app:sync-h-r-mdata')->dailyAt('07:40');
