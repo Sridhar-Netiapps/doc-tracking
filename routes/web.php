@@ -81,8 +81,6 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('documents/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
-    
-
 
         // Route::get('home', [HomeController::class, 'index'])->name('home');
         // Route::get('home', function () { return view('home'); })->name('home');
