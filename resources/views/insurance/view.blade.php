@@ -11,7 +11,7 @@
         @endphp
         
 		<div class="ms-auto">
-			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible [Having outstanding]' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
+			@if($data->cliam_status !='Completed' && $data->cliam_status !='Not Eligible' && $data->cliam_status !='Not Eligible-Having outstanding' && $data->cliam_status !='Not Eligible-Not Insured' && $data->cliam_status !='Completed')
 
 			  @if($data->nominee->nominee_data_verified == 'Yes')
 				@if($data->products->type == 'MB')

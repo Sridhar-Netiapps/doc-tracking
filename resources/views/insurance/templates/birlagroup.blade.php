@@ -44,11 +44,11 @@
 
     }
     .logo{
-       height: 80px;
+       height: 70px;
     }
 
     .contentmain{
-      padding: 20px;
+      padding: 7px;
     }
     .formname{
      font-weight: bolder;
@@ -56,14 +56,14 @@
      color: #000; 
     }
     .label-font{
-      font-size: 13px;
+      font-size: 10px;
     }
 
     .contentrows {
       display: flex;
       justify-content: flex-start;
       margin:auto;
-      margin-top: 10px;
+      margin-top: 5px;
     }
     .policy{
      padding-right: 30px;
@@ -170,6 +170,8 @@
     .col-12{
       width: 12.5%;
     }
+    
+
   
 </style>
 <body>
@@ -177,12 +179,7 @@
   <div class="pagelayout">
     <div class="pageheader">
       <div class="companyheader">
-       <!--  <div class="lhs">
-          <label class="companyname">LIFE INSURANCE</label>
-          <div><label class="companydesc">Aditya Birla Sun Life Insurance</label></div>
-          <div><label class="companydesc">Company Limited</label></div>
-        </div>
-       <div class="companylogo"><img class="logo" src="{{ $base64 }}"> </div>  -->
+      
        <table class="twocol-table-noborder">
          <tr>
            <td class="col-50">
@@ -277,23 +274,23 @@
 
           <tr>
             <td>
-              <div class="label-font">Beneficiary’s Name:<strong class="policy">{{$data->nominee_name}}</strong></div>
+              <div class="label-font bg">Beneficiary’s Name:<strong class="policy">{{$data->nominee_name}}</strong></div>
               <div class="label-font">Bank Name:<strong class="policy">{{$data->nominee->bank_name}}</strong></div>
               <div class="label-font">Relationship to the deceased:<strong class="policy">{{$data->relationship}}</strong></div>
               <div class="label-font">Account Type:<strong class="policy"></strong></div>
               <div class="label-font">Account No.:<strong class="policy">{{$data->nominee->acc_number}}</strong></div>
               <div class="label-font">IFSC Code:<strong class="policy">{{$data->nominee->ifsc}}</strong></div>
-              <div class="label-font">Contact No.:<strong class="policy"></strong></div>
+              <div class="label-font">Contact No.:<strong class="policy">{{$data->nominee->nominee_number}}</strong></div>
               <div class="label-font">Email Id:<strong class="policy"></strong></div>
               
             </td>
             
             <td>
-              <div class="label-font">GPH Name:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? 'Ujjivan Small Finance Bank':''}}</strong></div>
-              <div class="label-font">Bank Name:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? ' Ujjivan ABSLI Insurance ':''}}</strong></div>
-              <div class="label-font">Account Type:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? ' CURRENT ACCOUNT ':''}}</strong></div>
-              <div class="label-font">Account No.:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? '10001025261001':''}}</strong></div>
-              <div class="label-font">IFSC Code:<strong class="policy">{{ ($data->deceased == 'CUSTOMER')? 'UJVN0099999':''}}</strong></div>
+              <div class="label-font">GPH Name:<strong class="policy">{{ ($data->deceased == 'Customer')? 'Ujjivan Small Finance Bank':''}}</strong></div>
+              <div class="label-font">Bank Name:<strong class="policy">{{ ($data->deceased == 'Customer')? ' Ujjivan ABSLI Insurance ':''}}</strong></div>
+              <div class="label-font">Account Type:<strong class="policy">{{ ($data->deceased == 'Customer')? ' CURRENT ACCOUNT ':''}}</strong></div>
+              <div class="label-font">Account No.:<strong class="policy">{{ ($data->deceased == 'Customer')? '10001025261001':''}}</strong></div>
+              <div class="label-font">IFSC Code:<strong class="policy">{{ ($data->deceased == 'Customer')? 'UJVN0099999':''}}</strong></div>
               <div class="label-font">Contact No.:<strong class="policy"></strong></div>
               <div class="label-font">Email Id:<strong class="policy"></strong></div>
               
@@ -322,8 +319,7 @@
         <label class="label-font">Name and Designation of the Authorized Person:</label>
         <span class="policyunderlinefull"></span> 
       </div>
-      <p></p>
-      
+     
       <div class="contentrows">
         <label class="label-font">Signature of Authorized Person:</label>
         <span class="smallpad signunderline"></span> 
@@ -349,11 +345,8 @@
      
      <hr/>
 
-     </div>
-  <div class="page-break"></div>
+     
 
-  <div class="pagelayout">
-    <div class="contentmain">
 
      <strong class="font_declaration">Declaration by Claimant</strong>
       <span class="font_declaration">I hereby notify the Aditya Birla Sun Life Insurance Company Limited (ABSLI) that Mr./Ms./Master<strong class="declarationfillin"></strong> whose life was insured by the said company,
@@ -388,9 +381,8 @@
     </div>
     <div class="footer-bg">
      <lable class="footer-text">Aditya Birla Sun Life Insurance Company Limited | adityabirlasunlifeinsurance.com</lable>     
-   </div>
+  
  </div>
-
   <div class="page-break"></div>
 
   <div class="pagelayout">
