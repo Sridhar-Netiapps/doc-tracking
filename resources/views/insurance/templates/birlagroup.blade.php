@@ -11,10 +11,10 @@
       width: 780px;  
       margin: 0px auto;      /* Center horizontally with some vertical spacing */
       background-color: #fff; /* Optional: for contrast */
-      padding: 5px;
+      padding: 10px;
     }
     .pageheader{
-      height: 100px;
+      height: 80px;
       background-color: #C91228;
     }
    
@@ -34,7 +34,7 @@
     }
     .companydesc{
       font-weight: normal;
-      font-size: 15px;
+      font-size: 16px;
       color: #fff;
     }
     .companylogo{
@@ -44,26 +44,26 @@
 
     }
     .logo{
-       height: 70px;
+       height: 50px;
     }
 
     .contentmain{
-      padding: 7px;
+      padding: 5px;
     }
     .formname{
      font-weight: bolder;
-     font-size: 18px;
+     font-size: 15px;
      color: #000; 
     }
     .label-font{
-      font-size: 10px;
+      font-size: 9px;
     }
 
     .contentrows {
       display: flex;
       justify-content: flex-start;
       margin:auto;
-      margin-top: 5px;
+      margin-top: 2px;
     }
     .policy{
      padding-right: 30px;
@@ -81,21 +81,19 @@
       border-bottom: 2px solid black;
       display: inline-block;
       margin-right: 30px;
-      width: 20px;
+      width: 50px;
     }
     .policyunderlinefull {
       border-bottom: 2px solid black;
       display: inline-block;
-      width: 350px;
+      width: 500px;
     }
     .signunderline {
       border-bottom: 2px solid black;
       display: inline-block;
       margin-right: 30px;
-      width: 100px;
+      width: 150px;
     }
-   
-
     .twocol-table {
       width: 100%;
       border-collapse: collapse;
@@ -107,8 +105,6 @@
       padding: 6px;
       vertical-align: top;
     }
-
-
      .twocol-table-noborder {
       width: 100%;
       border-collapse: collapse;
@@ -134,7 +130,7 @@
 
     .footer-bg{
       background-color: #6A4542;
-      padding: 5px;
+      padding: 1px;
       justify-content: start;
       
     }
@@ -170,6 +166,21 @@
     .col-12{
       width: 12.5%;
     }
+    .marginTop{
+      margin-top: 7px;
+    }
+
+    .tableunderline {
+      border-bottom: 1px solid black;
+      display: inline-block;
+      width: 90%;
+    }
+    .bg-span{
+      background-color: #fff;
+      padding: 5px;
+    }
+
+
     
 
   
@@ -197,7 +208,7 @@
     
     <div class="contentmain">
       <div class="formname">GROUP DEATH CLAIM FORM - AFFINITY</div>
-      <span>(To be completed by the Group Policyholder)</span>
+      <span class="label-font">(To be completed by the Group Policyholder)</span>
       
       <div class="contentrows">
         <label class="label-font"> Group Policy No.:<strong class="policy">{{$data->policy_number}}</strong></label>
@@ -217,6 +228,7 @@
         <label class="label-font"> Full Name of deceased Member:<strong class="policy">{{$data->deceased_name}}</strong></label>
       </div>
 
+
       <div class="contentrows">
         <label class="label-font"> Date of Birth:<strong class="policy">{{ ($data->dob !='')? date('d-m-Y',strtotime($data->dob)): ''}}</strong></label>
         <label class="label-font"> Date of Joining Policy:<strong class="policy">{{ ($data->policy_covered_date !='')? date('d-m-Y',strtotime($data->policy_covered_date)): ''}}</strong></label>
@@ -231,15 +243,15 @@
 
       <div class="contentrows">
         <label class="label-font"> Cause of Death:<strong class="policy">{{$data->cause_of_death}}</strong></label>
-        <label class="label-font"> Age as on Date of Death:<strong class="smallpad">{{ $data->age}}</strong></label>
+        <label class="label-font"> Age as on Date of Death:</label><strong >{{ $data->age}}</strong>
         <label>Years</label>
         <strong class="smallpad policyunderine" ></strong>
         <label>Month(s)</label>
       </div>
 
       <div class="contentrows">
-        <strong>In case of accidental death:</strong>
-        <label class="label-font"> Date of Accident:<strong class="policy"></strong> </label>
+        <strong class="font_declaration">In case of accidental death:</strong>
+        <label class="label-font"> Date of Accident:</label><span class="smallpad policyunderline"></span>
         <label class="label-font"> Nature of Accident: (Road/Rail/Air/Other (specify) </label><span class="smallpad policyunderline"></span> 
       </div>
 
@@ -274,25 +286,71 @@
 
           <tr>
             <td>
-              <div class="label-font bg">Beneficiary’s Name:<strong class="policy">{{$data->nominee_name}}</strong></div>
-              <div class="label-font">Bank Name:<strong class="policy">{{$data->nominee->bank_name}}</strong></div>
-              <div class="label-font">Relationship to the deceased:<strong class="policy">{{$data->relationship}}</strong></div>
-              <div class="label-font">Account Type:<strong class="policy"></strong></div>
-              <div class="label-font">Account No.:<strong class="policy">{{$data->nominee->acc_number}}</strong></div>
-              <div class="label-font">IFSC Code:<strong class="policy">{{$data->nominee->ifsc}}</strong></div>
-              <div class="label-font">Contact No.:<strong class="policy">{{$data->nominee->nominee_number}}</strong></div>
-              <div class="label-font">Email Id:<strong class="policy"></strong></div>
+              <div class="label-font tableunderline"> 
+                <span class="bg-span">Beneficiary’s Name:</span> 
+                <strong class="policy">{{$data->nominee_name}}</strong>
+              </div>
+             
+              <div class="label-font tableunderline"> 
+                <span class="bg-span">Bank Name:</span>
+                <strong class="policy">{{$data->nominee->bank_name}}</strong>
+             </div>
+
+              <div class="label-font tableunderline">
+                <span class="bg-span">Relationship to the deceased:</span>
+                <strong class="policy">{{$data->relationship}}</strong>
+              </div>
+
+              <div class="label-font tableunderline">
+                <span class="bg-span">Account Type:</span>
+                <strong class="policy"></strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Account No.:</span>
+                <strong class="policy">{{$data->nominee->acc_number}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">IFSC Code:</span>
+                <strong class="policy">{{$data->nominee->ifsc}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Contact No.:</span> 
+                <strong class="policy">{{$data->nominee->nominee_number}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Email Id:</span>
+                <strong class="policy"></strong>
+              </div>
               
             </td>
             
             <td>
-              <div class="label-font">GPH Name:<strong class="policy">{{ ($data->deceased == 'Customer')? 'Ujjivan Small Finance Bank':''}}</strong></div>
-              <div class="label-font">Bank Name:<strong class="policy">{{ ($data->deceased == 'Customer')? ' Ujjivan ABSLI Insurance ':''}}</strong></div>
-              <div class="label-font">Account Type:<strong class="policy">{{ ($data->deceased == 'Customer')? ' CURRENT ACCOUNT ':''}}</strong></div>
-              <div class="label-font">Account No.:<strong class="policy">{{ ($data->deceased == 'Customer')? '10001025261001':''}}</strong></div>
-              <div class="label-font">IFSC Code:<strong class="policy">{{ ($data->deceased == 'Customer')? 'UJVN0099999':''}}</strong></div>
-              <div class="label-font">Contact No.:<strong class="policy"></strong></div>
-              <div class="label-font">Email Id:<strong class="policy"></strong></div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">GPH Name:</span>
+                <strong class="policy">{{ ($data->deceased == 'Customer')? 'Ujjivan Small Finance Bank':''}}</strong></div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Bank Name:</span>
+                <strong class="policy">{{ ($data->deceased == 'Customer')? ' Ujjivan ABSLI Insurance ':''}}</strong></div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Account Type:</span>
+                <strong class="policy">{{ ($data->deceased == 'Customer')? ' CURRENT ACCOUNT ':''}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Account No.:</span>
+                <strong class="policy">{{ ($data->deceased == 'Customer')? '10001025261001':''}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">IFSC Code:</span>
+                <strong class="policy">{{ ($data->deceased == 'Customer')? 'UJVN0099999':''}}</strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Contact No.:</span>
+                <strong class="policy"></strong>
+              </div>
+              <div class="label-font tableunderline">
+                <span class="bg-span">Email Id:</span>
+                <strong class="policy"></strong>
+              </div>
               
             </td>
           </tr>
@@ -301,7 +359,7 @@
         </table>
 
       </div>
-      <strong class="font_declaration">Declaration by Group Policyholder</strong>
+      <strong class="font_declaration">Declaration by Group Policyholder</strong><br>
       <span class="font_declaration">We agree to save and hold Aditya Birla Sun Life Insurance Company Limited (ABSLI) harmless and indemnified against any and/or all losses, claims, liabilities, legal
       proceedings (Including attorney fees’), expenses, or damages suffered by or taken against ABSLI arising on account of any error or misrepresentation in the information
       furnished for Electronic Fund Transfer which may be instituted, preferred, claimed or made against ABSLI, its successors or assigns by any person or persons making a
@@ -327,8 +385,8 @@
         <span class="signunderline"></span> 
       </div>
 
-      <div class="contentrows">
-        <label class="label-font">Date: </label>
+      <div class="contentrows marginTop">
+        <label class="label-font">Date:</label>
         <span class="smallpad">
           <input type="text" name="" class="datebox" placeholder="D">
           <input type="text" name="" class="datebox" placeholder="D">
@@ -348,7 +406,7 @@
      
 
 
-     <strong class="font_declaration">Declaration by Claimant</strong>
+     <strong class="font_declaration">Declaration by Claimant</strong><br>
       <span class="font_declaration">I hereby notify the Aditya Birla Sun Life Insurance Company Limited (ABSLI) that Mr./Ms./Master<strong class="declarationfillin"></strong> whose life was insured by the said company,
       under group policy no. <strong class="declarationfillin"></strong>is no more and I hereby declare that the said person is the Life Insured described above and that the aforesaid answers and statements
       made by me are true and correct. I agree that furnishing of this form, or any forms supplemental thereto, shall not constitute nor be considered an admission of claim by
@@ -360,7 +418,7 @@
       applications and medical certificates, if any, submitted by the Life Insured in support of such applications and details of reimbursement of medical expenses. I also consent
       to a personal investigation.</span><br>
       <span class="font_declaration">I agree that payment of claim amount shall constitute discharge of liability of ABSLI.</span>
-      <div class="contentrows">
+      <div class="contentrows marginTop">
          <label class="label-font">Date:</label>
         <span class="smallpad">
           <input type="text" name="" class="datebox" placeholder="D">

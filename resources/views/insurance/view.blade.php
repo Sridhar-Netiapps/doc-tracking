@@ -941,22 +941,31 @@
 
       }
    	});
+
+
  
     document.addEventListener("DOMContentLoaded", function () {
     	const fileUrls = @json(array_map(fn($file) => asset($file), $formArray));
     	const claimId = @json($data->id);
     	 
-        document.getElementById("openFilesBtn").addEventListener("click", function () {
-        	
-            fileUrls.forEach(url => {
+      
+            /*fileUrls.forEach(url => {
                 window.open(url, "_blank");
-               /* const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", ""); // triggers download
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);*/
-            });
+               
+            });*/
+            document.getElementById("openFilesBtn").addEventListener("click", function () {
+	        if (fileUrls.length === 0) return;
+
+	        // Open the first file
+	        const firstTab = window.open(fileUrls[0], "_blank");
+
+	        // From inside that tab (browser trusts it), open the rest
+	        setTimeout(() => {
+	            fileUrls.slice(1).forEach(url => {
+	                firstTab.window.open(url, "_blank");
+	            });
+	        }, 800);
+			
 
             fetch("{{ route('audit.download.claim') }}", {
 	            method: "POST",

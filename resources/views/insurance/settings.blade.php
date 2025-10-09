@@ -127,20 +127,20 @@
 
 <div class="accordion-item">
     <h2 class="accordion-header">
-      <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" id="products">
-        Products
+      <button class="accordion-button collapsed settings-bg text-white label-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" id="partners">
+        Partner
       </button>
     </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body">
          <div class="d-flex">
-          <button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Product">Add New Product</button>
+          <button type="button" class="ms-auto btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="Partner">Add New Partner</button>
         </div>
         <div class="row py-4">
-          @foreach($products as $key => $val)
+          @foreach($partners as $key => $val)
              <div class="col-3  mb-3">
               <div class="shadow p-2 mb-2 bg-white rounded border border-dark">
-                <h6 class="card-header text-center">{{$val->product}}</h6>
+                <h6 class="card-header text-center">{{$val->partner}}</h6>
               </div>
              </div>
           @endforeach

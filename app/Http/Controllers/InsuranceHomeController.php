@@ -692,7 +692,7 @@ class InsuranceHomeController extends Controller
         $claimdata->write_off_status = $request->write_off_status;
         $claimdata->handed_to_bh = $request->handed_to_bh;
         $claimdata->handed_to_credit = $request->handed_to_credit;
-        $claimdata->ho_employee_id = Auth::user()->employee_id;
+       // $claimdata->ho_employee_id = Auth::user()->employee_id;
         $claimdata->latest_editor = Auth::user()->employee_id;
 
         $claimdata->save();
