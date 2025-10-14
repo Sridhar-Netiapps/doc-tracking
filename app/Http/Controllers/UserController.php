@@ -15,6 +15,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Models\HRMData;
+use Auth;
+
+
 class UserController extends Controller
 {
     // Constructor for middleware
@@ -50,6 +53,7 @@ class UserController extends Controller
     {
         // Validating the input data
         // dd($request->all());
+       // print_r($request->input());die();
         $request->validate([
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -92,6 +96,23 @@ class UserController extends Controller
             'employee_id.unique' => 'This Employee ID already exists.',
             'email.unique'       => 'This Email is already registered.',
         ]);
+
+        
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
 
         // Creating the new user
         $user = User::create([
@@ -138,12 +159,17 @@ class UserController extends Controller
             'pac_role' => $request->input('pac_role'),
             'designation_id' => 0,
             'department_id' => 0,
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
+            'creator' => Auth::user()->employee_id
         ]);
 
         $request->validate([
             'role' => 'required|exists:roles,name',
         ]);
         $user->syncRoles([$request->input('role')]);
+
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -212,6 +238,22 @@ class UserController extends Controller
 
         ]);
 
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
+
         // Updating the user
         $user->update([
             'first_name' => $request->input('first_name'),
@@ -251,6 +293,9 @@ class UserController extends Controller
             'pac_role' => $request->input('pac_role'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
 
         ]);
 

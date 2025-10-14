@@ -35,6 +35,7 @@ class CheckRole
             return redirect('/login');
         }
 
+        
         // Define restricted routes for roles
         $restrictedRoutes = [
             'bo-checker' => [
@@ -142,6 +143,8 @@ class CheckRole
             // Add more roles if needed
         ];
 
+      //print_r(Auth::user()->doc_user);die();//
+
         foreach ($restrictedRoutes as $role => $routes) {
             if ($user->hasRole($role)) {
                 foreach ($routes as $route) {
@@ -157,6 +160,10 @@ class CheckRole
             }
         }
         
+        if (Auth::user()->doc_user == '0' && !$request->is('home')) {
+            abort(403, 'DocTrack access is required.');
+        }
+
 
         return $next($request);
     }
