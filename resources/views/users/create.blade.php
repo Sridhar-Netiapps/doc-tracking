@@ -311,7 +311,7 @@
     </div>
 </div>
 
-<script type="text/javascript" nonce="env('CSP_NONCE')">
+<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function() {
 
   // Handle Option 1 and 2
