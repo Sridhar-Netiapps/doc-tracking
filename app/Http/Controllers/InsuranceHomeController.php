@@ -793,7 +793,7 @@ class InsuranceHomeController extends Controller
           }
 
           elseif($claimdata->partner == 'HDFC'){
-              $path = public_path('insurance_images/hdfc.png');
+              $path = public_path('insurance_images/hdfc.jpg');
               $partner = 'HDFC';
               $formname='hdfc';
           }
