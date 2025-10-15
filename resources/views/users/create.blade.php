@@ -357,14 +357,6 @@
                         form.submit();
                     }
                 });
-                // event.preventDefault();
-                // $('#confirmModal').modal('show');
-                // $('button.yes').on('click', function() {
-                //     form.submit();
-                // });
-                // $('button.no').on('click', function() {
-                //     $('#confirmModal').modal('hide');
-                // });
             }
         });
 
@@ -373,35 +365,34 @@
         //     let url = "{{ url('users/create') }}/" + id;
         //     $.get(url);
         // });
+        // Handle Option 1 and 2
+        $('#inlineCheckbox1, #inlineCheckbox2').on('change', function() {
+            // If both 1 and 2 are checked
+            if ($('#inlineCheckbox1').is(':checked') && $('#inlineCheckbox2').is(':checked')) {
+            $('#inlineCheckbox3').prop('checked', true);
+            $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+            } else {
+            // If either 1 or 2 is checked, uncheck 3
+            $('#inlineCheckbox3').prop('checked', false);
+            }
+        });
 
-  // Handle Option 1 and 2
-    $('#inlineCheckbox1, #inlineCheckbox2').on('change', function() {
-        // If both 1 and 2 are checked
-        if ($('#inlineCheckbox1').is(':checked') && $('#inlineCheckbox2').is(':checked')) {
-        $('#inlineCheckbox3').prop('checked', true);
-        $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
-        } else {
-        // If either 1 or 2 is checked, uncheck 3
-        $('#inlineCheckbox3').prop('checked', false);
-        }
-    });
+        // Handle Option 3
+        $('#inlineCheckbox3').on('change', function() {
+            if ($(this).is(':checked')) {
+            // Uncheck 1 and 2
+            $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+            }
+        });
 
-    // Handle Option 3
-    $('#inlineCheckbox3').on('change', function() {
-        if ($(this).is(':checked')) {
-        // Uncheck 1 and 2
-        $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
-        }
+        $('#users').on('submit', function(e) {
+            if (!$('#inlineCheckbox1').is(':checked') && 
+                !$('#inlineCheckbox2').is(':checked') && 
+                !$('#inlineCheckbox3').is(':checked')) {
+            e.preventDefault();
+            alert('Please assign module.');
+            }
+        });
     });
-
-    $('#users').on('submit', function(e) {
-        if (!$('#inlineCheckbox1').is(':checked') && 
-            !$('#inlineCheckbox2').is(':checked') && 
-            !$('#inlineCheckbox3').is(':checked')) {
-        e.preventDefault();
-        alert('Please assign module.');
-        }
-    });
-});
 </script>
 @endsection
