@@ -30,7 +30,7 @@ class User extends Authenticatable
         'top_department', 'department_hierarchy_1_name', 'designation_id', 'department_id',
         'department_hierarchy_2_name', 'department_hierarchy_3_name',
         'functional_head', 'functional_head_emp_id', 'work_flow_role',
-        'prac_designation', 'prac_role', 'pac_designation', 'pac_role', 'ins_user'
+        'prac_designation', 'prac_role', 'pac_designation', 'pac_role', 'ins_user','module_role','doc_user','creator'
     ];
 
     /**
@@ -54,5 +54,9 @@ class User extends Authenticatable
     public function hrmData(){
         return $this->hasOne(HRMData::class,'employee_id','employee_id');
     }
+
+    /*public function myrole(){
+        return $this->hasOne()
+    }*/
 }
 

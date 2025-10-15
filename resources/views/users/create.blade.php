@@ -258,14 +258,15 @@
                     <label>PAC Role</label>
                     <input type="text" name="pac_role"  value="{{ old('pac_role', $user->pac_role) }}" class="form-control" readonly>
                 </div>x
-                <h2 class="mt-5">Assign Roles</h2>
+                <h2 class="mt-2">Assign Roles</h2>
                 <div class="h-100 align-items-start align-content-lg-stretch">
                     <form action="{{ route('users.assignRole', $user->id) }}" method="POST">
                         @csrf
                         <div class="form-card row">
                             <div class="col-6 form-group">
                                 <label for="role">Roles</label>
-                                <select name="role" class="form-control">
+                                <select name="role" class="form-control" required>
+                                    <option value="">Select Role</option>
                                     @foreach ($roles as $role)
                                         @if ($role->name !== 'master')
                                             <option value="{{ $role->name }}">
@@ -283,7 +284,25 @@
                     </form>
                 </div>
                 <!-- Submit Button -->
-            <div class="d-flex ">
+
+                 <h2 class="mt-2">Assign Module(s)</h2>
+
+               <div class="form-check form-check-inline ms-5">
+                  <input class="form-check-input" type="checkbox" name="module_role" value="doc" id="inlineCheckbox1">
+                  <label class="form-check-label" for="inlineCheckbox1">DocTrack</label>
+                </div>
+                <div class="form-check form-check-inline ms-5">
+                  <input class="form-check-input" type="checkbox" name="module_role" value="ins" id="inlineCheckbox2">
+                  <label class="form-check-label" for="inlineCheckbox2">Insurance</label>
+                </div>
+                <div class="form-check form-check-inline ms-5">
+                  <input class="form-check-input" type="checkbox" name="module_role" value="doc_ins" id="inlineCheckbox3">
+                  <label class="form-check-label" for="inlineCheckbox3">DocTrack and Insurance</label>
+                </div>
+
+
+
+            <div class="d-flex mt-3">
                     <button type="submit" class="btn btn-primary">Create User</button>
                     <a href="{{ route('users.index') }}" type="button" class="btn btn-secondary ms-3">Cancel</a>
                 </div>
@@ -354,6 +373,35 @@
         //     let url = "{{ url('users/create') }}/" + id;
         //     $.get(url);
         // });
+
+  // Handle Option 1 and 2
+    $('#inlineCheckbox1, #inlineCheckbox2').on('change', function() {
+        // If both 1 and 2 are checked
+        if ($('#inlineCheckbox1').is(':checked') && $('#inlineCheckbox2').is(':checked')) {
+        $('#inlineCheckbox3').prop('checked', true);
+        $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+        } else {
+        // If either 1 or 2 is checked, uncheck 3
+        $('#inlineCheckbox3').prop('checked', false);
+        }
     });
+
+    // Handle Option 3
+    $('#inlineCheckbox3').on('change', function() {
+        if ($(this).is(':checked')) {
+        // Uncheck 1 and 2
+        $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+        }
+    });
+
+    $('#users').on('submit', function(e) {
+        if (!$('#inlineCheckbox1').is(':checked') && 
+            !$('#inlineCheckbox2').is(':checked') && 
+            !$('#inlineCheckbox3').is(':checked')) {
+        e.preventDefault();
+        alert('Please assign module.');
+        }
+    });
+});
 </script>
 @endsection
