@@ -300,8 +300,7 @@ class UserController extends Controller
     {
         // Store filters in session
         session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
-        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email'])]);
-// dd($request->user);
+        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email','status'])]);
 
         if ($request->user == '1')
             return redirect()->route('user.filter');
@@ -348,9 +347,6 @@ class UserController extends Controller
             $query->where('created_at', '<=', $end);
         }
         
-        
-            
-    
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.activity', compact('activites', 'filters'));
@@ -360,7 +356,6 @@ class UserController extends Controller
     {
         $filters = session('user_filters', []);
         
-    
         $query = User::query();
     
         if (!empty($filters['region'])) {
@@ -378,8 +373,11 @@ class UserController extends Controller
         if (!empty($filters['email'])) {
             $query->where('email', $filters['email']);
         }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
       
-    
         $users = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.index', compact('users', 'filters'));
@@ -387,7 +385,7 @@ class UserController extends Controller
     
     public function exportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date','status']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -398,7 +396,7 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date', 'status']);
         $query = $this->applyActivityFilters(ActivityLog::query(), $filters);
         $data = $query->orderBy('created_at', 'desc')->get();
 
@@ -441,7 +439,7 @@ class UserController extends Controller
 
     public function userExportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -452,7 +450,7 @@ class UserController extends Controller
 
     public function userExport(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
         $query = $this->applyUsersFilters(User::query(), $filters);
         $data = $query->orderBy('created_at', 'desc')->get();
 
@@ -461,6 +459,7 @@ class UserController extends Controller
 
     private function applyUsersFilters($query, $filters)
     {
+        $query->withoutRole('master');
         if (!empty($filters['region'])) {
             $query->where('region', $filters['region']);
         }
@@ -475,6 +474,10 @@ class UserController extends Controller
     
         if (!empty($filters['email'])) {
             $query->where('email', $filters['email']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
     
         return $query;

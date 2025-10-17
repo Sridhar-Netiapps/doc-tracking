@@ -54,5 +54,21 @@ class User extends Authenticatable
     public function hrmData(){
         return $this->hasOne(HRMData::class,'employee_id','employee_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function modifier()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function lastLogin()
+    {
+        return $this->hasOne(ActivityLog::class, 'user_id')
+            ->where('route', 'login');
+    }
 }
 
