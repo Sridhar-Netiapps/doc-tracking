@@ -38,7 +38,7 @@
                                     @endunless  
                                     <th scope="col" class="text-nowrap"> Document Type</th>
                                     <th scope="col" class="text-nowrap"> Unique Number</th>
-                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                    @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                     <th scope="col" class="text-nowrap"> Region</th>
                                     <th scope="col" class="text-nowrap"> Branch Name</th>
                                     @endunless
@@ -77,7 +77,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $doc->unique_ref_no ?? '-' }}</td>
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                         <td>{{ $doc->region ?? '-' }}</td>
                                         <td>{{ $doc->branch_name ?? '-' }}</td>
                                         @endunless
@@ -129,7 +129,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor', 'ro-user', 'branch-user']))
                 <div class="col-12 mt-3">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>

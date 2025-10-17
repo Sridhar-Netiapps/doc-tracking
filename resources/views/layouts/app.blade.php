@@ -96,7 +96,7 @@
                                             {{ __('Insurance') }}
                                         </a>
                                         @endif
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         @endunless
                                         <a class="dropdown-item" href=""

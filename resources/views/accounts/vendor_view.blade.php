@@ -97,7 +97,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($loan_document) > 0)
+                                @if ($loan_document)
                                     @foreach ($loan_document as $row)
                                         <tr class="doc-row"
                                                 data-lot_no="{{ $row->lot_no }}"
@@ -138,16 +138,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="26"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
@@ -185,7 +183,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($gold_loan_document) > 0)
+                                @if ($gold_loan_document)
                                     @foreach ($gold_loan_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>  
@@ -218,16 +216,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="24"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
@@ -267,7 +263,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($account_opening_document) > 0)
+                                @if ($account_opening_document)
                                     @foreach ($account_opening_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>
@@ -302,16 +298,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="24"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
@@ -344,7 +338,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($dtrf_document) > 0)
+                                @if ($dtrf_document)
                                     @foreach ($dtrf_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>
@@ -372,16 +366,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="18"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
             </div>
@@ -413,7 +405,7 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor', 'ro-user', 'branch-user']))
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
@@ -427,7 +419,7 @@
                 <div class="col-12 mt-3">
                     <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name lettersonly" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>

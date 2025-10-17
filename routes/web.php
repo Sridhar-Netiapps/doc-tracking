@@ -124,6 +124,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
+        Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
+        Route::get('/user/export', [UserController::class, 'userExport'])->name('user.export');
         // Route::resource('branches', BranchController::class);
         Route::resource('emails', EmailController::class);
         Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);

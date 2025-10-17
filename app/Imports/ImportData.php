@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation,
     SkipsOnFailure,
     SkipsOnError,
+    WithChunkReading,
     ToCollection
 };
 use Maatwebsite\Excel\Row;
@@ -29,7 +30,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
 
 
-class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
+class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
@@ -44,32 +45,12 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     }
     function parseExcelDate($value)
     {
-        if (empty($dateValue)) {
-            return null;
-        }
-        try {
-            if (is_numeric($dateValue) && ExcelDate::isDateTime($dateValue)) {
-                $dateTimeObject = ExcelDate::excelToDateTimeObject((float) $dateValue);
-                return Carbon::instance($dateTimeObject);
-            }
-            $formats = [
-                'd-m-Y',    // Matches 13-09-2025
-                'd/m/Y',    // Matches 13/09/2025
-                'Y-m-d',    // The standard database format
-                'Y/m/d',
-            ];
-            foreach ($formats as $format) {
-                try {
-                    return Carbon::createFromFormat($format, $dateValue)->setTimezone(Config::get("app.timezone"));
-                } catch (\Exception $e) {
-                    Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
-                }
-            }
-            return Carbon::parse($dateValue)->setTimezone(Config::get("app.timezone"));
-        } catch (\Exception $e) {
-            Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
-            return null;
-        }
+       if(is_numeric($value)) {
+        return date('Y-m-d', ($value - 25569) * 86400);
+       } else {
+        $timestamp = strtotime($value);
+        return $timestamp ? date('Y-m-d', $timestamp) : null;
+       }
     }
 
     public function collection(Collection $rows)
@@ -99,22 +80,27 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             $this->total++;
             // dd($row);
             try {
-                $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
-                $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
+                // $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
+               
 
                 DB::beginTransaction();
 
                 if (!isset($table[$this->doc_type])) {
                     throw new \Exception("Invalid document type.");
                 }
+                $modelClass = $table[$this->doc_type];
+                $document   = new $modelClass;
+                $branchCode = $row['branch_code'] ?? null;
+                $uniqueRefNo = $this->generateRefNo($this->doc_type, $branchCode, $table);
+                $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
-                $document = new $table[$this->doc_type];
+                // $document = new $table[$this->doc_type];
                 // dd($document);
                 // if (!$document) {
                 //     throw new \Exception($doc_unique_no." Document not found");
                 // }
-                $document->unique_ref_no = $row['unique_ref_no'] ?? null;
+                $document->unique_ref_no = $uniqueRefNo;
                 $document->region = $row['region'] ?? null;
                 $document->branch_code = $row['branch_code'] ?? null;
                 $document->branch_name = $row['branch_name'] ?? null;
@@ -170,11 +156,28 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             }
         }
     }
+    private function generateRefNo(string $docType, string $table, string $branchCode): string
+    {
+        $prefixMap = [
+            'loan'     => 'MB',
+            'goldloan' => 'GL',
+            'aof'      => 'LD',
+            'dtrf'     => 'DT',
+        ];
+
+        $prefix = $prefixMap[strtolower($docType)] ?? strtoupper($docType);
+        $last = $table[$docType]::whereLike('unique_ref_no', 'H%')->where('branch_code', $branchCode)->orderBy('created_at', 'desc')->count();
+        return 'H' . $prefix . $branchCode . str_pad(++$last, 7, '0', STR_PAD_LEFT);
+    }
+    public function chunkSize(): int
+    {
+        return 1000; 
+    }
 
     public function rules(): array
     {
         return [
-            'unique_ref_no'           => ['required', 'string'],
+            // 'unique_ref_no'           => ['required', 'string'],
             // 'doc_type'                => ['required', 'string'],
             'region'                  => ['required', 'string'],
             'branch_code'             => ['required'],
@@ -187,7 +190,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'cif_id'                  => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
             'account_number'          => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
             'customer_name'           => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
-            'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+            // 'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
     
             // Conditional: required if doc_type is 'loan'
             'loan_cycle'              => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
@@ -196,8 +199,8 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'loan_disbursement_type'  => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
     
             // Conditional: required if doc_type is 'aof'
-            'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
-            'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+            // 'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+            // 'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
             'type_of_account_opening' => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
         ];
     }
@@ -205,8 +208,8 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     public function customValidationMessages()
     {
         return [
-            'unique_ref_no.required'           => 'Document Unique Number is required.',
-            'doc_type.required'                => 'Document Type is required.',
+            // 'unique_ref_no.required'           => 'Document Unique Number is required.',
+            // 'doc_type.required'                => 'Document Type is required.',
             'region.required'                  => 'Region is required.',
             'branch_code.required'             => 'Branch Code is required.',
             'branch_name.required'             => 'Branch Name is required.',

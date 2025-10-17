@@ -13,7 +13,7 @@ class DtrfDocument extends Model
     
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name',
-        'account_creation_date', 'barcode', 'business_category'
+        'account_creation_date', 'barcode', 'business_category', 'status'
     ];
 
     public function statusName()
