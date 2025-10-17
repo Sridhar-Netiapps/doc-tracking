@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
+use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -437,6 +438,48 @@ class UserController extends Controller
     
         return $query;
     }
+
+    public function userExportCheck(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email']);
+
+        if (empty(array_filter($filters))) {
+            return response()->json(['status' => 'error']);
+       }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function userExport(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email']);
+        $query = $this->applyUsersFilters(User::query(), $filters);
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return Excel::download(new UserExport($data), 'users.xlsx');
+    }
+
+    private function applyUsersFilters($query, $filters)
+    {
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+    
+        return $query;
+    }
+    
 
     public function getUser(Request $request)
     {

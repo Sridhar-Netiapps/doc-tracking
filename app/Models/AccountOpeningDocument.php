@@ -13,7 +13,7 @@ class AccountOpeningDocument extends Model
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id',
         'account_number', 'customer_name', 'account_creation_date', 'scheme',
-        'channel', 'pgk_no', 'barcode', 'type_of_account_opening', 'business_category'
+        'channel', 'pgk_no', 'barcode', 'type_of_account_opening', 'business_category', 'status'
     ];
 
     public function statusName()
