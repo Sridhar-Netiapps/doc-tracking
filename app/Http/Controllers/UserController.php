@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Models\HRMData;
 use Auth;
+use App\AuditLogTrait;
 
 
 class UserController extends Controller
 {
+    use AuditLogTrait; 
     // Constructor for middleware
     public function __construct()
     {
@@ -170,6 +172,20 @@ class UserController extends Controller
         ]);
         $user->syncRoles([$request->input('role')]);
 
+        if($is_ins_user == 1){
+
+            $module = 'Insurance'; 
+             $operation = 'create';
+             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+
+        }
+             
+
+
+
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -254,6 +270,9 @@ class UserController extends Controller
             $is_ins_user ='1';
         }
 
+        $userData = User::where('id',$user->id)->first();
+       // print_r($userData);die();
+
         // Updating the user
         $user->update([
             'first_name' => $request->input('first_name'),
@@ -298,6 +317,24 @@ class UserController extends Controller
             'doc_user' => $is_doc_user,
 
         ]);
+
+        if($userData->ins_user == '1' && $is_ins_user == '0'){
+             $module = 'Insurance'; 
+             $operation = 'Update';
+             $note = 'Insurance Module access removed for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
+
+        if($userData->ins_user == '0' && $is_ins_user == '1'){
+             $module = 'Insurance'; 
+             $operation = 'Update';
+             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
 
         $request->validate([
             'role' => 'required|exists:roles,name',
