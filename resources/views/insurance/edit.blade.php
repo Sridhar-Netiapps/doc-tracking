@@ -219,7 +219,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Deceased Name *</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="deceased_name" value="{{ old('deceased_name',  $data->deceased_name )}}" placeholder="Enter Deceased Name">
+					    <input type="text" class="form-control form-control-design  clsAlphabetsOnly" name="deceased_name" value="{{ old('deceased_name',  $data->deceased_name )}}" placeholder="Enter Deceased Name">
 					    @error('deceased_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -264,7 +264,7 @@
 					</div>
 
 					<div class="col-3 mb-3">
-					    <label class="form-label label-bold">Death Intimation Date</label>
+					    <label class="form-label label-bold">Death Intimation Date *</label>
 					    <input type="date" class="form-control form-control-design" name="intimation_date" value="{{ old('intimation_date', $data->intimation_date )}}">
 					    @error('intimation_date')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
@@ -295,7 +295,7 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Account ID *</label>
-					    <input type="text" class="form-control form-control-design clsAlphaNoOnly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID">
+					    <input type="text" class="form-control form-control-design clsAlphaNoOnly" name="load_acc_id" value="{{ old('load_acc_id', $data->load_acc_id )}}" placeholder="Enter Loan Account ID" maxlength="25">
 					    @error('load_acc_id')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -307,13 +307,13 @@
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Claim Amount *</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="claim_amount" value="{{ old('claim_amount', $data->claim_amount)}}" placeholder="Enter Claim Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="claim_amount" value="{{ old('claim_amount', $data->claim_amount)}}" placeholder="Enter Claim Amount" maxlength="20">
 					    @error('claim_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Nominee Name</label>
-					    <input type="text" class="form-control form-control-design  clsAlphaNoOnly" name="nominee_name" value="{{ old('nominee_name', $data->nominee_name)}}" placeholder="Enter Nominee Name">
+					    <input type="text" class="form-control form-control-design  clsAlphabetsOnly" name="nominee_name" value="{{ old('nominee_name', $data->nominee_name)}}" placeholder="Enter Nominee Name">
 					    @error('nominee_name')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -438,25 +438,25 @@
 
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Amount</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_amount" value="{{ old('loan_amount', $data->loan_amount)}}" placeholder="Enter Loan Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_amount" value="{{ old('loan_amount', $data->loan_amount)}}" placeholder="Enter Loan Amount" maxlength="20">
 					    @error('loan_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
         			<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Loan Outstanding Amount</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_outstanding" value="{{ old('loan_outstanding', $data->loan_outstanding)}}" placeholder="Enter Loan Outstanding Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="loan_outstanding" value="{{ old('loan_outstanding', $data->loan_outstanding)}}" placeholder="Enter Loan Outstanding Amount" maxlength="20">
 					    @error('loan_outstanding')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Recovered Amount</label>
-					    <input type="text" class="form-control form-control-design  numbersonly" name="recovered_amount" value="{{ old('recovered_amount', $data->recovered_amount)}}" placeholder="Enter Rcovered Amount">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="recovered_amount" value="{{ old('recovered_amount', $data->recovered_amount)}}" placeholder="Enter Rcovered Amount" maxlength="20">
 					    @error('recovered_amount')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
 					<div class="col-3 mb-3">
 					    <label class="form-label label-bold">Payable to Nominee</label>
-					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ old('payable_to_nominee', $data->payable_to_nominee)}}" placeholder="Enter the Amount Payable to Nominee">
+					    <input type="text" class="form-control form-control-design  number-input number-with-format" name="payable_to_nominee" value="{{ old('payable_to_nominee', $data->payable_to_nominee)}}" placeholder="Enter the Amount Payable to Nominee" maxlength="20">
 					    @error('payable_to_nominee')<div class="text-error">{{ $message }}</div>@enderror
 					</div>
 
@@ -655,7 +655,7 @@
 			<div class="row">
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Nominee Name as per Bank Records</label>
-				    <input type="text" class="form-control form-control-design2 clsAlphaNoOnly" name="nominee_name_bank" value="{{ old('nominee_name_bank',$nomineedata->nominee_name_bank) ?? ''}}" placeholder="Enter Nominee Name">
+				    <input type="text" class="form-control form-control-design2 clsAlphabetsOnly" name="nominee_name_bank" value="{{ old('nominee_name_bank',$nomineedata->nominee_name_bank) ?? ''}}" placeholder="Enter Nominee Name">
 				    @error('nominee_name_bank')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
@@ -667,7 +667,7 @@
 
 				<div class="col-3 mb-3">
 				    <label class="form-label label-bold">Bank Account Number</label>
-				    <input type="text" class="form-control form-control-design2  numbersonly" name="acc_number"  value="{{ old('acc_number',$nomineedata->acc_number ) ?? ''}}" placeholder="Enter acoount Number">
+				    <input type="text" class="form-control form-control-design2  numbersonly" name="acc_number"  value="{{ old('acc_number',$nomineedata->acc_number ) ?? ''}}" placeholder="Enter acoount Number" maxlength="18">
 				    @error('acc_number')<div class="text-error">{{ $message }}</div>@enderror
 				</div>
 
