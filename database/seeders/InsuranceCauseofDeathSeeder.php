@@ -30,7 +30,7 @@ class InsuranceCauseofDeathSeeder extends Seeder
 			['cause' =>'Illness',],
 			['cause' =>'Burn',],
 			['cause' =>'Stroke',],
-			['cause' =>'Electshock',],
+			['cause' =>'Electricshock',],
 			['cause' =>'Covid-19',],
 			['cause' =>'Suicide',],
 			['cause' =>'Drowning']

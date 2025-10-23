@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('module_role')->default('doc');
             $table->string('doc_user')->default('1');
-            $table->string('creator')->nullable();
+            $table->string('created_by')->default(1);
+            $table->string('updated_by')->nullable();
+            $table->string('disabled_by')->nullable();
+            $table->string('disabled_at')->nullable();
         });
     }
 
