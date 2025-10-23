@@ -13,7 +13,7 @@
                     ({{ Auth::user()->branch_id }})
                 </p>
             </div>
-            @role('ho-user|master')
+            @role('ho-user|master|admin')
             <div class="col-1">
                 <select id="search_type" name="search_type" class="form-select">
                     <option value="">-- Select --</option>

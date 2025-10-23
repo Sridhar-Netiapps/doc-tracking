@@ -116,7 +116,7 @@
                                             <td class="text-nowrap">{{ $row->glow_application_id }}</td>
                                             <td class="text-nowrap">{{ $row->loan_disbursement_type }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -215,7 +215,7 @@
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
                                             <td class="text-nowrap">{{ $row->barcode }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td> 
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -317,7 +317,7 @@
                                             <td class="text-nowrap">{{ $row->pgk_no }}</td>
                                             <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -405,7 +405,7 @@
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                             <td class="text-nowrap">{{ $row->barcode}}</td>
                                             <td class="text-nowrap">{{ $row->business_category}}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))

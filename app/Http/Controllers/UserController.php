@@ -10,11 +10,15 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
+use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Models\HRMData;
+use Auth;
+
+
 class UserController extends Controller
 {
     // Constructor for middleware
@@ -50,6 +54,7 @@ class UserController extends Controller
     {
         // Validating the input data
         // dd($request->all());
+       // print_r($request->input());die();
         $request->validate([
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -92,6 +97,23 @@ class UserController extends Controller
             'employee_id.unique' => 'This Employee ID already exists.',
             'email.unique'       => 'This Email is already registered.',
         ]);
+
+        
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
 
         // Creating the new user
         $user = User::create([
@@ -138,12 +160,17 @@ class UserController extends Controller
             'pac_role' => $request->input('pac_role'),
             'designation_id' => 0,
             'department_id' => 0,
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
+            'creator' => Auth::user()->employee_id
         ]);
 
         $request->validate([
             'role' => 'required|exists:roles,name',
         ]);
         $user->syncRoles([$request->input('role')]);
+
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -211,6 +238,22 @@ class UserController extends Controller
 
         ]);
 
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
+
         // Updating the user
         $user->update([
             'first_name' => $request->input('first_name'),
@@ -250,6 +293,9 @@ class UserController extends Controller
             'pac_role' => $request->input('pac_role'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
 
         ]);
 
@@ -298,8 +344,7 @@ class UserController extends Controller
     {
         // Store filters in session
         session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
-        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email'])]);
-// dd($request->user);
+        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email','status'])]);
 
         if ($request->user == '1')
             return redirect()->route('user.filter');
@@ -346,9 +391,6 @@ class UserController extends Controller
             $query->where('created_at', '<=', $end);
         }
         
-        
-            
-    
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.activity', compact('activites', 'filters'));
@@ -358,7 +400,6 @@ class UserController extends Controller
     {
         $filters = session('user_filters', []);
         
-    
         $query = User::query();
     
         if (!empty($filters['region'])) {
@@ -376,8 +417,11 @@ class UserController extends Controller
         if (!empty($filters['email'])) {
             $query->where('email', $filters['email']);
         }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
       
-    
         $users = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.index', compact('users', 'filters'));
@@ -385,7 +429,7 @@ class UserController extends Controller
     
     public function exportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date','status']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -396,7 +440,7 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date', 'status']);
         $query = $this->applyActivityFilters(ActivityLog::query(), $filters);
         $data = $query->orderBy('created_at', 'desc')->get();
 
@@ -436,6 +480,53 @@ class UserController extends Controller
     
         return $query;
     }
+
+    public function userExportCheck(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+
+        if (empty(array_filter($filters))) {
+            return response()->json(['status' => 'error']);
+       }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function userExport(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+        $query = $this->applyUsersFilters(User::query(), $filters);
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return Excel::download(new UserExport($data), 'users.xlsx');
+    }
+
+    private function applyUsersFilters($query, $filters)
+    {
+        $query->withoutRole('master');
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+    
+        return $query;
+    }
+    
 
     public function getUser(Request $request)
     {
