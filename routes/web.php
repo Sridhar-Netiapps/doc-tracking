@@ -14,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
+use App\Http\Controllers\DecryptController;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
@@ -22,6 +23,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+// Decrypt API endpoint (requires auth)
+Route::post('/api/decrypt', [DecryptController::class, 'decrypt'])->middleware('auth');
+
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounts-index', function () {

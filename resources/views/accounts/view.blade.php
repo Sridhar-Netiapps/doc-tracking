@@ -68,11 +68,11 @@
                                     <td>{{ $doc->region ?? '-' }}</td>
                                     <td>{{ $doc->branch_code ?? '-' }}</td>
                                     <td>{{ $doc->branch_name ?? '-' }}</td>
-                                    <td>{{ $doc->cif_id ?? '-' }}</td>
-                                    <td>{{ $doc->account_number ?? '-' }}</td>
+                                    <td>{!! @sensitive($doc->cif_id ?? '-') !!}</td>
+                                    <td>{!! @sensitive($doc->account_number ?? '-') !!}</td>
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
                                     <td>{{ $doc->scheme ?? '-' }}</td>
-                                    <td>{{ $doc->customer_name ?? '-' }}</td>
+                                    <td>{!! @sensitive($doc->customer_name ?? '-') !!}</td>
                                     <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>

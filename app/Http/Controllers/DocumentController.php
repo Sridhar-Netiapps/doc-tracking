@@ -105,6 +105,12 @@ class DocumentController extends Controller
             $filters['status'] = $fixed_status;
         }
 
+        // Encrypt sensitive fields before passing to view
+        $loan_document = $this->encryptSensitive($loan_document);
+        $gold_loan_document = $this->encryptSensitive($gold_loan_document);
+        $dtrf_document = $this->encryptSensitive($dtrf_document);
+        $account_opening_document = $this->encryptSensitive($account_opening_document);
+        
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
         else
@@ -285,6 +291,12 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
         // $dtype = $filters['document_type'] ?? 
+
+        // Encrypt sensitive fields before passing to view
+        $loan_document = $this->encryptSensitive($loan_document);
+        $gold_loan_document = $this->encryptSensitive($gold_loan_document);
+        $dtrf_document = $this->encryptSensitive($dtrf_document);
+        $account_opening_document = $this->encryptSensitive($account_opening_document);
 
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
@@ -724,6 +736,12 @@ class DocumentController extends Controller
         // if($this->user->branch_id != $dispatch->branch_code){
         //     return redirect('/home')->with('error', 'Access Denied');
         // }
+
+        // Encrypt sensitive fields before passing to view
+        $loan_document = $this->encryptSensitive($loan_document);
+        $gold_loan_document = $this->encryptSensitive($gold_loan_document);
+        $dtrf_document = $this->encryptSensitive($dtrf_document);
+        $account_opening_document = $this->encryptSensitive($account_opening_document);
 
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
@@ -1191,6 +1209,12 @@ class DocumentController extends Controller
         if ($fixed_status) {
             $filters['status'] = $fixed_status;
         }
+
+        // Encrypt sensitive fields before passing to view
+        $loan_document = $this->encryptSensitive($loan_document);
+        $gold_loan_document = $this->encryptSensitive($gold_loan_document);
+        $dtrf_document = $this->encryptSensitive($dtrf_document);
+        $account_opening_document = $this->encryptSensitive($account_opening_document);
 
         return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
     }
