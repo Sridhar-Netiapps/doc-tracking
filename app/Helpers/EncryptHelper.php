@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class EncryptHelper
 {
-    /**
-     * Encrypt a sensitive value
-     */
+
     public static function encrypt($value)
     {
         if (empty($value) || is_null($value)) {
@@ -21,10 +19,7 @@ class EncryptHelper
             return $value;
         }
     }
-    
-    /**
-     * Decrypt an encrypted value
-     */
+
     public static function decrypt($value)
     {
         if (empty($value) || is_null($value)) {
@@ -38,10 +33,7 @@ class EncryptHelper
             return $value;
         }
     }
-    
-    /**
-     * Encrypt sensitive fields in a model or array
-     */
+
     public static function encryptSensitiveFields($data, array $fields = ['account_number', 'cif_id', 'customer_name', 'email', 'mobile_number'])
     {
         if (is_object($data) && method_exists($data, 'getAttributes')) {
@@ -64,5 +56,14 @@ class EncryptHelper
         
         return $data;
     }
-}
 
+    public static function sensitiveOutput($value)
+    {
+        if (empty($value) || $value === '-' || !is_string($value)) {
+            return htmlspecialchars($value ?? '-', ENT_QUOTES, 'UTF-8');
+        }
+        
+        $encrypted = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        return '<span data-encrypted="' . $encrypted . '">' . $encrypted . '</span>';
+    }
+}

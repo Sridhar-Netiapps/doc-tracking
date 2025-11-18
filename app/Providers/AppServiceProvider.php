@@ -41,14 +41,7 @@ class AppServiceProvider extends ServiceProvider
         // Register Blade directive for marking sensitive data (keeps encrypted in HTML source)
         // JavaScript will decrypt on client-side for display
         Blade::directive('sensitive', function ($expression) {
-            return "<?php 
-                \$val = $expression ?? ''; 
-                if (is_string(\$val) && !empty(\$val) && \$val !== '-') { 
-                    echo '<span data-encrypted=\"' . e(\$val) . '\">' . e(\$val) . '</span>'; 
-                } else { 
-                    echo e(\$val ?? '-'); 
-                } 
-            ?>";
+            return "<?php echo App\\Helpers\\EncryptHelper::sensitiveOutput($expression); ?>";
         });
     }
 }

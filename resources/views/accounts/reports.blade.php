@@ -144,7 +144,6 @@
                                     <option value="received_date">Courier Received Date</option>
                                     <option value="movement_date">Vendor Movement Date</option>
                                     <option value="addition_date">Addition to Vendor Data</option>
-                                    <option value="sync_date">Sync Date</option> 
                                     <option value="activity_date">Activity Date</option>
                                     <option value="tracking_date">Tracking Date</option>
                                 </select>

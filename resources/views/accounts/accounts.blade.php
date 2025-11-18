@@ -81,7 +81,7 @@
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
-                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $loan_document->links('pagination::bootstrap-5') }} --}}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -172,10 +172,10 @@
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>{!! @sensitive($row->cif_id) !!}</td>
-                                            <td>{!! @sensitive($row->account_number) !!}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
                                             <td>{{ $row->loan_cycle }}</td>
-                                            <td>{!! @sensitive($row->customer_name) !!}</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -223,14 +223,14 @@
                         </table>
                     </div>
                     @if(isset($loan_document) && $loan_document->count())
-                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $loan_document->links('pagination::bootstrap-5') }} --}}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
-                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $gold_loan_document->links('pagination::bootstrap-5') }} --}}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -365,14 +365,14 @@
                         </table>
                     </div>
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
-                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $gold_loan_document->links('pagination::bootstrap-5') }} --}}
                         @else
                         <p class="text-center text-muted">No documents found.</p> 
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
-                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $account_opening_document->links('pagination::bootstrap-5') }} --}}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -511,14 +511,14 @@
                         </table>
                     </div>
                     @if(isset($account_opening_document) && $account_opening_document->count())
-                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $account_opening_document->links('pagination::bootstrap-5') }} --}}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
-                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $dtrf_document->links('pagination::bootstrap-5') }} --}}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -643,7 +643,7 @@
                         </table>
                     </div>
                     @if(isset($dtrf_document) && $dtrf_document->count())
-                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                        {{-- {{ $dtrf_document->links('pagination::bootstrap-5') }} --}}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
