@@ -45,19 +45,19 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_total}}</span></button>
                 </li>
                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_total}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$aof_total}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_total}}</span></button>
                 </li>                    
                 <li class="ms-auto">
                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
@@ -71,6 +71,9 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -174,8 +177,16 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                    @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
+                    @if(isset($gold_loan_document) && $gold_loan_document->count())
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -271,9 +282,17 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($gold_loan_document) && $gold_loan_document->count())
+                            {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
+                    @if(isset($account_opening_document) && $account_opening_document->count())
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -373,9 +392,17 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($account_opening_document) && $account_opening_document->count())
+                            {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
+                    @if(isset($dtrf_document) && $dtrf_document->count())
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -461,6 +488,11 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($dtrf_document) && $dtrf_document->count())
+                            {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
             </div>
