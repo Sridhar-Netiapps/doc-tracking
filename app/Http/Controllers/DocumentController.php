@@ -1233,10 +1233,10 @@ class DocumentController extends Controller
     {
         $users = User::where('status','active')->pluck('first_name', 'id');
         $couriers = Courier::where('status','active')->pluck('name', 'id');
-        $loan_branch = LoanDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
-        $goldloan_branch = GoldLoanDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
-        $dtrf_branch = DtrfDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
-        $aof_branch = AccountOpeningDocument::orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $loan_branch = LoanDocument::groupby('branch_code')->orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $goldloan_branch = GoldLoanDocument::groupby('branch_code')->orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $dtrf_branch = DtrfDocument::groupby('branch_code')->orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
+        $aof_branch = AccountOpeningDocument::groupby('branch_code')->orderby('branch_code','asc')->pluck('branch_code','branch_code')->toArray();
         $branches = $loan_branch + $goldloan_branch + $dtrf_branch + $aof_branch;
         $vendors = Vendor::all();
         $couriers = Courier::where('status', 1)->get();

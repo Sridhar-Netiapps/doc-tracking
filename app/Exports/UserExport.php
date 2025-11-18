@@ -34,9 +34,11 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
             'Branch Code',
             'Role',
             'Status',
-            'creation Date',
+            'Last Login Date',
+            'Created By',
+            'Creation Date',
+            'Last Modify By',
             'Last Modify Date'
-
         ];
     }
 
@@ -46,7 +48,7 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
         $count++;
         // dd($row);
         $roles = $row->roles->pluck('name')->map(function ($role) {
-            return $role === 'super_admin' ? 'id_maintenance' : $role;
+            return $role === 'super_admin' ? 'ID Maintenance' : $role;
         })->implode(', ');
 
         return [
@@ -57,8 +59,11 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
             $row->branch_id ?? '-',
             $roles ?: '-',
             $row->status ?? '-',
-            $row->created_at ? Carbon::parse($row->created_at)->format('d-m-Y') : '-', 
-            $row->updated_at ? Carbon::parse($row->created_at)->format('d-m-Y') : '-', 
+            $row->lastLogin != null ? Carbon::parse($row->lastLogin->created_at)->format('d-M-Y') : '-', 
+            $row->creator != null ? $row->creator->first_name: '-',
+            $row->created_at ? Carbon::parse($row->created_at)->format('d-M-Y') : '-', 
+            $row->modifier != null ? $row->modifier->first_name: '-',
+            $row->updated_at ? Carbon::parse($row->created_at)->format('d-M-Y') : '-', 
 
         ];
     }
