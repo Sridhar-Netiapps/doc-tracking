@@ -32,9 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
         // exit('1');
         return view('sample.accounts-process');
     });
-    Route::get('/accounts-update', function () {
-        return view('sample.accounts-update');
-    });
+    Route::get('/test', [DocumentController::class, 'test']);
     Route::get('/', function () { 
         return redirect(route('login'));
     });
@@ -112,8 +110,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
         Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
         Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
-        
-        // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
         Route::resource('vendor', VendorController::class);
         Route::resource('couriers', CourierController::class);

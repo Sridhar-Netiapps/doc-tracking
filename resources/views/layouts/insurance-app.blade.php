@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}"/>
 
-    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}"/>
+    <!-- <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}"/> -->
    
    
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">

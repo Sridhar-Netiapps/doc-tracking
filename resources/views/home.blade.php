@@ -7,7 +7,7 @@
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
-                <h2>{{ Crypt::decrypt($total_doc) }}</h2>
+                <h2>{{ ($total_doc) }}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col-2 cardBox Yellow">
