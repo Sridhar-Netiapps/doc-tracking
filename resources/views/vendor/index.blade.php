@@ -51,7 +51,7 @@
                                 <a href="{{ route('vendor.edit', Crypt::encryptString($vendor->id)) }}" class="btn btn-warning btn-sm">Edit</a>
                                 @endrole
                                 {{-- @role('super_admin|master')
-                                <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" style="display:inline-block;">
+                                <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" >Delete</button>

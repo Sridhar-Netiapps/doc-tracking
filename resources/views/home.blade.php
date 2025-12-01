@@ -7,7 +7,7 @@
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
-                <h2>{{ Crypt::decrypt($total_doc) }}</h2>
+                <h2>{{ ($total_doc) }}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col-2 cardBox Yellow">
@@ -69,7 +69,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</div>
@@ -81,7 +81,7 @@
                             <div class="label">Received with Query<span class="value">{{($loan_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($loan_total[5] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($loan_total[5] ?? 0)}}</span></div>
@@ -89,7 +89,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0)}}</div>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0)}}</div>
@@ -155,7 +155,7 @@
                             <div class="label">Received with Query<span class="value">{{($gold_loan_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($gold_loan_total[5] ?? 0)}}</span></div>
@@ -163,7 +163,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0)}}</div>
@@ -216,7 +216,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0)}}</div>
@@ -228,7 +228,7 @@
                             <div class="label">Received with Query<span class="value">{{($aof_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($aof_total[5] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($aof_total[5] ?? 0)}}</span></div>
@@ -236,7 +236,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0)}}</div>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0)}}</div>
@@ -301,7 +301,7 @@
                             <div class="label">Received with Query<span class="value">{{($dtrf_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($dtrf_total[5] ?? 0)}}</span></div>
@@ -309,7 +309,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0)}}</div>
@@ -403,7 +403,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($loan_today[5] ?? 0) + ($loan_today[7] ?? 0) + ($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0) + ($loan_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($loan_today[5] ?? 0) + ($loan_today[7] ?? 0)}}</div>
@@ -415,7 +415,7 @@
                             <div class="label">Received with Query<span class="value">{{($loan_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($loan_today[5] ?? 0) + ($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0) + ($loan_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($loan_today[5] ?? 0)}}</span></div>
@@ -423,7 +423,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0)}}</div>
@@ -477,7 +477,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[7] ?? 0) + ($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0) + ($gold_loan_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[7] ?? 0)}}</div>
@@ -489,7 +489,7 @@
                             <div class="label">Received with Query<span class="value">{{($gold_loan_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0) + ($gold_loan_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($gold_loan_today[5] ?? 0)}}</span></div>
@@ -497,7 +497,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0)}}</div>
@@ -550,7 +550,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($aof_today[5] ?? 0) + ($aof_today[7] ?? 0) + ($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0) + ($aof_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($aof_today[5] ?? 0) + ($aof_today[7] ?? 0)}}</div>
@@ -562,7 +562,7 @@
                             <div class="label">Received with Query<span class="value">{{($aof_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($aof_today[5] ?? 0) + ($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0) + ($aof_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($aof_today[5] ?? 0)}}</span></div>
@@ -570,7 +570,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0)}}</div>
@@ -623,7 +623,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[7] ?? 0) + ($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0) + ($dtrf_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[7] ?? 0)}}</div>
@@ -635,7 +635,7 @@
                             <div class="label">Received with Query<span class="value">{{($dtrf_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0) + ($dtrf_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($dtrf_today[5] ?? 0)}}</span></div>
@@ -643,7 +643,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0)}}</div>
@@ -676,7 +676,7 @@
         <p class="text-center text-muted">© 2025 Ujjivan Small Finance Bank Ltd</p>
     </footer>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(function () {
         const container = $('#dynamic-dropdown');
         const resetBtn  = $('#reset-btn-container');

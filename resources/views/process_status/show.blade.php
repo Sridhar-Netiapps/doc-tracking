@@ -131,7 +131,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script nonce='{{ env("CSP_NONCE") }}'>
         // Enable Bootstrap client-side validation
         (function () {
             'use strict'

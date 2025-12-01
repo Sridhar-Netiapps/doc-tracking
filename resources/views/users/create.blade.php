@@ -311,39 +311,88 @@
     </div>
 </div>
 
-<script type="text/javascript" nonce='{{ env("CSP_NONCE") }}'>
-    $(document).ready(function() {
+<script nonce='{{ env("CSP_NONCE") }}'>
+    $(document).ready(function () {
+        $(".datepicker").flatpickr({
+            dateFormat: "d-m-Y",
+            allowInput: true
+        }); 
+        $("#users").validate({
+            rules: {
+                first_name: { required: true, sanitize: true },
+                last_name: { required: true, sanitize: true },
+                email: { required: true, sanitize: true },
+                employee_id: { required: true, sanitize: true },
+                region: { required: true, sanitize: true },
+                mobile_number: { 
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    sanitize: true
+                }
+            },
+            messages: {
+                first_name: { required: "First name is required" },
+                last_name: { required: "Last name is required" },
+                email: { required: "email is required" },
+                employee_id: { required: "Employee ID is required" },
+                region: { required: "region is required" },
+                mobile_number: { 
+            required: "Mobile number is required",
+            pattern: "Mobile number must be exactly 10 digits"
+            }
+            },
+            submitHandler: function(form) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit this form?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f78f35',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
 
-  // Handle Option 1 and 2
-  $('#inlineCheckbox1, #inlineCheckbox2').on('change', function() {
-    // If both 1 and 2 are checked
-    if ($('#inlineCheckbox1').is(':checked') && $('#inlineCheckbox2').is(':checked')) {
-      $('#inlineCheckbox3').prop('checked', true);
-      $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
-    } else {
-      // If either 1 or 2 is checked, uncheck 3
-      $('#inlineCheckbox3').prop('checked', false);
-    }
-  });
+        // $('.get-user').click(function () {
+        //     const id = $('input[name="emp-id"]').val();
+        //     let url = "{{ url('users/create') }}/" + id;
+        //     $.get(url);
+        // });
+        // Handle Option 1 and 2
+        $('#inlineCheckbox1, #inlineCheckbox2').on('change', function() {
+            // If both 1 and 2 are checked
+            if ($('#inlineCheckbox1').is(':checked') && $('#inlineCheckbox2').is(':checked')) {
+            $('#inlineCheckbox3').prop('checked', true);
+            $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+            } else {
+            // If either 1 or 2 is checked, uncheck 3
+            $('#inlineCheckbox3').prop('checked', false);
+            }
+        });
 
-  // Handle Option 3
-  $('#inlineCheckbox3').on('change', function() {
-    if ($(this).is(':checked')) {
-      // Uncheck 1 and 2
-      $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
-    }
-  });
+        // Handle Option 3
+        $('#inlineCheckbox3').on('change', function() {
+            if ($(this).is(':checked')) {
+            // Uncheck 1 and 2
+            $('#inlineCheckbox1, #inlineCheckbox2').prop('checked', false);
+            }
+        });
 
-  $('#users').on('submit', function(e) {
-    if (!$('#inlineCheckbox1').is(':checked') && 
-        !$('#inlineCheckbox2').is(':checked') && 
-        !$('#inlineCheckbox3').is(':checked')) {
-      e.preventDefault();
-      alert('Please assign module.');
-    }
-  });
-
-
-});
+        $('#users').on('submit', function(e) {
+            if (!$('#inlineCheckbox1').is(':checked') && 
+                !$('#inlineCheckbox2').is(':checked') && 
+                !$('#inlineCheckbox3').is(':checked')) {
+            e.preventDefault();
+            alert('Please assign module.');
+            }
+        });
+    });
 </script>
 @endsection

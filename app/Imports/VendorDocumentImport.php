@@ -36,7 +36,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
     protected $total = 0;
     protected $success = 0;
     
-    function parseExcelDate($dateValue): ?Carbon
+    function parseExcelDate($dateValue)
     {
         if (empty($dateValue)) {
             return null;
@@ -68,6 +68,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
 
     public function collection(Collection $rows)
     {
+        // dd($rows);
         $table = [
             'MB LOAN' => LoanDocument::class,
             'GOLD LOAN' => GoldLoanDocument::class,
@@ -116,8 +117,9 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseExcelDate($row['date_of_addition_to_vendor_data']) : null;
                 // $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
                 $document->status = $doc_status;
-            
+                // dd($document);
                 if ($document->isDirty()) {
+                    Log::info($document->unique_ref_no.' Updated');
                     $document->updated_by = auth()->user()->id;
                     $document->save();
                 }

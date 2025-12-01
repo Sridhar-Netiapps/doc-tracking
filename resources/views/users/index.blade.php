@@ -7,6 +7,16 @@
             <div class="d-flex justify-content-center align-items-center">
                 <h3 class="me-3">User List</h3>
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
+                @if(Request::segment(2) == 'filter')
+                <form method="GET" action="{{ route('user.export') }}">
+                    @foreach(($filters ?? []) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-sm btn-success">
+                        Export
+                    </button>
+                </form>
+                @endif
             </div>
         </div>
         @role('super_admin|master')
@@ -61,7 +71,7 @@
                                         <td>{{ ucfirst($user->status) }}</td>
                                         <td>{{ $user->mobile_number }}</td>
                                         <td>{{ $user->doj }}</td>
-                                        <td></td>
+                                        <td>{{ $user->current_designation }}</td>
                                         
                                         @role('master|super_admin|admin')
                                             <td>
@@ -125,6 +135,13 @@
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control email" placeholder="Email ID" value="{{ old('email', $filters['email'] ?? '') }}" name="email">
                 </div>
+                <div class="col-12 mt-3">
+                    <select class="form-select status" name="status">
+                        <option value="">Select Status</option>
+                        <option value="Active" {{ ($filters['status'] ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
+                        <option value="Inactive" {{ ($filters['status'] ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </div>
                 <div class="col-12 d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('users.index') }}" class="btn btn-secondary">Clear</a> 
@@ -151,8 +168,7 @@
         </div>
     </div>
 </div>
-
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {   
         $('.get-user').click(function () {
             $('#add-user').modal('show');

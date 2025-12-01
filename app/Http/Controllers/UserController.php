@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
+use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -203,7 +204,6 @@ class UserController extends Controller
         }
     
         $user = User::findOrFail($decryptedId);
-
         // Passing the user, roles, and permissions to the edit view
         return view('users.edit', compact('user', 'roles', 'permissions'));
     }
@@ -381,8 +381,7 @@ class UserController extends Controller
     {
         // Store filters in session
         session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
-        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email'])]);
-// dd($request->user);
+        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email','status'])]);
 
         if ($request->user == '1')
             return redirect()->route('user.filter');
@@ -429,9 +428,6 @@ class UserController extends Controller
             $query->where('created_at', '<=', $end);
         }
         
-        
-            
-    
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.activity', compact('activites', 'filters'));
@@ -441,7 +437,6 @@ class UserController extends Controller
     {
         $filters = session('user_filters', []);
         
-    
         $query = User::query();
     
         if (!empty($filters['region'])) {
@@ -459,8 +454,11 @@ class UserController extends Controller
         if (!empty($filters['email'])) {
             $query->where('email', $filters['email']);
         }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
       
-    
         $users = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.index', compact('users', 'filters'));
@@ -468,7 +466,7 @@ class UserController extends Controller
     
     public function exportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date','status']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -479,7 +477,7 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date', 'status']);
         $query = $this->applyActivityFilters(ActivityLog::query(), $filters);
         $data = $query->orderBy('created_at', 'desc')->get();
 
@@ -519,6 +517,53 @@ class UserController extends Controller
     
         return $query;
     }
+
+    public function userExportCheck(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+
+        if (empty(array_filter($filters))) {
+            return response()->json(['status' => 'error']);
+       }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function userExport(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+        $query = $this->applyUsersFilters(User::query(), $filters);
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return Excel::download(new UserExport($data), 'users.xlsx');
+    }
+
+    private function applyUsersFilters($query, $filters)
+    {
+        $query->withoutRole('master');
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+    
+        return $query;
+    }
+    
 
     public function getUser(Request $request)
     {

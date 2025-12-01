@@ -104,34 +104,11 @@ $(document).ready(function(){
             }
         }
     });
-
     $(document).on('keypress','.lettersonly', function (e) {
         if (!/[a-zA-Z\s]/.test(String.fromCharCode(e.which))) {
             e.preventDefault();
         }
     });
-
-    // $(document).on('keypress', '.capsonly', function (e) {
-    //     if (!/[A-Z0-9\s]/.test(String.fromCharCode(e.which))) {
-    //         e.preventDefault();
-    //     }
-    // });
-
-    // $(document).on('input', '.capsonly, .alphanumeric', function () {
-    //     let value = $(this).val();
-    
-    //     if ($(this).hasClass('capsonly')) {
-    //         // Allow only letters & spaces, convert to uppercase
-    //         value = value.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
-    //     }
-    
-    //     if ($(this).hasClass('alphanumeric')) {
-    //         // Allow only letters, numbers & spaces, convert to uppercase
-    //         value = value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
-    //     }
-    
-    //     $(this).val(value);
-    // });
 
    // CAPS only: whatever typed will be uppercase
     $(document).on('input', '.capsonly', function () {
@@ -143,30 +120,23 @@ $(document).ready(function(){
     $(this).val($(this).val().replace(/[^a-zA-Z0-9\s]/g, ''));
     });
 
-
-    
-    
-
     $(document).on('keypress','.alphanumeric', function (e) {
         if (!/^[\w\s]+$/.test(String.fromCharCode(e.which))) {
             e.preventDefault();
         }
     });
-
     $('.length_15').on('input', function () {
         var maxLength = 15;
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().slice(0, maxLength));
         }
     });
-
     $('.length_8').on('input', function () {
         var maxLength = 8;
         if ($(this).val().length > maxLength) {
             $(this).val($(this).val().slice(0, maxLength));
         }
     });
-
     $('.length_7').on('input', function () {
         var maxLength = 7;
         if ($(this).val().length > maxLength) {
@@ -270,118 +240,26 @@ $(document).ready(function(){
         return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
     }
 
-
-      // Show button when scrolled down 100px
-    
-    // document.addEventListener('change', function (e) {
-    //     const input = e.target.closest('.file-validate');
-    //     if (!input) return;
-    
-    //     const allowedExtensions = input.dataset.ext.split(',').map(ext => ext.trim().toLowerCase());
-    //     const allowedMimeTypes = {
-    //         'png': 'image/png',
-    //         'jpg': 'image/jpeg',
-    //         'jpeg': 'image/jpeg',
-    //         'pdf': 'application/pdf',
-    //         'doc': 'application/msword',
-    //         'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    //         'xls': 'application/vnd.ms-excel',
-    //         'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //         'csv': 'text/csv'
-    //     };
-    //     const maxFileSize = 5 * 1024 * 1024; // 5 MB
-    //     const files = input.files;
-    //     const errorLabel = document.getElementById(input.name + '-error');
-    
-    //     if (!files.length) return;
-    //     if (errorLabel) errorLabel.textContent = ''; // Clear previous errors
-    
-    //     for (const file of files) {
-    //         const name = file.name;
-    //         const size = file.size;
-    //         const mime = file.type;
-    
-    //         // ✅ 1. Reject multiple dots in filename
-    //         if (name.split('.').length !== 2) {
-    //             showError(errorLabel, 'Invalid filename! Only one dot allowed (e.g., file.pdf).', input);
-    //             return;
-    //         }
-    
-    //         // ✅ 2. Validate extension
-    //         const fileExtension = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
-    //         if (!allowedExtensions.includes(fileExtension)) {
-    //             showError(errorLabel, `Invalid file type! Allowed: ${allowedExtensions.join(', ').toUpperCase()}.`, input);
-    //             return;
-    //         }
-    
-    //         // ✅ 3. Validate size
-    //         if (size > maxFileSize) {
-    //             showError(errorLabel, `File too large! Max allowed size is ${maxFileSize / (1024 * 1024)} MB.`, input);
-    //             return;
-    //         }
-    
-    //         // ✅ 4. Validate MIME type (UX only)
-    //         if (allowedMimeTypes[fileExtension] && allowedMimeTypes[fileExtension] !== mime) {
-    //             showError(errorLabel, `File format mismatch! Please upload a valid ${fileExtension.toUpperCase()} file.`, input);
-    //             return;
-    //         }
-    
-    //         // ✅ 5. Magic bytes check (async)
-    //         validateMagicBytes(file, fileExtension, (isValid) => {
-    //             if (!isValid) {
-    //                 showError(errorLabel, 'Invalid file! File content does not match its extension.', input);
-    //             }
-    //         });
-    //     }
-    // });
-    
-    // function showError(label, message, input) {
-    //     if (label) label.textContent = message;
-    //     input.value = '';
-    // }
-    
-    // // ✅ Magic Bytes Validator
-    // async function validateMagicBytes(file, ext, callback) {
-    //     const signatures = {
-    //         'pdf': ['25504446'], // %PDF
-    //         'jpg': ['ffd8ff'],
-    //         'jpeg': ['ffd8ff'],
-    //         'png': ['89504e47'],
-    //         'doc': ['d0cf11e0'],
-    //         'docx': ['504b0304'],
-    //         'xls': ['d0cf11e0'],
-    //         'xlsx': ['504b0304'],
-    //     };
-    
-    //     if (!signatures[ext]) {
-    //         callback(true);
-    //         return;
-    //     }
-    
-    //     const slice = file.slice(0, 8);
-    //     const buffer = await slice.arrayBuffer();
-    //     const bytes = Array.from(new Uint8Array(buffer))
-    //         .map(b => b.toString(16).padStart(2, '0'))
-    //         .join('');
-    
-    //     const expected = signatures[ext];
-    //     const match = expected.some(sig => bytes.startsWith(sig));
-    //     callback(match);
-    // }
-    
-
-    //   window.onscroll = function() {
-    //     const btn = document.getElementById("backToTopBtn");
-    //     if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-    //         btn.style.display = "block";
-    //     } else {
-    //         btn.style.display = "none";
-    //     }
-    // };
-
-    // // Scroll to top when clicked
-    // document.getElementById("backToTopBtn").addEventListener("click", function() {
-    //     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // });
-    
+    $("#backToTopBtn").on('click', function() {
+        $('html, body').animate({ scrollTop: 0 }, 'slow');
+    });
+    $(document).on("contextmenu", function(event) {
+        event.preventDefault();
+        return false;
+    });
+    $(document).on("keydown", function(e) {
+        if (e.ctrlKey) {
+            const key = e.key.toLowerCase(); 
+            
+            if (e.shiftKey && key === 'i') {
+              e.preventDefault();
+              return false;
+            }
+            
+            if (['u', 'j', 's', 'h'].includes(key)) {
+              e.preventDefault();
+              return false;
+            }
+        }
+    });
 });

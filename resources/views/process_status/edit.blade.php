@@ -79,7 +79,7 @@
     </div>
 
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {   
         $("#process-status").validate({
             rules: {

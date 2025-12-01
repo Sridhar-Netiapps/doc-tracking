@@ -77,7 +77,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         $("#branch").on("submit", function () {
             $(".text-danger").html(""); // Clear previous errors

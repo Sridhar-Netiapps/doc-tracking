@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Doc_Tracking') }}</title>
@@ -96,14 +94,10 @@
                                             {{ __('Insurance') }}
                                         </a>
                                         @endif
-                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                                        @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                         <a class="dropdown-item" href="{{ route('users.index') }}"> Admin Panel</a>
                                         @endunless
-                                        <a class="dropdown-item" href=""
-                                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
-                                        </a>
+                                        <a class="dropdown-item logout">{{ __('Logout') }} </a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
@@ -120,7 +114,6 @@
         </main>
     </div>
     @include('layouts.scripts')
-
     <button id="backToTopBtn" title="Go to top">↑</button>
 </body>
 </html>

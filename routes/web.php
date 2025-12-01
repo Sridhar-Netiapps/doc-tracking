@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentExportController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HomeController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\InsuranceHomeController;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
+    Route::get('get-key', [LoginController::class, 'getEncryptedAESKey'])->name('get-key');
     Route::post('login', [LoginController::class, 'authenticate'])->middleware('throttle:5,1'); // 5 attempts per minute
 });
 
@@ -30,9 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
         // exit('1');
         return view('sample.accounts-process');
     });
-    Route::get('/accounts-update', function () {
-        return view('sample.accounts-update');
-    });
+    Route::get('/test', [DocumentController::class, 'test']);
     Route::get('/', function () { 
         return redirect(route('login'));
     });
@@ -71,7 +71,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
         Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
         Route::get('home', [HomeController::class, 'index'])->name('home');
-        Route::post('reports', [DocumentController::class,'export'])->name('reports');
+        // Route::post('reports', [DocumentController::class,'export'])->name('reports');
+        Route::post('reports', [DocumentExportController::class,'export'])->name('reports');
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
         // Route::get('document/data_import', [UploadController::class, 'dataImport'])->name('accounts.data_import');
         Route::get('/accounts/data_import', function () {
@@ -109,8 +110,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
         Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
         Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
-        
-        // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
         Route::resource('vendor', VendorController::class);
         Route::resource('couriers', CourierController::class);
@@ -124,6 +123,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
+        Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
+        Route::get('/user/export', [UserController::class, 'userExport'])->name('user.export');
         // Route::resource('branches', BranchController::class);
         Route::resource('emails', EmailController::class);
         Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);

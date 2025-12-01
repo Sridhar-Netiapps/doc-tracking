@@ -47,7 +47,7 @@
                 @endhasanyrole
                 @hasanyrole('master|super_admin|admin')
                     @if (!in_array($type, ['received']))
-                        <li style="margin-left: 38%;">
+                        <li>
                             <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed">
                                 @csrf
                                 <button class="btn btn-primary proceed" type="button">Proceed</button>
@@ -67,7 +67,7 @@
                         </li>
                     {{-- @endif --}}
                     @if ($type == 'received')
-                    <li style="margin-left: 10px;">
+                    <li>
                         <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
                     </li>
                     @endif
@@ -225,7 +225,7 @@
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
@@ -367,7 +367,7 @@
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                         @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p> 
+                        <p class="text-center text-muted">No documents found.</p> 
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
@@ -513,7 +513,7 @@
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
@@ -645,7 +645,7 @@
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @else
-                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
             </div>
@@ -883,7 +883,7 @@
     </div>
 </div>
    
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         let dtype = '{{$dtype}}';
         let activeTab = null;
@@ -962,6 +962,7 @@
         let selectedDocuments = [];
         
         $('.proceed').click(function () {
+            $(this).prop('disabled', true);
             let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
             let hasSelection = false;
 
@@ -993,12 +994,13 @@
                     text: "Please select at least one Document.",
                     icon: "warning",
                     confirmButtonText: "OK"
-                });
+                }).then(() => $(this).prop('disabled', false));
             }
         });
       
         $('.remove-doc').click(function (e) {
             e.preventDefault();
+            $(this).prop('disabled', true);
             const $selected = $('input[type=checkbox]:checked');
             if ($selected.length === 0) {
                 Swal.fire({
@@ -1006,7 +1008,7 @@
                     text: "Please select at least one Document.",
                     icon: "warning",
                     confirmButtonText: "OK"
-                });
+                }).then(() => $(this).prop('disabled', false));
                 return;
             }
             let docIds = [];
@@ -1023,15 +1025,17 @@
             const $badge = $(`#${type}-tab`).find('span.badge');
             let doc_count = parseInt($badge.text()) || 0;
             Swal.fire({
-                title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                // title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
+                title: 'Reason Required',
                 input: "text",
-                inputLabel: "Enter reason for deleting the document:",
+                inputLabel: "Enter reason for deleting the document",
                 inputPlaceholder: "Reason...",
                 showCancelButton: true,
-                confirmButtonText: '<b>Confirm Delete</b>',
+                confirmButtonText: 'Confirm Delete',
                 cancelButtonText: "Cancel",
                 customClass: {
                     popup: 'rounded-3 shadow',
+                    title: 'mb-0 text-primary',
                     input: 'alphanumeric',
                     confirmButton: 'btn btn-primary btn-lg',
                     cancelButton: 'btn btn-secondary btn-lg',
@@ -1055,10 +1059,11 @@
                                 const newCount = Math.max(current - ids.length, 0);
                                 $badge.text(newCount);
                             });
+                            $(this).prop('disabled', false);
                         });
                     })
                     .fail(() => {
-                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
+                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"}).then(() => location.reload());
                     });
                 }
             });

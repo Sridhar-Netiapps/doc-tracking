@@ -13,7 +13,7 @@ class GoldLoanDocument extends Model
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id',
         'account_number', 'customer_name', 'account_creation_date',
-        'channel', 'loan_amount', 'barcode', 'business_category'
+        'channel', 'loan_amount', 'barcode', 'business_category', 'status'
     ];
 
     public function statusName()

@@ -1,4 +1,4 @@
-<script>
+<script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
         $('a.logout').click(function(e){
             e.preventDefault();
