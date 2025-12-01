@@ -326,11 +326,15 @@ class InsuranceHomeController extends Controller
           'policy_covered_date' => 'required',
           'actual_id' => 'required',
           'deceased_name' => 'required',
-          'date_of_death' => 'required',
-          'load_acc_id' => 'required',
-          'claim_amount' => 'required',
+          'date_of_death' => ['required','before_or_equal:today'],
+          'load_acc_id' => 'required|max:25',
+          'claim_amount' => 'required|max:20',
+          'loan_amount' => 'nullable|max:20',
+          'loan_outstanding' => 'nullable|max:20',
+          'recovered_amount' => 'nullable|max:20',
+          'payable_to_nominee' => 'nullable|max:20',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
-          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
+          'intimation_date' => ['required','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
           'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
              
@@ -355,6 +359,7 @@ class InsuranceHomeController extends Controller
           'loan_amount' => preg_replace('/[^0-9.]/', '', $request->loan_amount),
           'loan_outstanding' => preg_replace('/[^0-9.]/', '', $request->loan_outstanding),
           'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
+          'recovered_amount' => preg_replace('/[^0-9.]/', '', $request->recovered_amount),
           
         ]);
 
@@ -580,6 +585,7 @@ class InsuranceHomeController extends Controller
     public function update(Request $request, string $id)
     {
      // print_r($request->input());die();
+
         $request->validate([
           'region' => 'required',
           'branch' => 'required',
@@ -588,13 +594,17 @@ class InsuranceHomeController extends Controller
           'policy_covered_date' => 'required',
           'actual_id' => 'required',
           'deceased_name' => 'required',
-          'date_of_death' => 'required',
-          'load_acc_id' => 'required',
-          'claim_amount' => 'required',
+          'date_of_death' => ['required','before_or_equal:today'],
+          'load_acc_id' => 'required|max:25',
+          'claim_amount' => 'required|max:20',
+          'loan_amount' => 'nullable|max:20',
+          'loan_outstanding' => 'nullable|max:20',
+          'recovered_amount' => 'nullable|max:20',
+          'payable_to_nominee' => 'nullable|max:20',
           'policy_expiry_date' => ['nullable','date', 'after_or_equal:policy_covered_date'],
           'doc_rec_date' => ['nullable','date', 'after_or_equal:intimation_date'],
           'resubmission_to_partner_date' => ['nullable','date', 'after_or_equal:submit_to_partner_date'],
-          'intimation_date' => ['nullable','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
+          'intimation_date' => ['required','date', 'after_or_equal:policy_covered_date','after_or_equal:date_of_death'],
          
          
       ]);
@@ -604,6 +614,7 @@ class InsuranceHomeController extends Controller
           'loan_amount' => preg_replace('/[^0-9.]/', '', $request->loan_amount),
           'loan_outstanding' => preg_replace('/[^0-9.]/', '', $request->loan_outstanding),
           'payable_to_nominee' => preg_replace('/[^0-9.]/', '', $request->payable_to_nominee),
+          'recovered_amount' => preg_replace('/[^0-9.]/', '', $request->recovered_amount),
           
         ]);
 
@@ -1049,6 +1060,7 @@ class InsuranceHomeController extends Controller
 
        $request->validate([
           'nominee_name_bank' => 'required',
+          'acc_number' => ['nullable','max:18']
          
       ]);
 
