@@ -51,6 +51,9 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
+                    @if(isset($records) && $records->count())
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -178,6 +181,9 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($records) && $records->count())
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
             </div>
         </div>
@@ -240,14 +246,6 @@
         </form>
     </div>
 </div>
-<div class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-    <div class="offcanvas-header">
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <h5>Filters</h5>
-    </div>
-</div>
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
@@ -260,7 +258,7 @@
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Courier Name <span class="text-danger">*</span></label>
-                        <select id="courier_name" name="courier_name" class="form-control select2" required>
+                        <select id="courier_name" name="courier_name" class="form-control awb_pod select2" required>
                             <option value=''>Select</option>
                             @foreach($couriers as $courier)
                                 <option value='{{ $courier->id }}'>{{ $courier->name }}</option>
@@ -319,10 +317,10 @@
 </div>
 <script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
-        var count = $('select[name="remarks"]').length;
-        if(count > 0){
-            $('#update-all').removeClass('d-none');
-        }
+        // var count = $('select[name="remarks"]').length;
+        // if(count > 0){
+        //     $('#update-all').removeClass('d-none');
+        // }
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
@@ -448,7 +446,7 @@
             $input.removeClass('is-invalid');
             invalidAwbs.delete($input[0]); 
 
-            if (awbPod !== '' && courierId !== '') {
+            if (awbPod != '' && courierId != '') {
                 $.ajax({
                     url: "{{ route('courier.checkAwb') }}",
                     type: "POST",
@@ -469,9 +467,11 @@
         });
 
         $('form').on('submit', function () {
-            invalidAwbs.forEach(function(inputEl) {
-                $(inputEl).val(''); 
-            });
+            let $awbpodCheck = $('input.awb_pod');
+            if($awbpodCheck.hasClass('is-invalid')){
+                $awbpodCheck.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
+                return false;
+            }
         });
 
         $('#applyFilter').click(function () {
@@ -581,43 +581,43 @@
         });
     }
 
-    // Handle bulk update
-    $('#update-all').on('click', function () {
-        const data = [];
-        let hasError = false;
+    // // Handle bulk update
+    // $('#update-all').on('click', function () {
+    //     const data = [];
+    //     let hasError = false;
 
-        $('tr[data-id]').each(function () {
-            try {
-                data.push(collectRowData($(this)));
-            } catch (err) {
-                Swal.fire({title: "Alert!", text: err, icon: "warning"});
-                hasError = true;
-                return false; // stop loop
-            }
-        });
+    //     $('tr[data-id]').each(function () {
+    //         try {
+    //             data.push(collectRowData($(this)));
+    //         } catch (err) {
+    //             Swal.fire({title: "Alert!", text: err, icon: "warning"});
+    //             hasError = true;
+    //             return false; // stop loop
+    //         }
+    //     });
 
-        if (!hasError && data.length) {
-            sendUpdateRequest(data);
-        }
-    });
+    //     if (!hasError && data.length) {
+    //         sendUpdateRequest(data);
+    //     }
+    // });
 
     // Common AJAX function
-    function sendUpdateRequest(payload) {
-        $.ajax({
-            url: '{{ route("dispatches.update") }}',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                updates: payload
-            },
-            success: function () {
-                Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
-            },
-            error: function () {
-                Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
-            }
-        });
-    }
+    // function sendUpdateRequest(payload) {
+    //     $.ajax({
+    //         url: '{{ route("dispatches.update") }}',
+    //         method: 'POST',
+    //         data: {
+    //             _token: '{{ csrf_token() }}',
+    //             updates: payload
+    //         },
+    //         success: function () {
+    //             Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
+    //         },
+    //         error: function () {
+    //             Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
+    //         }
+    //     });
+    // }
     $('.revert-status').click(function () {
         $('input.revert-reason').val($(this).data('id'));
         $('#revert-status').modal('show');

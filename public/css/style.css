@@ -36,6 +36,11 @@ body{
     border-color: #fcb53e;
 }
 
+.btn-primary:disabled{
+    background: #fcb53e;
+    border-color: #fcb53e;
+}
+
 .btn-primary:focus-visible, .btn-primary:active{
     background: #fcb53e ;
 }

@@ -6,19 +6,23 @@ use App\Models\LoanDocument;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+// use Maatwebsite\Excel\Concerns\ShouldQueue;
 
-class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
+
+class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
 {
-    protected $data;
+    use \Maatwebsite\Excel\Concerns\Exportable;
+    protected $query;
 
-    public function __construct($data)
+    public function __construct($query)
     {
-        $this->data = $data;
+        $this->query = $query;
     }
-
-    public function collection()
+    public function query()
     {
-        return $this->data;
+        return $this->query;
     }
 
 
@@ -102,5 +106,9 @@ class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
             $doc->date_added_to_vendor != null ? date('d-m-Y', strtotime($doc->date_added_to_vendor)) : '-',
             $doc->statusName->name,
         ];
+    }
+    public function chunkSize(): int
+    {
+        return 5000;
     }
 }
