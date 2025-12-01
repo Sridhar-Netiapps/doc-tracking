@@ -68,7 +68,7 @@
     .policy{
      padding-right: 30px;
      padding-left: 5px;
-     font-size: 13px;
+     font-size: 10px;
     }
     .smallpad{
       padding-left: 10px;

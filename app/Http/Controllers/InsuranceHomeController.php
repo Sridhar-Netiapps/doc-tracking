@@ -952,7 +952,7 @@ class InsuranceHomeController extends Controller
 
              $destinationPath = public_path().$filepath;
 
-              if ($doc_file->move($destinationPath,$newName)) {
+             /* if ($doc_file->move($destinationPath,$newName)) {
                     $mailData=[
                       'message' => 'The Lead details are imported to the Insurance Module .Please find the attachemnt of the same .'];
                     $reciepients=array();
@@ -963,7 +963,7 @@ class InsuranceHomeController extends Controller
 
                     $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
         
-              }
+              }*/
  
 
       }

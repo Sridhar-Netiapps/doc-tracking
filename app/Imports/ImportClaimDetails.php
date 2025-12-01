@@ -279,7 +279,24 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			if(!empty($row['9'])){ $claimDetail->cust_id = $row['9']; } 
 			if(!empty($row['10'])){ $claimDetail->actual_id = $row['10']; } 
 			if(!empty($row['11'])){ $claimDetail->deceased_name = $row['11']; } 
-			if(!empty($row['12'])){$claimDetail->dob = is_numeric($row['12'])? Date::excelToDateTimeObject($row['12'])->format('Y-m-d'): $row['12'];}
+			/*if(!empty($row['12'])){$claimDetail->dob = is_numeric($row['12'])? Date::excelToDateTimeObject($row['12'])->format('Y-m-d'): $row['12'];}*/
+			if (!empty($row['12'])) {
+				    // Convert Excel date or take normal date
+				    $dob = is_numeric($row['12']) 
+				        ? Date::excelToDateTimeObject($row['12'])->format('Y-m-d') 
+				        : $row['12'];
+
+				    $claimDetail->dob = $dob;
+
+				    // Calculate age in years
+				    $today = new DateTime();                 // Current date
+				    $birthDate = new DateTime($dob);         // DOB
+
+				    $age = $today->diff($birthDate)->y;      // Difference in years
+
+				    $claimDetail->age = $age;                // Save age
+				}
+
 			if(!empty(trim($row['13']))){$claimDetail->date_of_death = is_numeric($row['13'])? Date::excelToDateTimeObject($row['13'])->format('Y-m-d'): $row['13'];}
 			if(!empty($row['14'])){ $claimDetail->gender = $row['14']; }
 			if(!empty($row['15'])){ $claimDetail->age = $myage ?? $row['15']; }  
@@ -289,6 +306,13 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			if(!empty($row['19'])){ $claimDetail->cause_of_death = $row['19']; } 
 			if(!empty($row['20'])){ $claimDetail->load_acc_id = $row['20']; } 
 			if(!empty($row['21'])){ $claimDetail->loan_tenure = $row['21']; }
+
+			if(!empty($row['7']) && !empty($row['21'])) {
+			    $start = new DateTime($policyStartDate);
+			    $start->modify("+" . (int)$claimDetail->loan_tenure . " months");
+			    $claimDetail->policy_expiry_date = $start->format('Y-m-d');
+			}
+
 			if(!empty($row['22'])){ $claimDetail->claim_amount = $row['22']; } 
 			if(!empty($row['23'])){ $claimDetail->nominee_name = $row['23']; } 
             if(!empty($row['24'])){ $claimDetail->relationship = $row['24'];} 
