@@ -181,6 +181,9 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($records) && $records->count())
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
             </div>
         </div>

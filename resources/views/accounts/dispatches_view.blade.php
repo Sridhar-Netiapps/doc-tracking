@@ -646,7 +646,7 @@
 
         $('.remove-doc').click(function (e) {
             e.preventDefault();
-
+            $(this).prop('disabled', true);
             let docId = $(this).data('id');
             let type = $(this).data('type');
             let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
@@ -696,6 +696,7 @@
 
 
         $('.update-row').on('click', function () {
+            $(this).prop('disabled', true);
             const row = $(this).closest('tr');
             let data;
 

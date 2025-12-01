@@ -205,42 +205,6 @@
         </form>
     </div>
 </div>
-<div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('courier.update')}}" method="POST">
-                @csrf
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary">Update Details</h5>
-                </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Courier Name <span class="text-danger">*</span></label>
-                        <select id="courier_name" name="courier_name" class="form-control select2" required>
-                            <option value=''>Select</option>
-                            @foreach($couriers as $key => $courier)
-                                <option value='{{ $key }}'>{{ $courier }}</option>
-                            @endforeach
-                        </select>
-                        <label id="courier_name-error" class="error" for="designation_ids"></label>
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod capsonly">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
-                        <input type="text" name="mmrp_barcode" class="form-control alphanumeric capsonly" required>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function () {
         flatpickr(".flatpickr-date", {
@@ -256,6 +220,7 @@
         let selectedDocuments = [];
 
         $(document).on('click', '.proceed', function () {
+            $(this).prop('disabled', true);
             let selectedDocuments = $('input.select:checked').map(function () {
                 return {
                     id: $(this).data('id'),
@@ -264,7 +229,7 @@
             }).get();
 
             if (!selectedDocuments.length) {
-                Swal.fire({title: "Warning!", text: "Please select at least one Document.", icon: "warning"});
+                Swal.fire({title: "Warning!", text: "Please select at least one Document.", icon: "warning"}).then(() => location.reload());
                 return;
             }
 
@@ -291,89 +256,8 @@
                 })
                 .fail(function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    Swal.fire({title: "Error!", text: "Request failed.", icon: "error"});
+                    Swal.fire({title: "Error!", text: "Request failed.", icon: "error"}).then(() => location.reload());
                 });
-        });
-
-        $('#update-courier').validate({
-            rules: {
-                awb_pod: {
-                    alphanumeric: true,
-                    sanitize: true
-                },
-                courier_name: {
-                    required: true,
-                    sanitize: true
-                },
-                mmrp_barcode: {
-                    alphanumeric: true,
-                    required: true,
-                    sanitize: true
-                }
-            },
-            messages: {
-                awb_pod: {
-                    required: "AWB/POD is required",
-                    alphanumeric: "Only letters and numbers allowed"
-                },
-                courier_name: {
-                    required: "Courier name is required"
-                },
-                mmrp_barcode: {
-                    required: "Barcode is required"
-                }
-
-            },
-            submitHandler: function (form) {
-                var doc_count = parseInt($('span.badge').text());
-                const formData = {
-                    _token: $('input[name="_token"]').val(),
-                    courier_name: $('select[name="courier_name"]').val(),
-                    mmrp_barcode: $('input[name="mmrp_barcode"]').val(),
-                    awb_pod: $('input[name="awb_pod"]').val(),
-                    dispatch_date: $('input[name="dispatch_date"]').val(),
-                    loan_ids: [],
-                    goldloan_ids: [],
-                    dtrf_ids: [],
-                    aof_ids: []
-                };
-
-                selectedDocuments.forEach(doc => {
-                    const key = doc.doc_type + '_ids';
-                    if (formData.hasOwnProperty(key)) {
-                        formData[key].push(doc.id);
-                    }
-                });
-
-                $.post($(form).attr('action'), formData)
-                    .done(function () {
-                        Swal.fire({
-                            title: "Success!",
-                            text: "Courier details updated successfully.",
-                            icon: "success",
-                            confirmButtonText: "OK"
-                        }).then(() => {
-                            selectedDocuments.forEach(doc => {
-                                $('input.select[data-id="' + doc.id + '"]').closest('tr').remove();
-                                $('span.badge').text(doc_count - selectedDocuments.length);
-                            });
-                            if ($('input.select').length === 0) {
-                                window.location.href = `{{ route('dispatches','ready')}}`;
-                            } else {
-                                $('#update-courier')[0].reset();
-                                $('#add-courier').modal('hide');
-                            }
-                        });
-                })
-                .fail(function () {
-                    Swal.fire({
-                        title: "Error!",
-                        text: "Something went wrong!",
-                        icon: "error",
-                        confirmButtonText: "OK"
-                    });
-                });
-            }
         });
         $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
