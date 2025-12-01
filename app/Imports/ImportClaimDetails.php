@@ -22,6 +22,7 @@ use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Validators\Failure;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
+use DateTime;
 
 use Throwable;
 
@@ -308,8 +309,11 @@ class ImportClaimDetails implements ToModel, WithStartRow, SkipsOnFailure, Skips
 			if(!empty($row['21'])){ $claimDetail->loan_tenure = $row['21']; }
 
 			if(!empty($row['7']) && !empty($row['21'])) {
+				$policyStartDate = is_numeric($row['7'])
+		        ? Date::excelToDateTimeObject($row['7'])->format('Y-m-d')
+		        : $row['7'];
 			    $start = new DateTime($policyStartDate);
-			    $start->modify("+" . (int)$claimDetail->loan_tenure . " months");
+			    $start->modify("+" . (int)$row['21'] . " months");
 			    $claimDetail->policy_expiry_date = $start->format('Y-m-d');
 			}
 
