@@ -962,6 +962,7 @@
         let selectedDocuments = [];
         
         $('.proceed').click(function () {
+            $(this).prop('disabled', true);
             let documentTypes = ['loan', 'goldloan', 'aof', 'dtrf'];
             let hasSelection = false;
 
@@ -993,12 +994,13 @@
                     text: "Please select at least one Document.",
                     icon: "warning",
                     confirmButtonText: "OK"
-                });
+                }).then(() => $(this).prop('disabled', false));
             }
         });
       
         $('.remove-doc').click(function (e) {
             e.preventDefault();
+            $(this).prop('disabled', true);
             const $selected = $('input[type=checkbox]:checked');
             if ($selected.length === 0) {
                 Swal.fire({
@@ -1006,7 +1008,7 @@
                     text: "Please select at least one Document.",
                     icon: "warning",
                     confirmButtonText: "OK"
-                });
+                }).then(() => $(this).prop('disabled', false));
                 return;
             }
             let docIds = [];
@@ -1055,10 +1057,11 @@
                                 const newCount = Math.max(current - ids.length, 0);
                                 $badge.text(newCount);
                             });
+                            $(this).prop('disabled', false);
                         });
                     })
                     .fail(() => {
-                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
+                        Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"}).then(() => location.reload());
                     });
                 }
             });

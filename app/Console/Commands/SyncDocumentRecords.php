@@ -38,22 +38,20 @@ class SyncDocumentRecords extends Command
         $sourceModel::whereDate($dateColumn, $today)->chunk(100, function ($records) use ($targetModel, $prefix, $formattedMonthYear) {
             $grouped = $records->groupBy('branch_code');
             foreach ($grouped as $branchCode => $branchRecords) {
-                $existingCount = $targetModel::where('branch_code', $branchCode)
-                    ->whereMonth('created_at', now()->month)
-                    ->whereYear('created_at', now()->year)
-                    ->count();
-
-                $sequence = $existingCount;
-
                 foreach ($branchRecords as $record) {
-                    $sequence++;
-                    $uniqueRefNo = $prefix .
-                        str_pad($branchCode, 4, '0', STR_PAD_LEFT) .
-                        $formattedMonthYear .
-                        str_pad($sequence, 4, '0', STR_PAD_LEFT);
+                    $uniqueRefNo = $targetModel::where('branch_code', $branchCode)->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year)->max('unique_ref_no');
 
+                    if($uniqueRefNo == null)
+                    {
+                        $uniqueRefNo = $prefix . str_pad($branchCode, 4, '0', STR_PAD_LEFT) . $formattedMonthYear . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+                    }
+                    else{
+                        $sequence++;
+                    }
+                    
                     $data = $record->toArray();
-                    $data['unique_ref_no'] = $uniqueRefNo;
+                    $data['unique_ref_no'] = $uniqueRefNo++;
                     $data['status'] = 1;
                     $targetModel::create($data);
                 }

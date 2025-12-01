@@ -388,33 +388,30 @@ class DocumentController extends Controller
         if (!$docType || $docType == 'loan') {
             $loanQuery = LoanDocument::query();
             $customFilter($loanQuery, 'loan_documents');
-            $loans = $statusFilter($loanQuery)->get()
-                ->map(function ($item) {
-                    $item->doc_type = 'loan';
-                    return $item;
-                });
+            $loans = $statusFilter($loanQuery)->get()->map(function ($item) {
+                $item->doc_type = 'loan';
+                return $item;
+            });
             $allDocuments = $allDocuments->merge($loans);
         }
         
         if (!$docType || $docType == 'goldloan') {
             $goldQuery = GoldLoanDocument::query();
             $customFilter($goldQuery, 'gold_loan_documents');
-            $goldloans = $statusFilter($goldQuery)->get()
-                ->map(function ($item) {
-                    $item->doc_type = 'goldloan';  // match with select value
-                    return $item;
-                });
+            $goldloans = $statusFilter($goldQuery)->get()->map(function ($item) {
+                $item->doc_type = 'goldloan';
+                return $item;
+            });
             $allDocuments = $allDocuments->merge($goldloans);
         }
         
         if (!$docType || $docType == 'aof') {
             $aofQuery = AccountOpeningDocument::query();
             $customFilter($aofQuery, 'account_opening_documents');
-            $aofs = $statusFilter($aofQuery)->get()
-                ->map(function ($item) {
-                    $item->doc_type = 'aof';
-                    return $item;
-                });
+            $aofs = $statusFilter($aofQuery)->get()->map(function ($item) {
+                $item->doc_type = 'aof';
+                return $item;
+            });
             $allDocuments = $allDocuments->merge($aofs);
         }
         
@@ -438,8 +435,6 @@ class DocumentController extends Controller
          return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters', 'type'));
     }
     
-    
-
     public function addCourierDetails(Request $request)
     {
         $validated = $request->validate([
@@ -449,18 +444,17 @@ class DocumentController extends Controller
             'dtrf_ids'=> 'nullable|array',
             'aof_ids'=> 'nullable|array'
         ]);
-        DB::beginTransaction(); // Start Transaction
-
+        DB::beginTransaction();
         try {
-            if (isset($request->dispatch_id) && !empty($request->dispatch_id)) {
-                $dispatch = CourierDispatch::find($validated['dispatch_id']);
-                $dispatch->courier_id = $validated['courier_name'];
-                $dispatch->courier_name = $validated['courier_name'];
-                $dispatch->awb_pod = $validated['awb_pod'];
-                $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
-                $dispatch->updated_by = $this->user->id;
-                $dispatch->save();
-            }else{
+            // if (isset($request->dispatch_id) && !empty($request->dispatch_id)) {
+            //     $dispatch = CourierDispatch::find($validated['dispatch_id']);
+            //     $dispatch->courier_id = $validated['courier_name'];
+            //     $dispatch->courier_name = $validated['courier_name'];
+            //     $dispatch->awb_pod = $validated['awb_pod'];
+            //     $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
+            //     $dispatch->updated_by = $this->user->id;
+            //     $dispatch->save();
+            // }else{
                 $dispatch = new CourierDispatch;
                 $dispatch->branch_code = $this->user->branch_id; 
                 $dispatch->region_id = $this->user->region_id; 
@@ -506,7 +500,7 @@ class DocumentController extends Controller
                         $doc->save();
                     });
                 }
-            }
+            // }
             DB::commit();
             return response()->json(['success' => true]);
 
@@ -554,23 +548,16 @@ class DocumentController extends Controller
         if ($dispatch) {
 
             if (!empty($dispatch->loan_ids)) {
-                $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))
-                                ->where('status', 4)->exists();
+                $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->where('status', 4)->exists();
             }
-
             if (!empty($dispatch->goldloan_ids)) {
-                $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))
-                                ->where('status', 4)->exists();
+                $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->where('status', 4)->exists();
             }
-
             if (!empty($dispatch->aof_ids)) {
-                $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))
-                                ->where('status', 4)->exists();
+                $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->where('status', 4)->exists();
             }
-
             if (!empty($dispatch->dtrf_ids)) {
-                $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))
-                                ->where('status', 4)->exists();
+                $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->where('status', 4)->exists();
             }
         }
     
@@ -995,8 +982,6 @@ class DocumentController extends Controller
             return redirect()->route('dispatches.list')->with('error', 'Courier Not Updated');
         }
     }
-
-
 
     public function removeDocument(Request $request)
     {
@@ -1656,4 +1641,29 @@ class DocumentController extends Controller
             }
         })->filter()->toArray();
     }
+
+
+    // public function test(){
+
+    //     $branchRecords = ['1115','1116'];
+
+    //     foreach ($branchRecords as $record) {
+    //         $uniqueRefNo = AccountOpeningDocument::where('branch_code', $record)->whereMonth('created_at', now()->month)
+    //             ->whereYear('created_at', now()->year)->max('unique_ref_no');
+    
+    //         if($uniqueRefNo == null)
+    //         {
+    //             $uniqueRefNo = 'LD' . str_pad($record, 4, '0', STR_PAD_LEFT) . now()->format('my') . str_pad(1, 4, '0', STR_PAD_LEFT);
+    //         }
+    //         else{
+    //             $uniqueRefNo++;
+    //         }
+            
+    //         // $data = $record->toArray();
+    //         $data['unique_ref_no'] = $uniqueRefNo;
+    //         $data['status'] = 1;
+    //         dd($data);
+    //         // $targetModel::create($data);
+    //     }
+    // }
 }

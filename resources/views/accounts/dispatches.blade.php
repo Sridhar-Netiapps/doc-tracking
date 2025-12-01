@@ -51,6 +51,9 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade active show" id="ready-tab-pane" role="tabpanel" aria-labelledby="ready-tab" tabindex="0">
+                        @if(isset($records) && $records->count())
+                            {{ $records->links('pagination::bootstrap-5') }}
+                        @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -178,6 +181,9 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($records) && $records->count())
+                        {{ $records->links('pagination::bootstrap-5') }}
+                    @endif
                 </div>
             </div>
         </div>
