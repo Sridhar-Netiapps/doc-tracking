@@ -166,7 +166,7 @@
                                                 @endif
                                                 @if ($type == 'list')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))                                             
-                                                        <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
+                                                        <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                     @hasrole('bo-checker|admin|master')
                                                         <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ Crypt::encryptString($row->id) }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">

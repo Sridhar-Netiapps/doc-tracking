@@ -149,7 +149,7 @@ class HomeController extends Controller
 
         $type = 'home';
 
-        $total_doc = Crypt::encrypt($total_doc);
+        // $total_doc = Crypt::encrypt($total_doc);
 
         return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending',
         'total_dispatch','total_transist','total_received','total_rejected','total_selected', 'total_received_query',  

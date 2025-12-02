@@ -864,7 +864,7 @@ class DocumentController extends Controller
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
             } elseif ((int)$update['remarks'] === 12) {
                 $data = [
                     'dispatch_no' => $dispatch->dispatch_no,
@@ -876,7 +876,7 @@ class DocumentController extends Controller
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
 
             DB::commit();
