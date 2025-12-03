@@ -942,10 +942,12 @@ class InsuranceHomeController extends Controller
                     'status' => 'false',
                     'message' => implode(',', $errors)
                 ]);
-            }
+            } 
         }
 
-      Excel::import($import, $request->file('file'));
+     // Excel::import($import, $request->file('file'));
+      Excel::queueImport(new ImportClaimDetails, request()->file('file'));
+
 
        if (file_exists(public_path().'/template/Imports/')) {  
         } else {
@@ -1005,7 +1007,8 @@ class InsuranceHomeController extends Controller
         }
 
 
-        $failures = $import->getCollectedFailures();
+       // $failures = $import->getCollectedFailures();
+        $failures = array();
        //  print_r(json_encode($failures));die();
        $Errordata = array();
        if (!empty($import->failedRows)) {
