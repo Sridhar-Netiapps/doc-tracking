@@ -44,7 +44,7 @@ class SyncDocumentRecords extends Command
 
                     if($uniqueRefNo == null)
                     {
-                        $uniqueRefNo = $prefix . str_pad($branchCode, 4, '0', STR_PAD_LEFT) . $formattedMonthYear . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+                        $uniqueRefNo = $prefix . str_pad($branchCode, 4, '0', STR_PAD_LEFT) . $formattedMonthYear . str_pad(1, 4, '0', STR_PAD_LEFT);
                     }
                     else{
                         $uniqueRefNo++;
