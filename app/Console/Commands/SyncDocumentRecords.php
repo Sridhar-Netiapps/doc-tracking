@@ -47,11 +47,11 @@ class SyncDocumentRecords extends Command
                         $uniqueRefNo = $prefix . str_pad($branchCode, 4, '0', STR_PAD_LEFT) . $formattedMonthYear . str_pad($sequence, 4, '0', STR_PAD_LEFT);
                     }
                     else{
-                        $sequence++;
+                        $uniqueRefNo++;
                     }
                     
                     $data = $record->toArray();
-                    $data['unique_ref_no'] = $uniqueRefNo++;
+                    $data['unique_ref_no'] = $uniqueRefNo;
                     $data['status'] = 1;
                     $targetModel::create($data);
                 }
