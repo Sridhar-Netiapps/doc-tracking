@@ -1200,43 +1200,35 @@ class DocumentController extends Controller
       
     }
 
-    public function export(Request $request)
-    {
-        $user = $this->user;
-        $filters = $request->all();
+    public function export(Request $request){
+        $user = $this->users;
+        $filter = function ($query, $table) use ($user, $request) {
+            $filters = $request->all();
+            $docType = $filters['doc_type'] ?? null;
 
-        $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-        $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay();
+            $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
+            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay;
 
-        // Allowed columns for filter (faster than Schema check)
-        $allowedFilters = [
-            'region', 'branch_code', 'status',
-            'cif_id', 'account_number', 'vendor_name'
-        ];
-
-        // Shared filter closure
-        $filter = function ($query, $filters, $fromDate, $toDate, $request, $table) use ($allowedFilters) {
             foreach ($filters as $field => $value) {
-                if (!empty($value) && in_array($field, $allowedFilters)) {
-                    if (in_array($field, ['cif_id', 'account_number'])) {
+                if (!empty($value) && \Schema::hasColumn($table, $field)) {
+                    if(in_array($field, ['cif_id', 'account_number'])) {
                         $query->where($field, 'like', '%' . $value . '%');
                     } elseif (is_array($value)) {
                         $query->whereIn($field, $value);
                     } else {
                         $query->where($field, $value);
                     }
+                    
                 }
             }
 
-            // courier filter
-            if (!empty($filters['courier_name'])) {
+            if(!empty($filters['courier_name'])) {
                 $courierId = $filters['courier_name'];
                 $query->whereHas('dispatch.courierName', function ($q) use ($courierId) {
                     $q->where('id', $courierId);
                 });
             }
 
-            // date filtering
             if ($request->filled(['from_date', 'to_date', 'date_field'])) {
                 $dateField = $request->input('date_field');
 
@@ -1244,7 +1236,7 @@ class DocumentController extends Controller
                     'dispatch_date' => 'dispatch_date',
                     'received_date' => 'updated_at',
                     'tracking_date' => 'updated_at',
-                    default => null,
+                    default         => null,
                 };
 
                 $mainField = match ($dateField) {
@@ -1252,134 +1244,77 @@ class DocumentController extends Controller
                     'movement_date' => 'vendor_movement_date',
                     'addition_date' => 'date_added_to_vendor',
                     'activity_date' => 'updated_at',
-                    'sync_date' => 'created_at',
-                    default => null,
+                    'sync_date'     => 'created_at',
+                    default         => null,
                 };
 
-                if ($dispatchField) {
+                if($dispatchField) {
                     $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate, $dateField) {
-                        if ($dateField == 'received_date') {
-                            $q->whereIn('status', [5, 6, 7]);
+                        if($dateField == 'received_date') {
+                            $q->whereIn('status', [5,6,7]);
                         } elseif ($dateField == 'tracking_date') {
                             $q->where('status', 12);
                         }
-
-                        if ($fromDate && $toDate) {
+                        if($fromDate && $toDate) {
                             $q->whereBetween($dispatchField, [$fromDate, $toDate]);
-                        } elseif ($fromDate) {
+                        } elseif($fromDate) {
                             $q->whereDate($dispatchField, '>=', $fromDate);
                         } elseif ($toDate) {
                             $q->whereDate($dispatchField, '<=', $toDate);
                         }
                     });
-                } elseif ($mainField) {
-                    $query->whereBetween($mainField, [$fromDate, $toDate]);
+                }
+
+                elseif ($mainField) {
+                    $query->where(function ($q) use ($mainField, $fromDate, $toDate){
+                        $q->whereHas('dispatch', function ($dq) use ($mainField, $fromDate, $toDate){
+                            if($fromDate && $toDate) {
+                                $dq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif($fromDate) {
+                                $dq->whereDate($mainField, '>=', $fromDate);
+                            } elseif($toDate) {
+                                $dq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+                        $q->orWhere(function ($sq) use ($mainField, $fromDate, $toDate){
+                            $sq->doesntHave('dispatch');
+                            if($fromDate && $toDate) {
+                                $sq->whereBetween($mainField, [$fromDate, $toDate]);
+                            } elseif($fromDate) {
+                                $sq->whereDate($mainField, '>=', $fromDate);
+                            } elseif($toDate) {
+                                $sq->whereDate($mainField, '<=', $toDate);
+                            }
+                        });
+                    });
                 }
             }
-
             return $query->orderBy('account_creation_date', 'desc');
         };
 
-        if ($request->doc_type === 'loan') {
-            $data = LoanDocument::with([
-                'dispatch.courierName',
-                'dispatch.dispatcher',
-                'dispatch.modifier',
-                'getReceivedDetails.newStatus',
-                'getReceivedDetails.creator',
-                'statusName'
-            ])->select([
-                'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id', 'account_number',
-                'loan_cycle', 'customer_name', 'account_creation_date', 'channel', 'glow_application_id',
-                'loan_amount', 'loan_disbursement_type', 'business_category', 'barcode', 'lot_no',
-                'category_of_document', 'work_order_no', 'vendor_name', 'vendor_movement_date', 'file_barcode',
-                'box_barcode', 'date_added_to_vendor', 'reason', 'status'
-            ]);
+        if ($request->doc_type == 'loan') {
+            $data = LoanDocument::query();
+            $filter($data, 'loan_documents');
 
-            $filter($data, $filters, $fromDate, $toDate, $request, 'loan_documents');
+            return Excel::download(new LoanDocumentExport($data->get()), 'loan_documents.xlsx');
+        } elseif( $request->doc_type == 'goldloan') {
+            $data = GoldLoanDocument::query();
+            $filter($data, 'gold_loan_documents');
 
-            return Excel::download(
-                new LoanDocumentExport($data),
-                "loan_documents_" . now()->format('Y_m_d_H_i_s') . ".csv",
-                \Maatwebsite\Excel\Excel::CSV
-            );
+            return Excel::download(new GoldLoanDocumentExport($data->get()), 'gold_loan_documents.xlsx');
+        } elseif ($request->doc_type == 'dtrf') {
+            $data = DtrfDocument::query();
+            $filter($data, 'dtrf_documents');
+
+            return Excel::download(new DtrfExport($data->get()), 'dtrf_documents.xlsx');
+        }elseif($request->doc_type == 'aof') {
+            $data = AccountOpeningDocument::query();
+            $filter($data, 'account_opening_documents');
+
+            return Excel::download(new AccountOpeningDocumentExport($data->get()), 'account_opening_documents.xlsx');
+        } else {
+            return redirect()->back()->with('error', 'Invalid document type selected');
         }
-
-        elseif ($request->doc_type === 'goldloan') {
-            $data = GoldLoanDocument::with([
-                'dispatch.courierName',
-                'dispatch.dispatcher',
-                'dispatch.modifier',
-                'getReceivedDetails.newStatus',
-                'getReceivedDetails.creator',
-                'statusName'
-            ])->select([
-                'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id', 'account_number',
-                'customer_name', 'account_creation_date', 'channel',
-                'loan_amount', 'barcode', 'lot_no', 'business_category',
-                'category_of_document', 'work_order_no', 'vendor_name', 'vendor_movement_date', 'file_barcode',
-                'box_barcode', 'date_added_to_vendor', 'reason', 'status'
-            ]);
-
-            $filter($data, $filters, $fromDate, $toDate, $request, 'gold_loan_documents');
-
-            return Excel::download(
-                new GoldLoanDocumentExport($data),
-                "goldloan_documents_" . now()->format('Y_m_d_H_i_s') . ".csv",
-                \Maatwebsite\Excel\Excel::CSV
-            );
-        }
-
-        elseif ($request->doc_type === 'dtrf') {
-            $data = DtrfDocument::with([
-                'dispatch.courierName',
-                'dispatch.dispatcher',
-                'dispatch.modifier',
-                'getReceivedDetails.newStatus',
-                'getReceivedDetails.creator',
-                'statusName'
-            ])->select([
-                'unique_ref_no', 'region', 'branch_code', 'branch_name',
-                'account_creation_date',  'business_category', 'barcode', 'lot_no',
-                'category_of_document', 'work_order_no', 'vendor_name', 'vendor_movement_date', 'file_barcode',
-                'box_barcode', 'date_added_to_vendor', 'reason', 'status'
-            ]);
-
-            $filter($data, $filters, $fromDate, $toDate, $request, 'dtrf_documents');
-
-            return Excel::download(
-                new DtrfExport($data),
-                "dtrf_documents_" . now()->format('Y_m_d_H_i_s') . ".csv",
-                \Maatwebsite\Excel\Excel::CSV
-            );
-        }
-
-        elseif ($request->doc_type === 'aof') {
-            $data = AccountOpeningDocument::with([
-                'dispatch.courierName',
-                'dispatch.dispatcher',
-                'dispatch.modifier',
-                'getReceivedDetails.newStatus',
-                'getReceivedDetails.creator',
-                'statusName'
-            ])->select([
-                'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id', 'account_number',
-                'customer_name', 'account_creation_date', 'scheme', 'channel', 'pgk_no',
-                'type_of_account_opening', 'business_category', 'barcode', 'lot_no',
-                'category_of_document', 'work_order_no', 'vendor_name', 'vendor_movement_date', 'file_barcode',
-                'box_barcode', 'date_added_to_vendor', 'reason', 'status'
-            ]);
-
-            $filter($data, $filters, $fromDate, $toDate, $request, 'account_opening_documents');
-
-            return Excel::download(
-                new AccountOpeningDocumentExport($data),
-                "aof_documents_" . now()->format('Y_m_d_H_i_s') . ".csv",
-                \Maatwebsite\Excel\Excel::CSV
-            );
-        }
-
-        return redirect()->back()->with('error', 'Invalid document type selected.');
     }
 
     public function sendEmail($subject, $content, $to, $cc=null)
