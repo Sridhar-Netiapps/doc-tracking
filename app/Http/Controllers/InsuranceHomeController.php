@@ -364,9 +364,15 @@ class InsuranceHomeController extends Controller
           
         ]);
 
-        $utrn = rand('000000','999999');
+        $utrn = 'INS_CLM'.rand(100000,999999).date('YmdHis');
+        if (!$utrn || InsuranceClaimDetail::where('utrn', $utrn)->exists()) {
+            do {
+                $utrn = 'INS_CLM'.rand(100000, 999999).date('YmdHis');
+            } while (InsuranceClaimDetail::where('utrn', $utrn)->exists());
+        }
+
         $claimdata = new InsuranceClaimDetail;
-        $claimdata->utrn = "INS_CLM".$utrn;
+        $claimdata->utrn = $utrn;
         $claimdata->branch = $request->branch;
         $claimdata->partner = $request->partner;
         $claimdata->product = $request->product;
@@ -431,6 +437,7 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
+            InsuranceClaimDetail::update(['']);
             InsuranceNomineeDetail::create(
               [
                 'insurance_claim_details_id' => $claimdata->id,
