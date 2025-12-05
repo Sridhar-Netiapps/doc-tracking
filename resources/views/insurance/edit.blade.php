@@ -42,6 +42,11 @@
 		                allowEscapeKey: false
 		            }).then((result) => {
 		                console.log('result:', result);
+		                let redirectUrl = @json(session('redirect_url'));
+
+	                    if (redirectUrl) {
+	                        window.location.href = redirectUrl;
+	                    }
 		                
 		            });
 		        }, 300); // Delay to ensure full render
@@ -391,7 +396,7 @@
 					    <select class="form-control form-control-design  form-select" name="cliam_status" >
 					    	<option value="">Select</option>
 					    	@foreach($claimstatus as $key=>$value)
-					    	   <option {{ ( (old('cliam_status',$data->cliam_status )==$value->claim_status))?'selected':''}} value="{{$value->claim_status}}">{{$value->claim_status}}</option>
+					    	   <option {{ ( (old('cliam_status',$data->cliam_status )==$value->claim_status))?'selected':''}} value="{{$value->claim_status}}">{{ (strlen($key+1)=='1'?'0':'' )}}{{$key+1}}-{{$value->claim_status}}</option>
 					    	@endforeach
 					    </select>
 					    @error('cliam_status')<div class="text-error">{{ $message }}</div>@enderror

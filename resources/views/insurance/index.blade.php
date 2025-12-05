@@ -147,7 +147,7 @@
 					<td class="text-table">{{  ($value->submit_to_partner_date !='')?date('d M,Y',strtotime($value->submit_to_partner_date)):''}}</td>
 					<td>
 						<div class="d-flex">
-							<a class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
+							<a target="_blank" class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
 							@if( ($value->cliam_status !='Completed' && auth::user()->branch_id == '1100' ) || auth::user()->hrmData->current_designation =='Manager-Insurance and TPP Operations')
 							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" ><button class="btn btn-sm btn-danger" id="btn_edit">Edit</button></a>
 							@endif

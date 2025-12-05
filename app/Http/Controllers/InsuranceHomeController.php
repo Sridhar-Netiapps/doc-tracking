@@ -325,10 +325,11 @@ class InsuranceHomeController extends Controller
           'product' => 'required',
           'policy_covered_date' => 'required',
           'actual_id' => 'required',
+          'deceased' => 'required',
           'deceased_name' => 'required',
           'date_of_death' => ['required','before_or_equal:today'],
           'load_acc_id' => 'required|max:25',
-          'claim_amount' => 'required|max:20',
+          //'claim_amount' => 'required|max:20',
           'loan_amount' => 'nullable|max:20',
           'loan_outstanding' => 'nullable|max:20',
           'recovered_amount' => 'nullable|max:20',
@@ -466,7 +467,7 @@ class InsuranceHomeController extends Controller
             $reciepients=['druva@netiapps.com'];
             $csvContent='';
             $fileName = '';
-            $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+            //$result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
 
              $module = 'Insurance'; 
              $operation = 'create';
@@ -475,7 +476,7 @@ class InsuranceHomeController extends Controller
 
             $this->auditlogs($module , $operation ,$note , $link);
 
-            return redirect()->back()->with('success','Saved Succesfully');
+            return redirect()->back()->with('success','Saved Succesfully')->with('redirect_url', $link);;
         }
         else{
             return redirect()->back()->with('failure','Error while Saving data');
@@ -593,10 +594,11 @@ class InsuranceHomeController extends Controller
           'product' => 'required',
           'policy_covered_date' => 'required',
           'actual_id' => 'required',
+          'deceased' => 'required',
           'deceased_name' => 'required',
           'date_of_death' => ['required','before_or_equal:today'],
           'load_acc_id' => 'required|max:25',
-          'claim_amount' => 'required|max:20',
+          //'claim_amount' => 'required|max:20',
           'loan_amount' => 'nullable|max:20',
           'loan_outstanding' => 'nullable|max:20',
           'recovered_amount' => 'nullable|max:20',
@@ -762,7 +764,7 @@ class InsuranceHomeController extends Controller
         $fileName = '';
        // print_r($csvContent);die();
 
-        $result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
+        //$result = IntimationResponseMail::sendThrottled($reciepients , $mailData ,$csvContent, $fileName);
 
              $module = 'Insurance'; 
              $operation = 'Update';
@@ -771,7 +773,7 @@ class InsuranceHomeController extends Controller
 
             $this->auditlogs($module , $operation ,$note , $link);
 
-            return redirect()->back()->with('success','Updated Succesfully');
+            return redirect()->back()->with('success','Updated Succesfully')->with('redirect_url', $link);
         }
         else{
             return redirect()->back()->with('failure','Error while Updating data');
@@ -945,8 +947,10 @@ class InsuranceHomeController extends Controller
             } 
         }
 
-     // Excel::import($import, $request->file('file'));
-      Excel::queueImport(new ImportClaimDetails, request()->file('file'));
+      Excel::import($import, $request->file('file'));
+
+     // $path = $request->file('file')->store('imports/claims');  
+     // Excel::queueImport(new ImportClaimDetails, request()->file('file'));
 
 
        if (file_exists(public_path().'/template/Imports/')) {  
@@ -1007,8 +1011,8 @@ class InsuranceHomeController extends Controller
         }
 
 
-       // $failures = $import->getCollectedFailures();
-        $failures = array();
+        $failures = $import->getCollectedFailures();
+       // $failures = array();
        //  print_r(json_encode($failures));die();
        $Errordata = array();
        if (!empty($import->failedRows)) {
