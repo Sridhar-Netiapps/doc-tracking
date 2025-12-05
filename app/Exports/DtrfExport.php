@@ -15,7 +15,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
     {
         $this->data = $data;
     }
-
+    
     public function collection()
     {
         return $this->data;

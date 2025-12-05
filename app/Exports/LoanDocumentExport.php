@@ -6,23 +6,19 @@ use App\Models\LoanDocument;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-// use Maatwebsite\Excel\Concerns\ShouldQueue;
 
-
-class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
+class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
 {
-    use \Maatwebsite\Excel\Concerns\Exportable;
-    protected $query;
+    protected $data;
 
-    public function __construct($query)
+    public function __construct($data)
     {
-        $this->query = $query;
+        $this->data = $data;
     }
-    public function query()
+    
+    public function collection()
     {
-        return $this->query;
+        return $this->data;
     }
 
 

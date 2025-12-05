@@ -15,10 +15,9 @@ class GoldLoanDocumentExport implements FromCollection, WithHeadings, WithMappin
     {
         $this->data = $data;
     }
-
+    
     public function collection()
     {
-        // dd($this->data);
         return $this->data;
     }
 

@@ -15,7 +15,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
     {
         $this->data = $data;
     }
-
+    
     public function collection()
     {
         return $this->data;
