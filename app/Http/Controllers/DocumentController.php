@@ -1201,7 +1201,7 @@ class DocumentController extends Controller
     }
 
     public function export(Request $request){
-        $user = $this->users;
+        $user = $this->user;
         $filter = function ($query, $table) use ($user, $request) {
             $filters = $request->all();
             $docType = $filters['doc_type'] ?? null;
