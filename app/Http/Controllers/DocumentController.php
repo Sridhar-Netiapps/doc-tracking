@@ -1207,7 +1207,7 @@ class DocumentController extends Controller
             $docType = $filters['doc_type'] ?? null;
 
             $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
-            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay;
+            $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay();
 
             foreach ($filters as $field => $value) {
                 if (!empty($value) && \Schema::hasColumn($table, $field)) {
