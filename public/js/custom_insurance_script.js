@@ -42,6 +42,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+    let alphaInputsOnly = document.querySelectorAll(".clsAlphabetsOnly");
+
+    alphaInputsOnly.forEach(function (input) {
+      
+       
+        input.addEventListener("keypress", function (event) {
+            clsAlphabetsOnly(event);
+        });
+
+    });
+
      let numberInputs = document.querySelectorAll(".number-with-format");
 
     numberInputs.forEach(function (input) {
@@ -250,6 +261,19 @@ function formatNumber(input) {
         e.preventDefault();
         return false;
     }
+
+  function clsAlphabetsOnly (e) {  // Accept only alpha numerics, no special characters 
+ // alert("ll");
+       var regex = new RegExp("^[a-zA-Z ]+$");
+
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str)) {
+            return true;
+        }
+
+        e.preventDefault();
+        return false;
+    }  
 
  document.addEventListener("contextmenu", function(event) {
         event.preventDefault();

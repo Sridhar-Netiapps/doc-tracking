@@ -317,10 +317,10 @@
 </div>
 <script>
     $(document).ready(function () {
-        var count = $('select[name="remarks"]').length;
-        if(count > 0){
-            $('#update-all').removeClass('d-none');
-        }
+        // var count = $('select[name="remarks"]').length;
+        // if(count > 0){
+        //     $('#update-all').removeClass('d-none');
+        // }
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
@@ -581,43 +581,43 @@
         });
     }
 
-    // Handle bulk update
-    $('#update-all').on('click', function () {
-        const data = [];
-        let hasError = false;
+    // // Handle bulk update
+    // $('#update-all').on('click', function () {
+    //     const data = [];
+    //     let hasError = false;
 
-        $('tr[data-id]').each(function () {
-            try {
-                data.push(collectRowData($(this)));
-            } catch (err) {
-                Swal.fire({title: "Alert!", text: err, icon: "warning"});
-                hasError = true;
-                return false; // stop loop
-            }
-        });
+    //     $('tr[data-id]').each(function () {
+    //         try {
+    //             data.push(collectRowData($(this)));
+    //         } catch (err) {
+    //             Swal.fire({title: "Alert!", text: err, icon: "warning"});
+    //             hasError = true;
+    //             return false; // stop loop
+    //         }
+    //     });
 
-        if (!hasError && data.length) {
-            sendUpdateRequest(data);
-        }
-    });
+    //     if (!hasError && data.length) {
+    //         sendUpdateRequest(data);
+    //     }
+    // });
 
     // Common AJAX function
-    function sendUpdateRequest(payload) {
-        $.ajax({
-            url: '{{ route("dispatches.update") }}',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                updates: payload
-            },
-            success: function () {
-                Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
-            },
-            error: function () {
-                Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
-            }
-        });
-    }
+    // function sendUpdateRequest(payload) {
+    //     $.ajax({
+    //         url: '{{ route("dispatches.update") }}',
+    //         method: 'POST',
+    //         data: {
+    //             _token: '{{ csrf_token() }}',
+    //             updates: payload
+    //         },
+    //         success: function () {
+    //             Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
+    //         },
+    //         error: function () {
+    //             Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
+    //         }
+    //     });
+    // }
     $('.revert-status').click(function () {
         $('input.revert-reason').val($(this).data('id'));
         $('#revert-status').modal('show');
