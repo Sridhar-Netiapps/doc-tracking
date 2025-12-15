@@ -533,30 +533,69 @@ class DocumentController extends Controller
         return redirect()->route('dispatches', $type);       // Redirect back to listing
     }
     
+    // public function checkDispatchStatus($id)
+    // {
+    //     $dispatch = CourierDispatch::find($id);
+    
+    //     $hasStatus4 = false;
+    
+    //     if ($dispatch) {
+
+    //         if (!empty($dispatch->loan_ids)) {
+    //             $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->where('status', 4)->exists();
+    //         }
+    //         if (!empty($dispatch->goldloan_ids)) {
+    //             $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->where('status', 4)->exists();
+    //         }
+    //         if (!empty($dispatch->aof_ids)) {
+    //             $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->where('status', 4)->exists();
+    //         }
+    //         if (!empty($dispatch->dtrf_ids)) {
+    //             $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->where('status', 4)->exists();
+    //         }
+    //     }
+    
+    //     return response()->json(['disable_update' => $hasStatus4]);
+    // }
+
     public function checkDispatchStatus($id)
     {
         $dispatch = CourierDispatch::find($id);
-    
-        $hasStatus4 = false;
-    
+
+        $hasInvalidStatus = false;
+
         if ($dispatch) {
 
+            $checkInvalid = function ($model, $ids) {
+                return $model::whereIn('id', explode(',', $ids))
+                    ->whereNotIn('status', [5, 6, 7])
+                    ->exists();
+            };
+
             if (!empty($dispatch->loan_ids)) {
-                $hasStatus4 = $hasStatus4 || LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->where('status', 4)->exists();
+                $hasInvalidStatus = $hasInvalidStatus || $checkInvalid(LoanDocument::class, $dispatch->loan_ids);
             }
+
             if (!empty($dispatch->goldloan_ids)) {
-                $hasStatus4 = $hasStatus4 || GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->where('status', 4)->exists();
+                $hasInvalidStatus = $hasInvalidStatus || $checkInvalid(GoldLoanDocument::class, $dispatch->goldloan_ids);
             }
+
             if (!empty($dispatch->aof_ids)) {
-                $hasStatus4 = $hasStatus4 || AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->where('status', 4)->exists();
+                $hasInvalidStatus = $hasInvalidStatus || $checkInvalid(AccountOpeningDocument::class, $dispatch->aof_ids);
             }
+
             if (!empty($dispatch->dtrf_ids)) {
-                $hasStatus4 = $hasStatus4 || DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->where('status', 4)->exists();
+                $hasInvalidStatus = $hasInvalidStatus || $checkInvalid(DtrfDocument::class, $dispatch->dtrf_ids);
             }
         }
-    
-        return response()->json(['disable_update' => $hasStatus4]);
+
+        return response()->json([
+            // disable if ANY invalid status exists
+            'disable_update' => $hasInvalidStatus
+        ]);
     }
+
+
     
     
     public function getDispatches($type, Request $request)
@@ -689,10 +728,10 @@ class DocumentController extends Controller
 
         $dtype = session()->pull('dtype');
         // dd($dtype);
-        $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(1)->withQueryString();
-        $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(1)->withQueryString();
-        $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(1)->withQueryString();
-        $account_opening_document = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->paginate(1)->withQueryString();
+        $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
+        $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
+        $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
+        $account_opening_document = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->paginate(100)->withQueryString();
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
@@ -890,6 +929,7 @@ class DocumentController extends Controller
     
     public function removeDispatchesDocument(Request $request)
     {
+        // dd($request->all());
         $columns = [
             'loan' => 'loan_ids',
             'goldloan' => 'goldloan_ids',
@@ -900,7 +940,6 @@ class DocumentController extends Controller
         $type = $request->type;
         $docId = $request->doc_id;
         $dispatchId = $request->dispatch_id;
-    
         try {
             DB::beginTransaction();
     

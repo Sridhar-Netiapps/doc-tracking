@@ -30,7 +30,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
 
 
-class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError, WithChunkReading
+class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
@@ -91,7 +91,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
                 $modelClass = $table[$this->doc_type];
                 $document   = new $modelClass;
                 $branchCode = $row['branch_code'] ?? null;
-                $uniqueRefNo = $this->generateRefNo($this->doc_type, $branchCode, $table);
+                $uniqueRefNo = $this->generateRefNo($this->doc_type, $table, $branchCode);
                 $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
@@ -156,7 +156,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             }
         }
     }
-    private function generateRefNo(string $docType, string $table, string $branchCode): string
+    private function generateRefNo($docType, $table, $branchCode): string
     {
         $prefixMap = [
             'loan'     => 'MB',
@@ -234,7 +234,6 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
         ];
     }
     
-
     public function getTotal(): int
     {   
         return $this->total;
