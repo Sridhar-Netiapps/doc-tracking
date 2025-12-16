@@ -1240,6 +1240,9 @@ class DocumentController extends Controller
     }
 
     public function export(Request $request){
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', '-1');
+        
         $user = $this->user;
         $filter = function ($query, $table) use ($user, $request) {
             $filters = $request->all();
