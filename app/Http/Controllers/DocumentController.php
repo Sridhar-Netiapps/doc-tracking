@@ -1273,19 +1273,35 @@ class DocumentController extends Controller
 
                 $dispatchField = match ($dateField) {
                     'dispatch_date' => 'dispatch_date',
-                    'received_date' => 'updated_at',
-                    'tracking_date' => 'updated_at',
+                    // 'received_date' => 'created_at',
+                    // 'tracking_date' => 'updated_at',
                     default         => null,
                 };
 
                 $mainField = match ($dateField) {
                     'creation_date' => 'account_creation_date',
                     'movement_date' => 'vendor_movement_date',
-                    'addition_date' => 'date_added_to_vendor',
+                    // 'addition_date' => 'date_added_to_vendor',
                     'activity_date' => 'updated_at',
-                    'sync_date'     => 'created_at',
+                    // 'sync_date'     => 'created_at',
                     default         => null,
                 };
+
+                if ($dateField == 'received_date') {
+
+                    $query->whereHas('getReceivedDetails', function ($q) use ($fromDate, $toDate) {
+                
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween('created_at', [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate('created_at', '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate('created_at', '<=', $toDate);
+                        }
+                
+                    });
+                
+                }
 
                 if($dispatchField) {
                     $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate, $dateField) {

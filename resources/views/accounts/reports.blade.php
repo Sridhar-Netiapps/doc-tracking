@@ -140,13 +140,13 @@
                                 <select id="date_field" name="date_field" class="form-select">
                                     <option value="">-- Select --</option>
                                     <option value="creation_date">Account Creation / DTR File Date</option>
-                                    {{-- <option value="dispatch_date">Dispatch Date</option> --}}
-                                    {{-- <option value="received_date">Courier Received Date</option> --}}
+                                    <option value="dispatch_date">Dispatch Date</option>
+                                    <option value="received_date">Received Date</option> {{--document received date / ro received date --}}
                                     <option value="movement_date">Vendor Movement Date</option>
-                                    <option value="addition_date">Addition to Vendor Data</option>
+                                    {{-- <option value="addition_date">Addition to Vendor Date</option> --}}
                                     {{-- <option value="sync_date">Sync Date</option>  --}}
                                     <option value="activity_date">Activity Date</option>
-                                    <option value="tracking_date">Tracking Date</option>
+                                    {{-- <option value="tracking_date">Tracking Date</option> --}}
                                 </select>
                             </div>
                             <div class="col-3 mt-2">
