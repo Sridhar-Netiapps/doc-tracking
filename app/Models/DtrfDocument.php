@@ -37,6 +37,7 @@ class DtrfDocument extends Model
     {
         return $this->hasOne(DocumentHistory::class, 'document_id')
                     ->where('document_type', 'DtrfDocument')
-                    ->whereIn('current_status', [5,6,7]);
+                    ->whereIn('current_status', [5,6,7])
+                    ->orderby('created_at', 'desc');
     }
 }

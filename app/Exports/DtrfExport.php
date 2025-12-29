@@ -15,7 +15,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
     {
         $this->data = $data;
     }
-
+    
     public function collection()
     {
         return $this->data;
@@ -72,7 +72,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
             $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name : '-') : '-',
             $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
-            $doc->reason != null ? ($doc->reason) : '-',
+            (in_array($doc->status, [6,7]) ? ($doc->reason) : '-'),
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->current_status >= 4 ? optional($doc->getReceivedDetails->creator)->employee_id . ' - ' . optional($doc->getReceivedDetails->creator)->first_name : '-') : '-',
             $doc->lot_no,

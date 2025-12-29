@@ -110,7 +110,6 @@ class CheckRole
                 'permissions'
             ],
             'ro-user' => [
-                'document/reports',
                 'vendor',
                 'emails',
                 'process-status',

@@ -28,7 +28,7 @@
                 </li>
 
                 <li class="nav-item ">
-                    <a class="nav-link {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}" href="@hasanyrole('master|ro-officer'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
+                    <a class="nav-link {{ Request::segment(1) === 'dispatches' ? 'active-tab' : '' }}" href="@hasanyrole('master|ro-officer|ro-user|ro-supervisor'){{ route('dispatches','list') }}@else{{ route('dispatches','ready') }}@endhasanyrole">Dispatches</a>
                 </li>
 
                 <li class="nav-item ">
@@ -43,7 +43,7 @@
                     <a class="nav-link {{ $currentType === 'moved' ? 'active-tab' : '' }}" href="{{ route('accounts.index',['type' => 'moved','dtype' => 'loan']) }}">Moved to RMA</a>
                 </li>
                 @endhasrole
-                @hasrole('ro-officer|ro-supervisor|ho-user|admin|super_admin|master')
+                @hasrole('ro-officer|ro-supervisor|ro-user|ho-user|admin|super_admin|master')
                 <li class="nav-item px-4">
                     <a class="nav-link {{ $currentTab === 'reports' ? 'active-tab' : '' }}" href="{{ route('report-page', ['type' => 'reports']) }}">Reports</a>
                 </li>
