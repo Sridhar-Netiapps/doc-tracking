@@ -1145,7 +1145,7 @@ class DocumentController extends Controller
             if(strtolower($this->user->region) != strtolower($document->region)){
                 return redirect('/home')->with('error', 'Access Denied');
             }
-            dd((strtolower($this->user->region)));
+            // dd((strtolower($this->user->region)));
         }
         $history = DocumentHistory::where('document_id',$decryptedId)->where('document_type',class_basename($this->table[$dtype]))->get();
 

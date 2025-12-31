@@ -119,7 +119,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->status = $doc_status;
                 // dd($document);
                 if ($document->isDirty()) {
-                    Log::info($document->unique_ref_no.' Updated');
+                    // Log::info($document->unique_ref_no.' Updated');
                     $document->updated_by = auth()->user()->id;
                     $document->save();
                 }
