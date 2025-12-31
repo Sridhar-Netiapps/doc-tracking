@@ -97,7 +97,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($loan_document) > 0)
+                                @if ($loan_document)
                                     @foreach ($loan_document as $row)
                                         <tr class="doc-row"
                                                 data-lot_no="{{ $row->lot_no }}"
@@ -138,16 +138,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="26"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
@@ -185,7 +183,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($gold_loan_document) > 0)
+                                @if ($gold_loan_document)
                                     @foreach ($gold_loan_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>  
@@ -218,16 +216,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="24"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
@@ -267,7 +263,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($account_opening_document) > 0)
+                                @if ($account_opening_document)
                                     @foreach ($account_opening_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>
@@ -302,16 +298,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="24"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
@@ -344,7 +338,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (count($dtrf_document) > 0)
+                                @if ($dtrf_document)
                                     @foreach ($dtrf_document as $row)
                                         <tr>
                                             <td>{{ $row->unique_ref_no }}</td>
@@ -372,16 +366,14 @@
                                             @endunless
                                         </tr>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="18"><p class="text-center text-muted">No document found.</p></td>
-                                    </tr>
                                 @endif
                             </tbody>
                         </table>
                     </div>
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
             </div>
@@ -411,9 +403,9 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control unique_ref_no alphanumeric" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
+                    <input type="text" class="form-control unique_ref_no alphanumeric capsonly" placeholder="Unique Number" value="{{ old('unique_ref_no', $filters['unique_ref_no'] ?? '') }}" name="unique_ref_no">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ro-officer', 'ro-supervisor', 'ro-user', 'branch-user']))
                 <div class="col-12 mt-3 d-none">
                     <select class="form-select region" name="region">
                         <option value="">Select Region</option>
@@ -427,16 +419,16 @@
                 <div class="col-12 mt-3">
                     <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name lettersonly" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control cif_id alphanumeric" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control account_number alphanumeric" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control alphanumeric" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
@@ -508,7 +500,7 @@
                         <input type="hidden" name="dtype">
                         <input type="hidden" name="is_filtered" value="{{ isset($filters) ? 1 : 0 }}">
                         <label for="lot_no" class="form-label">Lot No <span class="text-danger">*</span></label>
-                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric" required>
+                        <input type="text" id="lot_no_input" name="lot_no" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="category_of_document" class="form-label">Doc. Category <span class="text-danger">*</span></label>
@@ -522,7 +514,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="work_order_no" class="form-label">Work Order No <span class="text-danger">*</span></label>
-                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric" required>
+                        <input type="text" id="work_order_input" name="work_order_no" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="vendor_name" class="form-label">Vendor Name <span class="text-danger">*</span></label>
@@ -541,11 +533,11 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="file_barcode" class="form-label">File barcode <span class="text-danger">*</span></label>
-                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric" required>
+                        <input type="text" id="file_barcode_input" name="file_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="box_barcode" class="form-label">Box Barcode <span class="text-danger">*</span></label>
-                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric" required>
+                        <input type="text" id="box_barcode_input" name="box_barcode" class="form-control alphanumeric capsonly" required>
                     </div>
                     <div class="col-4 pb-2">
                         <label for="date_added_to_vendor" class="form-label">Date of addition <span class="text-danger">*</span></label>
@@ -747,8 +739,10 @@
                     }
                     $('#vendor_input').val(data.vendor_name).change();
 
-                    $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
-                    $('#date_added_input').val(data.date_added_to_vendor ?? '');
+                    // $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
+                    $('#vendor_movement_date_input').val(data.vendor_movement_date ? new Date(data.vendor_movement_date).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
+                    $('#date_added_input').val(data.date_added_to_vendor ? new Date(data.date_added_to_vendor).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
+                    // $('#date_added_input').val(data.date_added_to_vendor ?? '');
                     if ($('#status_input option[value="' + data.status + '"]').length === 0) {
                         $('#status_input').append(new Option(data.status, data.status));
                     }

@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation,
     SkipsOnFailure,
     SkipsOnError,
+    WithChunkReading,
     ToCollection
 };
 use Maatwebsite\Excel\Row;
@@ -29,7 +30,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
 
 
-class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
+class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
@@ -41,21 +42,20 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     public function __construct($doc_type)
     {
         $this->doc_type = $doc_type;
-        // dd($doc_type);
     }
     function parseExcelDate($value)
     {
-        if (is_numeric($value)) {
-            return date('Y-m-d', ($value - 25569) * 86400);
-        } else {
-            $timestamp = strtotime($value);
-            return $timestamp ? date('Y-m-d', $timestamp) : null;
-        }
+       if(is_numeric($value)) {
+        return date('Y-m-d', ($value - 25569) * 86400);
+       } else {
+        $timestamp = strtotime($value);
+        return $timestamp ? date('Y-m-d', $timestamp) : null;
+       }
     }
 
     public function collection(Collection $rows)
     {
-        // dd($rows);
+        // dd($this->doc_type);
         $table = [
             'loan' => LoanDocument::class,
             'goldloan' => GoldLoanDocument::class,
@@ -72,35 +72,35 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'RECEIVED WITH QUERY' => 7,
             'IN' => 8,
             'OUT' => 9,
-            'PERMOUNT' => 10,
+            'PERMOUT' => 10,
             'DESTROYED' => 11,
         ];
         
         foreach ($rows as $row) {
             $this->total++;
+            // dd($row);
             try {
-                // $doc_type = !empty($row['document_type']) ? Str::upper(trim($row['document_type'])) : null;
-                $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
-                // $doc_status = $status[Str::upper(trim($row['status']))];
-                $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
-
+                // $doc_unique_no = !empty($row['unique_ref_no']) ? Str::upper(trim($row['unique_ref_no'])) : null;
+               
 
                 DB::beginTransaction();
-
-                // if (empty($doc_unique_no) || empty($doc_type)) {
-                //     throw new \Exception("Missing required fields.");
-                // }
 
                 if (!isset($table[$this->doc_type])) {
                     throw new \Exception("Invalid document type.");
                 }
+                $modelClass = $table[$this->doc_type];
+                $document   = new $modelClass;
+                $branchCode = $row['branch_code'] ?? null;
+                $uniqueRefNo = $this->generateRefNo($this->doc_type, $table, $branchCode);
+                $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
-                $document = new $table[$this->doc_type];
+                // $document = new $table[$this->doc_type];
+                // dd($document);
                 // if (!$document) {
                 //     throw new \Exception($doc_unique_no." Document not found");
                 // }
-                $document->unique_ref_no = $row['unique_ref_no'] ?? null;
+                $document->unique_ref_no = $uniqueRefNo;
                 $document->region = $row['region'] ?? null;
                 $document->branch_code = $row['branch_code'] ?? null;
                 $document->branch_name = $row['branch_name'] ?? null;
@@ -156,11 +156,28 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             }
         }
     }
+    private function generateRefNo($docType, $table, $branchCode): string
+    {
+        $prefixMap = [
+            'loan'     => 'MB',
+            'goldloan' => 'GL',
+            'aof'      => 'LD',
+            'dtrf'     => 'DT',
+        ];
+
+        $prefix = $prefixMap[strtolower($docType)] ?? strtoupper($docType);
+        $last = $table[$docType]::whereLike('unique_ref_no', 'H%')->where('branch_code', $branchCode)->orderBy('created_at', 'desc')->count();
+        return 'H' . $prefix . $branchCode . str_pad(++$last, 7, '0', STR_PAD_LEFT);
+    }
+    public function chunkSize(): int
+    {
+        return 1000; 
+    }
 
     public function rules(): array
     {
         return [
-            'unique_ref_no'           => ['required', 'string'],
+            // 'unique_ref_no'           => ['required', 'string'],
             // 'doc_type'                => ['required', 'string'],
             'region'                  => ['required', 'string'],
             'branch_code'             => ['required'],
@@ -173,7 +190,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'cif_id'                  => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
             'account_number'          => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
             'customer_name'           => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
-            'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+            // 'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
     
             // Conditional: required if doc_type is 'loan'
             'loan_cycle'              => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
@@ -182,8 +199,8 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
             'loan_disbursement_type'  => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
     
             // Conditional: required if doc_type is 'aof'
-            'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
-            'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+            // 'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+            // 'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
             'type_of_account_opening' => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
         ];
     }
@@ -191,7 +208,8 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
     public function customValidationMessages()
     {
         return [
-            'unique_ref_no.required'           => 'Document Unique Number is required.',
+            // 'unique_ref_no.required'           => 'Document Unique Number is required.',
+            // 'doc_type.required'                => 'Document Type is required.',
             'region.required'                  => 'Region is required.',
             'branch_code.required'             => 'Branch Code is required.',
             'branch_name.required'             => 'Branch Name is required.',
@@ -216,7 +234,6 @@ class ImportData implements WithHeadingRow, ToCollection, WithValidation, SkipsO
         ];
     }
     
-
     public function getTotal(): int
     {   
         return $this->total;

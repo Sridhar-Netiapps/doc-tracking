@@ -34,7 +34,7 @@
 
                     <div class="mb-4">
                         <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" id="name" required value="{{ old('name') }}">
+                        <input type="text" name="name" class="form-control alphanumeric" id="name" required value="{{ old('name') }}">
                     </div>
 
                     <div class="mb-4">

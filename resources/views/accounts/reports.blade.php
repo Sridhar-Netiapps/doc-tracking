@@ -31,14 +31,14 @@
                                 <option value="dtrf">DTR Files</option>
                             </select>
                         </div>
-                        <div class="col mt-2">
+                        {{-- <div class="col mt-2">
                             <label for="search_type">Search Criteria</label>
                             <select id="search_type" name="search_type" class="form-select">
                                 <option value="">-- Select --</option>
                                 <option value="courier">Courier</option>
                                 <option value="vendor">Vendor</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col mt-2">
                             <label>Region</label>
                             <select id="region" name="region" class="form-select">
@@ -64,15 +64,15 @@
                             {{-- CIF / Account --}}
                             <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>CIF ID</label>
-                                <input type="text" name="cif_id" class="form-control">
+                                <input type="text" name="cif_id" class="form-control alphanumeric capsonly">
                             </div>
                             <div class="col-3 mt-2 doc-fields loan goldloan aof">
                                 <label>Account Number</label>
-                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric">
+                                <input type="text" id="account_number" name="account_number" class="form-control alphanumeric capsonly">
                             </div>
                             <div class="col-3 mt-2 doc-fields goldloan loan aof">
                                 <label>Channel</label>
-                                <input type="text" name="channel" class="form-control">
+                                <input type="text" name="channel" class="form-control alphanumeric">
                             </div>
 
                             @foreach ([
@@ -141,12 +141,12 @@
                                     <option value="">-- Select --</option>
                                     <option value="creation_date">Account Creation / DTR File Date</option>
                                     <option value="dispatch_date">Dispatch Date</option>
-                                    <option value="received_date">Courier Received Date</option>
+                                    <option value="received_date">Received Date</option> {{--document received date / ro received date --}}
                                     <option value="movement_date">Vendor Movement Date</option>
-                                    <option value="addition_date">Addition to Vendor Data</option>
-                                    <option value="sync_date">Sync Date</option> 
+                                    {{-- <option value="addition_date">Addition to Vendor Date</option> --}}
+                                    {{-- <option value="sync_date">Sync Date</option>  --}}
                                     <option value="activity_date">Activity Date</option>
-                                    <option value="tracking_date">Tracking Date</option>
+                                    {{-- <option value="tracking_date">Tracking Date</option> --}}
                                 </select>
                             </div>
                             <div class="col-3 mt-2">

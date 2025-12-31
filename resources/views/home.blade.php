@@ -7,7 +7,7 @@
     <div class="bigCard">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-2 cardBox">
-                <h2>{{ Crypt::decrypt($total_doc) }}</h2>
+                <h2>{{ ($total_doc) }}</h2>
                 <p>Total Documents</p>
             </div>
             <div class="col-2 cardBox Yellow">
@@ -69,7 +69,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($loan_total[5] ?? 0) + ($loan_total[7] ?? 0)}}</div>
@@ -81,7 +81,7 @@
                             <div class="label">Received with Query<span class="value">{{($loan_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($loan_total[5] ?? 0) + ($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0) + ($loan_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($loan_total[5] ?? 0)}}</span></div>
@@ -89,7 +89,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($loan_total[8] ?? 0) + ($loan_total[9] ?? 0) + ($loan_total[10] ?? 0)}}</div>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[7] ?? 0)}}</div>
@@ -155,7 +155,7 @@
                             <div class="label">Received with Query<span class="value">{{($gold_loan_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($gold_loan_total[5] ?? 0) + ($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0) + ($gold_loan_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($gold_loan_total[5] ?? 0)}}</span></div>
@@ -163,7 +163,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($gold_loan_total[8] ?? 0) + ($gold_loan_total[9] ?? 0) + ($gold_loan_total[10] ?? 0)}}</div>
@@ -216,7 +216,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($aof_total[5] ?? 0) + ($aof_total[7] ?? 0)}}</div>
@@ -228,7 +228,7 @@
                             <div class="label">Received with Query<span class="value">{{($aof_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($aof_total[5] ?? 0) + ($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0) + ($aof_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($aof_total[5] ?? 0)}}</span></div>
@@ -236,7 +236,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($aof_total[8] ?? 0) + ($aof_total[9] ?? 0) + ($aof_total[10] ?? 0)}}</div>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[7] ?? 0)}}</div>
@@ -301,7 +301,7 @@
                             <div class="label">Received with Query<span class="value">{{($dtrf_total[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($dtrf_total[5] ?? 0) + ($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0) + ($dtrf_total[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($dtrf_total[5] ?? 0)}}</span></div>
@@ -309,7 +309,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($dtrf_total[8] ?? 0) + ($dtrf_total[9] ?? 0) + ($dtrf_total[10] ?? 0)}}</div>
@@ -403,7 +403,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($loan_today[5] ?? 0) + ($loan_today[7] ?? 0) + ($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0) + ($loan_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($loan_today[5] ?? 0) + ($loan_today[7] ?? 0)}}</div>
@@ -415,7 +415,7 @@
                             <div class="label">Received with Query<span class="value">{{($loan_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($loan_today[5] ?? 0) + ($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0) + ($loan_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($loan_today[5] ?? 0)}}</span></div>
@@ -423,7 +423,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($loan_today[8] ?? 0) + ($loan_today[9] ?? 0) + ($loan_today[10] ?? 0)}}</div>
@@ -477,7 +477,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[7] ?? 0) + ($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0) + ($gold_loan_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[7] ?? 0)}}</div>
@@ -489,7 +489,7 @@
                             <div class="label">Received with Query<span class="value">{{($gold_loan_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($gold_loan_today[5] ?? 0) + ($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0) + ($gold_loan_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($gold_loan_today[5] ?? 0)}}</span></div>
@@ -497,7 +497,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($gold_loan_today[8] ?? 0) + ($gold_loan_today[9] ?? 0) + ($gold_loan_today[10] ?? 0)}}</div>
@@ -550,7 +550,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($aof_today[5] ?? 0) + ($aof_today[7] ?? 0) + ($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0) + ($aof_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($aof_today[5] ?? 0) + ($aof_today[7] ?? 0)}}</div>
@@ -562,7 +562,7 @@
                             <div class="label">Received with Query<span class="value">{{($aof_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($aof_today[5] ?? 0) + ($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0) + ($aof_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($aof_today[5] ?? 0)}}</span></div>
@@ -570,7 +570,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($aof_today[8] ?? 0) + ($aof_today[9] ?? 0) + ($aof_today[10] ?? 0)}}</div>
@@ -623,7 +623,7 @@
                 </div>
                 <div class="listView">
                     <div class="label">Received Docs</div>
-                    @hasrole('bo-maker|bo-checker')
+                    @hasrole('bo-maker|bo-checker|branch-user')
                     <div class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[7] ?? 0) + ($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0) + ($dtrf_today[11] ?? 0) }}</div>
                     @else
                     <div class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[7] ?? 0)}}</div>
@@ -635,7 +635,7 @@
                             <div class="label">Received with Query<span class="value">{{($dtrf_today[7] ?? 0)}}</span></div>
                         </li>
                         <li>
-                            @hasrole('bo-maker|bo-checker')
+                            @hasrole('bo-maker|bo-checker|branch-user')
                             <div class="label">Received <span class="value">{{($dtrf_today[5] ?? 0) + ($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0) + ($dtrf_today[11] ?? 0) }}</span></div>
                             @else
                             <div class="label">Received <span class="value">{{($dtrf_today[5] ?? 0)}}</span></div>
@@ -643,7 +643,7 @@
                         </li>
                     </ul>
                 </div>
-                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="listView">
                     <div class="label">Moved to RMA</div>
                     <div class="value">{{($dtrf_today[8] ?? 0) + ($dtrf_today[9] ?? 0) + ($dtrf_today[10] ?? 0)}}</div>
@@ -677,109 +677,69 @@
     </footer>
 </div>
 <script>
-    document.getElementById('search_type').addEventListener('change', function () {
-        let value = this.value;
-        let container = document.getElementById('dynamic-dropdown');
-
-        container.innerHTML = ''; // Clear previous
-        if (value === 'region') {
-            container.innerHTML = document.getElementById('template-region').innerHTML;
-            container.style.display = 'block';
-        } else if (value === 'tat') {
-            container.innerHTML = document.getElementById('template-tat').innerHTML;
-            container.style.display = 'block';
-        } else {
-            container.style.display = 'none';
+    $(function () {
+        const container = $('#dynamic-dropdown');
+        const resetBtn  = $('#reset-btn-container');
+    
+        // Render dropdown by type
+        function renderDropdown(type) {
+            const templates = {
+                region: '#template-region',
+                tat: '#template-tat'
+            };
+            if (templates[type]) {
+                container.html($(templates[type]).html()).show();
+            } else {
+                container.empty().hide();
+            }
         }
-
-        toggleResetButton(); // update reset visibility when switching dropdown type
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        let selectedSearchType = "{{ $selectedSearchType }}"
-        let selectedRegion = "{{ $selectedRegion }}";
-        let selectedTat = "{{ $selectedTat }}";
-        let container = document.getElementById('dynamic-dropdown');
-        let resetContainer = document.getElementById('reset-btn-container');
-
-        if (selectedSearchType) {
-            document.getElementById('search_type').dispatchEvent(new Event('change'));
+    
+        // Show/hide reset button
+        function toggleResetButton() {
+            resetBtn.toggle(!!($('#region').val() || $('#tat').val()));
         }
-
-        if (selectedRegion) {
-            container.innerHTML = document.getElementById('template-region').innerHTML;
-            container.style.display = 'block';
-        } else if (selectedTat) {
-            container.innerHTML = document.getElementById('template-tat').innerHTML;
-            container.style.display = 'block';
-        }
-
+    
+        // On search_type change
+        $('#search_type').on('change', function () {
+            renderDropdown($(this).val());
+            toggleResetButton();
+        });
+    
+        // Preload from backend
+        const selectedSearchType = "{{ $selectedSearchType }}";
+        const selectedRegion     = "{{ $selectedRegion }}";
+        const selectedTat        = "{{ $selectedTat }}";
+    
+        if (selectedSearchType) $('#search_type').trigger('change');
+        if (selectedRegion) renderDropdown('region');
+        if (selectedTat) renderDropdown('tat');
         toggleResetButton();
-
-        // Click -> RESET (clear session filters then reload)
+    
+        // Reset button
         $(document).on('click', '#reset-btn', function () {
-            $.ajax({
-                url: "{{ route('tat.data') }}",
-                type: 'POST',
-                data: {
-                    reset: true, // <-- explicit reset flag
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function (response) {
-                    if (response.success) {
-                        // Clear UI instantly (optional)
-                        $('#search_type').val('');
-                        $('#dynamic-dropdown').hide().empty();
-                        $('#reset-btn-container').hide();
-
-                        // Reload to fetch original data
-                        location.reload();
-                    }
+            $.post("{{ route('tat.data') }}", { reset: true, _token: "{{ csrf_token() }}" }, res => {
+                if (res.success) {
+                    $('#search_type').val('');
+                    container.empty().hide();
+                    resetBtn.hide();
+                    location.reload();
                 }
             });
         });
-    });
-
-    // Show/hide reset if any filter currently has a value
-    function toggleResetButton() {
-        const hasRegion = $('#region').length && $('#region').val();
-        const hasTat    = $('#tat').length && $('#tat').val();
-        if (hasRegion || hasTat) {
-            $('#reset-btn-container').show();
-        } else {
-            $('#reset-btn-container').hide();
-        }
-    }
-
-    $(document).on('change', '#region, #tat', function () {
-        toggleResetButton();
-
-        let tat = $('#tat').val();
-        let region = $('#region').val();
-        let searchType = $('#search_type').val(); 
-
-        // If filtering by region, clear tat; if filtering by tat, clear region
-        if ($(this).attr('id') === 'region') {
-            tat = ''; // clear TAT
-        } else if ($(this).attr('id') === 'tat') {
-            region = ''; // clear Region
-        }
-
-        $.ajax({
-            url: "{{ route('tat.data') }}",
-            type: 'POST',
-            data: {
-                tat: tat,
-                region: region,
-                search_type: searchType,
+    
+        // Region/TAT change
+        $(document).on('change', '#region, #tat', function () {
+            const isRegion = this.id === 'region';
+            $.post("{{ route('tat.data') }}", {
+                tat: isRegion ? '' : $('#tat').val(),
+                region: isRegion ? $('#region').val() : '',
+                search_type: $('#search_type').val(),
                 _token: "{{ csrf_token() }}"
-            },
-            success: function(response) {
-                if (response.success) {
-                    location.reload(); 
-                }
-            }
+            }, res => res.success && location.reload());
+    
+            toggleResetButton();
         });
     });
 </script>
+    
 @endsection

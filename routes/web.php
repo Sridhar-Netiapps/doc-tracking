@@ -30,9 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
         // exit('1');
         return view('sample.accounts-process');
     });
-    Route::get('/accounts-update', function () {
-        return view('sample.accounts-update');
-    });
+    Route::get('/test', [DocumentController::class, 'test']);
     Route::get('/', function () { 
         return redirect(route('login'));
     });
@@ -81,8 +79,6 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('documents/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
-    
-
 
         // Route::get('home', [HomeController::class, 'index'])->name('home');
         // Route::get('home', function () { return view('home'); })->name('home');
@@ -111,18 +107,21 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('departments/show/{id}', [DepartmentController::class,'show'])->name('departments.show');
         Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
         Route::get('users/activities', [UserController::class, 'userActivity'])->name('users.activities');
-        
-        // Route::patch('/requests/{id}/move-to-rma', [RequestController::class, 'moveToRMA'])->name('requests.moveToRMA');
 
         Route::resource('vendor', VendorController::class);
         Route::resource('couriers', CourierController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
         Route::resource('users', UserController::class);
+        Route::post('users/get', [UserController::class, 'getUser'])->name('users.get');
+        Route::get('sync/user/{id}', [UserController::class, 'getUserInfo'])->name('users.sync');
         Route::post('activity/filter', [UserController::class, 'filter'])->name('activity.filter');
+        Route::get('user/filter', [UserController::class, 'userFilter'])->name('user.filter');
         Route::get('activity/filter', [UserController::class, 'filterList'])->name('activity.filterlist');
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
+        Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
+        Route::get('/user/export', [UserController::class, 'userExport'])->name('user.export');
         // Route::resource('branches', BranchController::class);
         Route::resource('emails', EmailController::class);
         Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);
@@ -144,7 +143,6 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('/{user}/assign-permission', [UserController::class, 'assignPermission'])->name('assignPermission');
 
     //insurance
-
 Route::middleware(['auth', 'insuranceOnly:1'])->group(function () {
     Route::get('insurance/audit-logs',[InsuranceHomeController::class,'audit'])->name('audit');
     Route::get('insurance/settings',[InsuranceHomeController::class,'settings'])->name('insurance_settings');
@@ -198,8 +196,6 @@ Route::middleware(['auth', 'insuranceOnly:1,2,3'])->group(function () {
 
 });
    
-    
-
    
    
 });

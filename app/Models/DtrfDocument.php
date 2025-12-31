@@ -13,7 +13,7 @@ class DtrfDocument extends Model
     
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name',
-        'account_creation_date', 'barcode', 'business_category'
+        'account_creation_date', 'barcode', 'business_category', 'status'
     ];
 
     public function statusName()
@@ -37,6 +37,7 @@ class DtrfDocument extends Model
     {
         return $this->hasOne(DocumentHistory::class, 'document_id')
                     ->where('document_type', 'DtrfDocument')
-                    ->whereIn('current_status', [5,7]);
+                    ->whereIn('current_status', [5,6,7])
+                    ->orderby('created_at', 'desc');
     }
 }

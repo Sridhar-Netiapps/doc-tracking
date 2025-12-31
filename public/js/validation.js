@@ -117,21 +117,33 @@ $(document).ready(function(){
     //     }
     // });
 
-    $(document).on('input', '.capsonly, .alphanumeric', function () {
-        let value = $(this).val();
+    // $(document).on('input', '.capsonly, .alphanumeric', function () {
+    //     let value = $(this).val();
     
-        if ($(this).hasClass('capsonly')) {
-            // Allow only letters & spaces, convert to uppercase
-            value = value.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
-        }
+    //     if ($(this).hasClass('capsonly')) {
+    //         // Allow only letters & spaces, convert to uppercase
+    //         value = value.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+    //     }
     
-        if ($(this).hasClass('alphanumeric')) {
-            // Allow only letters, numbers & spaces, convert to uppercase
-            value = value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
-        }
+    //     if ($(this).hasClass('alphanumeric')) {
+    //         // Allow only letters, numbers & spaces, convert to uppercase
+    //         value = value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
+    //     }
     
-        $(this).val(value);
+    //     $(this).val(value);
+    // });
+
+   // CAPS only: whatever typed will be uppercase
+    $(document).on('input', '.capsonly', function () {
+        $(this).val($(this).val().toUpperCase());
     });
+
+    // Alphanumeric: allow only letters and numbers (case preserved)
+    $(document).on('input', '.alphanumeric', function () {
+    $(this).val($(this).val().replace(/[^a-zA-Z0-9\s]/g, ''));
+    });
+
+
     
     
 

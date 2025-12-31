@@ -83,10 +83,10 @@ class HomeController extends Controller
             if ($region) {
                 $query->where('region', $region);
             }
-            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
             }
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
             $query->select('status', DB::raw('count(*) as total'))->groupBy('status');
@@ -103,10 +103,10 @@ class HomeController extends Controller
         $dailyFilter = function ($query) {
             $query->whereDate('updated_at', Carbon::today());
 
-            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor')) {
+            if ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
                 $query->where('region', $this->user->region);
             }
-            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker')) {
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
                 $query->where('branch_code', $this->user->branch_id);
             }
             $query->select('status', DB::raw('count(*) as total'))->groupBy('status');
@@ -149,7 +149,7 @@ class HomeController extends Controller
 
         $type = 'home';
 
-        $total_doc = Crypt::encrypt($total_doc);
+        // $total_doc = Crypt::encrypt($total_doc);
 
         return view('home', compact('loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','total_doc','total_pending',
         'total_dispatch','total_transist','total_received','total_rejected','total_selected', 'total_received_query',  

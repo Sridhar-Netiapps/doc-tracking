@@ -45,19 +45,19 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_document != Null ?count($loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">MB Loan Docs <span class="badge text-bg-warning">{{$loan_total}}</span></button>
                 </li>
                
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_document != Null ?count($gold_loan_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">Gold Loan Docs <span class="badge text-bg-warning">{{$gold_loan_total}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$account_opening_document != Null ?count($account_opening_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">Liabilities Docs <span class="badge text-bg-warning">{{$aof_total}}</span></button>
                 </li>
                 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_document != Null ?count($dtrf_document):0}}</span></button>
+                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">DTR Files <span class="badge text-bg-warning">{{$dtrf_total}}</span></button>
                 </li>                    
                 <li class="ms-auto">
                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
@@ -71,6 +71,9 @@
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -116,7 +119,7 @@
                                             <td class="text-nowrap">{{ $row->glow_application_id }}</td>
                                             <td class="text-nowrap">{{ $row->loan_disbursement_type }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -174,8 +177,16 @@
                             </tbody>
                         </table>
                     </div>
+                    @if(isset($loan_document) && $loan_document->count())
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
+                    @else
+                        <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                    @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
+                    @if(isset($gold_loan_document) && $gold_loan_document->count())
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -215,7 +226,7 @@
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
                                             <td class="text-nowrap">{{ $row->barcode }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td> 
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -245,6 +256,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -271,9 +283,17 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($gold_loan_document) && $gold_loan_document->count())
+                            {{ $gold_loan_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
+                    @if(isset($account_opening_document) && $account_opening_document->count())
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -317,7 +337,7 @@
                                             <td class="text-nowrap">{{ $row->pgk_no }}</td>
                                             <td class="text-nowrap">{{ $row->type_of_account_opening }}</td>
                                             <td class="text-nowrap">{{ $row->business_category }}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -347,6 +367,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -373,9 +394,17 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($account_opening_document) && $account_opening_document->count())
+                            {{ $account_opening_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
+                    @if(isset($dtrf_document) && $dtrf_document->count())
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -405,7 +434,7 @@
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date))}}</td>
                                             <td class="text-nowrap">{{ $row->barcode}}</td>
                                             <td class="text-nowrap">{{ $row->business_category}}</td>
-                                            @hasrole('bo-maker|bo-checker')
+                                            @hasrole('bo-maker|bo-checker|branch-user')
                                                 @if ($row->status > 7)
                                                     <td class="text-nowrap"> Received
                                                         @if (in_array($row->status, [6,7]))
@@ -435,6 +464,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -461,6 +491,11 @@
                                 @endif
                             </tbody>
                         </table>
+                        @if(isset($dtrf_document) && $dtrf_document->count())
+                            {{ $dtrf_document->links('pagination::bootstrap-5') }}
+                        @else
+                            <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -565,71 +600,6 @@
         </form>
     </div>
 </div>
-<div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
-                @csrf
-                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
-                <div class="modal-header p-4 text-center">
-                    <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
-                </div>
-                <div class="modal-body p-4 row">
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Lot No.</label>
-                        <input type="number" name="lot_no" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Work Order No.</label>
-                        <input type="number" name="lot_no" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Vendor Name</label>
-                        <input type="text" name="vendor_name" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of Vendor Movement.</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">File barcode againt Lot No.</label>
-                        <input type="file" name="barcode_file" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="tracked_by" class="form-label">Box Barcode.</label>
-                        <input type="text" name="vendor_name" class="form-control">
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="vendor_movement_date" class="form-label">Date of addition vendor Data</label>
-                        <input type="text" readonly name="vendor_movement_date" class="form-control datepicker vendor_movement_date" value="{{ request('vendor_movement_date') }}">
-                        {{-- <input type="date" name="vendor_movement_date" class="form-control vendor_movement_date" value="{{ request('vendor_movement_date') }}"> --}}
-                    </div>
-                    <div class="col-4 pb-2">
-                        <label for="status" class="form-label">Status</label>
-                        <select id="status" name="status" class="form-control select2" required>
-                            <option value=''>Select</option>
-                            <option value='In'>In</option>
-                            <option value='Out'>Out</option>
-                            <option value='Permout'>Permout</option>
-                            <option value='Destroyed'>Destroyed</option>
-                        </select>
-                        {{-- <textarea name="remarks" class="form-control" rows="2"></textarea>x --}}
-                    </div>
-                    <div class="col-12 pb-2 d-none ">
-                        <label for="reason_for_rejection" class="form-label">Reason for Rejection</label>
-                        <textarea name="reason_for_rejection" class="form-control" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    {{-- <a href="/accounts-process" class="btn btn-primary btn-lg"><strong>Submit</strong></a> --}}
-                    <button type="submit" class="btn btn-primary btn-lg"><strong>Submit</strong></button>
-                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function () {
         var count = $('select[name="remarks"]').length;
@@ -679,13 +649,12 @@
 
         $('.remove-doc').click(function (e) {
             e.preventDefault();
-
+            $(this).prop('disabled', true);
             let docId = $(this).data('id');
             let type = $(this).data('type');
             let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
             let row = $(this).closest('tr');
-
-            var doc_count = $(`#${type}-tab`).find('span.badge').text();
+            var doc_count = $(`#${type}`).find('span.badge').text();
             // console.log(doc_count);
 
 
@@ -718,7 +687,7 @@
                             showConfirmButton: false
                         });
                         row.remove(); 
-                        $(`#${type}-tab`).find('span.badge').text(doc_count - 1);
+                        $(`#${type}`).find('span.badge').text(doc_count - 1);
                     })
                     .fail(function (xhr) {
                         Swal.fire({title: "Error!", text: "Something went wrong: " + xhr.responseText, icon: "error"});
@@ -729,6 +698,7 @@
 
 
         $('.update-row').on('click', function () {
+            $(this).prop('disabled', true);
             const row = $(this).closest('tr');
             let data;
 

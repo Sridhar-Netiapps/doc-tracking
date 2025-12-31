@@ -15,7 +15,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
     {
         $this->data = $data;
     }
-
+    
     public function collection()
     {
         return $this->data;
@@ -46,14 +46,14 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             'Tracked by (User ID)',
             'Remarks',
             'RO Received Status',
-            'Reason for Rejection',
+            'Reasons',
             'RO Received Date',
             'RO Tracked by (User ID)',
             'Lot No',
             'Document Category',
             'Work Order No',
             'Vendor Name',
-            'Date of  Vendor Movement',
+            'Date of Vendor Movement',
             'File Barcode',
             'Box Barcode',
             'Date of addition to Vendor Data',
@@ -69,7 +69,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             $doc->branch_code,
             $doc->branch_name,
             $doc->cif_id,
-            $doc->account_number.'',
+            '="'.$doc->account_number,
             $doc->customer_name,
             $doc->account_creation_date != null ? date('d-m-Y', strtotime($doc->account_creation_date)) : '-',
             $doc->scheme,
@@ -82,11 +82,11 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             $doc->status >= 4 ? optional(optional($doc->dispatch)->courierName)->name : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->dispatch_date ? date('d-m-Y', strtotime($doc->dispatch->dispatch_date)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->status >= 4 ? optional($doc->dispatch->dispatcher)->employee_id . ' - ' . optional($doc->dispatch->dispatcher)->first_name : '-') : '-',
-            $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
+            $doc->status >= 4 ? (in_array(optional($doc->dispatch)->status, [5,6,7]) ? date('d-m-Y', strtotime($doc->dispatch->updated_at))  : '-') : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name : '-') : '-',
             $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
-            $doc->reason != null ? ($doc->reason) : '-',
+            (in_array($doc->status, [6,7]) ? ($doc->reason) : '-'),
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->current_status >= 4 ? optional($doc->getReceivedDetails->creator)->employee_id . ' - ' . optional($doc->getReceivedDetails->creator)->first_name : '-') : '-',
             $doc->lot_no,

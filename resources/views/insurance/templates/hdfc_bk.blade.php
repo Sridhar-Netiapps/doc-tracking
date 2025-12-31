@@ -47,7 +47,7 @@
       
     }
     .header-label{
-    	padding: 5px 5px 5px ;
+    	padding: 10px 5px 10px ;
     	margin-left: 10px;
     	font-weight: bold;
     	font-size: 12px;
@@ -70,7 +70,7 @@
     .content-label{
     	padding: 5px;
     	margin-left: 0px;
-    	font-size: 10px;
+    	font-size: 12px;
     }
 
    .memname {
@@ -250,22 +250,9 @@
   margin-left: 5px;
 }
 
-.underLine {
-  display: inline-block;
-  width: 190px;
-  border-bottom: 2px solid black;
-  margin-left: 5px;
-}
-
 .twocol-table {
   width: 100%;
   border-collapse: collapse;
- 
-}
-
-.twocol-table-iii {
-  width: 100%;
-  border:2px solid black;
  
 }
 
@@ -289,7 +276,6 @@
 
 .col-20 {
   width: 20%;
-  text-align: center;
 }
 .page-break {
   page-break-before: always;
@@ -303,7 +289,6 @@
   display: inline-block;
   margin-right: 10px;
   vertical-align: middle;
-
 }
 
 .checkbox-group input[type="checkbox"] {
@@ -316,21 +301,11 @@
     border-collapse: collapse;
    
   }
-
-  .twocol-table-nwitborder {
-    width: 100%;
-    border-top: 2px;
-     border-bottom: 2px;
-   
-    border-left: 2px;
-   
-   
-  }
   .twocol-table-noborder td, .twocol-table-noborder th {
   
     vertical-align: top;
     margin-top: 40px;
-   
+    padding: 20px;
   }
   .rightalign{
     text-align: right;
@@ -349,50 +324,6 @@
     margin: 0cm;
     padding: 0cm;
   }
-  .labbold{
-    font-weight: bold;
-  }
-  .labelfoot{
-    font-size: 7px;
-  }
-  .tight-span {
-  display: block;
-  line-height: 0.5;   /* tighter spacing */
-  margin: 0;        /* remove any margin */
-  padding: 0;
-  margin-left: 10px;
-}
-.square-box {
-  display: inline-block;
-  width: 13px;
-  height: 13px;
-  line-height: 15px;
-  text-align: center;
-  border: 1px solid #000; /* black border */
-  border-radius: 0; 
-  font-size: 12px;      /* make sure it’s square */
-}
-.signbox {
-  width: 200px;
-  height: 65px;
-  border: 5px solid #595b5e;
-  text-align: center;
-  font-size: 12px;
-  margin: 5px;
-}
-.signhere{
-  background-color: #595b5e;
-  font-size: 10px;
-  color: #fff;
-  margin: 0px;
-}
-.textCenter{
-  margin-left: 40px;
-}
-.head-border{
-  border: 2px solid #000;
-  padding-left:10px; 
-}
 </style>
 </head>
 <body>
@@ -400,24 +331,24 @@
 <div class="pagelayout">
 	<div class="innerborder">
 		<div class="container">
-			<span class="lable-font"> PSRF071025082516 | Comp/Mar/Int/5224</span>
+			
       <table class="twocol-table-noborder">
          <tr>
            <td class="col-50">
-             <div class="head-border">
+             <div class="margintop">
                <h4>Group Claim Form – Non Employer Employee (MFI)</h4>
               </div>
            </td>
            <td class="col-50 rightalign"><img class="logo" src="{{ $base64 }}"> </td>
          </tr>
        </table>
-			
+			<span class="lable-font">PSRF314630032211 | Comp/Mar/Int/5224</span>
 			<div class="contentborder">
 				<div class="heade-bg">
 				  <label class="header-label">Master Policyholder Details</label> 
 			   </div>
 			   <div class="linespace">
-			  	 <span class="content-label">Policy No : <strong class="content-label memname">{{$data->mp_no}}</strong>  Lending Institution/Master Policyholder Name : <strong class="content-label email">Ujjivan Small Finance Bank</strong> </span>
+			  	 <span class="content-label">Policy No : <strong class="content-label">{{$data->mp_no}}</strong>  Lending Institution/Master Policyholder Name : <strong class="content-label">Ujjivan Small Finance Bank</strong> </span>
 			  </div>
 
 			  <div class="heade-bg">
@@ -426,21 +357,21 @@
 
 			  <div class="rown">
 			  	<span class="content-label">Member Name :  </span><strong class="memname"> {{ $data->deceased_name}}</strong>
-          <span class="content-label"> Member No.: <strong class="underLine"> {{ $data->actual_id}}</strong> 
+          <span class="content-label"> Member No.: <strong> {{ $data->actual_id}}</strong> 
 			  </div>
 
         <div class="rown">
-          <span class="content-label">Date Of Birth :  </span><strong class="memname"> {{ ($data->dob !='')? date('d-m-Y',strtotime($data->dob)): ''}}</strong>
-          <span class="content-label"> Certificate/Loan Id: <strong  class="email"> {{ $data->load_acc_id}}</strong> 
+          <span class="content-label">Date Of Birth :  </span><strong class="dob"> {{ ($data->dob !='')? date('d-m-Y',strtotime($data->dob)): ''}}</strong>
+          <span class="content-label"> Certificate/Loan Id: <strong> {{ $data->load_acc_id}}</strong> 
         </div>
 
         <div class="rown">
-          <span class="content-label">Date of commencement of Risk:  </span><strong class="email">{{ ($data->policy_covered_date !='')? date('d-m-Y',strtotime($data->policy_covered_date)): ''}} </strong>
+          <span class="content-label">Date of commencement of Risk:  </span><strong class="risk">{{ ($data->policy_covered_date !='')? date('d-m-Y',strtotime($data->policy_covered_date)): ''}} </strong>
           <span class="content-label">Date of Death:  </span><strong class="risk">{{ ($data->date_of_death !='')? date('d-m-Y',strtotime($data->date_of_death)): ''}} </strong>
           <span class="content-label">Place of Death:  </span><strong class="palce">{{ $data->place_of_death }}</strong>
         </div>
 
-        <div class="rowd">
+        <div class=" rowd">
           
           <div class="checkbox-group">
             <span class="content-label">Cause of Death (Please tick):</span>
@@ -478,58 +409,18 @@
           <span class="content-label"> Email ID: </span><strong class="email"></strong>   
         </div>
 
-         <div class="rowfullwidth">
-          <span class="content-label"> PAN Number/ Form 60 : </span><strong class="bankname"></strong>
-          <span class="content-label"> CKYC Number : </span><strong class="email"></strong> 
-        </div>
-
         <div class="linespace header-no-bg">
-           
+            <label class="header-label">NEFT Details</label> 
         </div> 
   			
         <div class="rowfullwidth">
-           <label class="header-label">NEFT Details</label> 
-          <span class="content-label">Bank Name: </span><strong class="memname"> {{ $data->nominee->bank_name}} </strong>
-          <span class="content-label"> Branch: </span><strong class="email"> {{ $data->nominee->branch_name}}</strong> 
+          <span class="content-label">Bank Name: </span><strong class="bankname"> {{ $data->nominee->bank_name}} </strong>
+          <span class="content-label"> Branch: </span><strong class="branchname"> {{ $data->nominee->branch_name}}</strong> 
         </div>
 
         <div class="rowfullwidth">
-          <!-- <span class="content-label">Bank Account No. </span><strong class="bankacc"> {{ $data->nominee->acc_number}}</strong> -->
-          <span class="content-label">Bank Account No. </span>
-          <span class="smallpad">
-             <span class="square-box">{{$data->nominee->acc_number[0] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[1] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[2] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[3] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[4] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[5] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[6] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[7] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[8] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[9] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[10] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[11] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[12] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[13] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[14] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[15] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[16] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->acc_number[17] ?? ''}}</span>
-        </span> 
-          <span class="content-label"> IFSC: </span>
-          <span class="smallpad">
-             <span class="square-box">{{$data->nominee->ifsc[0] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[1] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[2] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[3] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[4] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[5] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[6] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[7] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[8] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[9] ?? ''}}</span>
-             <span class="square-box">{{$data->nominee->ifsc[10] ?? ''}}</span>
-        </span> 
+          <span class="content-label">Bank Account No. </span><strong class="bankacc"> {{ $data->nominee->acc_number}}</strong>
+          <span class="content-label"> IFSC: </span><strong class="ifsc"> {{ $data->nominee->ifsc}}</strong> 
         </div>
     </div>
 
@@ -538,10 +429,7 @@
           <label class="header-label">Section II - Information regarding the Claimant</label> 
         </div>
         <span class="content-label">Claimant: Mr./Ms./Mrs.</span>
-        <p class="content-label">I/We, the Claimant(s) herein acknowledge and declare receipt of all amounts due* and payable under the policy mentioned above towards full and 
-        final settlement of the claim. I/We hereby declare that HDFC Life is discharged of all its liabilities under the said policy. I/We undertake to refund any 
-        amount that is credited to my/our account either in excess or which is not due to me/us, at any time, for any reason and to this effect, I/we confirm 
-        that the particulars given here are true, correct and complete in all aspects.</p>
+        <p class="content-label">settlement of the claim. I/We hereby declare that HDFC Life is discharged  of all its liabilities under the said policy. I/We undertake to refund any amount particulars given here are true, correct and complete in all aspects.</p>
         <p class="content-label">I/We, the Claimant(s), hereby declare that the statement (covered under Section II) made above is true and complete in each and every respect. I/We
         authorise the Doctor(s) who have examined/treated the deceased member for any ailment or illness, or any other person to provide information regarding the
         state of health of the deceased which he/she may have acquired before/after the issuance of the policy by HDFC Life to the Insurer. I/We agree to provide and
@@ -555,19 +443,12 @@
         Master Policyholder, and upon issuance of payment for balance insurance claim amount to me/us, HDFC Life shall stand fully discharged in respect of the
         claim amount due to me/us.</p>
 
-        <p class="content-label">I/We confirm that I/we have reviewed and verified the outstanding loan amount as reflected in the credit account statement shared by the Master 
-        Policyholder and linked to the above mentioned policy. I/We further declare that the details therein are accurate and correct. This declaration is 
-        made of my/our free will, with complete understanding of its meaning and effect.
-        </p>
-
         <p class="header-label">I/We understand  and confirm that HDFC Life shall have the right to initiate appropriate lagal action apart from repudiation of claim in case of any fraud including but not limited to willful misrepresentation.</p>
-
-
         
         <div class="sec11sign-table">
           <div class="sec11sign-row">
             <div class="sec11sign-cell">
-              <div >
+              <div>
                 <span class="content-label">Date:</span>
                 <strong class="sec1date"></strong>
               </div>
@@ -578,10 +459,9 @@
             </div>
 
             <div class="sec11sign-cell">
-              <div class="signbox">
-                 <div class="signhere">SIGN HERE</div>
+              <div class="stamp">
+                <span class="content-label">Signature of the Claimant</span>
               </div>
-              <span class="content-label textCenter">Signature of the Claimant</span>
             </div>
 
             <div class="sec11sign-cell">
@@ -591,7 +471,7 @@
             </div>
           </div>
         </div>
-     <span class="content-label">* After deduction of outstanding loan amount</span>
+
     </div>
 
   </div>
@@ -606,9 +486,9 @@
 
     <div class="contentborder">
         <div class="linespace heade-bg">
-          <label class="header-label">Section III - Declaration to be made by the Third Party person where the claiment has affixed his/her thumb impression/ has signed in vernacular/has not filled the application have </label> 
+          <label class="header-label">Section III - IDeclaration to be made by the Third Party person where the claiment has affixed his/her thumb impression/ has signed in vernacular/has not filled the application have </label> 
         </div>
-        <p class="content-label">I hereby declare that I have explained the contents of this application form to the Claimant in <strong class="sec1date"></strong> language and have truthfully recorded the answers provided to me. I further declare that the Claimant has signed/affixed his/her thumb impression in my presence</p>
+        <p class="content-label">I hereby declare that I have explained the contents of this application form to the Claimant in <strong class="sec1date"></strong> language and have truthfully recorded the answers provoded to me.</p>
         <div class="sec11sign-table">
           <div class="sec11sign-row">
 
@@ -632,11 +512,10 @@
             </div>
 
             <div class="sec11sign-cell">
-              <div class="signbox">
-                 <div class="signhere">SIGN HERE</div>
+              <div class="stamp">
                 
               </div>
-              <span class="content-label textCenter">Signature of the Third Person</span>
+              <span class="content-label">Signature of the Third Person</span>
             </div>
           </div>
         </div>
@@ -673,11 +552,10 @@
             </div>
 
             <div class="sec11sign-cell">
-              <div class="signbox">
-                 <div class="signhere">SIGN HERE</div>
+              <div class="stamp">
                 
               </div>
-              <span class="content-label textCenter">Signature of the Claimant</span>
+              <span class="content-label">Signature of the Claimant</span>
             </div>
           </div>
         </div>
@@ -687,16 +565,12 @@
         <div class="linespace heade-bg">
           <label class="header-label">Section V - Declaration from Master Policyholder</label> 
         </div>
-        <p class="content-label">I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake 
-        to refund any amount that is credited to my/our account either in excess or which is not due to me/us, at any time, for any reason and to this effect, I/we 
-        confirm that the particulars given here are true, correct and complete in all aspects.</p>
-        <p class="content-label">I/We hereby declare that the above mentioned member whose Death Certificate and First Information Report (FIR in case of an accidental death) is 
-        attached/enclosed herewith was the person included in the policy under the aforementioned Member Number. further confirm and declare that the the 
-        information furnished in the credit account statement as below/information shared via email in an Excel attachment/information shared through any 
-        other digital method is verified by me/us and above particulars are true and complete to the best of my/our knowledge and belief. If the Claimant is a 
-        minor, I/we will ensure that the death benefitwill be passed on to the legal representative of the Claimant. I/we confirm that the sum assured received 
-        in my/our favour, if assigned as such, or in favour of the Nominee/s, if no assignment exists, is in full and final settlement and discharge of all claims and 
-        demands under the said policy on the life of the above mentioned member</p>
+        <p class="content-label">I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake to
+         discharge of all claims and demands under the said policy on the life of the above mentioned member. I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake to
+         discharge of all claims and demands under the said policy on the life of the above mentioned member. I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake to
+         discharge of all claims and demands under the said policy on the life of the above mentioned member. I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake to
+         discharge of all claims and demands under the said policy on the life of the above mentioned member. I/We, hereby direct HDFC Life to process payout for the amount* mentioned above in favour of the above Claimant/s under the policy. I/We undertake to
+         discharge of all claims and demands under the said policy on the life of the above mentioned member.</p>
          
         <div class="innercontentborder">
           <div class="linespace heade-bg">
@@ -717,12 +591,12 @@
             <td class="col-30 content-label">INR {{ $data->recovered_amount }}/-</td>
           </tr>
           <tr>
-            <td class="col-70 content-label">d) Outstanding Loan Balance as on the date of happening on the contingent event covered. <br>(Amount Payable to Master Policyholder)</td>
+            <td class="col-70 content-label">d) Outstanding Loan Balance as on the date of happening on the contingent event covered. (Amount Payable to Master Policyholder)</td>
             <td class="col-30 content-label">INR {{ $data->loan_outstanding }}/-</td>
           </tr>
           <tr>
-            <td class="col-70 content-label">e) Balance Claim Amount  (Difference between the sum  assured referred under (a) above and Outstanding Loan Balance referred under (d) above) payable to the insured on the happening of the other contingent event or to the Nominee/Beneficiary of the deceased member in case
-            of death claims</td>
+            <td class="col-70 content-label">e) Balance and
+Outstanding Loan Balance referred under (d) above) payable to the insured on the happening ased member in case of death claims</td>
             <td class="col-30 content-label">INR {{ $data->payable_to_nominee }}/-</td>
           </tr>
         </table>
@@ -742,22 +616,19 @@
                 <strong class="sec1date"></strong>
               </div>
               <div>
-               
+                <span class="content-label">* After deduction of outstanding loan amount</span>
               </div>
             </div>
 
             <div class="sec11sign-cell">
-              <div class="signbox">
-                 <div class="signhere">SIGN HERE</div>
+              <div class="stamp">
                 
               </div>
               <span class="content-label">Company Seal and Autorised Signatory / <br/>Signature of Master Policyholder</span>
-
             </div>
-
           </div>
         </div>
-<span class="content-label">* After deduction of outstanding loan amount</span>
+
         </div>
    </div>
   
@@ -777,57 +648,64 @@
 
         <table class="twocol-table">
           <th class="content-label">Documents</th>
-          <th class="content-label">Natural death/<br> Due to illness</th>
-          <th class="content-label">Unnatural death<br> (accident, suicide,murder etc)</th>
+          <th class="content-label">Natural death/ Due to illness</th>
+          <th class="content-label">Unnatural death
+(accident, suicide,
+murder etc)</th>
           <tr>
-            <td class="col-60 content-label labbold"> Claim Form - (Complete fitted, signed by claimant & signed , stamped by the Master Policyholder (MPH), as per applicability) </td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"><span class="labbold">Member enrollment form/Member Authorisation form</span> ( Lender – Borrower Schemes) <br>**Not applicable for GTI Employer /Employee Claim</td>
+            <td class="col-60 content-label">Police Record – Copy of First Information report, Police Panchnama, Police Inquest
+             report, Final closure report, attested by police authority.</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"><span class="labbold">Death Certificate -</span>   Issued by Municipal Authority/ Gram Panchayat  - under section 12/17 & self attested by the claimant.</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"> <span class="labbold">*Nominee/ Beneficiary NEFT details – </span> A Cancelled copy of printed cheque with Account holder's Name, Account No. and IFSC where the cheque is not printed, latest 6 month s bank statement or copy of passbook with the first page and transaction for last 6 months. *Not applicable if the entire payout is towards the Master Policyholder (MPH).</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"> <span class="labbold">Sum assured Bifurcation -</span> Sum Assured Bifurcation - (Sum Assured / Original Loan Amount/Recovery made by Master Policyholder (MPH) towards the loan/Outstanding loan balance as on the date of death) to confirm break up of amount payable to MPH & balance amount payable to Claimant).</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"><span class="labbold">Police Record – </span> Copy of First Information report, Police Panchnama, Police Inquest report, Final closure report, attested by police authority.</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Mandatory</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"><span class="labbold">Post Mortem report - </span> Copy attested by hospital authority & final Viscera/Chemical analysis report, if preserved for confirming cause of death on the Post Mortem Report.</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Not applicable</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
            <tr>
-            <td class="col-60 content-label"> Self-attested copy of the Pan card or kYC document of Life Assured & Nominee</td>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
             <td class="col-20 content-label">Not applicable</td>
             <td class="col-20 content-label">Mandatory</td>
           </tr>
 
-          
+           <tr>
+            <td class="col-60 content-label">Claim Form Policyholder (MPH) , as per applicability)</td>
+            <td class="col-20 content-label">Mandatory</td>
+            <td class="col-20 content-label">Mandatory</td>
+          </tr>
           
         </table>
 
@@ -841,14 +719,14 @@
         <div class="linespace heade-bg">
           <label class="header-label">Section VI - Declaration and Authorisation &amp; Consent for usage of Aadhaar Information:</label> 
         </div>
-        <p class="content-label"> I authorise HDFC Life to share and obtain information on behalf of me with/from any reinsurer, insurance association, medical authorities, other insurers, statutory authorities, employer, court, governmental body, regulator using an investigation agency or other service provider(s) for servicing insurance policy, underwriting risk, settlement of claim, etc. without obtaining my specific consent for such sharing and I hereby provide my consent for the same.</p>
+        <p class="content-label">I authorise HDFC Life to share and obtain information on behalf of me with/from any reinsurer, insurance association, medical authorities, other insurers, statutory
+authorities, employer, court, governmental body, regulator using an investigation agency or other service provider(s) for servicing insurance</p>
        
-       <p class="content-label"> <input type="checkbox" name=""> I voluntarily consent for Aadhaar based KYC, Aadhaar authentication or online veri cation to be done through HDFC Life either now or anytime 
-      in future. I am aware that my Aadhaar number, Virtual ID, e-Aadhaar, XML, Masked Aadhaar, face authentication details and/or biometric information, 
-      Aadhaar demographic data including my name, address, gender, date of birth and photograph shall be shared by UIDAI with HDFC Life for KYC 
-      purposes/ due diligence. I confirm that I was provided an option for submitting other acceptable KYC Documents besides Aadhaar. I confirm that 
-      this consent is valid for KYC purposes/ due diligence done for issuance/ servicing of insurance policy(ies), claim related purposes or for any other 
-      regulatory/ statutory related requirements </p>
+       <input type="checkbox" name=""><label class="content-label">I voluntarily consent for Aadhaar based KYC, Aadhaar authentication or o ine verification to be done through HDFC Life either now or anytime in future. I am
+aware that my Aadhaar number, Virtual ID, e-Aadhaar, XML, Masked Aadhaar, face authentication details and/or biometric information, Aadhaar demographic data
+including my name, address, gender, date of birth and photograph shall be shared by UIDAI with HDFC Life for KYC purposes/ due diligence. I confirm that I was
+provided an option for submitting other acceptable KYC Documents besides Aadhaar.<strong>I confirm that this consent is valid for KYC purposes/ due diligence done
+for issuance/ servicing of insurance policy(ies), claim related purposes or for any other regulatory/ statutory related requirements.</strong></label>
 
         <div class="sec11sign-table">
           <div class="sec11sign-row">
@@ -866,36 +744,20 @@
             </div>
 
             <div class="sec11sign-cell">
-              <div class="signbox">
-                 <div class="signhere">SIGN HERE</div>
+              <div class="stamp">
                 
               </div>
-              <span class="content-label textCenter">Signature of the Claimant</span>
+              <span class="content-label">Signature of the Claimant</span>
             </div>
           </div>
         </div>
-
     </div> 
-   <span class="content-label">Disclaimer: Depending on circumstances of claim, further documents like Loan Account Statement, Credit Analysis Memorandum (CAM</span></span>
-   <div class="rowfullwidth">
-       
 
-      <span class="tight-span"> <span class="labelfoot labbold">HDFC Life Insurance Company Limited (HDFC Life). </span> <span class="labelfoot"> CIN: L65110MH2000PLC128245. </span> <span class="labelfoot labbold">IRDAI Registration No. 101.</span></span>
-      
+    <span class="content-label">Disclaimer: Depending on circumstances of claim, further documents like Loan Account Statement, Credit Analysis Memorandum (CAM</span>
 
-     <span class="tight-span"> <span class="labelfoot labbold">Regd. Off:</span>
-     <span class="labelfoot">13th Floor, Lodha Excelus, Apollo Mills Compound, N.M. Joshi Marg, Mahalarmi, Mtimbai - 400 011. </span>
-      </span>
-
-      <span class="tight-span"><span class="labelfoot">For queries or more information, call us on </span> <span class="labelfoot labbold">022-68446530</span> <span class="labelfoot"> (Call charges apply). Available Mon-Sat from 10 am to 7 pm. DO NOT prefix any country code e.g. +91 or 00. |</span> </span>
-
-      <span class="tight-span"><span class="labelfoot">Email — service@hdfelife.com | nriservice@hdfclife.com (For NRI customers only) Visit — www.hdfclife.com</span> </span>
-
-    </div>
 <!-- end -->
 		</div>
 	
 
 </body>
 </html>
-  

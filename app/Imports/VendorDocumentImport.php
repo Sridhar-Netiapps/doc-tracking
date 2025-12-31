@@ -26,7 +26,8 @@ use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-
+use Config;
+use Log;
 
 class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
 {
@@ -35,18 +36,39 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
     protected $total = 0;
     protected $success = 0;
     
-    function parseExcelDate($value)
+    function parseExcelDate($dateValue)
     {
-        if (is_numeric($value)) {
-            return date('Y-m-d', ($value - 25569) * 86400);
-        } else {
-            $timestamp = strtotime($value);
-            return $timestamp ? date('Y-m-d', $timestamp) : null;
+        if (empty($dateValue)) {
+            return null;
+        }
+        try {
+            if (is_numeric($dateValue) && ExcelDate::isDateTime($dateValue)) {
+                $dateTimeObject = ExcelDate::excelToDateTimeObject((float) $dateValue);
+                return Carbon::instance($dateTimeObject);
+            }
+            $formats = [
+                'd-m-Y',    // Matches 13-09-2025
+                'd/m/Y',    // Matches 13/09/2025
+                'Y-m-d',    // The standard database format
+                'Y/m/d',
+            ];
+            foreach ($formats as $format) {
+                try {
+                    return Carbon::createFromFormat($format, $dateValue)->setTimezone(Config::get("app.timezone"));
+                } catch (\Exception $e) {
+                    Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+                }
+            }
+            return Carbon::parse($dateValue)->setTimezone(Config::get("app.timezone"));
+        } catch (\Exception $e) {
+            Log::warning('Failed to parse date from Excel: ' . $dateValue, ['error' => $e->getMessage()]);
+            return null;
         }
     }
 
     public function collection(Collection $rows)
     {
+        // dd($rows);
         $table = [
             'MB LOAN' => LoanDocument::class,
             'GOLD LOAN' => GoldLoanDocument::class,
@@ -95,8 +117,9 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseExcelDate($row['date_of_addition_to_vendor_data']) : null;
                 // $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
                 $document->status = $doc_status;
-            
+                // dd($document);
                 if ($document->isDirty()) {
+                    Log::info($document->unique_ref_no.' Updated');
                     $document->updated_by = auth()->user()->id;
                     $document->save();
                 }

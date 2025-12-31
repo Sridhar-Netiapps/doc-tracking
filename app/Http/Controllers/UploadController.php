@@ -54,7 +54,7 @@ class UploadController extends Controller
             }else {
                 $import = new VendorDocumentImport();
             }
-        
+            
             Excel::import($import, $file);
 
             $upload = Upload::create([

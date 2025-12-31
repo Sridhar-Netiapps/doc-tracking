@@ -30,7 +30,7 @@
                         <div class="col-md-5">
                             <div class="loginContent">
                                 {{-- <img class="logoIcon" src="/images/logoIcon.svg"/> --}}
-                                <h2>DOCUMENT TRACKER</h2>
+                                <h2 class="text-center">DOCUMENT <br> & <br> INSURANCE <br> TRACKER</h2>
                                 {{-- <div> <img width="300" src="/images/logo.svg" /> </div> --}}
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                                     <div class="mb-3">
                                         <label for="username" class="col-form-label">{{ __('Employee ID') }}</label>
                                         <div class="">
-                                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}"  autofocus>
+                                            <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" autocomplete="off" autofocus>
                                             @error('username')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -52,7 +52,7 @@
                                     <div class="mb-3">
                                         <label for="password" class=" col-form-label ">{{ __('Password') }}</label>
                                         <div class="">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="current-password">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="off">
                                             @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -84,8 +84,7 @@
                     alphanumeric: true 
                 },
                 password: {
-                    required: true,
-                    minlength: 6
+                    required: true
                 }
             },
             messages: {
@@ -94,8 +93,7 @@
                     alphanumeric: "Employee ID must be letters and numbers only"
                 },
                 password: {
-                    required: "Please enter your password",
-                    minlength: "Password must be at least 6 characters"
+                    required: "Please enter your password"
                 }
             },
             errorElement: 'span',

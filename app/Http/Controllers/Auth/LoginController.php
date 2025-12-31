@@ -83,7 +83,7 @@ class LoginController extends Controller
                         return redirect()->route('users.index');
                     }
                     if ($user->hasrole('ins-ho-user') || $user->hasrole('ins-admin')) {
-                        return redirect()->route('insurance/dashboard');
+                        return redirect()->route('insurance_dashboard');
                     }
                     return redirect()->intended('/home');
                 } 

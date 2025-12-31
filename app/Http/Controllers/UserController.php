@@ -10,13 +10,19 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
+use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
+use App\Models\HRMData;
+use Auth;
+use App\AuditLogTrait;
+
 
 class UserController extends Controller
 {
+    use AuditLogTrait; 
     // Constructor for middleware
     public function __construct()
     {
@@ -45,53 +51,141 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    // Show the form for creating a new user
-    public function create()
-    {
-        // Returning the view for creating a user
-        return view('users.create');
-    }
-
     // Store a new user in the database
     public function store(Request $request)
     {
         // Validating the input data
         // dd($request->all());
+       // print_r($request->input());die();
         $request->validate([
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
-            'employee_id' => 'required|string|max:255',
+            'employee_id' => 'required|unique:users,employee_id',
+            'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
             'gender' => 'required|string|max:10',
             'dob' => 'required|date',
             'status' => 'required|string|max:10',
             'mobile_number' => 'required|string|max:15',
             'doj' => 'required|date',
             'dor' => 'nullable|date',
-            'designation_id' => 'required|string|max:255',
-            'department_id' => 'required|string|max:255',
+            'employee_type' => 'nullable|string|max:255',
+            'current_designation' => 'nullable|string|max:255',
+            'grade' => 'nullable|string|max:255',
+            'confirmation_status' => 'nullable|string|max:255',
+            'date_of_confirmation' => 'nullable|string|max:255',
+            'current_location_type' => 'nullable|string|max:255',
+            'direct_manager_name' => 'nullable|string|max:255',
+            'direct_manager_emp_id' => 'nullable|string|max:255',
+            'direct_manager_email' => 'nullable|string|max:255',
+            'office_location' => 'nullable|string|max:255',
+            'current_department' => 'nullable|string|max:255',
+            'top_department' => 'nullable|string|max:255',
+            'department_hierarchy_1_name' => 'nullable|string|max:255',
+            'department_hierarchy_2_name' => 'nullable|string|max:255',
+            'department_hierarchy_3_name' => 'nullable|string|max:255',
+            'functional_head' => 'nullable|string|max:255',
+            'functional_head_emp_id' => 'nullable|string|max:255',
+            'work_flow_role' => 'nullable|string|max:255',
+            'prac_designation' => 'nullable|string|max:255',
+            'prac_role' => 'nullable|string|max:255',
+            'pac_designation' => 'nullable|string|max:255',
+            'pac_role' => 'nullable|string|max:255',
+            'designation_id' => 'nullable|string|max:255',
+            'department_id' => 'nullable|string|max:255',
+        ],[
+            'employee_id.unique' => 'This Employee ID already exists.',
+            'email.unique'       => 'This Email is already registered.',
         ]);
 
+        
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
+
         // Creating the new user
-        User::create([
+        $user = User::create([
             'first_name' => $request->input('first_name'),
             'middle_name' => $request->input('middle_name'),
             'last_name' => $request->input('last_name'),
             'password' => Hash::make('password'),
             'employee_id' => $request->input('employee_id'),
-            'branch_id' => $request->input('branch_id'),
+            'region' => $request->input('region'),
+            // 'branch_id' => $request->input('branch_id'),
+            'branch_id' => $request->branch_id ? explode('-', $request->branch_id)[0] : null,
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
-            'dob' => $request->input('dob'),
+            'dob' => Carbon::parse($request['dob'])->format('Y-m-d'),
+            // 'dob' => $request->dob ? date('Y-m-d', strtotime(str_replace('-', '/', $request->dob))) : null,
             'status' => $request->input('status'),
             'mobile_number' => $request->input('mobile_number'),
-            'doj' => $request->input('doj'),
-            'dor' => $request->input('dor'),
-            'designation_id' => $request->input('designation_id'),
-            'department_id' => $request->input('department_id'),
+            'doj' => Carbon::parse($request['doj'])->format('Y-m-d'),
+            'dor' => Carbon::parse($request['dor'])->format('Y-m-d'),
+            // 'doj' => $request->doj ? date('Y-m-d', strtotime(str_replace('-', '/', $request->doj))) : null,
+            // 'dor' => $request->dor ? date('Y-m-d', strtotime(str_replace('-', '/', $request->dor))) : null,
+            'employee_type' => $request->input('employee_type'),
+            'current_designation' => $request->input('current_designation'),
+            'grade' => $request->input('grade'),
+            'confirmation_status' => $request->input('confirmation_status'),
+            'date_of_confirmation' => Carbon::parse($request['date_of_confirmation'])->format('Y-m-d'),
+            // 'date_of_confirmation' => $request->date_of_confirmation ? date('Y-m-d', strtotime(str_replace('-', '/', $request->date_of_confirmation))) : null,
+            'current_location_type' => $request->input('current_location_type'),
+            'direct_manager_name' => $request->input('direct_manager_name'),
+            'direct_manager_emp_id' => $request->input('direct_manager_emp_id'),
+            'direct_manager_email' => $request->input('direct_manager_email'),
+            'office_location' => $request->input('office_location'),
+            'current_department' => $request->input('current_department'),
+            'top_department' => $request->input('top_department'),
+            'department_hierarchy_1_name' => $request->input('department_hierarchy_1_name'),
+            'department_hierarchy_2_name' => $request->input('department_hierarchy_2_name'),
+            'department_hierarchy_3_name' => $request->input('department_hierarchy_3_name'),
+            'functional_head' => $request->input('functional_head'),
+            'functional_head_emp_id' => $request->input('functional_head_emp_id'),
+            'work_flow_role' => $request->input('work_flow_role'),
+            'prac_designation' => $request->input('prac_designation'),
+            'prac_role' => $request->input('prac_role'),
+            'pac_designation' => $request->input('pac_designation'),
+            'pac_role' => $request->input('pac_role'),
+            'designation_id' => 0,
+            'department_id' => 0,
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
+            'creator' => Auth::user()->employee_id
         ]);
+
+        $request->validate([
+            'role' => 'required|exists:roles,name',
+        ]);
+        $user->syncRoles([$request->input('role')]);
+
+        if($is_ins_user == 1){
+
+            $module = 'Insurance'; 
+             $operation = 'create';
+             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+
+        }
+             
+
+
 
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -125,16 +219,60 @@ class UserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'employee_id' => 'required|string|max:255|unique:users,employee_id,' . $user->id,
+            'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'gender' => 'required|string|max:10',
             'dob' => 'required|date',
             'status' => 'required|string|max:10',
             'mobile_number' => 'required|string|max:15',
+            'doj' => 'nullable|string|max:255',
+            'dor' => 'nullable|string|max:255',
+            'employee_type' => 'nullable|string|max:255',
+            'current_designation' => 'nullable|string|max:255',
+            'grade' => 'nullable|string|max:255',
+            'confirmation_status' => 'nullable|string|max:255',
+            'date_of_confirmation' => 'nullable|string|max:255',
+            'current_location_type' => 'nullable|string|max:255',
+            'direct_manager_name' => 'nullable|string|max:255',
+            'direct_manager_emp_id' => 'nullable|string|max:255',
+            'direct_manager_email' => 'nullable|string|max:255',
+            'office_location' => 'nullable|string|max:255',
+            'current_department' => 'nullable|string|max:255',
+            'top_department' => 'nullable|string|max:255',
+            'department_hierarchy_1_nNoame' => 'nullable|string|max:255',
+            'department_hierarchy_2_name' => 'nullable|string|max:255',
+            'department_hierarchy_3_name' => 'nullable|string|max:255',
+            'functional_head' => 'nullable|string|max:255',
+            'functional_head_emp_id' => 'nullable|string|max:255',
+            'work_flow_role' => 'nullable|string|max:255',
+            'prac_designation' => 'nullable|string|max:255',
+            'prac_role' => 'nullable|string|max:255',
+            'pac_designation' => 'nullable|string|max:255',
+            'pac_role' => 'nullable|string|max:255',
             'doj' => 'required|date',
             'dor' => 'nullable|date',
 
         ]);
+
+        $is_ins_user='0';
+        $is_doc_user ='0';
+
+        if($request->module_role == 'doc'){
+            $is_doc_user ='1';
+        }
+
+        if($request->module_role == 'ins'){
+            $is_ins_user ='1';
+        }
+
+        if($request->module_role == 'doc_ins'){
+            $is_doc_user ='1';
+            $is_ins_user ='1';
+        }
+
+        $userData = User::where('id',$user->id)->first();
+       // print_r($userData);die();
 
         // Updating the user
         $user->update([
@@ -142,6 +280,7 @@ class UserController extends Controller
             'middle_name' => $request->input('middle_name'),
             'last_name' => $request->input('last_name'),
             'employee_id' => $request->input('employee_id'),
+            'region' => $request->input('region'),
             'branch_id' => $request->input('branch_id'),
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
@@ -150,8 +289,58 @@ class UserController extends Controller
             'mobile_number' => $request->input('mobile_number'),
             'doj' => $request->input('doj'),
             'dor' => $request->input('dor'),
+            'employee_type' => $request->input('employee_type'),
+            'current_designation' => $request->input('current_designation'),
+            'grade' => $request->input('grade'),
+            'confirmation_status' => $request->input('confirmation_status'),
+            'date_of_confirmation' => $request->input('date_of_confirmation'),
+            'current_location_type' => $request->input('current_location_type'),
+            'direct_manager_name' => $request->input('direct_manager_name'),
+            'direct_manager_emp_id' => $request->input('direct_manager_emp_id'),
+            'direct_manager_email' => $request->input('direct_manager_email'),
+            'office_location' => $request->input('office_location'),
+            'current_department' => $request->input('current_department'),
+            'top_department' => $request->input('top_department'),
+            'department_hierarchy_1_name' => $request->input('department_hierarchy_1_name'),
+            'department_hierarchy_2_name' => $request->input('department_hierarchy_2_name'),
+            'department_hierarchy_3_name' => $request->input('department_hierarchy_3_name'),
+            'functional_head' => $request->input('functional_head'),
+            'functional_head_emp_id' => $request->input('functional_head_emp_id'),
+            'work_flow_role' => $request->input('work_flow_role'),
+            'prac_designation' => $request->input('prac_designation'),
+            'prac_role' => $request->input('prac_role'),
+            'pac_designation' => $request->input('pac_designation'),
+            'pac_role' => $request->input('pac_role'),
+            'doj' => $request->input('doj'),
+            'dor' => $request->input('dor'),
+            'module_role' => $request->module_role,
+            'ins_user' => $is_ins_user,
+            'doc_user' => $is_doc_user,
 
         ]);
+
+        if($userData->ins_user == '1' && $is_ins_user == '0'){
+             $module = 'Insurance'; 
+             $operation = 'Update';
+             $note = 'Insurance Module access removed for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
+
+        if($userData->ins_user == '0' && $is_ins_user == '1'){
+             $module = 'Insurance'; 
+             $operation = 'Update';
+             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
+             $link = '';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
+
+        $request->validate([
+            'role' => 'required|exists:roles,name',
+        ]);
+        $user->syncRoles([$request->input('role')]);
 
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -193,8 +382,12 @@ class UserController extends Controller
     {
         // Store filters in session
         session(['activity_filters' => $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date'])]);
-    
-        return redirect()->route('activity.filterlist');
+        session(['user_filters' => $request->only(['region', 'branch_id', 'employee_id', 'email','status'])]);
+
+        if ($request->user == '1')
+            return redirect()->route('user.filter');
+        else
+            return redirect()->route('activity.filterlist');
     }
     
     public function filterList(Request $request)
@@ -236,17 +429,45 @@ class UserController extends Controller
             $query->where('created_at', '<=', $end);
         }
         
-        
-            
-    
         $activites = $query->orderBy('created_at', 'desc')->paginate(100);
     
         return view('users.activity', compact('activites', 'filters'));
     }
+
+    public function userFilter(Request $request)
+    {
+        $filters = session('user_filters', []);
+        
+        $query = User::query();
+    
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+      
+        $users = $query->orderBy('created_at', 'desc')->paginate(100);
+    
+        return view('users.index', compact('users', 'filters'));
+    }
     
     public function exportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date','status']);
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -257,7 +478,7 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id']);
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'from_date', 'to_date', 'status']);
         $query = $this->applyActivityFilters(ActivityLog::query(), $filters);
         $data = $query->orderBy('created_at', 'desc')->get();
 
@@ -284,8 +505,95 @@ class UserController extends Controller
                 $q->where('employee_id', $filters['employee_id']);
             });
         }
+        if (!empty($filters['from_date']) && !empty($filters['to_date'])) {
+            $query->whereBetween('created_at', [
+                date('Y-m-d 00:00:00', strtotime($filters['from_date'])),
+                date('Y-m-d 23:59:59', strtotime($filters['to_date']))
+            ]);
+        } elseif (!empty($filters['from_date'])) {
+            $query->whereDate('created_at', '>=', date('Y-m-d', strtotime($filters['from_date'])));
+        } elseif (!empty($filters['to_date'])) {
+            $query->whereDate('created_at', '<=', date('Y-m-d', strtotime($filters['to_date'])));
+        }
     
         return $query;
     }
 
+    public function userExportCheck(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+
+        if (empty(array_filter($filters))) {
+            return response()->json(['status' => 'error']);
+       }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function userExport(Request $request)
+    {
+        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+        $query = $this->applyUsersFilters(User::query(), $filters);
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return Excel::download(new UserExport($data), 'users.xlsx');
+    }
+
+    private function applyUsersFilters($query, $filters)
+    {
+        $query->withoutRole('master');
+        if (!empty($filters['region'])) {
+            $query->where('region', $filters['region']);
+        }
+    
+        if (!empty($filters['branch_id'])) {
+            $query->where('branch_id', $filters['branch_id']);
+        }
+    
+        if (!empty($filters['employee_id'])) {
+            $query->where('employee_id', $filters['employee_id']);
+        }
+    
+        if (!empty($filters['email'])) {
+            $query->where('email', $filters['email']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+    
+        return $query;
+    }
+    
+
+    public function getUser(Request $request)
+    {
+        return redirect()->route('users.sync',Crypt::encrypt($request->id));
+    }
+    // Show the form for creating a new user
+    public function getUserInfo($id){     
+        
+        $id = Crypt::decrypt($id);
+        if($id != null){
+            $user = User::where('employee_id',$id)->count();
+            if($user > 0){
+                return redirect()->route('users.index')->with('error','This User has already access in Doc Tracker');
+            }
+            else{
+                $user = HRMData::where('employee_id',$id)->count();
+                if($user > 0){
+                    $user = HRMData::where('employee_id',$id)->orderBy('load_date', 'desc')->first();
+                    $roles = Role::all();
+                    $permissions = Permission::all();
+                    return view('users.create', compact('user', 'roles', 'permissions'));
+                }
+                else{
+                    return redirect()->route('users.index')->with('error','User Info Does not Exists');
+                }
+            }
+        }
+        else{
+            return redirect()->route('users.index')->with('error','Something Went Wrong');
+        }
+    }
 }
