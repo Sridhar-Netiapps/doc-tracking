@@ -51,7 +51,8 @@ class SyncHRMdata extends Command
                     $role = 'branch-user';
 
                     $admin_designations = ["National Manager-Banking Operations",
-                    "Regional Operations Manager" ];
+                    // "Regional Operations Manager" 
+                    ];
 
                     $super_admin_designations = ["Specialist-IDAM",
                     "Systems Analyst",
@@ -73,19 +74,30 @@ class SyncHRMdata extends Command
                          "Lead Micro Banking Operations",
                          "Lead-Centralised Banking Operations",
                          "Manager-Centralized Banking Operations",
-                         "National Manager-Banking Operations",
-                         "National Manager-Housing Loans ,Personal Loans and Vehicle Finance Operations",
+                         // "National Manager-Banking Operations",
+                         "National Manager-Housing Loans PL and VL Operations",
                          "National Manager-MSME Operations and FIG; Operations",
                          "National Manager-Payments and Settlements" ];
 
                     $ro_supervisor_designations = ["Regional Operations Manager",
                          "Manager-Asset Operations",
+                         "Manager-MB Asset Operations",
                          "Manager-Retail Asset Operations",
-                         "Specialist-Asset Operations"
+                         "Specialist-Asset Operations",
+                         "Specialist- MB Asset Operations",
+                         "Manager-Banking Operation"
                          ]; 
 
                     $ro_officer_designations = ['Associate',
                          'Officer-Asset Operations',
+                         'Officer-MB Asset Operations',
+                         'Officer-Micro Banking Asset Operations',
+                         'Senior Officer-Micro Banking Asset Operations',
+                         'Senior Officer-MB Asset Operations', 
+                         'Senior Officer-Vehicle Loan Operations',
+                         'Offcier-Banking Operations',
+                         'Officer-Vehicle Loan Operations',
+                         'Senior Officer-Banking Operations',
                          'Senior Officer-Asset Operations'
                          ];
 
@@ -111,7 +123,7 @@ class SyncHRMdata extends Command
                          "Product Manager-Family Banking",
                          "Regional Business Manager-Micro Banking",
                          "Senior Area Manager-Micro Banking",
-                         "Manager-Banking Operation",
+                         // "Manager-Banking Operation",
                          "Manager-Housing Loan Operations",
                          "Manager-MSME Operations",
                          "Manager-Operations Housing",
@@ -128,7 +140,7 @@ class SyncHRMdata extends Command
                          'Branch Operation Manager',
                          'Branch Operations and Service Manager',
                          'Customer Care Representative-URC',
-                         'Senior Branch Manager',Officer-I
+                         'Senior Branch Manager'
                          ];
 
                          $bo_maker_designations = ['Customer Care Representative',
