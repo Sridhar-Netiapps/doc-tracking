@@ -133,7 +133,7 @@ class SyncHRMdata extends Command
                          "Manager-Secured Loan Operations",  
                          "Manager-Vehicle Loan Operations",
                          "Specialist-Banking Operations",
-                         "Specialist-NR Operations",
+                         "Specialist-NR Operations",             
                          ];     
 
                     $bo_checker_designations = ['Branch Manager',
