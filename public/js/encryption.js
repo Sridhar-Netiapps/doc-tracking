@@ -60,29 +60,35 @@ $(document).ready(function () {
             return;
         }
         const form = this;
-        const password = $('#password').val();
-        const aesKey = CryptoJS.lib.WordArray.random(128 / 8);
+    
+        const rawData = {
+            username: btoa($('#username').val()),
+            password: btoa($('#password').val())
+        };
+    
+        const aesKey = CryptoJS.lib.WordArray.random(256 / 8); 
         const aesIv = CryptoJS.lib.WordArray.random(128 / 8);
-        const encryptedPassword = CryptoJS.AES.encrypt(password, aesKey, {
+    
+        const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(rawData), aesKey, {
             iv: aesIv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         }).toString();
+    
         const rsaEncrypt = new JSEncrypt();
         rsaEncrypt.setPublicKey(rsaPublicKey);
-        const aesPayload = JSON.stringify({
+        const encryptedKey = rsaEncrypt.encrypt(JSON.stringify({
             key: CryptoJS.enc.Base64.stringify(aesKey),
             iv: CryptoJS.enc.Base64.stringify(aesIv)
-        });
-        
-        const encryptedAesKey = rsaEncrypt.encrypt(aesPayload);
-        
-        if (!encryptedAesKey) {
-            alert('Encryption failed. Could not encrypt session key.');
-            return;
-        }
-        $('input[name="enc_aes_key"]').val(encryptedAesKey);
-        $('#password').val(encryptedPassword);
+        }));
+    
+        const secureBlob = btoa(JSON.stringify({
+            d: encryptedData,
+            k: encryptedKey
+        }));
+    
+        $('#username, #password').remove();
+        $('input[name="payload"]').val(secureBlob);
         form.submit();
     });
 });
