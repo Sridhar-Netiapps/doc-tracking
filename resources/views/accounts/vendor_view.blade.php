@@ -107,13 +107,13 @@
                                             <td>{{ $row->unique_ref_no }}</td>
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
                                             <td>{{ $row->loan_cycle }}</td>
                                             <td>{{ $row->loan_amount }}</td>
                                             <td>{{ $row->barcode }}</td>
                                             <td>{{ $row->glow_application_id }}</td>
-                                            <td>{{ $row->customer_name }}</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_disbursement_type }}</td>
@@ -189,9 +189,9 @@
                                             <td>{{ $row->unique_ref_no }}</td>  
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -269,9 +269,9 @@
                                             <td>{{ $row->unique_ref_no }}</td>
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->scheme }}</td>

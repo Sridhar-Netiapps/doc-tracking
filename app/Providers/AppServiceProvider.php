@@ -13,6 +13,8 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use App\Listeners\LogUserLogin;
 use App\Listeners\LogUserLogout;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Crypt;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +37,11 @@ class AppServiceProvider extends ServiceProvider
         GoldLoanDocument::observe(DocumentObserver::class);
         DtrfDocument::observe(DocumentObserver::class);
         AccountOpeningDocument::observe(DocumentObserver::class);
+        
+        // Register Blade directive for marking sensitive data (keeps encrypted in HTML source)
+        // JavaScript will decrypt on client-side for display
+        Blade::directive('sensitive', function ($expression) {
+            return "<?php echo App\\Helpers\\EncryptHelper::sensitiveOutput($expression); ?>";
+        });
     }
 }

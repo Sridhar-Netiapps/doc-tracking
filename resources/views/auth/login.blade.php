@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="mb-0">
                                         <div class="">
-                                            <input type="hidden" name="enc_aes_key">
+                                            <input type="hidden" name="payload">
                                             <button type="submit" id="login" class="btn btn-primary">{{ __('Login') }} </button>
                                         </div>
                                     </div>
