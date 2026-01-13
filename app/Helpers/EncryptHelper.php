@@ -34,7 +34,7 @@ class EncryptHelper
         }
     }
 
-    public static function encryptSensitiveFields($data, array $fields = ['account_number', 'cif_id', 'customer_name', 'email', 'mobile_number'])
+    public static function encryptSensitiveFields($data, array $fields = ['account_number', 'cif_id', 'customer_name'])
     {
         if (is_object($data) && method_exists($data, 'getAttributes')) {
             // It's a model

@@ -54,9 +54,41 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
             // Route::get('/{id}/{type}/{dtype}', [DocumentController::class, 'revertStatus'])->name('accounts.revert');
         });
+
+        Route::middleware(['signed'])->group(function () {
+            // Document sensitive views
+            Route::get('document/{id}/{type}/{dtype}', 
+                [DocumentController::class, 'viewHistory']
+            )->name('document.history');
+
+            // Route::get('dispatches/edit/{id}', 
+            //     [DocumentController::class,'editDispatches']
+            // )->name('dispatches.edit');
+
+            // Route::get('dispatches/{type}/{id}/view', 
+            //     [DocumentController::class,'viewDispatches']
+            // )->name('dispatches.view');
+
+            // Route::get('uploads/{upload}/download', 
+            //     [UploadController::class, 'download']
+            // )->name('uploads.download');
+
+            // Route::get('sync/user/{id}', 
+            //     [UserController::class, 'getUserInfo']
+            // )->name('users.sync');
+
+            // Route::get('/activity/export', 
+            //     [UserController::class, 'export']
+            // )->name('activity.export');
+
+            // Route::get('/user/export', 
+            //     [UserController::class, 'userExport']
+            // )->name('user.export');
+        });
+
         Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
         Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
-        Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
+        // Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
         Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
         Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
         Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->name('courier.revert');

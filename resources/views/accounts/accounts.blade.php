@@ -81,7 +81,7 @@
             <div class="tab-content bg-white" id="myTabContent">
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
-                        {{-- {{ $loan_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -166,7 +166,8 @@
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -223,14 +224,14 @@
                         </table>
                     </div>
                     @if(isset($loan_document) && $loan_document->count())
-                        {{-- {{ $loan_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $loan_document->links('pagination::bootstrap-5') }}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
-                        {{-- {{ $gold_loan_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -311,15 +312,16 @@
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -365,14 +367,14 @@
                         </table>
                     </div>
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
-                        {{-- {{ $gold_loan_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $gold_loan_document->links('pagination::bootstrap-5') }}
                         @else
                         <p class="text-center text-muted">No documents found.</p> 
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
-                        {{-- {{ $account_opening_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -455,15 +457,16 @@
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>{{ $row->cif_id }}</td>
-                                            <td>{{ $row->account_number }}</td>
-                                            <td>{{ $row->customer_name }}</td>
+                                            <td>@sensitive($row->cif_id)</td>
+                                            <td>@sensitive($row->account_number)</td>
+                                            <td>@sensitive($row->customer_name)</td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             {{-- <td>{{ $row->barcode }}</td> --}}
@@ -511,14 +514,14 @@
                         </table>
                     </div>
                     @if(isset($account_opening_document) && $account_opening_document->count())
-                        {{-- {{ $account_opening_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $account_opening_document->links('pagination::bootstrap-5') }}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
-                        {{-- {{ $dtrf_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @endif
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -594,7 +597,8 @@
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -643,7 +647,7 @@
                         </table>
                     </div>
                     @if(isset($dtrf_document) && $dtrf_document->count())
-                        {{-- {{ $dtrf_document->links('pagination::bootstrap-5') }} --}}
+                        {{ $dtrf_document->links('pagination::bootstrap-5') }}
                     @else
                         <p class="text-center text-muted">No documents found.</p>
                     @endif

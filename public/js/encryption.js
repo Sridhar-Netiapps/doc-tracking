@@ -91,4 +91,68 @@ $(document).ready(function () {
         $('input[name="payload"]').val(secureBlob);
         form.submit();
     });
+
+    // $('#login-form').on('submit', async function (e) {
+    //     e.preventDefault();
+
+    //     if (!window.crypto || !crypto.subtle) {
+    //         alert('Secure crypto not supported');
+    //         return;
+    //     }
+
+    //     if (!rsaPublicKey) {
+    //         try {
+    //             const res = await $.get('/get-key');
+    //             rsaPublicKey = res.public_key;
+    //         } catch {
+    //             alert('Security initialization failed');
+    //             return;
+    //         }
+    //     }
+
+    //     const rawData = {
+    //         username: btoa($('#username').val()),
+    //         password: btoa($('#password').val()),
+    //         ts: Date.now(),
+    //         nonce: crypto.randomUUID()
+    //     };
+
+    //     const encoder = new TextEncoder();
+    //     const data = encoder.encode(JSON.stringify(rawData));
+
+    //     // AES-GCM
+    //     const aesKey = await crypto.subtle.generateKey(
+    //         { name: 'AES-GCM', length: 256 },
+    //         true,
+    //         ['encrypt']
+    //     );
+
+    //     const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    //     const encrypted = await crypto.subtle.encrypt(
+    //         { name: 'AES-GCM', iv },
+    //         aesKey,
+    //         data
+    //     );
+
+    //     const rawKey = await crypto.subtle.exportKey('raw', aesKey);
+
+    //     const rsa = new JSEncrypt();
+    //     rsa.setPublicKey(rsaPublicKey);
+
+    //     const encryptedKey = rsa.encrypt(JSON.stringify({
+    //         key: btoa(String.fromCharCode(...new Uint8Array(rawKey))),
+    //         iv: btoa(String.fromCharCode(...iv))
+    //     }));
+
+    //     const payload = btoa(JSON.stringify({
+    //         d: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
+    //         k: encryptedKey
+    //     }));
+
+    //     $('#username, #password').remove();
+    //     $('input[name="payload"]').val(payload);
+    //     this.submit();
+    // });
+
 });
