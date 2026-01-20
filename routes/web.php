@@ -160,6 +160,8 @@ Route::middleware(['auth', 'insuranceOnly:1,2'])->group(function () {
 
     Route::post('insurance/import_claim_data',[InsuranceHomeController::class,'import_claim_data'])->name('import_claim_data');
 
+    Route::post('insurance/import_historical_claim_data',[InsuranceHomeController::class,'import_claim_data_historical'])->name('import_claim_data_historical');
+
     Route::get('/get-products',[InsuranceHomeController::class,'get_products'])->name('get_products');
     Route::get('isurance/clone-lead-details/{id}',[InsuranceHomeController::class,'clone_lead_details'])->name('clone_lead_details');
 
@@ -194,8 +196,35 @@ Route::middleware(['auth', 'insuranceOnly:1,2,3'])->group(function () {
     Route::post('/audit/download-claim', [InsuranceHomeController::class, 'downloadClaim'])->name('audit.download.claim');
     Route::post('/audit/download-checklist', [InsuranceHomeController::class, 'downloadChecklist'])->name('audit.download.checklist');
 
-    Route::get('insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
+    Route::get('/insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
     Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
+
+   Route::post(
+    '/insurance/leads-export',
+    [InsuranceHomeController::class, 'export']
+)->name('insurance.leads_export');
+   
+    Route::get('/insurance/export/download/{file}', function ($file) {
+        $path = storage_path('app/public/exports/' . $file);
+
+        abort_unless(file_exists($path), 404);
+
+        return response()->download($path);
+    })->name('insurance.export.download');
+
+
+Route::get('/insurance/export/status/{file}', function ($file) {
+
+    $path = storage_path('app/public/exports/' . $file);
+
+    return response()->json([
+        'ready' => file_exists($path),
+        'path'  => $path // TEMP: debugging
+    ]);
+});
+
+
+
 
 });
    

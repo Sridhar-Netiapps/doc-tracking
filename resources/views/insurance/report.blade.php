@@ -31,7 +31,8 @@
             </div>
 
             <div class="mt-2">
-             <form method="GET" action="{{route('leads_report')}}">
+             <form method="GET" action="{{route('leads_report')}}" id="exportForm">
+                @csrf
                <input type="hidden" id="start" name="start" value="{{$start}}">
                <input type="hidden" id="end" name="end" value="{{ $end}}">
                
@@ -85,9 +86,10 @@
                
 
                 <div class="input-group-prepend ms-3">
-                   <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
+                   <button class="btn btn-success rounded-2" type="submit" id="getdata"  name="action" value="filter">Filter</button>
 
                     <button class="btn btn-warning rounded-2 ms-3" id="btn_export"  name="action" value="export" value="export">Export</button> 
+
                 </div>
                </div>
              </form>
@@ -214,8 +216,56 @@ $(function() {
       cb(start, end);
      
     });
+
+
+   $('#btn_export').on('click', function (e) {
+    e.preventDefault();
+
+    let btn = $(this);
+    btn.prop('disabled', true).text('Generating...');
+
+    $.post('{{ route("insurance.leads_export") }}',
+        $('form').serialize(),
+        function (res) {
+
+            let file = res.file;
+
+            let interval = setInterval(function () {
+
+                $.get('/insurance/export/status/' + file, function (status) {
+
+                    if (status.ready) {
+                        clearInterval(interval);
+
+                        let a = document.createElement('a');
+                        a.href = '/insurance/export/download/' + file;
+                        a.download = file;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+
+                        btn.prop('disabled', false).text('Export');
+                    }
+                });
+
+            }, 3000);
+        }
+    ).fail(function (xhr) {
+        console.error(xhr.responseText);
+        alert('Export failed');
+        btn.prop('disabled', false).text('Export');
+    });
+});
+
+
+
+
+
     
 });
+
+
+
 
 
 </script>

@@ -13,23 +13,13 @@ use App\Models\InsuranceNomineeDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 
-class ImportClaimDetails implements ToCollection, WithStartRow, WithChunkReading, WithBatchInserts 
+class ImportClaimDetails_historical implements ToCollection, WithStartRow, WithChunkReading, WithBatchInserts
 {
-    public $rowCount = 0;
-    public $insertedCount = 0;
-    public $updatedCount = 0;
-    public array $collectedFailures = [];
-    public $failedRows = [];
-
-  
+    public int $rowCount = 0;
 
     /**
      * Excel starts from row 2
@@ -64,6 +54,17 @@ class ImportClaimDetails implements ToCollection, WithStartRow, WithChunkReading
         $nomineeRows = [];
 
         foreach ($rows as $row) {
+
+            if (
+                $row->filter(function ($value) {
+                    return $value !== null && trim((string) $value) !== '';
+                })->isEmpty()
+            ) {
+                continue;
+            }
+
+
+
             $this->rowCount++;
 
             $claimRows[] = [
@@ -132,6 +133,8 @@ class ImportClaimDetails implements ToCollection, WithStartRow, WithChunkReading
                 'handed_to_credit'    => $row[53] ?? null,
 
                 'ho_employee_id'      => Auth::user()->employee_id,
+                 'created_at' => now(), // system time
+                'updated_at' => $this->excelDate($row[70] ?? null),
                 
             ];
 
@@ -156,27 +159,29 @@ class ImportClaimDetails implements ToCollection, WithStartRow, WithChunkReading
                
             ];
         }
+        
+           DB::transaction(function () use ($claimRows, $nomineeRows) {
 
-        DB::transaction(function () use ($claimRows, $nomineeRows) {
+                InsuranceClaimDetail::insert($claimRows);
 
-            InsuranceClaimDetail::insert($claimRows);
+                // Map UTRN → ID
+                $claimIds = InsuranceClaimDetail::whereIn('utrn', array_column($claimRows, 'utrn'))
+                            ->pluck('id', 'utrn');
 
-            // Map UTRN → ID
-            $claimIds = InsuranceClaimDetail::whereIn('utrn', array_column($claimRows, 'utrn'))
-                        ->pluck('id', 'utrn');
+                foreach ($nomineeRows as &$n) {
+                    $n['insurance_claim_details_id'] = $claimIds[$n['utrn']] ?? null;
+                    unset($n['utrn']);
+                }
 
-            foreach ($nomineeRows as &$n) {
-                $n['insurance_claim_details_id'] = $claimIds[$n['utrn']] ?? null;
-                unset($n['utrn']);
-            }
-
-            InsuranceNomineeDetail::insert($nomineeRows);
-        });
+                InsuranceNomineeDetail::insert($nomineeRows);
+            });
+       
     }
 
     /**
      * Excel Date Helper
      */
+
     public function getRowCount(): int
     {
         return $this->rowCount;
