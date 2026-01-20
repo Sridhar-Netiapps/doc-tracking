@@ -28,9 +28,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, WithValidation, SkipsOnFailure, SkipsOnError
+class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
@@ -91,7 +90,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, With
                 $modelClass = $table[$this->doc_type];
                 $document   = new $modelClass;
                 $branchCode = $row['branch_code'] ?? null;
-                $uniqueRefNo = $this->generateRefNo($this->doc_type, $branchCode, $table);
+                $uniqueRefNo = $this->generateRefNo($this->doc_type, $table, $branchCode);
                 $doc_status = isset($row['status']) ? ($status[Str::upper(trim($row['status']))] ?? null) : null;
                 
                 // $document = $table[$this->doc_type]::where('unique_ref_no', $doc_unique_no)->whereIn('status',[5,7,8,9,10])->first();
@@ -156,7 +155,7 @@ class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, With
             }
         }
     }
-    private function generateRefNo(string $docType, string $table, string $branchCode): string
+    private function generateRefNo($docType, $table, $branchCode): string
     {
         $prefixMap = [
             'loan'     => 'MB',
@@ -174,71 +173,66 @@ class ImportData implements WithHeadingRow, ToCollection, WithChunkReading, With
         return 1000; 
     }
 
-    public function rules(): array
-    {
-        return [
-            // 'unique_ref_no'           => ['required', 'string'],
-            // 'doc_type'                => ['required', 'string'],
-            'region'                  => ['required', 'string'],
-            'branch_code'             => ['required'],
-            'branch_name'             => ['required'],
-            'account_creation_date'   => ['required', 'date'],
-            'business_category'       => ['required'],
-            'status'                  => ['required'],
+    // public function rules(): array
+    // {
+    //     return [
+    //         // 'unique_ref_no'           => ['required', 'string'],
+    //         // 'doc_type'                => ['required', 'string'],
+    //         'region'                  => ['required', 'string'],
+    //         'branch_code'             => ['required'],
+    //         'branch_name'             => ['required'],
+    //         'account_creation_date'   => ['required', 'date'],
+    //         'business_category'       => ['required'],
+    //         'status'                  => ['required'],
     
-            // Conditional: required if doc_type is NOT 'dtrf'
-            'cif_id'                  => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
-            'account_number'          => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
-            'customer_name'           => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
-            // 'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+    //         // Conditional: required if doc_type is NOT 'dtrf'
+    //         'cif_id'                  => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+    //         'account_number'          => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+    //         'customer_name'           => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
+    //         // 'channel'                 => Rule::requiredIf(fn() => $this->doc_type !== 'dtrf'),
     
-            // Conditional: required if doc_type is 'loan'
-            'loan_cycle'              => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
-            'glow_application_id'     => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
-            'loan_amount'             => Rule::requiredIf(fn() => in_array($this->doc_type, ['loan', 'goldloan'])),
-            'loan_disbursement_type'  => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
+    //         // Conditional: required if doc_type is 'loan'
+    //         'loan_cycle'              => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
+    //         'glow_application_id'     => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
+    //         'loan_amount'             => Rule::requiredIf(fn() => in_array($this->doc_type, ['loan', 'goldloan'])),
+    //         'loan_disbursement_type'  => Rule::requiredIf(fn() => $this->doc_type === 'loan'),
     
-            // Conditional: required if doc_type is 'aof'
-            // 'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
-            // 'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
-            'type_of_account_opening' => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
-        ];
-    }
+    //         // Conditional: required if doc_type is 'aof'
+    //         // 'scheme'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+    //         // 'pgk_no'                  => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+    //         'type_of_account_opening' => Rule::requiredIf(fn() => $this->doc_type === 'aof'),
+    //     ];
+    // }
 
-    public function customValidationMessages()
-    {
-        return [
-            // 'unique_ref_no.required'           => 'Document Unique Number is required.',
-            // 'doc_type.required'                => 'Document Type is required.',
-            'region.required'                  => 'Region is required.',
-            'branch_code.required'             => 'Branch Code is required.',
-            'branch_name.required'             => 'Branch Name is required.',
-            'account_creation_date.required'   => 'Account Creation Date is required.',
-            'account_creation_date.date'       => 'Account Creation Date must be a valid date.',
-            'business_category.required'       => 'Business Category is required.',
-            'status.required'                  => 'Status is required.',
+    // public function customValidationMessages()
+    // {
+    //     return [
+    //         // 'unique_ref_no.required'           => 'Document Unique Number is required.',
+    //         // 'doc_type.required'                => 'Document Type is required.',
+    //         'region.required'                  => 'Region is required.',
+    //         'branch_code.required'             => 'Branch Code is required.',
+    //         'branch_name.required'             => 'Branch Name is required.',
+    //         'account_creation_date.required'   => 'Account Creation Date is required.',
+    //         'account_creation_date.date'       => 'Account Creation Date must be a valid date.',
+    //         'business_category.required'       => 'Business Category is required.',
+    //         'status.required'                  => 'Status is required.',
     
-            'cif_id.required'                  => 'CIF ID is required for this document type.',
-            'account_number.required'          => 'Account Number is required for this document type.',
-            'customer_name.required'           => 'Customer Name is required for this document type.',
-            'channel.required'                 => 'Channel is required for this document type.',
+    //         'cif_id.required'                  => 'CIF ID is required for this document type.',
+    //         'account_number.required'          => 'Account Number is required for this document type.',
+    //         'customer_name.required'           => 'Customer Name is required for this document type.',
+    //         'channel.required'                 => 'Channel is required for this document type.',
     
-            'loan_cycle.required'              => 'Loan Cycle is required for Loan documents.',
-            'glow_application_id.required'     => 'Glow Application ID is required for Loan documents.',
-            'loan_amount.required'             => 'Loan Amount is required for Loan or Gold Loan documents.',
-            'loan_disbursement_type.required'  => 'Loan Disbursement Type is required for Loan documents.',
+    //         'loan_cycle.required'              => 'Loan Cycle is required for Loan documents.',
+    //         'glow_application_id.required'     => 'Glow Application ID is required for Loan documents.',
+    //         'loan_amount.required'             => 'Loan Amount is required for Loan or Gold Loan documents.',
+    //         'loan_disbursement_type.required'  => 'Loan Disbursement Type is required for Loan documents.',
     
-            'scheme.required'                  => 'Scheme is required for AOF documents.',
-            'pgk_no.required'                  => 'PGK No is required for AOF documents.',
-            'type_of_account_opening.required' => 'Type of Account Opening is required for AOF documents.',
-        ];
-    }
+    //         'scheme.required'                  => 'Scheme is required for AOF documents.',
+    //         'pgk_no.required'                  => 'PGK No is required for AOF documents.',
+    //         'type_of_account_opening.required' => 'Type of Account Opening is required for AOF documents.',
+    //     ];
+    // }
     
-    public function chunkSize(): int
-    {
-        return 500;
-    }
-
     public function getTotal(): int
     {   
         return $this->total;

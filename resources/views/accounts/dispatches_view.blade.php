@@ -256,6 +256,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -366,6 +367,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -462,6 +464,7 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
+                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
                                                         <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
@@ -651,7 +654,6 @@
             let type = $(this).data('type');
             let dispatchId = $('input[name="dispatch_id"]').val(); // must be present as hidden input
             let row = $(this).closest('tr');
-
             var doc_count = $(`#${type}`).find('span.badge').text();
             // console.log(doc_count);
 

@@ -6,23 +6,19 @@ use App\Models\LoanDocument;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-// use Maatwebsite\Excel\Concerns\ShouldQueue;
 
-
-class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
+class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
 {
-    use \Maatwebsite\Excel\Concerns\Exportable;
-    protected $query;
+    protected $data;
 
-    public function __construct($query)
+    public function __construct($data)
     {
-        $this->query = $query;
+        $this->data = $data;
     }
-    public function query()
+    
+    public function collection()
     {
-        return $this->query;
+        return $this->data;
     }
 
 
@@ -75,7 +71,8 @@ class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCh
             $doc->branch_code,
             $doc->branch_name,
             $doc->cif_id,
-            $doc->account_number.' ',
+            // '="'.$doc->account_number,
+            (string) trim($doc->account_number),
             $doc->loan_cycle,
             $doc->customer_name,
             $doc->account_creation_date != null ? date('d-m-Y', strtotime($doc->account_creation_date)) : '-',
@@ -93,7 +90,7 @@ class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCh
             $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name : '-') : '-',
             $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
-            $doc->reason != null ? ($doc->reason) : '-',
+            (in_array($doc->status, [6,7]) ? ($doc->reason) : '-'),
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->created_at ? date('d-m-Y', strtotime($doc->getReceivedDetails->created_at)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->getReceivedDetails)->current_status >= 4 ? optional($doc->getReceivedDetails->creator)->employee_id . ' - ' . optional($doc->getReceivedDetails->creator)->first_name : '-') : '-',
             $doc->lot_no,
@@ -106,9 +103,5 @@ class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCh
             $doc->date_added_to_vendor != null ? date('d-m-Y', strtotime($doc->date_added_to_vendor)) : '-',
             $doc->statusName->name,
         ];
-    }
-    public function chunkSize(): int
-    {
-        return 5000;
     }
 }

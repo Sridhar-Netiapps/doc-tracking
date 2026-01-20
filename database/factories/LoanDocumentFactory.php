@@ -17,7 +17,7 @@ class LoanDocumentFactory extends Factory
     
         $regionName = $this->faker->randomElement(array_keys($regions));
         return [
-            'unique_ref_no' => 'REF' . $this->faker->unique()->numberBetween(1000, 9999),
+            'unique_ref_no' => 'REF' . $this->faker->unique()->numberBetween(10000, 99999),
             'region' => $regionName,
             'branch_code' => $regions[$regionName].$this->faker->numberBetween(111, 119),
             'branch_name' => $this->faker->city,

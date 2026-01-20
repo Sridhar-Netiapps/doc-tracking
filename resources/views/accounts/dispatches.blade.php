@@ -158,7 +158,7 @@
                                                 @endif
                                                 @if ($type == 'tracking')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))
-                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" id="update-btn-{{ $row->id }}">Update</button>
+                                                        <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" disabled id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                     @hasanyrole('ro-supervisor|admin|master')
                                                         <button data-id="{{ Crypt::encryptString($row->id) }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
@@ -166,7 +166,7 @@
                                                 @endif
                                                 @if ($type == 'list')
                                                     @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'ho-user', 'branch-user', 'ro-user']))                                             
-                                                        <button type="button" value="12" class="btn btn-sm btn-primary update-row">Update</button>
+                                                        <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                     @hasrole('bo-checker|admin|master')
                                                         <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ Crypt::encryptString($row->id) }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
@@ -540,25 +540,32 @@
         $('.disable-update-btn').each(function () {
             let button = $(this);
             let dispatchId = button.data('id');
-
+            // keep disabled by default
+            button.prop('disabled', true).css({'background-color': '#a9a9a9', 'border-color': '#a9a9a9'});
             $.ajax({
                 url: '/dispatches/check-status/' + dispatchId,
                 method: 'GET',
-                success: function(response) {
-                    if (response.disable_update) {
-                        button.prop('disabled', true)
-                              .css('background-color', '#a9a9a9') 
-                              .css('border-color', '#a9a9a9')
-                              .attr('title', 'Update disabled: one or more documents have status 4');
-                    } else {
+                success: function (response) {
+
+                    // Enable ONLY when update is allowed
+                    if (!response.disable_update) {
                         button.prop('disabled', false)
-                              .removeAttr('title')
-                              .css('background-color', '')  
-                              .css('border-color', '');
+                            .css({
+                                'background-color': '',
+                                'border-color': ''
+                            })
+                            .removeAttr('title');
+                    } else {
+                        button.prop('disabled', true)
+                            .attr('title', 'Update disabled: one or more documents have status 4');
                     }
                 },
-                error: function() {
+                error: function () {
                     console.error('Status check failed for dispatch ID: ' + dispatchId);
+
+                    // fail-safe: keep disabled
+                    button.prop('disabled', true)
+                        .attr('title', 'Unable to verify document status');
                 }
             });
         });

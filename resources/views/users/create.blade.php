@@ -17,6 +17,7 @@
         </div>
     </div>
     <div class="h-100 align-items-start align-content-lg-stretch">
+        {{-- {{$user}} --}}
         <form id="users" action="{{ route('users.store') }}" method="POST">
             @csrf
             <div class="form-card row">
@@ -70,6 +71,7 @@
                 <div class="col-4 mb-4 form-group">
                     <label for="region">Region</label>
                     <input type="text" class="form-control @error('region') is-invalid @enderror" id="region" name="region" value="{{ old('region', $user->office_region) }}" readonly>
+                    <input type="hidden" name="region_id" value="{{ old('region_id', $user->region_id) }}">
                     @error('region')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -257,7 +259,7 @@
                 <div class="col-4 mb-4 form-group">
                     <label>PAC Role</label>
                     <input type="text" name="pac_role"  value="{{ old('pac_role', $user->pac_role) }}" class="form-control" readonly>
-                </div>x
+                </div>
                 <h2 class="mt-2">Assign Roles</h2>
                 <div class="h-100 align-items-start align-content-lg-stretch">
                     <form action="{{ route('users.assignRole', $user->id) }}" method="POST">
