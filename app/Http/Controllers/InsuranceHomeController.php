@@ -40,6 +40,7 @@ use Smalot\PdfParser\Parser;
 use App\Mail\IntimationResponseMail;
 use Mail;
 use App\Jobs\ExportInsuranceLeadsJob;
+use Illuminate\Support\Facades\Artisan;
 
 
 
@@ -1708,6 +1709,8 @@ class InsuranceHomeController extends Controller
     return redirect()->route('insurance.export.download', ['file' => $filename]);*/
 
     $filename = 'insurance_leads_' . date('Y--d-His') . '.csv';
+    
+   
 
 /* start job / command */
 dispatch(
@@ -1733,6 +1736,10 @@ public function export(Request $request)
         ->when($request->proccesed, fn($q) => $q->where('processed_by', $request->proccesed))
         ->when($request->branch, fn($q) => $q->where('branch', $request->branch))
         ->orderBy('id');
+
+        $count = $query->count();
+        
+
 
     Excel::store(
         new ExportInsuranceLeads($query),
@@ -2250,6 +2257,21 @@ public function export(Request $request)
         }
 
         return response()->download($path)->deleteFileAfterSend(false);
+    }
+
+
+    public function exportAll()
+    {
+         $file = 'insurance_leads_' . now()->format('d_M_Y_H_i') . '.csv';
+
+        Artisan::call('insurance:export-all', [
+            'file' => $file
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'file' => $file
+        ]);
     }
 
 

@@ -26,6 +26,15 @@
               
                 </div>
 
+               
+                <!-- <button
+                    type="button"
+                    class="btn btn-warning rounded-2 ms-3"
+                    id="btn_export_full">
+                    Export
+                </button> -->
+
+
 
 
             </div>
@@ -254,6 +263,41 @@ $(function() {
         console.error(xhr.responseText);
         alert('Export failed');
         btn.prop('disabled', false).text('Export');
+    });
+});
+
+
+$('#btn_export_full').on('click', function () {
+
+    let btn = $(this);
+    btn.prop('disabled', true).text('Generating...');
+
+    $.ajax({
+        url: "{{ route('insurance.export.all') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}"
+        },
+        success: function (res) {
+
+            console.log(res);
+
+            if (!res.file) {
+                alert('File not generated');
+                btn.prop('disabled', false).text('Export');
+                return;
+            }
+
+            window.location.href =
+                '/insurance/export/download/' + res.file;
+
+            btn.prop('disabled', false).text('Export');
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            alert('Export failed');
+            btn.prop('disabled', false).text('Export');
+        }
     });
 });
 

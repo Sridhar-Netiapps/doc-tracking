@@ -16,9 +16,9 @@ class ExportInsuranceLeadsCommand extends Command
      *
      * @var string
      */
-   // protected $signature = 'app:export-insurance-leads';
-    protected $signature = 'app:export-insurance-leads {userId} {file}';
-
+    //protected $signature = 'app:export-insurance-leads';
+   // protected $signature = 'app:export-insurance-leads {userId} {file}';
+   protected $signature = 'insurance:export-all {file}';
 
     /**
      * The console command description.
@@ -33,12 +33,13 @@ class ExportInsuranceLeadsCommand extends Command
     public function handle()
     {
         $this->info('Export started...');
+        $file = $this->argument('file');
         $query = InsuranceClaimDetail::with('nominee')
         ->orderBy('id', 'DESC');
 
         Excel::store(
             new ExportInsuranceLeads($query),
-            'insurance_leads.csv',
+            'public/exports/' . $file,
             'local',
             ExcelExcel::CSV
         );

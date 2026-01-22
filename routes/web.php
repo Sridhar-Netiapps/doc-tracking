@@ -224,6 +224,19 @@ Route::get('/insurance/export/status/{file}', function ($file) {
 });
 
 
+Route::post(
+    '/insurance/export-all',
+    [InsuranceHomeController::class, 'exportAll']
+)->name('insurance.export.all');
+
+Route::get('/insurance/export/download/{file}', function ($file) {
+    $path = storage_path('app/public/exports/' . $file);
+
+    abort_unless(file_exists($path), 404);
+
+    return response()->download($path)->deleteFileAfterSend(false);
+})->name('insurance.export.download');
+
 
 
 });
