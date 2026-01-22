@@ -117,6 +117,9 @@ class UserController extends Controller
             $is_ins_user ='1';
         }
 
+        $branchId = $request->branch_id ? explode('-', $request->branch_id)[0] : null;
+        $regionId = $branchId ? substr((string)$branchId, 0, 1) : null;
+
         // Creating the new user
         $user = User::create([
             'first_name' => $request->input('first_name'),
@@ -125,8 +128,9 @@ class UserController extends Controller
             'password' => Hash::make('password'),
             'employee_id' => $request->input('employee_id'),
             'region' => $request->input('region'),
+            'region_id' => $regionId,
             // 'branch_id' => $request->input('branch_id'),
-            'branch_id' => $request->branch_id ? explode('-', $request->branch_id)[0] : null,
+            'branch_id' => $branchId,
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
             'dob' => Carbon::parse($request['dob'])->format('Y-m-d'),
@@ -165,7 +169,7 @@ class UserController extends Controller
             'module_role' => $request->module_role,
             'ins_user' => $is_ins_user,
             'doc_user' => $is_doc_user,
-            'creator' => Auth::user()->employee_id
+            'created_by' => Auth::user()->employee_id
         ]);
 
         $request->validate([
@@ -281,6 +285,7 @@ class UserController extends Controller
             'last_name' => $request->input('last_name'),
             'employee_id' => $request->input('employee_id'),
             'region' => $request->input('region'),
+            'region_id' => $request->input('region_id'),
             'branch_id' => $request->input('branch_id'),
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
