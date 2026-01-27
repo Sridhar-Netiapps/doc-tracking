@@ -1168,7 +1168,7 @@ class DocumentController extends Controller
             // dd((strtolower($this->user->region)));
         }
         $history = DocumentHistory::where('document_id',$decryptedId)->where('document_type',class_basename($this->table[$dtype]))->get();
-
+        $document = $this->encryptSensitive($document);
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 

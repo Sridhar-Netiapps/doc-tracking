@@ -101,21 +101,21 @@
                         @if(!empty($document->cif_id))
                         <div class="p-2 border-bottom">
                             <label>CIF ID</label>
-                            <h6><b>{{ $document->cif_id }}</b></h6>
+                            <h6><b>@sensitive($document->cif_id)</b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->account_number))
                         <div class="p-2 border-bottom">
                             <label>Account Number</label>
-                            <h6><b>{{ $document->account_number }}</b></h6>
+                            <h6><b>@sensitive($document->account_number)</b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->customer_name))
                         <div class="p-2 border-bottom">
                             <label>Customer Name</label>
-                            <h6><b>{{ $document->customer_name }}</b></h6>
+                            <h6><b>@sensitive($document->customer_name)</b></h6>
                         </div>
                         @endif
                     
