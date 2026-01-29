@@ -22,7 +22,7 @@ class User extends Authenticatable
     // ];
      protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'password', 'employee_id',
-        'region', 'branch_id', 'email', 'gender', 'dob', 'status',
+        'region', 'region_id', 'branch_id', 'email', 'gender', 'dob', 'status',
         'mobile_number', 'doj', 'dor', 'employee_type', 'current_designation',
         'grade', 'confirmation_status', 'date_of_confirmation',
         'current_location_type', 'direct_manager_name', 'direct_manager_emp_id',
