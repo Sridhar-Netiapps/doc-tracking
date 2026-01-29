@@ -2,40 +2,41 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use App\Models\AdditionalField;
 
-class ExportInsuranceLeads implements
-    FromQuery,
-    WithHeadings,
-    WithMapping,
-    WithChunkReading
-    
+
+class ExportInsuranceLeads implements FromCollection,WithHeadings
 {
-    protected $query;
-
-    public function __construct($query)
-    {
-        $this->query = $query;
-    }
-
     /**
-     * Fetch data in chunks (NOT all at once)
-     */
-    public function query()
-    {
-        return $this->query->with('nominee');
-    }
+    * @return \Illuminate\Support\Collection
+    */
+    private $data;
 
-    /**
-     * Map each row (called per row, per chunk)
-     */
-    public function map($value): array
+    public function __construct($data ,$additionl_fileds) 
     {
-        return [
-            date('d-m-Y',strtotime($value->created_at)),
+        $this->data = $data;
+        $this->additionl_fileds = $additionl_fileds;
+        
+    } 
+
+    public function collection()
+    {
+         $data = $this->data;
+        $formattedData = collect();
+
+        $fields = $this->additionl_fileds;
+        /*$dynamicfielValues =array();
+        foreach ($fields as $key => $value) {
+           $dynamicfielids[] = $value->id;
+        }*/
+        
+         foreach($data as $key=>$value){
+
+            
+            $formattedData->push([
+                date('d-m-Y',strtotime($value->created_at)),
                 date('d-m-Y',strtotime($value->updated_at)),    
                 $value->id,
                 $value->utrn,
@@ -94,45 +95,46 @@ class ExportInsuranceLeads implements
                 $value->handed_to_bh,
                 $value->handed_to_credit,
             
-                $value->nominee?->nominee_name_bank ,
-                $value->nominee?->bank_name,
+                $value->nominee->nominee_name_bank,
+                $value->nominee->bank_name,
                 '="'.$value->nominee->acc_number.'"',
-                $value->nominee?->ifsc,
-                $value->nominee?->branch_name,
-                $value->nominee?->spdc_bank_name,
-                $value->nominee?->spdc_chk_no,
-                $value->nominee?->courier_name,
-                $value->nominee?->pod_no,
-                $value->nominee?->nominee_number,
-                $value->nominee?->bo_remarks,
-                ($value->nominee?->ack_rec_date)
-                    ? date('d-m-Y', strtotime($value->nominee->ack_rec_date))
-                    : '',
-
-                ($value->nominee?->spdc_rec_date)
-                    ? date('d-m-Y', strtotime($value->nominee->spdc_rec_date))
-                    : '',
-                $value->nominee?->pkt_no,
-                $value->nominee?->bo_maker,
-                $value->nominee?->bo_checker,
+                $value->nominee->ifsc,
+                $value->nominee->branch_name,
+                $value->nominee->spdc_bank_name,
+                $value->nominee->spdc_chk_no,
+                $value->nominee->courier_name,
+                $value->nominee->pod_no,
+                $value->nominee->nominee_number,
+                $value->nominee->bo_remarks,
+                ($value->nominee->ack_rec_date !='') ? date('d-m-Y',strtotime($value->nominee->ack_rec_date)) : '' ,
+                ($value->nominee->ack_rec_date !='') ? date('d-m-Y',strtotime($value->nominee->spdc_rec_date)) : '', 
+                $value->nominee->pkt_no,
+                $value->nominee->bo_maker,
+                $value->nominee->bo_checker,
 
                 $value->ho_employee_id,
                 $value->latest_editor,
-        ];
-    }
+                
+            ]);
+         }
 
-    /**
-     * Chunk size (important)
-     */
-    public function chunkSize(): int
-    {
-        return 1000; // safe & fast
+          
+
+         return $formattedData ;
     }
 
     public function headings(): array
+
     {
-        return [
-            'Creation Date',
+
+        $fields = $this->additionl_fileds;
+        $dynamicfielNames =array();
+        foreach ($fields as $key => $value) {
+           $dynamicfielNames[] = $value->field_name;
+        }
+
+        $fields = array_merge([
+        'Creation Date',
         'Last Modified Date',
         "Reference ID ",
         "Lead ID",
@@ -206,8 +208,13 @@ class ExportInsuranceLeads implements
         "Maker at Branch",  
         "Checker at Branch",
         "Created By",
-        "Modified By"
-        ];
+        "Modified By"],
+       // $dynamicfielNames
+    );
+
+
+    
+        return $fields;
+
     }
 }
-
