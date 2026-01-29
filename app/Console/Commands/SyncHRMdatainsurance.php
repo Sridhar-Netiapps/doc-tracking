@@ -10,39 +10,57 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Log;
+use Config;
 
-class SyncHRMdata extends Command
+class SyncHRMdatainsurance extends Command
 {
-     /**
-          * The name and signature of the console command.
-          *
-          * @var string
-          */
-     protected $signature = 'app:sync-h-r-mdata';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:sync-h-r-mdatainsurance';
 
-     /**
-          * The console command description.
-          *
-          * @var string
-          */
-     protected $description = 'Command description';
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
 
-     /**
-          * Execute the console command.
-          */
-     public function handle()
+    /**
+     * Execute the console command.
+     */
+    public function handle()
      {
 
           $currentDateTime = Carbon::today();
           $currentDate = $currentDateTime->format('Y-m-d');
           
-          $empIds = User::pluck('employee_id')->toArray();
+          $empIds = Config::get('constants.employee_ids');
+         
 
-          $hrmData = HRMData::whereIn('employee_id', $empIds)->where('load_date',$currentDate)->get();
-        
-          if($hrmData){
-               foreach($hrmData as $key => $value){      
+                   $latestHrmIds = HRMData::whereIn('employee_id', $empIds)
+    ->whereIn('id', function ($q) use ($empIds) {
+        $q->selectRaw('MAX(id)')
+          ->from('hrm_data')
+          ->whereIn('employee_id', $empIds)
+          ->groupBy('employee_id');
+    })
+    ->get();
+
+
+          
+
+          HRMData::whereIn('id', $latestHrmIds)
+            ->chunk(2, function ($hrmData) {
+//print_r(json_encode($hrmData));die();
+             foreach($hrmData as $key => $value){      
                     $user = User::where('employee_id',$value->employee_id)->first();
+
+                    if(!$user){
+                        $user=new User;
+                    }
                     $branchData = $value->office_loc_code;
                     $branch_data = explode('-',$branchData);
                     $region_id = '';
@@ -51,8 +69,7 @@ class SyncHRMdata extends Command
                     $role = 'branch-user';
 
                     $admin_designations = ["National Manager-Banking Operations",
-                    // "Regional Operations Manager" 
-                    ];
+                    "Regional Operations Manager" ];
 
                     $super_admin_designations = ["Specialist-IDAM",
                     "Systems Analyst",
@@ -74,30 +91,19 @@ class SyncHRMdata extends Command
                          "Lead Micro Banking Operations",
                          "Lead-Centralised Banking Operations",
                          "Manager-Centralized Banking Operations",
-                         // "National Manager-Banking Operations",
-                         "National Manager-Housing Loans PL and VL Operations",
-                         "National Manager-MSME Operations and FIG; Operations",
+                         "National Manager-Banking Operations",
+                         "National Manager-Housing Loans ,Personal Loans and Vehicle Finance Operations",
+                         "National Manager-MSME Operations and FIG Operations",
                          "National Manager-Payments and Settlements" ];
 
                     $ro_supervisor_designations = ["Regional Operations Manager",
                          "Manager-Asset Operations",
-                         "Manager-MB Asset Operations",
                          "Manager-Retail Asset Operations",
-                         "Specialist-Asset Operations",
-                         "Specialist- MB Asset Operations",
-                         "Manager-Banking Operation"
+                         "Specialist-Asset Operations"
                          ]; 
 
                     $ro_officer_designations = ['Associate',
                          'Officer-Asset Operations',
-                         'Officer-MB Asset Operations',
-                         'Officer-Micro Banking Asset Operations',
-                         'Senior Officer-Micro Banking Asset Operations',
-                         'Senior Officer-MB Asset Operations', 
-                         'Senior Officer-Vehicle Loan Operations',
-                         'Offcier-Banking Operations',
-                         'Officer-Vehicle Loan Operations',
-                         'Senior Officer-Banking Operations',
                          'Senior Officer-Asset Operations'
                          ];
 
@@ -123,7 +129,7 @@ class SyncHRMdata extends Command
                          "Product Manager-Family Banking",
                          "Regional Business Manager-Micro Banking",
                          "Senior Area Manager-Micro Banking",
-                         // "Manager-Banking Operation",
+                         "Manager-Banking Operation",
                          "Manager-Housing Loan Operations",
                          "Manager-MSME Operations",
                          "Manager-Operations Housing",
@@ -133,14 +139,14 @@ class SyncHRMdata extends Command
                          "Manager-Secured Loan Operations",  
                          "Manager-Vehicle Loan Operations",
                          "Specialist-Banking Operations",
-                         "Specialist-NR Operations",             
+                         "Specialist-NR Operations",
                          ];     
 
                     $bo_checker_designations = ['Branch Manager',
                          'Branch Operation Manager',
                          'Branch Operations and Service Manager',
                          'Customer Care Representative-URC',
-                         'Senior Branch Manager'
+                         'Senior Branch Manager Officer-I'
                          ];
 
                          $bo_maker_designations = ['Customer Care Representative',
@@ -226,7 +232,7 @@ class SyncHRMdata extends Command
                     if($value->office_region == 'East') $region_id = '3';
                     if($value->office_region == 'West') $region_id = '4';
                     
-                    
+                    //print_r($value);die();
                     $user->first_name = $value->first_name;
                     $user->last_name = $value->last_name;
                     $user->middle_name = $value->middle_name;
@@ -242,7 +248,7 @@ class SyncHRMdata extends Command
                     $user->branch_id = $branch_data[0];
                     $user->region = $value->office_region;  
                     $user->region_id = (int)$region_id;
-                    // $user->ins_user = $is_ins_user;
+                    //$user->ins_user = $is_ins_user;
                     $user->employee_type = $value->employee_type;  
                     $user->current_designation = $value->current_designation;  
                     $user->grade = $value->grade;  
@@ -265,6 +271,7 @@ class SyncHRMdata extends Command
                     $user->prac_role = $value->prac_role;  
                     $user->pac_designation = $value->pac_designation;  
                     $user->pac_role = $value->pac_role;
+                    $user->ins_user = '1';
                     
                     if($user->isDirty()){
                          $user->save();
@@ -275,7 +282,10 @@ class SyncHRMdata extends Command
                          \Log::info('User Details Updated : '.$user->employee_id);
                     }
                }
-          }
-          \Log::info('User Syncing Done');
+
+            });
+          
+          
+          //\Log::info('User Syncing Done');
     }
 }

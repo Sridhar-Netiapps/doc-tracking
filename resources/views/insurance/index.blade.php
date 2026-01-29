@@ -9,6 +9,8 @@
 			@if(auth::user()->branch_id == '1100')
 				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn"  ><button class="btn btn-secondary btn-text p-2" id="btn_open_import_module">Import</button></a>
 
+				<a data-bs-toggle="modal" data-bs-target="#importModalHistorical"  class="nav-link form-btn"  ><button class="btn btn-danger btn-text p-2" id="btn_open_import_module">Import Historical</button></a>
+
 				<a class="nav-link form-btn" href="{{route('create_insurance')}}" ><button class="btn btn-success btn-text p-2" id="btn_create_lead">Create Lead</button></a>
 
 			@endif
@@ -37,6 +39,40 @@
               </div>
               <div class="modal-body">
                 <form action="{{ route('import_claim_data') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group mb-4">
+                        <div class="custom-file text-left">
+                            <input type="file" name="file" accept=".xlsx" class="custom-file-input" id="customFile" required>
+                           
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                    <button class="btn btn-danger" id="btn_import">Import</button>
+                    
+                    <a class="ms-auto nav-link" target="_blank" href="{{ URL::to('/')}}/template/ClaimLeadDetailsTemplate.xlsx" id="btn_download_template"><span class="btn btn-outline-secondary">Download Template</span></a>
+                    </div>
+                    
+                </form>
+
+                 
+              </div>
+              
+            </div>
+          </div>
+        </div>
+<!-- Modal -->
+
+
+<!-- Modal Histirical-->
+        <div class="modal fade" id="importModalHistorical" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import Historical Insurance Lead details from Excel sheet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form action="{{ route('import_claim_data_historical') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-4">
                         <div class="custom-file text-left">
@@ -148,7 +184,7 @@
 					<td>
 						<div class="d-flex">
 							<a target="_blank" class="nav-link" href="{{ route('view_claim_details',encrypt($value->id))}}" ><button class="btn btn-sm btn-warning me-2" id="btn_view">View</button></a>
-							@if( ($value->cliam_status !='Completed' && auth::user()->branch_id == '1100' ) || auth::user()->hrmData->current_designation =='Manager-Insurance and TPP Operations')
+							@if( (auth::user()->branch_id == '1100' ) || auth::user()->hrmData->current_designation =='Manager-Insurance and TPP Operations')
 							<a class="nav-link" href="{{ route('edit_claim_details',[$landingTab,encrypt($value->id)])}}" ><button class="btn btn-sm btn-danger" id="btn_edit">Edit</button></a>
 							@endif
 						</div>

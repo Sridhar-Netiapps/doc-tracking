@@ -21,6 +21,7 @@ use App\Models\Region;
 use App\Models\AdditionalField;
 use App\Models\AdditionalFieldSetting;
 
+use App\Imports\ImportClaimDetails_historical;
 
 use App\Imports\ImportClaimDetails;
 use App\Exports\ExportInsuranceLeads;
@@ -38,6 +39,9 @@ use ZipArchive;
 use Smalot\PdfParser\Parser;
 use App\Mail\IntimationResponseMail;
 use Mail;
+use App\Jobs\ExportInsuranceLeadsJob;
+use Illuminate\Support\Facades\Artisan;
+
 
 
 class InsuranceHomeController extends Controller
@@ -478,7 +482,7 @@ class InsuranceHomeController extends Controller
 
              $module = 'Insurance'; 
              $operation = 'create';
-             $note = 'New Lead created - '."INS_CLM".$utrn;
+             $note = 'New Lead created - '.$utrn;
              $link = url('/').'/insurance/view_claim_details/'.encrypt($claimdata->id);
 
             $this->auditlogs($module , $operation ,$note , $link);
@@ -954,6 +958,9 @@ class InsuranceHomeController extends Controller
             } 
         }
 
+        /*set_time_limit(0);          // ✅ no time limit
+        ini_set('memory_limit', '1024M');*/
+
       Excel::import($import, $request->file('file'));
 
      // $path = $request->file('file')->store('imports/claims');  
@@ -1014,7 +1021,7 @@ class InsuranceHomeController extends Controller
 
             $this->auditlogs($module , $operation ,$note , $link);
 
-            // return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+             return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
         }
 
 
@@ -1475,7 +1482,7 @@ class InsuranceHomeController extends Controller
       
     }
 
-    public function report(Request $request){
+    /*public function report(Request $request){
     //print_r($request->input());die();
 
       $currentYear = date('Y');
@@ -1578,7 +1585,176 @@ class InsuranceHomeController extends Controller
          return Excel::download(new ExportInsuranceLeads($data,$additionl_fileds), 'insurance_leads_'.date('Ymdhis').'.xlsx');
      }
 
+    }*/
+
+    public function report(Request $request)
+{
+    $currentYear = date('Y');
+    $currentMonth = date('m');
+
+    $startYear = ($currentMonth >= 4) ? $currentYear : $currentYear - 1;
+
+    if (empty($request->start)) {
+        $start = $startYear . '-04-01';
+        $end   = date('Y-m-d');
+    } else {
+        $start = $request->start;
+        $end   = $request->end;
     }
+
+    $search        = $request->search;
+    $region        = $request->region;
+    $partner       = $request->partner;
+    $product       = $request->product;
+    $claim_status  = $request->status;
+    $proccesed     = $request->proccesed;
+    $branch        = $request->branch;
+
+    if (Auth::user()->branch_id != '1100') {
+        $branch = Auth::user()->branch_id;
+    }
+
+    /**
+     * 🔑 BASE QUERY (NO get())
+     */
+    //$query = InsuranceClaimDetail::whereBetween('intimation_date', [$start, $end])
+    $query = InsuranceClaimDetail::with(['nominee', 'additionalfields'])
+        ->when($region, fn($q) => $q->where('region', $region))
+        ->when($partner, fn($q) => $q->where('partner', $partner))
+        ->when($product, fn($q) => $q->where('product', $product))
+        ->when($claim_status, fn($q) => $q->where('cliam_status', $claim_status))
+        ->when($proccesed, fn($q) => $q->where('processed_by', $proccesed))
+        ->when($branch, fn($q) => $q->where('branch', $branch))
+        ->when($search, function ($q) use ($search) {
+            $q->where(function ($sub) use ($search) {
+                $sub->where('utrn', 'LIKE', "%$search%")
+                    ->orWhere('policy_number', 'LIKE', "%$search%")
+                    ->orWhere('cust_id', 'LIKE', "%$search%")
+                    ->orWhere('load_acc_id', 'LIKE', "%$search%")
+                    ->orWhere('mp_no', 'LIKE', "%$search%")
+                    ->orWhere('notification_number', 'LIKE', "%$search%");
+            });
+        })
+        ->orderBy('id', 'DESC');
+
+    /**
+     * 📌 FILTER VIEW
+     */
+    if (!isset($request->action) || $request->action === 'filter') {
+
+        $data = $query->limit(500)->get(); // safety limit for UI
+
+        $partners     = InsurancePartner::get();
+        $products     = InsuranceProduct::get();
+        $claimstatus  = InsuranceClaimStatus::get();
+        $rlStat       = InsuranceRequestLetterStatus::get();
+        $procesedby   = ['NA', 'Vindhya', 'Ujjivan', 'HO'];
+
+        $brID = Auth::user()->branch_id;
+
+        $branches = ($brID == '1100')
+            ? Branch::get()
+            : Branch::where('code', $brID)->get();
+
+        return view(
+            'insurance.report',
+            compact(
+                'data',
+                'partners',
+                'products',
+                'claimstatus',
+                'rlStat',
+                'procesedby',
+                'start',
+                'end',
+                'region',
+                'branch',
+                'partner',
+                'product',
+                'claim_status',
+                'proccesed',
+                'search',
+                'branches'
+            )
+        );
+    }
+
+    /**
+     * 📤 EXPORT (NO get())
+     */
+    $module = 'Insurance';
+    $operation = 'Export';
+    $note = 'Report generated';
+    $link = url('/').'/insurance/leads-report/';
+    $this->auditlogs($module, $operation, $note, $link);
+
+    $additionl_fileds = AdditionalFieldSetting::get();
+
+    /*return Excel::download(
+      
+        new ExportInsuranceLeads($query, $additionl_fileds),
+        'insurance_leads_' . date('YmdHis') . '.xlsx'
+    );*/
+
+   // $filename = 'insurance_leads_' . date('YMd_H_i_s') . '.csv';
+
+    /*Excel::store(
+        new ExportInsuranceLeads($query, $additionl_fileds),
+        'exports/' . $filename,
+        'public',
+        \Maatwebsite\Excel\Excel::CSV
+    );
+
+    // redirect to download
+    return redirect()->route('insurance.export.download', ['file' => $filename]);*/
+
+    $filename = 'insurance_leads_' . date('Y--d-His') . '.csv';
+    
+   
+
+/* start job / command */
+dispatch(
+    new ExportInsuranceLeadsJob($query, $additionl_fileds, $filename)
+);
+
+return response()->json([
+    'status' => true,
+    'message' => 'Export started',
+    'file' => $filename
+]);
+}
+
+public function export(Request $request)
+{
+    $file = 'insurance_leads_' . now()->format('YmdHis') . '.csv';
+
+    $query = InsuranceClaimDetail::with(['nominee', 'additionalfields'])
+        ->when($request->region, fn($q) => $q->where('region', $request->region))
+        ->when($request->partner, fn($q) => $q->where('partner', $request->partner))
+        ->when($request->product, fn($q) => $q->where('product', $request->product))
+        ->when($request->status, fn($q) => $q->where('cliam_status', $request->status))
+        ->when($request->proccesed, fn($q) => $q->where('processed_by', $request->proccesed))
+        ->when($request->branch, fn($q) => $q->where('branch', $request->branch))
+        ->orderBy('id');
+
+        $count = $query->count();
+        
+
+
+    Excel::store(
+        new ExportInsuranceLeads($query),
+        'exports/' . $file,
+        'public',
+        \Maatwebsite\Excel\Excel::CSV
+    );
+
+    return response()->json([
+        'status' => true,
+        'file' => $file
+    ]);
+}
+
+
 
     public function download_checklist($id){
 
@@ -1992,4 +2168,116 @@ class InsuranceHomeController extends Controller
         }
 
 
+     public function import_claim_data_historical(Request $request){
+
+       $import = new ImportClaimDetails_historical ;
+       $file = $request->file('file');
+       $errors=array();
+
+     
+       if ($request->hasFile('file')) {
+
+            foreach ($request->file('file') as $file) {
+           
+                $result = $this->validateFileWhileSaving($file);
+                if (strpos($result, 'Malicious content detected') !== false || 
+                    strpos($result, 'Invalid file type') !== false || 
+                    strpos($result, 'File size exceeds') !== false) {
+                    $errors[] = $result;
+                    continue; // skip saving this file
+                }
+              
+            }
+
+            if(sizeof($errors)>0){
+               return response()->json([
+                    'status' => 'false',
+                    'message' => implode(',', $errors)
+                ]);
+            } 
+        }
+      Excel::import($import, $request->file('file'));
+
+
+       if($import->getRowCount() == 0){
+
+             $module = 'Insurance'; 
+             $operation = 'Import';
+             $note = 'Imported Lead Details - '.$import->getRowCount();
+             $link = url('/').'/insurance/claim_forms';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+            return redirect()->back()->with('message','0 rows imported');
+        }
+        else {
+
+            $inserted = $import->getInsertedCount();
+            $updated = $import->getUpdatedCount();
+
+             $module = 'Insurance'; 
+             $operation = 'Import';
+             $note = 'Imported Lead Details - New Entry - '.$inserted.', Updated Entry - '.$updated;
+             $link = url('/').'/insurance/claim_forms';
+
+            $this->auditlogs($module , $operation ,$note , $link);
+
+        }
+
+
+        $failures = $import->getCollectedFailures();
+      
+       $Errordata = array();
+       if (!empty($import->failedRows)) {
+      // Send mail with error rows
+        
+        foreach ($import->failedRows as $key => $value) {
+           $Errordata[]=$value['data'];
+        }
+       
+      } 
+
+      if (sizeof($failures) > 0 ) {
+            return back()->with([
+                'failures' => $failures,
+                'errordata' => $Errordata,
+                'message' => ' New Entry - '.$inserted.'   , Updated Entry - '.$updated.'   , Error rows - '.sizeof($Errordata)
+            ]);
+        }else{
+           return redirect()->back()->with('message',$import->getRowCount().' row(s) imported. New Entry - '.$inserted.', Updated Entry - '.$updated);;
+        }
+       
+    }
+
+    public function downloadExport($file)
+    {
+        $path = storage_path('app/public/exports/' . $file);
+
+        if (!file_exists($path)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->download($path)->deleteFileAfterSend(false);
+    }
+
+
+    public function exportAll()
+    {
+         $file = 'insurance_leads_' . now()->format('d_M_Y_H_i') . '.csv';
+
+        Artisan::call('insurance:export-all', [
+            'file' => $file
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'file' => $file
+        ]);
+    }
+
+
+
+
 }
+
+
+

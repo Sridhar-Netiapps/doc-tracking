@@ -258,13 +258,13 @@
                 <div class="modal-body p-4 row">
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">Courier Name <span class="text-danger">*</span></label>
-                        <select id="courier_name" name="courier_name" class="form-control awb_pod select2" required>
+                        <select id="courier_name" name="courier_name" class="form-control select2" required>
                             <option value=''>Select</option>
                             @foreach($couriers as $courier)
                                 <option value='{{ $courier->id }}'>{{ $courier->name }}</option>
                             @endforeach
                         </select>
-                        <label id="courier_name-error" class="error" for="designation_ids"></label>
+                        {{-- <label id="courier_name-error" class="error" for="designation_ids"></label> --}}
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
@@ -356,48 +356,96 @@
             $('#add-courier').modal('show');
         });
 
-
         $('#update-courier').validate({
             rules: {
-                awb_pod: { alphanumeric: true, sanitize: true },
-                courier_name: { required: true, sanitize: true },
-                mmrp_barcode: { alphanumeric: true, required: true, sanitize: true }
+                awb_pod: {
+                    required: false,
+                    alphanumeric: true,
+                    sanitize: true,
+                    remote: {
+                        url: "{{ route('courier.checkAwb') }}",
+                        type: "POST",
+                        data: {
+                            awb_pod: function () {
+                                return $('.awb_pod').val();
+                            },
+                            courier_name: function () {
+                                return $('#courier_name').val();
+                            },
+                            id: function () {
+                                return $('#id').val(); // optional (for edit)
+                            },
+                            _token: "{{ csrf_token() }}"
+                        }
+                    }
+                },
+                courier_name: {
+                    required: true,
+                    sanitize: true
+                },
+                mmrp_barcode: {
+                    required: true,
+                    alphanumeric: true,
+                    sanitize: true
+                }
             },
             messages: {
-                courier_name: { required: "Courier name is required" },
-                mmrp_barcode: { required: "MMRP Barcode is required" }
-            // },
-            // submitHandler: async function (form) {
-            //     const formData = new FormData(form);
-            //     const isUpdate = actionUrl.includes('update-courier');
-            //     formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
-            //     try {
-            //         const response = await $.ajax({
-            //             url: actionUrl,
-            //             type: 'POST', 
-            //             data: formData,
-            //             contentType: false,
-            //             processData: false,
-            //         });
-            //         if (response.success) {
-            //             await Swal.fire({
-            //                 title: "Success!",
-            //                 // text: "Courier details saved successfully.",
-            //                 text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
-            //                 icon: "success",
-            //                 confirmButtonText: "OK"
-            //             }).then(() => {
-            //                 window.location.href = `{{ route('dispatches','list') }}`;
-            //             });
-            //         } else {
-            //             Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
-            //         }
-            //     } catch (error) {
-            //         console.error("AJAX Error:", error);
-            //         Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
-            //     }
+                awb_pod: {
+                    remote: "This AWB already exists for the selected courier"
+                },
+                courier_name: {
+                    required: "Courier name is required"
+                },
+                mmrp_barcode: {
+                    required: "MMRP Barcode is required"
+                }
+            },
+
+            submitHandler: function (form) {
+                form.submit();
             }
         });
+        // $('#update-courier').validate({
+        //     rules: {
+        //         awb_pod: { alphanumeric: true, sanitize: true },
+        //         courier_name: { required: true, sanitize: true },
+        //         mmrp_barcode: { alphanumeric: true, required: true, sanitize: true }
+        //     },
+        //     messages: {
+        //         courier_name: { required: "Courier name is required" },
+        //         mmrp_barcode: { required: "MMRP Barcode is required" }
+        //     // },
+        //     // submitHandler: async function (form) {
+        //     //     const formData = new FormData(form);
+        //     //     const isUpdate = actionUrl.includes('update-courier');
+        //     //     formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
+        //     //     try {
+        //     //         const response = await $.ajax({
+        //     //             url: actionUrl,
+        //     //             type: 'POST', 
+        //     //             data: formData,
+        //     //             contentType: false,
+        //     //             processData: false,
+        //     //         });
+        //     //         if (response.success) {
+        //     //             await Swal.fire({
+        //     //                 title: "Success!",
+        //     //                 // text: "Courier details saved successfully.",
+        //     //                 text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
+        //     //                 icon: "success",
+        //     //                 confirmButtonText: "OK"
+        //     //             }).then(() => {
+        //     //                 window.location.href = `{{ route('dispatches','list') }}`;
+        //     //             });
+        //     //         } else {
+        //     //             Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
+        //     //         }
+        //     //     } catch (error) {
+        //     //         console.error("AJAX Error:", error);
+        //     //         Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
+        //     //     }
+        //     }
+        // });
         
         $(document).on('click', '.edit-courier', function () {
             const courierId = $(this).data('id');
@@ -437,42 +485,42 @@
 
         let invalidAwbs = new Set();
 
-        $('.awb_pod').on('input', function () {
-            let awbPod = $(this).val().trim();
-            let courierId = $('#courier_name').val();
-            let $input = $(this);
+        // $('.awb_pod').on('input', function () {
+        //     let awbPod = $(this).val().trim();
+        //     let courierId = $('#courier_name').val();
+        //     let $input = $(this);
 
-            $('#awb-error').remove();
-            $input.removeClass('is-invalid');
-            invalidAwbs.delete($input[0]); 
+        //     $('#awb-error').remove();
+        //     $input.removeClass('is-invalid');
+        //     invalidAwbs.delete($input[0]); 
 
-            if (awbPod != '' && courierId != '') {
-                $.ajax({
-                    url: "{{ route('courier.checkAwb') }}",
-                    type: "POST",
-                    data: {
-                        awb_pod: awbPod,
-                        courier_id: courierId,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function (response) {
-                        if (response.exists) {
-                            $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
-                            $input.addClass('is-invalid');
-                            invalidAwbs.add($input[0]); 
-                        }
-                    }
-                });
-            }
-        });
+        //     if (awbPod != '' && courierId != '') {
+        //         $.ajax({
+        //             url: "{{ route('courier.checkAwb') }}",
+        //             type: "POST",
+        //             data: {
+        //                 awb_pod: awbPod,
+        //                 courier_id: courierId,
+        //                 _token: "{{ csrf_token() }}"
+        //             },
+        //             success: function (response) {
+        //                 if (response.exists) {
+        //                     $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
+        //                     $input.addClass('is-invalid');
+        //                     invalidAwbs.add($input[0]); 
+        //                 }
+        //             }
+        //         });
+        //     }
+        // });
 
-        $('form').on('submit', function () {
-            let $awbpodCheck = $('input.awb_pod');
-            if($awbpodCheck.hasClass('is-invalid')){
-                $awbpodCheck.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
-                return false;
-            }
-        });
+        // $('form').on('submit', function () {
+        //     let $awbpodCheck = $('input.awb_pod');
+        //     if($awbpodCheck.hasClass('is-invalid')){
+        //         $awbpodCheck.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
+        //         return false;
+        //     }
+        // });
 
         $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();

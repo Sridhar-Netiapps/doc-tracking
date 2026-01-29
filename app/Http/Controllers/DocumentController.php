@@ -871,8 +871,10 @@ class DocumentController extends Controller
                 $dispatch->status = $update['remarks'];
                 $dispatch->comments = $update['reason_for_rejection'];
                 $dispatch->updated_by = $this->user->id;
-                $dispatch->verified_by = $this->user->id;
-                $dispatch->verified_at = now();
+                if($update['remarks'] == 12){
+                    $dispatch->verified_by = $this->user->id;
+                    $dispatch->verified_at = now();
+                }
                 $dispatch->save();
 
                 if ((int)$update['remarks'] === 6) {
@@ -1327,18 +1329,18 @@ class DocumentController extends Controller
                         } elseif ($toDate) {
                             $q->whereDate('created_at', '<=', $toDate);
                         }
-                
+                        $q->whereIn('current_status', [5, 7]);
                     });
                 
                 }
 
                 if($dispatchField) {
                     $query->whereHas('dispatch', function ($q) use ($dispatchField, $fromDate, $toDate, $dateField) {
-                        if($dateField == 'received_date') {
-                            $q->whereIn('status', [5,6,7]);
-                        } elseif ($dateField == 'tracking_date') {
-                            $q->where('status', 12);
-                        }
+                        // if($dateField == 'received_date') {
+                        //     $q->whereIn('status', [5,6,7]);
+                        // } elseif ($dateField == 'tracking_date') {
+                        //     $q->where('status', 12);
+                        // }
                         if($fromDate && $toDate) {
                             $q->whereBetween($dispatchField, [$fromDate, $toDate]);
                         } elseif($fromDate) {
@@ -1351,25 +1353,32 @@ class DocumentController extends Controller
 
                 elseif ($mainField) {
                     $query->where(function ($q) use ($mainField, $fromDate, $toDate){
-                        $q->whereHas('dispatch', function ($dq) use ($mainField, $fromDate, $toDate){
-                            if($fromDate && $toDate) {
-                                $dq->whereBetween($mainField, [$fromDate, $toDate]);
-                            } elseif($fromDate) {
-                                $dq->whereDate($mainField, '>=', $fromDate);
-                            } elseif($toDate) {
-                                $dq->whereDate($mainField, '<=', $toDate);
-                            }
-                        });
-                        $q->orWhere(function ($sq) use ($mainField, $fromDate, $toDate){
-                            $sq->doesntHave('dispatch');
-                            if($fromDate && $toDate) {
-                                $sq->whereBetween($mainField, [$fromDate, $toDate]);
-                            } elseif($fromDate) {
-                                $sq->whereDate($mainField, '>=', $fromDate);
-                            } elseif($toDate) {
-                                $sq->whereDate($mainField, '<=', $toDate);
-                            }
-                        });
+                        // $q->whereHas('dispatch', function ($dq) use ($mainField, $fromDate, $toDate){
+                        //     if($fromDate && $toDate) {
+                        //         $dq->whereBetween($mainField, [$fromDate, $toDate]);
+                        //     } elseif($fromDate) {
+                        //         $dq->whereDate($mainField, '>=', $fromDate);
+                        //     } elseif($toDate) {
+                        //         $dq->whereDate($mainField, '<=', $toDate);
+                        //     }
+                        // });
+                        // $q->orWhere(function ($sq) use ($mainField, $fromDate, $toDate){
+                        //     $sq->doesntHave('dispatch');
+                        //     if($fromDate && $toDate) {
+                        //         $sq->whereBetween($mainField, [$fromDate, $toDate]);
+                        //     } elseif($fromDate) {
+                        //         $sq->whereDate($mainField, '>=', $fromDate);
+                        //     } elseif($toDate) {
+                        //         $sq->whereDate($mainField, '<=', $toDate);
+                        //     }
+                        // });
+                        if ($fromDate && $toDate) {
+                            $q->whereBetween($mainField, [$fromDate, $toDate]);
+                        } elseif ($fromDate) {
+                            $q->whereDate($mainField, '>=', $fromDate);
+                        } elseif ($toDate) {
+                            $q->whereDate($mainField, '<=', $toDate);
+                        }
                     });
                 }
             }
