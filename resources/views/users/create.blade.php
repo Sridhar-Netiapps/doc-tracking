@@ -17,7 +17,6 @@
         </div>
     </div>
     <div class="h-100 align-items-start align-content-lg-stretch">
-        {{-- {{$user}} --}}
         <form id="users" action="{{ route('users.store') }}" method="POST">
             @csrf
             <div class="form-card row">
