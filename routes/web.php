@@ -79,10 +79,6 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('documents/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
-
-        // Route::get('home', [HomeController::class, 'index'])->name('home');
-        // Route::get('home', function () { return view('home'); })->name('home');
-        // ProcessStatus resource routes for the ProcessStatusController
         Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');
         Route::get('process-status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
         Route::post('process-status/store', [ProcessStatusController::class, 'store'])->name('process_status.store');
