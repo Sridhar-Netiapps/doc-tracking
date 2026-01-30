@@ -725,7 +725,7 @@ class DocumentController extends Controller
         } catch (DecryptException $e) {
             abort(404, 'Invalid ID');
         }
-        $dispatch = CourierDispatch::findOrFail($id);
+        $dispatch = CourierDispatch::findOrFail($decryptedId);
 
         if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
             if($this->user->branch_id != $dispatch->branch_code){
