@@ -115,7 +115,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 $document->file_barcode = $row['file_barcode_against_lot_no'];
                 $document->box_barcode = $row['box_barcode_no'];
                 $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseExcelDate($row['date_of_addition_to_vendor_data']) : null;
-                // $document->date_added_to_vendor = !empty($row['date_of_addition_to_vendor_data']) ? $this->parseFlexibleDate($row['date_of_addition_to_vendor_data']) : null;
+                
                 $document->status = $doc_status;
                 // dd($document);
                 if ($document->isDirty()) {
