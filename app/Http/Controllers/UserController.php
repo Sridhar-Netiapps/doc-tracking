@@ -55,8 +55,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validating the input data
-        // dd($request->all());
-       // print_r($request->input());die();
         $request->validate([
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -276,7 +274,6 @@ class UserController extends Controller
         }
 
         $userData = User::where('id',$user->id)->first();
-       // print_r($userData);die();
 
         // Updating the user
         $user->update([

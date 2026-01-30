@@ -1,5 +1,5 @@
 <p>Dear Branch Team,</p>
-<p>New Pending documents syncing completed in the document tracker and the count is mentioned below.</p>
+<p>New Pending documents syncing completed in the document tracker and the count is mentioned below. </p>
 <table style="border: 2px solid black; border-collapse: collapse; text-align: left;">
     <tr style="border-bottom: 1px solid black;">
         <th style="border-right: 1px solid black;">MB Loan Documents</th>

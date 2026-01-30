@@ -57,6 +57,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
     public function map($doc): array
     {
         return [
+            // no account number in DTRF documents
             $doc->unique_ref_no,
             $doc->region,
             $doc->branch_code,

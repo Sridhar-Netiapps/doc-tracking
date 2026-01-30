@@ -854,7 +854,10 @@ class DocumentController extends Controller
                 $dispatch->status = $update['remarks'];
                 $dispatch->comments = $update['reason_for_rejection'];
                 $dispatch->updated_by = $this->user->id;
-                $dispatch->verified_at = now();
+                if ((int)$update['remarks'] === 12) {
+                    $dispatch->verified_by = $this->user->id;
+                    $dispatch->verified_at = now();
+                }
                 $dispatch->save();
 
                 if ((int)$update['remarks'] === 6) {

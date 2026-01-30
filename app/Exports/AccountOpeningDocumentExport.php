@@ -69,7 +69,7 @@ class AccountOpeningDocumentExport implements FromCollection, WithHeadings, With
             $doc->branch_code,
             $doc->branch_name,
             $doc->cif_id,
-            '="'.$doc->account_number,
+            $doc->account_number,
             $doc->customer_name,
             $doc->account_creation_date != null ? date('d-m-Y', strtotime($doc->account_creation_date)) : '-',
             $doc->scheme,

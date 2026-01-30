@@ -51,7 +51,7 @@ class SyncHRMdata extends Command
                     $role = 'branch-user';
 
                     $admin_designations = ["National Manager-Banking Operations",
-                    // "Regional Operations Manager" 
+                    // "Regional Operations Manager" ,
                     ];
 
                     $super_admin_designations = ["Specialist-IDAM",
