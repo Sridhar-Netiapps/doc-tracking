@@ -696,7 +696,7 @@ class DocumentController extends Controller
         $previousPath = parse_url($previousUrl, PHP_URL_PATH); 
         $previousSegments = explode('/', ltrim($previousPath, '/'));
         $type = Str::afterLast($previousUrl, '/'); 
-        // dd($type);
+        
         session()->forget('filters');
         if($type == 'proceed')
             return redirect()->route('accounts.selected');
@@ -727,7 +727,7 @@ class DocumentController extends Controller
         }
 
         $dtype = session()->pull('dtype');
-        // dd($dtype);
+        
         $loan_document = LoanDocument::whereIn('id', explode(',', $dispatch->loan_ids))->paginate(100)->withQueryString();
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
         $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
