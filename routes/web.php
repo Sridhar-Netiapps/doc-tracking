@@ -71,12 +71,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('home', [HomeController::class, 'index'])->name('home');
         Route::post('reports', [DocumentController::class,'export'])->name('reports');
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
-        // Route::get('document/data_import', [UploadController::class, 'dataImport'])->name('accounts.data_import');
+        
         Route::get('/accounts/data_import', function () {
             return view('accounts.data_import');
         })->name('accounts.data_import');
-        // Route::group(['middleware' => ['role.access']], function () {
-        // Route::post('documents/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
         Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');

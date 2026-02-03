@@ -66,7 +66,6 @@
                         @endif 
                     @endunless
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
-                    {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">

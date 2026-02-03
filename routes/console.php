@@ -9,7 +9,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('documents:revert-draft')->dailyAt('06:00');
-Schedule::command('documents:sync')->dailyAt('06:30');
-Schedule::command('documents:sync-email')->dailyAt('07:00');
-Schedule::command('app:sync-h-r-mdata')->dailyAt('07:40');
+Schedule::command('documents:revert-draft')->dailyAt('22:00');
+Schedule::command('documents:sync')->dailyAt('11:30');
+Schedule::command('documents:sync-email')->dailyAt('12:00');
+Schedule::command('app:sync-h-r-mdata')->dailyAt('10:00');

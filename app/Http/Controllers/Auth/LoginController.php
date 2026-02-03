@@ -79,6 +79,9 @@ class LoginController extends Controller
                     //  $user = Auth::user();
                      $user->session_id = Session::getId();
                      $user->save();
+                    if ($user->hasrole('master')) {
+                        return redirect()->intended('/home');
+                    }
                     if ($user->hasrole('super_admin')) {
                         return redirect()->route('users.index');
                     }

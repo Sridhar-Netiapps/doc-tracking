@@ -10,7 +10,7 @@ class DocumentObserver
 {
     public function created(Model $model)
     { 
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
+        if (auth()->check() && auth()->user()->hasRole('master')) {
             return;
         }    
         if ($model->isDirty('status')) {
@@ -27,7 +27,7 @@ class DocumentObserver
     }
     public function updating(Model $model)
     {
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
+        if (auth()->check() && auth()->user()->hasRole('master')) {
             return;
         }
         if ($model->isDirty('status')) {
@@ -44,7 +44,7 @@ class DocumentObserver
     }
     public function deleting(Model $model)
     {
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
+        if (auth()->check() && auth()->user()->hasRole('master')) {
             return;
         }    
         if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
@@ -62,7 +62,7 @@ class DocumentObserver
 
     public function restored(Model $model)
     {
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
+        if (auth()->check() && auth()->user()->hasRole('master')) {
             return;
         }    
         DocumentHistory::create([

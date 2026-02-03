@@ -29,7 +29,6 @@
                             </select>
                         </div>
                         <label for="excel_file" class="form-label">Upload File <span class="text-danger">*</span></label> 
-                        {{-- <a href="{{ route('vendor.sample.download') }}" class="btn btn-link"> Download Sample File </a> --}}
                         <input type="file" name="excel_file" class="form-control file-validate"  data-ext="csv,xls,xlsx" required> 
                         <label class="text-danger mt-3" id="excel_file-error"></label>
                     </div>

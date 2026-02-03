@@ -29,9 +29,7 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-5">
                             <div class="loginContent">
-                                {{-- <img class="logoIcon" src="/images/logoIcon.svg"/> --}}
                                 <h2 class="text-center">DOCUMENT <br> & <br> INSURANCE <br> TRACKER</h2>
-                                {{-- <div> <img width="300" src="/images/logo.svg" /> </div> --}}
                             </div>
                         </div>
                         <div class="col-md-4">

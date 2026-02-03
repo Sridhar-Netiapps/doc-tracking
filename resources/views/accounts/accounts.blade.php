@@ -57,7 +57,6 @@
                 @endhasanyrole
 
                 @role('ro-supervisor|master|super_admin|admin')
-                    {{-- @if ($type != 'rejected' && $type != 'pending') --}}
                     {{-- @if ($type !== 'rejected') --}}
                         <li class="ms-auto">
                             {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}

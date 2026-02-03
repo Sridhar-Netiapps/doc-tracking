@@ -7,7 +7,6 @@
             <div class="d-flex justify-content-center align-items-center">
                 <h3 class="me-3">Audit Logs</h3>
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
-                 {{-- <form id="exportForm" method="GET" action="{{ route('activity.export') }}"> --}}
                 @if(Request::segment(2) == 'filter')
                 <form method="GET" action="{{ route('activity.export') }}">
                     @foreach(($filters ?? []) as $key => $value)

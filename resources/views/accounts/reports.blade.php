@@ -31,14 +31,6 @@
                                 <option value="dtrf">DTR Files</option>
                             </select>
                         </div>
-                        {{-- <div class="col mt-2">
-                            <label for="search_type">Search Criteria</label>
-                            <select id="search_type" name="search_type" class="form-select">
-                                <option value="">-- Select --</option>
-                                <option value="courier">Courier</option>
-                                <option value="vendor">Vendor</option>
-                            </select>
-                        </div> --}}
                         <div class="col mt-2">
                             <label>Region</label>
                             <select id="region" name="region" class="form-select">

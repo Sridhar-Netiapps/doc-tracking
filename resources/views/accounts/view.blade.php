@@ -344,8 +344,6 @@
             let dateFrom = $('#date_from').val()?.trim();
             let dateTo = $('#date_to').val()?.trim();
 
-            // Add more filter fields if needed
-
             if (!status && !search && !dateFrom && !dateTo) {
                 Swal.fire({
                     title: "Warning!",

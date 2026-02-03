@@ -739,7 +739,6 @@
                     }
                     $('#vendor_input').val(data.vendor_name).change();
 
-                    // $('#vendor_movement_date_input').val(data.vendor_movement_date ?? '');
                     $('#vendor_movement_date_input').val(data.vendor_movement_date ? new Date(data.vendor_movement_date).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
                     $('#date_added_input').val(data.date_added_to_vendor ? new Date(data.date_added_to_vendor).toLocaleDateString('en-GB').replace(/\//g, '-') : '');
                     // $('#date_added_input').val(data.date_added_to_vendor ?? '');

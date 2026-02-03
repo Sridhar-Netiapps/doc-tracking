@@ -771,7 +771,6 @@ class DocumentController extends Controller
                 $dispatch->courier_name = $validated['courier_name'];
                 $dispatch->awb_pod = $validated['awb_pod'];
                 $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
-                $dispatch->verified_by = Auth::user()->id;
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
@@ -854,7 +853,7 @@ class DocumentController extends Controller
                 $dispatch->status = $update['remarks'];
                 $dispatch->comments = $update['reason_for_rejection'];
                 $dispatch->updated_by = $this->user->id;
-                if ((int)$update['remarks'] === 12) {
+                if (in_array((int)$update['remarks'], [5,6,7], true)) {
                     $dispatch->verified_by = $this->user->id;
                     $dispatch->verified_at = now();
                 }
@@ -906,8 +905,8 @@ class DocumentController extends Controller
                 $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
-                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
+                // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
             } elseif ((int)$update['remarks'] === 12) {
                 $data = [
                     'dispatch_no' => $dispatch->dispatch_no,
@@ -918,8 +917,8 @@ class DocumentController extends Controller
                 $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
-                $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
+                // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
 
             DB::commit();
