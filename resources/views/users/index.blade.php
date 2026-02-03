@@ -21,7 +21,6 @@
         </div>
         @role('super_admin|master')
         <div>
-            {{-- <a href="{{ route('users.create') }}" class="btn btn-primary">Create User</a> --}}
             <button class="btn btn-primary get-user">Create User</a>
         </div>
         @endrole

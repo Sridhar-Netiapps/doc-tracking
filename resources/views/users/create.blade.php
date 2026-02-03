@@ -90,7 +90,6 @@
                     @enderror
                 </div>
 
-                <!-- Gender Field -->
                 <div class="col-4 mb-4 form-group">
                     <label for="gender">Gender</label>
                     <select class="form-control @error('gender') is-invalid @enderror" id="gender" name="gender">
