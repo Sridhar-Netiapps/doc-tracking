@@ -21,5 +21,7 @@ Schedule::command('documents:revert-draft')->dailyAt('06:00');
 Schedule::command('documents:sync')->dailyAt('06:30');
 Schedule::command('documents:sync-email')->dailyAt('07:00');
 Schedule::command('app:sync-h-r-mdata')->dailyAt('07:40');
-//Schedule::command('app:sync-h-r-mdatainsurance')->dailyAt('07:40');
-
+//Schedule::command('insurance:export-all insurance_leads')->dailyAt('07:40');
+Schedule::command('insurance:export-all insurance_leads')->dailyAt("09:20");
+Schedule::command('insurance:export-all insurance_leads')->dailyAt("09:20");
+Schedule::command('insurance:export-all insurance_leads')->dailyAt("09:20");
