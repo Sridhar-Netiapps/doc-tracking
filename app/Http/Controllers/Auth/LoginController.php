@@ -66,12 +66,12 @@ class LoginController extends Controller
                 $ldap = Container::getDefaultConnection();
                 $ldap->connect();
                 $isValidLdap = $ldap->auth()->attempt($username,$password);
-                $user = User::where('employee_id', $username)->first();
+                $user = User::where('employee_id', $username)->where('status', 'active')->first();
 
                 if ($isValidLdap) {
                     // $user = User::where('employee_id', $username)->first();
                     if (!$user) {
-                        return back()->withErrors(['username' => 'You are not authorized.']);
+                        return back()->withErrors(['username' => 'You are not authorized. Please contact ID Maintenance Team.']);
                     }
                     Session::flush();
                     // Auth::logoutOtherDevices($password);

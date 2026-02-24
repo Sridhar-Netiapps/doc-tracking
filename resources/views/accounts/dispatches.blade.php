@@ -267,7 +267,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod capsonly">
+                        <input type="text" name="awb_pod" id="awb_pod" class="form-control alphanumeric awb_pod capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
@@ -366,13 +366,13 @@
                         type: "POST",
                         data: {
                             awb_pod: function () {
-                                return $('.awb_pod').val();
+                                return $('#awb_pod').val();
                             },
-                            courier_name: function () {
+                            courier_id: function () {
                                 return $('#courier_name').val();
                             },
                             id: function () {
-                                return $('#id').val(); // optional (for edit)
+                                return $('input[name="dispatch_id"]').val(); // optional (for edit)
                             },
                             _token: "{{ csrf_token() }}"
                         }
@@ -467,7 +467,6 @@
             $('#update-courier').find('input[name="_method"]').remove();
             $('#update-courier').append('<input type="hidden" name="_method" value="PUT">');
         });
-
 
 
         $('.awb_pod').on('focus', function () {

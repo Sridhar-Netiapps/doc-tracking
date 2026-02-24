@@ -14,6 +14,7 @@ use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Models\HRMData;
 use Auth;
@@ -525,10 +526,25 @@ class UserController extends Controller
     public function userExport(Request $request)
     {
         $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
-        $query = $this->applyUsersFilters(User::query(), $filters);
-        $data = $query->orderBy('created_at', 'desc')->get();
+        $fileName = 'users_' . now()->format('Ymd_His') . '.xlsx';
+        $path = 'exports/' . $fileName;
 
-        return Excel::download(new UserExport($data), 'users.xlsx');
+        Excel::queue(new UserExport($filters), $path, 'public');
+
+        $downloadUrl = Storage::disk('public')->url($path);
+        $downloadLink = '<a href="' . e($downloadUrl) . '" target="_blank" rel="noopener">Download file</a>';
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'queued',
+                'path' => $path,
+                'url' => $downloadUrl,
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Export queued. ' . $downloadLink);
     }
 
     private function applyUsersFilters($query, $filters)
