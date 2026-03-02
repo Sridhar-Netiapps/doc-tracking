@@ -26,7 +26,7 @@
                
                @if( (Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == 'Yes' && $nomineedata->spdc_data_verified == 'Yes' && $data->cliam_status != 'Pending From Branch') 
                ||(Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == '' && $nomineedata->spdc_data_verified == '') 
-               || (Auth::user()->branch_id != '1100' && (str_contains($data->cliam_status), 'pending from branch') &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) || auth::user()->hasRole('bo-maker')) ) )
+               || (Auth::user()->branch_id != '1100'  &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) || auth::user()->hasRole('bo-maker')) ) )
 				  <button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			   @endif
 

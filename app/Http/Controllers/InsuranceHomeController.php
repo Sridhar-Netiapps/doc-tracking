@@ -441,7 +441,7 @@ class InsuranceHomeController extends Controller
         $claimdata->save();
 
         if($claimdata->id !='' || $claimdata->id != 0){
-            InsuranceClaimDetail::update(['']);
+            //InsuranceClaimDetail::update(['']);
             InsuranceNomineeDetail::create(
               [
                 'insurance_claim_details_id' => $claimdata->id,
