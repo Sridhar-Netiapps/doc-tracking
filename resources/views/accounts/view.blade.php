@@ -61,18 +61,18 @@
                             @foreach ($allDocuments as $doc)
                                 <tr>
                                     @hasanyrole('master|ro-officer')
-                                    <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ $doc->id }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                    <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ bin2hex(Crypt::encryptString($doc->id)) }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                     @endhasanyrole
                                     <td>{{ ucfirst($doc->doc_type) }}</td>
                                     <td>{{ $doc->unique_ref_no ?? '-' }}</td>
                                     <td>{{ $doc->region ?? '-' }}</td>
                                     <td>{{ $doc->branch_code ?? '-' }}</td>
                                     <td>{{ $doc->branch_name ?? '-' }}</td>
-                                    <td>@sensitive($doc->cif_id ?? '-')</td>
-                                    <td>@sensitive($doc->account_number ?? '-')</td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($doc->cif_id) && $doc->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($doc->cif_id ?? '-') }}</span></td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($doc->account_number) && $doc->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($doc->account_number ?? '-') }}</span></td>
                                     <td>{{ $doc->loan_cycle ?? '-' }}</td>
                                     <td>{{ $doc->scheme ?? '-' }}</td>
-                                    <td>@sensitive($doc->customer_name ?? '-')</td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($doc->customer_name) && $doc->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($doc->customer_name ?? '-') }}</span></td>
                                     <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
                                     <td>{{ $doc->channel ?? '-' }}</td>
                                     <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
@@ -81,7 +81,7 @@
                                     <td>{{ $doc->statusName->name ?? '-' }}</td>
                                     @if($doc->status == 3)
                                     <td class="border-start">
-                                        <button data-id="{{ $doc->id }}" data-type="{{ $doc->doc_type }}" class="btn btn-danger remove-doc"><img src="/images/delete_icon_w.svg"/></button>
+                                        <button data-id="{{ bin2hex(Crypt::encryptString($doc->id)) }}" data-type="{{ $doc->doc_type }}" class="btn btn-danger remove-doc"><img src="/images/delete_icon_w.svg"/></button>
                                     </td>
                                     @endif
                                 </tr>
@@ -98,7 +98,7 @@
         <div class="modal-content rounded-3 shadow">
             <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
                 @csrf
-                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
+                <input type="hidden" name="dispatch_id" value="{{ bin2hex(Crypt::encryptString($dispatch->id)) }}" autocomplete="off">
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Rejected Dispatch Details</h5>
                 </div>
@@ -142,7 +142,7 @@
         <div class="modal-content rounded-3 shadow">
             <form id="update-courier" action="{{ route('dispatches.update')}}" method="POST">
                 @csrf
-                <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}" autocomplete="off">
+                <input type="hidden" name="dispatch_id" value="{{ bin2hex(Crypt::encryptString($dispatch->id)) }}" autocomplete="off">
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Add Vendor Movement Information</h5>
                 </div>

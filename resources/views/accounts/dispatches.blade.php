@@ -149,10 +149,10 @@
                                         @endif
                                         <td class="border-start">
                                             <div class="">
-                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=> Crypt::encryptString($row->id)]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
+                                                <a href="{{ route('dispatches.view',['type'=>$type,'id'=> bin2hex(Crypt::encryptString($row->id))]) }}" class="border-0"><img src="/images/view_icon.svg"/></a>
                                                 @if ($type == 'ready')
                                                 @hasrole('bo-checker|master')
-                                                <button class="btn btn-primary proceed" data-id="{{ Crypt::encryptString($row->id) }}" type="button">Add Courier Details</button>
+                                                <button class="btn btn-primary proceed" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" type="button">Add Courier Details</button>
                                                 @endhasrole
                                                 @endif
                                                 @if ($type == 'tracking')
@@ -160,7 +160,7 @@
                                                         <button type="button"class="btn btn-sm btn-primary update-row disable-update-btn" data-id="{{ $row->id }}" disabled id="update-btn-{{ $row->id }}">Update</button>
                                                     @endunless
                                                     @hasanyrole('ro-supervisor|admin|master')
-                                                        <button data-id="{{ Crypt::encryptString($row->id) }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
+                                                        <button data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" class="btn btn-sm btn-success revert-status">Revert Status</button>
                                                     @endhasanyrole
                                                 @endif
                                                 @if ($type == 'list')
@@ -168,7 +168,7 @@
                                                         <button type="button" class="btn btn-sm btn-primary update-row">Update</button>
                                                     @endunless
                                                     @hasrole('bo-checker|admin|master')
-                                                        <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ Crypt::encryptString($row->id) }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
+                                                        <button type="button" class="btn btn-sm btn-primary edit-courier" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-courier-name="{{ $row->courier_name }}" data-awb-pod="{{ $row->awb_pod }}" data-mmrp-barcode="{{ $row->mmrp_barcode }}" data-dispatch-date="{{ $row->dispatch_date }}">
                                                             Edit
                                                         </button>
                                                     @endhasrole
@@ -248,7 +248,7 @@
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('dispatched' )}}" method="POST">
+            <form id="update-courier" action="{{ route('dispatched' )) }}" method="POST">
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Update Details</h5>
@@ -285,7 +285,7 @@
 <div class="modal fade" id="revert-status" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="revert-courier-status" action="{{ route('courier.revert')}}" method="POST">
+            <form id="revert-courier-status" action="{{ route('courier.revert')) }}" method="POST">
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Revert Status</h5>

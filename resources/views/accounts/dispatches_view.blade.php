@@ -103,14 +103,14 @@
                             <tbody>
                                 @if ($loan_document)
                                     @foreach ($loan_document as $row)
-                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
+                                        <tr @if ($row->status == 4) data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-uid="{{ $row->unique_ref_no }}" data-type="loan" @endif>
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
-                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
                                             <td class="text-nowrap">{{ $row->loan_cycle }}</td>
-                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
@@ -148,8 +148,8 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
-                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                        <button data-id="{{ $row->id }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
+                                                        <input type="hidden" name="dispatch_id" value="{{ isset($dispatch->id) ? bin2hex(Crypt::encryptString($dispatch->id)) : '' }}">
+                                                        <button data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-type="loan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
@@ -213,13 +213,13 @@
                             <tbody>
                                 @if ($gold_loan_document)
                                     @foreach ($gold_loan_document as $row)
-                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
+                                        <tr @if ($row->status == 4) data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-uid="{{ $row->unique_ref_no }}" data-type="goldloan" @endif>
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>  
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
-                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
-                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
@@ -255,8 +255,8 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
-                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                        <button data-id="{{ $row->id }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
+                                                        <input type="hidden" name="dispatch_id" value="{{ isset($dispatch->id) ? bin2hex(Crypt::encryptString($dispatch->id)) : '' }}">
+                                                        <button data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-type="goldloan" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
@@ -322,13 +322,13 @@
                             <tbody>
                                 @if ($account_opening_document)
                                     @foreach ($account_opening_document as $row)
-                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
+                                        <tr @if ($row->status == 4) data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-uid="{{ $row->unique_ref_no }}" data-type="aof" @endif>
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
-                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
-                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
+                                            <td class="text-nowrap"><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->scheme }}</td>
@@ -366,8 +366,8 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
-                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                        <button data-id="{{ $row->id }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
+                                                        <input type="hidden" name="dispatch_id" value="{{ isset($dispatch->id) ? bin2hex(Crypt::encryptString($dispatch->id)) : '' }}">
+                                                        <button data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-type="aof" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
@@ -426,7 +426,7 @@
                             <tbody>
                                 @if ($dtrf_document)
                                     @foreach ($dtrf_document as $row)
-                                        <tr @if ($row->status == 4) data-id="{{ $row->id }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
+                                        <tr @if ($row->status == 4) data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-uid="{{ $row->unique_ref_no }}" data-type="dtrf" @endif>
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
@@ -463,8 +463,8 @@
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))                                                 
                                                 @if ($row->status == 3)
                                                     <td class="text-nowrap" class="border-start">
-                                                        <input type="hidden" name="dispatch_id" value="{{ $dispatch->id ?? '' }}">
-                                                        <button data-id="{{ $row->id }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
+                                                        <input type="hidden" name="dispatch_id" value="{{ isset($dispatch->id) ? bin2hex(Crypt::encryptString($dispatch->id)) : '' }}">
+                                                        <button data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}" data-type="dtrf" class="btn btn-danger remove-doc"> Remove </button>
                                                     </td>
                                                 @endif
                                             @endunless
@@ -543,10 +543,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="text" class="form-control cif_id" placeholder="CIF ID" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('cif_id', $filters['cif_id'] ?? '')) }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control account_number" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="text" class="form-control account_number" placeholder="A/C No" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('account_number', $filters['account_number'] ?? '')) }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
@@ -559,7 +559,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ \App\Helpers\EncryptHelper::maskName(old('customer_name', $filters['customer_name'] ?? '')) }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control datepicker" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
@@ -777,5 +777,3 @@
 </script>
 
 @endsection
-
-

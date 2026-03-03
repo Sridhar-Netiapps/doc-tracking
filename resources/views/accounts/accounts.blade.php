@@ -141,16 +141,16 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type != 'rejected') --}}
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                 {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -165,17 +165,26 @@
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td> --}}
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'loan']) }}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'loan'])) }}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span>
+                                            </td>
                                             <td>{{ $row->loan_cycle }}</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span>
+                                            </td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -288,15 +297,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -311,16 +320,25 @@
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td> --}}
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'goldloan']) }}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'goldloan'])) }}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span>
+                                            </td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -433,15 +451,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -456,16 +474,25 @@
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td> --}}
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'aof']) }}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'aof'])) }}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
                                             @endunless
                                             <td>{{ $row->branch_code }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="secure-data-node"
+                                                      data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span>
+                                            </td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             {{-- <td>{{ $row->barcode }}</td> --}}
@@ -573,15 +600,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -596,8 +623,8 @@
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ URL::signedRoute('document.history',['id' => $row->id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
-                                            {{-- <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td> --}}
+                                            <td><a href="{{ URL::signedRoute('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'dtrf']) }}">{{ $row->unique_ref_no }}</a></td>
+                                            {{-- <td><a href="{{ route('document.history',['id' => bin2hex(Crypt::encryptString($row->id)),'type' => $type,'dtype' => 'dtrf'])) }}">{{ $row->unique_ref_no }}</a></td> --}}
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -698,10 +725,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="search" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('cif_id', $filters['cif_id'] ?? '')) }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="search" class="form-control account_number alphanumeric capsonly" placeholder="Account Number" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="search" class="form-control account_number alphanumeric capsonly" placeholder="Account Number" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('account_number', $filters['account_number'] ?? '')) }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
                     <input type="number" class="form-control loan_cycle" placeholder="Loan Cycle" value="{{ old('loan_cycle', $filters['loan_cycle'] ?? '') }}" name="loan_cycle">
@@ -714,7 +741,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name" placeholder="Customer Name" value="{{ \App\Helpers\EncryptHelper::maskName(old('customer_name', $filters['customer_name'] ?? '')) }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
@@ -797,7 +824,7 @@
 <div class="modal fade" id="add-vendor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="rma-movement" action="{{ route('accounts.moved')}}" method="POST"> 
+            <form id="rma-movement" action="{{ route('accounts.moved') }}" method="POST"> 
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary" id="modal-title">Update Vendor Movement Information</h5>

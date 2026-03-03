@@ -12,8 +12,13 @@
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('js/validation.js') }}"></script>
-        <script src="{{ asset('js/crypto-js.min.js') }}"></script>
-        <script src="{{ asset('js/jsencrypt.min.js') }}"></script>
+        {{-- <script src="{{ asset('js/crypto-js.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/jsencrypt.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/js/core.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/js/cipher-core.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/js/aes.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/js/sha256.min.js') }}"></script> --}}
+        {{-- <script src="{{ asset('js/js/enc-base64.min.js') }}"></script> --}}
     </head>
     <body>
         <div id="app">
@@ -58,7 +63,7 @@
                                     </div>
                                     <div class="mb-0">
                                         <div class="">
-                                            <input type="hidden" name="payload">
+                                            {{-- <input type="hidden" name="payload"> --}}
                                             <button type="submit" id="login" class="btn btn-primary">{{ __('Login') }} </button>
                                         </div>
                                     </div>

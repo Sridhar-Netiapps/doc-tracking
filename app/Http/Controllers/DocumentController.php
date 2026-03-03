@@ -27,7 +27,12 @@ use App\Exports\DtrfExport;
 use App\Exports\AccountOpeningDocumentExport;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Encryption\DecryptException;
+use phpseclib3\Crypt\AES;
+use phpseclib3\Crypt\RSA;
+use App\Helpers\EncryptHelper;
 
 class DocumentController extends Controller
 {
@@ -75,10 +80,10 @@ class DocumentController extends Controller
             }
             return $query->orderBy('account_creation_date', 'desc');
         };
-        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/loan"));
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/aof"));
+        $loan_document = $filter(LoanDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/loan"));
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/aof"));
     
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
@@ -436,6 +441,7 @@ class DocumentController extends Controller
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $couriers = Courier::pluck('name', 'id');
         $type = 'proceed';
+        $allDocuments = $this->encryptSensitive($allDocuments);
     
          return view('accounts.index', compact('allDocuments', 'couriers', 'process_statuses', 'filters', 'type'));
     }
@@ -720,9 +726,8 @@ class DocumentController extends Controller
 
     public function viewDispatches($type,$id)
     {
-        try {
-            $decryptedId = Crypt::decryptString($id);
-        } catch (DecryptException $e) {
+        $decryptedId = $this->decryptTransportId($id);
+        if (is_null($decryptedId)) {
             abort(404, 'Invalid ID');
         }
         $dispatch = CourierDispatch::findOrFail($decryptedId);
@@ -771,9 +776,8 @@ class DocumentController extends Controller
             'mmrp_barcode' => 'required|string',
             'dispatch_id' => 'required'
         ]);
-        try {
-            $decryptedId = Crypt::decryptString($validated['dispatch_id']);
-        } catch (DecryptException $e) {
+        $decryptedId = $this->decryptTransportId($validated['dispatch_id']);
+        if (is_null($decryptedId)) {
             abort(404, 'Invalid ID');
         }
         DB::beginTransaction(); // Start Transaction
@@ -959,8 +963,12 @@ class DocumentController extends Controller
         ];
     
         $type = $request->type;
-        $docId = $request->doc_id;
-        $dispatchId = $request->dispatch_id;
+        $docId = $this->decryptTransportId($request->doc_id);
+        $dispatchId = $this->decryptTransportId($request->dispatch_id);
+        if (is_null($docId) || is_null($dispatchId)) {
+            return response()->json(['error' => 'Invalid ID'], 422);
+        }
+        $docIdString = (string) $docId;
         try {
             DB::beginTransaction();
     
@@ -969,7 +977,7 @@ class DocumentController extends Controller
     
             // Remove the doc ID from the appropriate column
             $values = collect(explode(',', $dispatch->$columnName))
-                ->map(fn($v) => trim($v))->filter(fn($v) => $v !== $docId && $v !== '')
+                ->map(fn($v) => trim($v))->filter(fn($v) => $v !== $docIdString && $v !== '')
                 ->values()->implode(',');
     
             $dispatch->$columnName = $values;
@@ -1009,9 +1017,8 @@ class DocumentController extends Controller
         ]);
         try {
             DB::beginTransaction();
-            try {
-                $decryptedId = Crypt::decryptString($id);
-            } catch (DecryptException $e) {
+            $decryptedId = $this->decryptTransportId($id);
+            if (is_null($decryptedId)) {
                 abort(404, 'Invalid ID');
             }
             $courier = CourierDispatch::findOrFail($decryptedId);
@@ -1031,19 +1038,33 @@ class DocumentController extends Controller
 
     public function removeDocument(Request $request)
     {
-        $docIds = $request->doc_ids;  // array of selected IDs
+        $docIds = $request->doc_ids;  // grouped selected IDs
         $reason = $request->reason;
         try {
             DB::beginTransaction();
 
-            // Store reason if needed (optional, if reason column exists)
-            foreach ($docIds as $key => $value) {
-                $this->table[$key]::whereIn('id',$this->decryptIds($value))->get()->each(function ($doc) use($reason) {
-                    $doc->reason = $reason;
-                    $doc->deleted_by = $this->user->id;
-                    $doc->save();
-                    $doc->delete(); // Laravel soft delete
-                });
+            if (is_array($docIds)) {
+                foreach ($docIds as $key => $value) {
+                    $ids = is_array($value) ? $this->decryptIds($value) : [];
+                    $this->table[$key]::whereIn('id', $ids)->get()->each(function ($doc) use ($reason) {
+                        $doc->reason = $reason;
+                        $doc->deleted_by = $this->user->id;
+                        $doc->save();
+                        $doc->delete(); // Laravel soft delete
+                    });
+                }
+            } elseif ($request->filled('doc_id') && $request->filled('type')) {
+                $singleId = $this->decryptTransportId($request->doc_id);
+                $dtype = $request->type;
+                if (!is_null($singleId) && isset($this->table[$dtype])) {
+                    $doc = $this->table[$dtype]::find($singleId);
+                    if ($doc) {
+                        $doc->reason = $reason;
+                        $doc->deleted_by = $this->user->id;
+                        $doc->save();
+                        $doc->delete();
+                    }
+                }
             }
             DB::commit();
             return response()->json(['success' => true]);
@@ -1064,7 +1085,14 @@ class DocumentController extends Controller
             
             foreach ($updates as $update) {
                 session(['dtype' => $update['type']]);
-                $doc = $this->table[$update['type']]::find($update['id']);
+                $docId = $this->decryptTransportId($update['id'] ?? null);
+                if (is_null($docId)) {
+                    continue;
+                }
+                $doc = $this->table[$update['type']]::find($docId);
+                if (!$doc) {
+                    continue;
+                }
                 $doc->status = $update['remarks'];
                 if(isset($update['reason_for_rejection']))
                     $doc->reason = $update['reason_for_rejection'];
@@ -1149,10 +1177,8 @@ class DocumentController extends Controller
     }
     public function viewHistory($id,$type,$dtype)
     {
-        try {
-            // $decryptedId = Crypt::decryptString($id);
-            $decryptedId = $id;
-        } catch (DecryptException $e) {
+        $decryptedId = $this->decryptTransportId($id);
+        if (is_null($decryptedId)) {
             abort(404, 'Invalid ID');
         }
     
@@ -1174,6 +1200,143 @@ class DocumentController extends Controller
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 
+    public function secureView($id, Request $request)
+    {
+        $dtype = $request->query('dtype');
+        $type = $request->query('type', 'all');
+
+        if (!isset($this->table[$dtype])) {
+            abort(404, 'Invalid document type');
+        }
+
+        $document = $this->table[$dtype]::findOrFail($id);
+
+        if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
+            if ($this->user->branch_id != $document->branch_code) {
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
+            if (strtolower($this->user->region) != strtolower($document->region)) {
+                return redirect('/home')->with('error', 'Access Denied');
+            }
+        }
+
+        Log::info('Secure PII view accessed', [
+            'user_id' => $this->user->id,
+            'document_id' => $document->id,
+            'document_type' => $dtype,
+            'ip_address' => request()->ip(),
+            'route' => request()->path(),
+        ]);
+
+        return view('accounts.secure_view', compact('document', 'dtype', 'type'));
+    }
+
+    public function getRevealPublicKey()
+    {
+        if (!Storage::exists('keys/public_key.pem')) {
+            return response()->json(['message' => 'Public key not found'], 500);
+        }
+
+        return response()->json([
+            'public_key' => Storage::get('keys/public_key.pem'),
+        ]);
+    }
+
+    public function secureReveal(Request $request)
+    {
+        $validated = $request->validate([
+            'secure_req' => 'required|string',
+        ]);
+
+        try {
+            $outerBlob = json_decode(base64_decode($validated['secure_req']), true);
+            if (!is_array($outerBlob) || !isset($outerBlob['k'], $outerBlob['i'], $outerBlob['d'])) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $privateKey = RSA::load(Storage::get('keys/private_key.pem'), config('app.private_key_passphrase'))
+                ->withPadding(RSA::ENCRYPTION_OAEP)
+                ->withHash('sha256')
+                ->withMGFHash('sha256');
+
+            $tempAesKey = $privateKey->decrypt(base64_decode($outerBlob['k']));
+
+            if ($tempAesKey === false || strlen($tempAesKey) !== 32) {
+                return response()->json(['message' => 'Invalid reveal key'], 422);
+            }
+
+            $requestIv = base64_decode($outerBlob['i']);
+            $requestCipherCombined = base64_decode($outerBlob['d']);
+            if ($requestIv === false || strlen($requestIv) !== 12 || $requestCipherCombined === false || strlen($requestCipherCombined) <= 16) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $requestCiphertext = substr($requestCipherCombined, 0, -16);
+            $requestTag = substr($requestCipherCombined, -16);
+
+            $requestAes = new AES('gcm');
+            $requestAes->setKey($tempAesKey);
+            $requestAes->setNonce($requestIv);
+            $requestAes->setTag($requestTag);
+
+            $decryptedRequest = $requestAes->decrypt($requestCiphertext);
+            if ($decryptedRequest === false) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $inner = json_decode($decryptedRequest, true);
+            if (!is_array($inner) || !isset($inner['token']) || !is_string($inner['token'])) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $tokenBinary = @hex2bin($inner['token']);
+            if ($tokenBinary === false) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $decoded = json_decode(Crypt::decryptString($tokenBinary), true);
+            if (
+                !is_array($decoded) ||
+                !isset($decoded['id'], $decoded['t'], $decoded['f']) ||
+                !in_array($decoded['f'], ['cif_id', 'account_number', 'customer_name'], true) ||
+                !in_array($decoded['t'], ['loan', 'goldloan', 'dtrf', 'aof'], true)
+            ) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $document = $this->table[$decoded['t']]::findOrFail((int) $decoded['id']);
+
+            if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
+                if ($this->user->branch_id != $document->branch_code) {
+                    abort(403, 'Access Denied');
+                }
+            } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
+                if (strtolower($this->user->region) != strtolower($document->region)) {
+                    abort(403, 'Access Denied');
+                }
+            }
+
+            $fieldName = $decoded['f'];
+            $dbValue = $document->{$fieldName} ?? '';
+            $plaintext = (string) EncryptHelper::decrypt($dbValue);
+            $responseIv = random_bytes(12);
+
+            $aes = new AES('gcm');
+            $aes->setKey($tempAesKey);
+            $aes->setNonce($responseIv);
+            $ciphertext = $aes->encrypt($plaintext);
+            $tag = $aes->getTag();
+            $finalBinary = $responseIv . $ciphertext . $tag;
+
+            return response()->json([
+                'secure_res' => base64_encode($finalBinary),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Unable to process secure reveal'], 422);
+        }
+    }
+
     public function trashedDocuments()
     {
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
@@ -1188,11 +1351,11 @@ class DocumentController extends Controller
             }
             return $query->onlyTrashed()->orderBy('deleted_at', 'desc');
         };
-        // dd($filter(LoanDocfiltersument::query())->tosql());
-        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString();
+        
+        $loan_document = $filter(LoanDocument::query())->paginate(25)->withQueryString();
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(25)->withQueryString();
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(25)->withQueryString();
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(25)->withQueryString();
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
@@ -1453,9 +1616,8 @@ class DocumentController extends Controller
     {
         try {
             DB::beginTransaction();
-            try {
-                $decryptedId = Crypt::decryptString($request->dispatch_id);
-            } catch (DecryptException $e) {
+            $decryptedId = $this->decryptTransportId($request->dispatch_id);
+            if (is_null($decryptedId)) {
                 abort(404, 'Invalid ID');
             }
             $doc = CourierDispatch::find($decryptedId);
@@ -1476,12 +1638,36 @@ class DocumentController extends Controller
     protected function decryptIds(array $encryptedIds)
     {
         return collect($encryptedIds)->map(function ($id) {
-            try {
-                return Crypt::decryptString($id);
-            } catch (DecryptException $e) {
-                return null; // ignore tampered IDs
-            }
+            return $this->decryptTransportId($id);
         })->filter()->toArray();
+    }
+
+    protected function decryptTransportId($id): ?int
+    {
+        if (is_null($id) || $id === '') {
+            return null;
+        }
+
+        if (is_int($id) || (is_string($id) && ctype_digit($id))) {
+            return (int) $id;
+        }
+
+        if (is_string($id)) {
+            $binary = @hex2bin($id);
+            if ($binary !== false) {
+                try {
+                    return (int) Crypt::decryptString($binary);
+                } catch (DecryptException $e) {
+                }
+            }
+
+            try {
+                return (int) Crypt::decryptString($id);
+            } catch (DecryptException $e) {
+            }
+        }
+
+        return null;
     }
 
 

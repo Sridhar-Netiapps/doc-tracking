@@ -96,21 +96,21 @@
                         @if(!empty($document->cif_id))
                         <div class="p-2 border-bottom">
                             <label>CIF ID</label>
-                            <h6><b>@sensitive($document->cif_id)</b></h6>
+                            <h6><b><span class="secure-data-node" data-token="{{ !empty($document->cif_id) && $document->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($document->id, $dtype, 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($document->cif_id) }}</span></b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->account_number))
                         <div class="p-2 border-bottom">
                             <label>Account Number</label>
-                            <h6><b>@sensitive($document->account_number)</b></h6>
+                            <h6><b><span class="secure-data-node" data-token="{{ !empty($document->account_number) && $document->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($document->id, $dtype, 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($document->account_number) }}</span></b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->customer_name))
                         <div class="p-2 border-bottom">
                             <label>Customer Name</label>
-                            <h6><b>@sensitive($document->customer_name)</b></h6>
+                            <h6><b><span class="secure-data-node" data-token="{{ !empty($document->customer_name) && $document->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($document->id, $dtype, 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($document->customer_name) }}</span></b></h6>
                         </div>
                         @endif
                     

@@ -79,15 +79,15 @@
                             @if ($loan_document)
                                 @foreach ($loan_document as $row)
                                     <tr>
-                                        <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                         <td>{{ $row->unique_ref_no }}</td>
                                         <td>{{ $row->region }}</td>
                                         <td>{{ $row->branch_code }}</td>
                                         <td>{{ $row->branch_name }}</td>
-                                        <td>{{ $row->cif_id }}</td>
-                                        <td>{{ $row->account_number }}</td>
+                                        <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                        <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
                                         <td>{{ $row->loan_cycle }}</td>
-                                        <td>{{ $row->customer_name }}</td>
+                                        <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                         <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                         <td>{{ $row->channel }}</td>
                                         {{-- <td>{{ $row->barcode }}</td> --}}
@@ -133,15 +133,15 @@
                             @if ($gold_loan_document)
                                 @foreach ($gold_loan_document as $row)
                                     <tr>
-                                        <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                         
                                     <td>{{ $row->unique_ref_no }}</td> 
                                     <td>{{ $row->region }}</td> 
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->cif_id }}</td>
-                                    <td>{{ $row->account_number }}</td>
-                                    <td>{{ $row->customer_name }}</td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                     <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>
                                     <td>{{ $row->business_category }}</td> 
@@ -182,7 +182,7 @@
                             @if ($account_opening_document)
                                 @foreach ($account_opening_document as $row)
                                     <tr>
-                                        <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                         
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
                                     {{-- <td><input type="checkbox" /></td> --}}
@@ -190,10 +190,10 @@
                                     <td>{{ $row->region }}</td>
                                     <td>{{ $row->branch_code }}</td>
                                     <td>{{ $row->branch_name }}</td>
-                                    <td>{{ $row->cif_id }}</td>
-                                    <td>{{ $row->account_number }}</td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
                                     {{-- <td>{{ $row->loan_cycle }}</td> --}}
-                                    <td>{{ $row->customer_name }}</td>
+                                    <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                     <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                     <td>{{ $row->channel }}</td>        
                                     {{-- <td>{{ $row->barcode }}</td> --}}
@@ -238,7 +238,7 @@
                             @if ($dtrf_document)
                                 @foreach ($dtrf_document as $row)
                                     <tr>
-                                        <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
+                                        <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ bin2hex(Crypt::encryptString($row->id)) }}"></td>
                                         
                                     {{-- <td>{{ $loop->iteration }}</td> --}}
                                     {{-- <td><input type="checkbox" /></td> --}}
@@ -373,5 +373,3 @@
 </script>
 
 @endsection
-
-

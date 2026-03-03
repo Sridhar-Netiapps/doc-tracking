@@ -107,13 +107,13 @@
                                             <td>{{ $row->unique_ref_no }}</td>
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
                                             <td>{{ $row->loan_cycle }}</td>
                                             <td>{{ $row->loan_amount }}</td>
                                             <td>{{ $row->barcode }}</td>
                                             <td>{{ $row->glow_application_id }}</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'loan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_disbursement_type }}</td>
@@ -189,9 +189,9 @@
                                             <td>{{ $row->unique_ref_no }}</td>  
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'goldloan', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->loan_amount }}</td>
@@ -269,9 +269,9 @@
                                             <td>{{ $row->unique_ref_no }}</td>
                                             <td>{{ $row->branch_code }}</td>
                                             <td>{{ $row->branch_name }}</td>
-                                            <td>@sensitive($row->cif_id)</td>
-                                            <td>@sensitive($row->account_number)</td>
-                                            <td>@sensitive($row->customer_name)</td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->cif_id) && $row->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->cif_id) }}</span></td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->account_number) && $row->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($row->account_number) }}</span></td>
+                                            <td><span class="secure-data-node" data-token="{{ !empty($row->customer_name) && $row->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($row->id, 'aof', 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($row->customer_name) }}</span></td>
                                             <td>{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td>{{ $row->channel }}</td>
                                             <td>{{ $row->scheme }}</td>
@@ -425,10 +425,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
+                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('cif_id', $filters['cif_id'] ?? '')) }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
+                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('account_number', $filters['account_number'] ?? '')) }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control alphanumeric" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
@@ -457,7 +457,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ \App\Helpers\EncryptHelper::maskName(old('customer_name', $filters['customer_name'] ?? '')) }}" name="customer_name">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
@@ -761,5 +761,4 @@
 </script>
 
 @endsection
-
 

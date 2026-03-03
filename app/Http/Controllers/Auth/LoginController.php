@@ -68,40 +68,32 @@ class LoginController extends Controller
             'public_key' => $publicKey,
         ]);
     }
-
-    public function authenticate(Request $request)
-    {
-        $request->validate([ 'payload' => 'required|string']);
-        $blob = json_decode(base64_decode($request->payload), true);
-        if (!$blob) throw new \Exception("Invalid Payload");
-
-        $encData = $blob['d'];
-        $encKey  = $blob['k'];
+    public function authenticate(Request $request) {
+        $validated = $request->validate([
+            'payload' => 'required|string',
+        ]);
+        
         try {
+            $blob = json_decode(base64_decode($validated['payload']), true);
             $privateKey = RSA::load(Storage::get('keys/private_key.pem'), config('app.private_key_passphrase'));
-            // $encryptedAesKey = base64_decode($request->input('enc_aes_key'));
-            $encryptedAesKey = base64_decode($encKey);
-            $decryptedAesKeyJson = $privateKey->withPadding(RSA::ENCRYPTION_PKCS1)->decrypt($encryptedAesKey);
-            if (!$decryptedAesKeyJson) {
-                throw new \Exception('Failed to decrypt AES key.');
-            }
 
-            $aesPayload = json_decode($decryptedAesKeyJson, true);
-            $aesKey = base64_decode($aesPayload['key']);
-            $aesIv = base64_decode($aesPayload['iv']);
-            $aes = new AES('cbc'); 
-            $aes->setKey($aesKey);
-            $aes->setIV($aesIv);
-            // $encryptedPassword = base64_decode($request->input('password'));
-            $encryptedData = base64_decode($encData);
-            $decryptedData = $aes->decrypt($encryptedData);
-            $decryptedData = json_decode($decryptedData);
+            $aesKeyRaw = $privateKey->withPadding(RSA::ENCRYPTION_OAEP)->decrypt(base64_decode($blob['k']));
+
+            $aes = new AES('gcm');
+            $aes->setKey($aesKeyRaw);
+            $aes->setNonce(base64_decode($blob['i']));
+            $aes->setTag(substr(base64_decode($blob['p']), -16)); // GCM Tag is last 16 bytes
+            
+            $decrypted = $aes->decrypt(substr(base64_decode($blob['p']), 0, -16));
+            $userData = json_decode($decrypted, true);
+    
         } catch (\Exception $e) {
-            \Log::error('Login decryption failed: ' . $e->getMessage());
-            return back()->withErrors(['username' => 'Login failed due to a security error.']);
+            \Log::error('VAPT Decryption Error: ' . $e->getMessage());
+            return back()->withErrors(['username' => 'Security Handshake Failed.']);
         }
-        $username = base64_decode($decryptedData->username);
-        $password = base64_decode($decryptedData->password);
+        $username = $userData['username'];
+        $password = $userData['password'];
+    
         if(env('APP_ENV') != 'local'){
             try {
                 $ldap = Container::getDefaultConnection();
@@ -115,14 +107,11 @@ class LoginController extends Controller
                 $user = User::where('employee_id', $username)->first();
 
                 if ($isValidLdap) {
-                    // $user = User::where('employee_id', $username)->first();
                     if (!$user) {
                         return back()->withErrors(['username' => 'You are not authorized.']);
                     }
                     Session::flush();
-                    // Auth::logoutOtherDevices($password);
                     Auth::login($user);
-                    //  $user = Auth::user();
                      $user->session_id = Session::getId();
                      $user->save();
                     if ($user->hasrole('master')) {
@@ -136,19 +125,19 @@ class LoginController extends Controller
                     }
                     return redirect()->intended('/home');
                 } 
-                // else {
-                //     if ($user->hasRole('master')) {
-                //         ActivityLog::create([
-                //             'user_id' => $user->id,
-                //             'event_type' => 'failed login',
-                //             'description' => 'Invalid credentials.',
-                //             'ip_address' => request()->ip(),
-                //             'user_agent' => request()->userAgent(),
-                //             'route' => request()->path(),
-                //         ]);
-                //     }
-                //     return back()->withErrors(['username' => 'Invalid credentials.']);
-                // }
+                else {
+                    if (!$user->hasRole('master')) {
+                        ActivityLog::create([
+                            'user_id' => $user->id,
+                            'event_type' => 'failed login',
+                            'description' => 'Invalid credentials.',
+                            'ip_address' => request()->ip(),
+                            'user_agent' => request()->userAgent(),
+                            'route' => request()->path(),
+                        ]);
+                    }
+                    return back()->withErrors(['username' => 'Invalid credentials.']);
+                }
             } catch (\Exception $e) {
                 Log::error('LDAP Login Failed', ['error' => $e->getMessage()]);
             }

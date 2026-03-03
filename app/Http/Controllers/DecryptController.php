@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 
 class DecryptController extends Controller
 {
@@ -13,17 +12,8 @@ class DecryptController extends Controller
      */
     public function decrypt(Request $request)
     {
-        $request->validate([
-            'encrypted' => 'required|string'
-        ]);
-        
-        try {
-            $decrypted = Crypt::decryptString($request->encrypted);
-            return response()->json(['decrypted' => $decrypted]);
-        } catch (\Exception $e) {
-            // If decryption fails, return original
-            return response()->json(['decrypted' => $request->encrypted]);
-        }
+        return response()->json([
+            'message' => 'Deprecated endpoint. Use authorized server-rendered secure views for sensitive data.',
+        ], 410);
     }
 }
-

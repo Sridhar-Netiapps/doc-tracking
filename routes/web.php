@@ -15,7 +15,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
-use App\Http\Controllers\DecryptController;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
@@ -24,9 +23,6 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
-// Decrypt API endpoint (requires auth)
-Route::post('/api/decrypt', [DecryptController::class, 'decrypt'])->middleware('auth');
 
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
@@ -42,6 +38,9 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect(route('login'));
     });
     Route::group(['middleware' => ['role.access']], function () {
+        Route::get('/api/secure-reveal-key', [DocumentController::class, 'getRevealPublicKey'])->name('api.secure-reveal-key');
+        Route::post('/api/secure-reveal', [DocumentController::class, 'secureReveal'])->name('api.secure-reveal');
+        Route::get('document/{id}/secure-view', [DocumentController::class, 'secureView'])->name('document.secure-view');
         Route::get('documents/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
         Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
         Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');

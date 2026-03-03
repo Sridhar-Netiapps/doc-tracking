@@ -57,13 +57,14 @@
                                     <th scope="col" class="text-nowrap"> Business Category</th>
                                     <th scope="col" class="text-nowrap"> Status</th>
                                     <th scope="col" class="text-nowrap"> Activity Date</th>
+                                    <th scope="col" class="text-nowrap"> Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($allDocuments as $doc)
                                     <tr>
                                         @unless(auth()->user()->hasAnyRole(['ro-officer', 'ro-supervisor', 'ho-user', 'branch-user', 'ro-user']))
-                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ Crypt::encryptString($doc->id) }}" data-doc_type="{{ $doc->doc_type }}"></td>  
+                                        <td><input type="checkbox" class="select" name="doc_ids[]" data-id="{{ bin2hex(Crypt::encryptString($doc->id)) }}" data-doc_type="{{ $doc->doc_type }}"></td>  
                                         @endunless
                                         <td>
                                             @if ($doc->doc_type == 'loan')
@@ -82,14 +83,23 @@
                                         <td>{{ $doc->branch_name ?? '-' }}</td>
                                         @endunless
                                         <td>{{ $doc->branch_code ?? '-' }}</td>
-                                        <td>{{ $doc->cif_id ?? '-' }}</td>
-                                        <td>{{ $doc->account_number ?? '-' }}</td>
+                                        <td>
+                                            <span class="secure-data-node"
+                                                  data-token="{{ !empty($doc->cif_id) && $doc->cif_id !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'cif_id') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($doc->cif_id ?? '-') }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="secure-data-node"
+                                                  data-token="{{ !empty($doc->account_number) && $doc->account_number !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'account_number') : '' }}">{{ \App\Helpers\EncryptHelper::maskIdentifier($doc->account_number ?? '-') }}</span>
+                                        </td>
                                         <td>{{ $doc->loan_cycle ?? '-' }}</td>
                                         <td>{{ $doc->loan_amount ?? '-' }}</td>
                                         <td>{{ $doc->barcode ?? '-' }}</td>
                                         <td>{{ $doc->glow_application_id ?? '-' }}</td>
                                         <td>{{ $doc->scheme ?? '-' }}</td>
-                                        <td>{{ $doc->customer_name ?? '-' }}</td>
+                                        <td>
+                                            <span class="secure-data-node"
+                                                  data-token="{{ !empty($doc->customer_name) && $doc->customer_name !== '-' ? \App\Helpers\EncryptHelper::generateSecureToken($doc->id, $doc->doc_type, 'customer_name') : '' }}">{{ \App\Helpers\EncryptHelper::maskName($doc->customer_name ?? '-') }}</span>
+                                        </td>
                                         <td>{{ date('d-m-Y', strtotime($doc->account_creation_date)) ?? '-' }}</td>
                                         <td>{{ $doc->channel ?? '-' }}</td>
                                         <td>{{ $doc->loan_disbursement_type ?? $doc->type_of_account_opening ?? '-' }}</td>
@@ -97,6 +107,12 @@
                                         <td>{{ $doc->business_category ?? '-' }}</td>
                                         <td>{{ $doc->statusName->name ?? '-' }}</td>
                                         <td>{{ date('d-m-Y', strtotime($doc->updated_at)) ?? '-' }}</td>
+                                        <td>
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               href="{{ route('document.secure-view', ['id' => $doc->id, 'dtype' => $doc->doc_type, 'type' => $type]) }}">
+                                                View Details
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -151,14 +167,14 @@
                 <div class="col-12 mt-3">
                     <input type="search" class="form-control cif_id alphanumeric capsonly" 
                            placeholder="CIF ID" 
-                           value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" 
+                           value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('cif_id', $filters['cif_id'] ?? '')) }}" 
                            name="cif_id">
                 </div>
                 
                 <div class="col-12 mt-3">
                     <input type="search" class="form-control account_number alphanumeric capsonly" 
                            placeholder=" Account Number" 
-                           value="{{ old('account_number', $filters['account_number'] ?? '') }}" 
+                           value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('account_number', $filters['account_number'] ?? '')) }}" 
                            name="account_number">
                 </div>
                 <div class="col-12 mt-3 d-none">
@@ -172,7 +188,7 @@
                     </select>
                 </div>
                 <div class="col-12 mt-3 d-none">
-                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ old('customer_name', $filters['customer_name'] ?? '') }}" name="customer_name">
+                    <input type="text" class="form-control customer_name lettersonly" placeholder="Customer Name" value="{{ \App\Helpers\EncryptHelper::maskName(old('customer_name', $filters['customer_name'] ?? '')) }}" name="customer_name">
                 </div>
                     <div class="col-12 mt-3">
                         <input type="text" readonly class="form-control flatpickr-date" placeholder="Date From" value="{{ old('from_date', $filters['from_date'] ?? '') }}" name="from_date">
