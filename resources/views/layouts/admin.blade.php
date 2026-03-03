@@ -22,6 +22,7 @@
         <script src="{{ asset('js/apexchart.js') }}"></script>
         <script src="{{ asset('js/flatpickr.js') }}"></script>
         <script src="{{ asset('js/flatpickr.min.js') }}"></script>
+        <script src="{{ asset('js/secure-reveal.js') }}"></script>
     </head>
 <body>
     <div id="app">

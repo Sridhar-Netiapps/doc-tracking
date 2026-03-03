@@ -1,5 +1,15 @@
-@extends('errors::minimal')
-
-@section('title', __('Forbidden'))
-@section('code', '403')
-@section('message', __($exception->getMessage() ?: 'Forbidden'))
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="{{ asset('css/errors.css') }}">
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-title">Access Denied</h1>
+        <p class="error-message">You do not have permission to access this resource.</p>
+    </div>
+</body>
+</html>

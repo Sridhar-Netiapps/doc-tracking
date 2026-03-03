@@ -2,25 +2,52 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\AppliesDocumentExportFilters;
 use App\Models\LoanDocument;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
+class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, WithColumnFormatting, ShouldQueue
 {
-    protected $data;
+    use AppliesDocumentExportFilters;
 
-    public function __construct($data)
+    protected array $filters;
+
+    public function __construct(array $filters = [])
     {
-        $this->data = $data;
-    }
-    
-    public function collection()
-    {
-        return $this->data;
+        $this->filters = $filters;
     }
 
+    public function query()
+    {
+        $query = LoanDocument::query()->with([
+            'dispatch.courierName',
+            'dispatch.dispatcher',
+            'dispatch.modifier',
+            'statusName',
+            'getReceivedDetails.newStatus',
+            'getReceivedDetails.creator',
+        ]);
+
+        return $this->applyDocumentExportFilters($query, 'loan_documents', $this->filters);
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'F' => NumberFormat::FORMAT_TEXT,
+        ];
+    }
 
     public function headings(): array
     {
@@ -71,7 +98,7 @@ class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
             $doc->branch_code,
             $doc->branch_name,
             $doc->cif_id,
-            $doc->account_number,
+            (string) $doc->account_number,
             // (string) trim($doc->account_number),
             $doc->loan_cycle,
             $doc->customer_name,
@@ -101,7 +128,7 @@ class LoanDocumentExport implements FromCollection, WithHeadings, WithMapping
             $doc->file_barcode,
             $doc->box_barcode,
             $doc->date_added_to_vendor != null ? date('d-m-Y', strtotime($doc->date_added_to_vendor)) : '-',
-            $doc->statusName->name,
+            optional($doc->statusName)->name ?? '-',
         ];
     }
 }
