@@ -2,23 +2,42 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\AppliesDocumentExportFilters;
 use App\Models\DtrfDocument;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class DtrfExport implements FromCollection, WithHeadings, WithMapping
+class DtrfExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, ShouldQueue
 {
-    protected $data;
+    use AppliesDocumentExportFilters;
 
-    public function __construct($data)
+    protected array $filters;
+
+    public function __construct(array $filters = [])
     {
-        $this->data = $data;
+        $this->filters = $filters;
     }
-    
-    public function collection()
+
+    public function query()
     {
-        return $this->data;
+        $query = DtrfDocument::query()->with([
+            'dispatch.courierName',
+            'dispatch.dispatcher',
+            'dispatch.modifier',
+            'statusName',
+            'getReceivedDetails.newStatus',
+            'getReceivedDetails.creator',
+        ]);
+
+        return $this->applyDocumentExportFilters($query, 'dtrf_documents', $this->filters);
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function headings(): array
@@ -84,7 +103,7 @@ class DtrfExport implements FromCollection, WithHeadings, WithMapping
             $doc->file_barcode,
             $doc->box_barcode,
             $doc->date_added_to_vendor != null ? date('d-m-Y', strtotime($doc->date_added_to_vendor)) : '-',
-            $doc->statusName->name,
+            optional($doc->statusName)->name ?? '-',
         ];
     }
 }

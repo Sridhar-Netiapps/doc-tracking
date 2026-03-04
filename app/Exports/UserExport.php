@@ -3,25 +3,77 @@
 namespace App\Exports;
 
 use App\Models\User;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Carbon\Carbon;
 
 
-class UserExport implements FromCollection, WithHeadings, WithMapping
+class UserExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, ShouldQueue
 {
-    protected $data;
+    protected array $filters;
 
-    public function __construct(Collection $data)
+    public function __construct(array $filters = [])
     {
-        $this->data = $data;
+        $this->filters = $filters;
     }
 
-    public function collection()
+    public function query()
     {
-        return $this->data;
+        $query = User::query();
+        $query->withoutRole('master');
+
+        if (!empty($this->filters['region'])) {
+            $query->where('region', $this->filters['region']);
+        }
+    
+        if (!empty($this->filters['branch_id'])) {
+            $query->where('branch_id', $this->filters['branch_id']);
+        }
+    
+        if (!empty($this->filters['employee_id'])) {
+            $query->where('employee_id', $this->filters['employee_id']);
+        }
+    
+        if (!empty($this->filters['email'])) {
+            $query->where('email', $this->filters['email']);
+        }
+
+        if (!empty($this->filters['status'])) {
+            $query->where('status', $this->filters['status']);
+        }
+
+        return $query
+            ->orderBy('created_at', 'desc')
+            ->select([
+                'id',
+                'first_name',
+                'middle_name',
+                'last_name',
+                'employee_id',
+                'region',
+                'branch_id',
+                'status',
+                'created_at',
+                'updated_at',
+                'created_by',
+                'updated_by',
+            ])
+            ->with([
+                'roles',
+                'creator:id,first_name',
+                'modifier:id,first_name',
+                'lastLogin' => function ($q) {
+                    $q->latest('created_at');
+                },
+            ]);
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function headings(): array
@@ -63,7 +115,7 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
             $row->creator != null ? $row->creator->first_name: '-',
             $row->created_at ? Carbon::parse($row->created_at)->format('d-M-Y') : '-', 
             $row->modifier != null ? $row->modifier->first_name: '-',
-            $row->updated_at ? Carbon::parse($row->created_at)->format('d-M-Y') : '-', 
+            $row->updated_at ? Carbon::parse($row->updated_at)->format('d-M-Y') : '-', 
 
         ];
     }

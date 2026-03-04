@@ -47,13 +47,14 @@ class UserFactory extends Factory
             'gender'            => $gender,
             'remember_token'    => Str::random(10),
             'status'            => $this->faker->randomElement(['active', 'inactive']),
+            'created_by'        => 1,
             'created_at'        => now(),
             'updated_at'        => NULL,
             'branch_id'         => $regions[$regionName].$this->faker->numberBetween(111, 119),
-            'region'            => $regionName,
-            'region_id'         => $regions[$regionName],
-            'designation_id'    => 0,
-            'department_id'     => 0,
+            'region'            => 'South',
+            'region_id'         => 1,
+            // 'designation_id'    => 0,
+            // 'department_id'     => 0,
         ];
     }
 
