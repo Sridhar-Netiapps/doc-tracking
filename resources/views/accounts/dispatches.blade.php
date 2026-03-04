@@ -248,7 +248,7 @@
 <div class="modal fade" id="add-courier" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="update-courier" action="{{ route('dispatched' )) }}" method="POST">
+            <form id="update-courier" action="{{ route('dispatched' ) }}" method="POST" class="secure-ale-form">
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Update Details</h5>
@@ -285,7 +285,7 @@
 <div class="modal fade" id="revert-status" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-3 shadow">
-            <form id="revert-courier-status" action="{{ route('courier.revert')) }}" method="POST">
+            <form id="revert-courier-status" action="{{ route('courier.revert') }}" method="POST" class="secure-ale-form">
                 @csrf
                 <div class="modal-header p-4 text-center">
                     <h5 class="mb-0 text-primary">Revert Status</h5>
@@ -346,28 +346,12 @@
             $('#add-courier').modal('show');
         });
 
-        $('#update-courier').validate({
+        const updateCourierValidator = $('#update-courier').validate({
             rules: {
                 awb_pod: {
                     required: false,
                     alphanumeric: true,
-                    sanitize: true,
-                    remote: {
-                        url: "{{ route('courier.checkAwb') }}",
-                        type: "POST",
-                        data: {
-                            awb_pod: function () {
-                                return $('#awb_pod').val();
-                            },
-                            courier_id: function () {
-                                return $('#courier_name').val();
-                            },
-                            id: function () {
-                                return $('input[name="dispatch_id"]').val(); // optional (for edit)
-                            },
-                            _token: "{{ csrf_token() }}"
-                        }
-                    }
+                    sanitize: true
                 },
                 courier_name: {
                     required: true,
@@ -381,7 +365,7 @@
             },
             messages: {
                 awb_pod: {
-                    remote: "This AWB already exists for the selected courier"
+                    required: "AWB/POD is required"
                 },
                 courier_name: {
                     required: "Courier name is required"
@@ -391,7 +375,50 @@
                 }
             },
 
-            submitHandler: function (form) {
+            submitHandler: async function (form) {
+                const awbPod = $('#awb_pod').val().trim();
+                const courierId = $('#courier_name').val();
+                const dispatchId = $('input[name="dispatch_id"]').val();
+
+                if (awbPod && courierId && window.SecureAle && window.SecureAle.sendSecureJson) {
+                    try {
+                        const response = await window.SecureAle.sendSecureJson(
+                            "{{ route('courier.checkAwb') }}",
+                            {
+                                awb_pod: awbPod,
+                                courier_id: courierId,
+                                id: dispatchId
+                            },
+                            'POST'
+                        );
+
+                        if (!response.ok) {
+                            updateCourierValidator.showErrors({
+                                awb_pod: 'Unable to validate AWB/POD now. Please retry.'
+                            });
+                            return false;
+                        }
+
+                        const result = await response.json();
+                        if (result.exists) {
+                            updateCourierValidator.showErrors({
+                                awb_pod: 'This AWB already exists for the selected courier'
+                            });
+                            return false;
+                        }
+                    } catch (e) {
+                        updateCourierValidator.showErrors({
+                            awb_pod: 'Unable to validate AWB/POD now. Please retry.'
+                        });
+                        return false;
+                    }
+                }
+
+                if (window.SecureAle && window.SecureAle.submitSecureForm) {
+                    window.SecureAle.submitSecureForm(form);
+                    return false;
+                }
+
                 form.submit();
             }
         });

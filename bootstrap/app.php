@@ -56,6 +56,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role.access' => \App\Http\Middleware\CheckRole::class,
             'sanitize' => \App\Http\Middleware\Sanitize::class,
             'insuranceOnly' => \App\Http\Middleware\CheckInsuranceUser::class,
+            'ale' => \App\Http\Middleware\AleDecryption::class,
         ]);
     })
     ->withExceptions(function ($exceptions) {

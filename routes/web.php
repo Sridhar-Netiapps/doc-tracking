@@ -90,12 +90,12 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
         Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
         Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
-        Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->name('courier.revert');
+        Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->middleware('ale')->name('courier.revert');
         Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
         Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
-        Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
-        Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->name('courier.add');
-        Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->name('courier.updateDetails');
+        Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->middleware('ale')->name('courier.checkAwb');
+        Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->middleware('ale')->name('courier.add');
+        Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->middleware('ale')->name('courier.updateDetails');
         Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
         Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
         Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
@@ -104,8 +104,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
         Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
         Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
-        Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
-        Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
+        Route::post('dispatches', [DocumentController::class,'updateCourier'])->middleware('ale')->name('dispatched');
+        Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->middleware('ale')->name('dispatches.update');
         Route::get('home', [HomeController::class, 'index'])->name('home');
         // Route::post('reports', [DocumentController::class,'export'])->name('reports');
         Route::post('reports', [DocumentExportController::class,'export'])->name('reports');
