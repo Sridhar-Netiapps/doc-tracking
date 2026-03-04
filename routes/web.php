@@ -8,7 +8,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\DocumentExportController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HomeController;
@@ -107,8 +106,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('dispatches', [DocumentController::class,'updateCourier'])->middleware('ale')->name('dispatched');
         Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->middleware('ale')->name('dispatches.update');
         Route::get('home', [HomeController::class, 'index'])->name('home');
-        // Route::post('reports', [DocumentController::class,'export'])->name('reports');
-        Route::post('reports', [DocumentExportController::class,'export'])->name('reports');
+
+
+        Route::post('reports', [DocumentController::class,'export'])->name('reports');
+
+        
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
         
         Route::get('/accounts/data_import', function () {
