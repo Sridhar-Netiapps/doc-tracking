@@ -28,6 +28,7 @@ class ExportInsuranceLeadsJob
 
     public function handle()
     {
+        
         Excel::store(
             new ExportInsuranceLeads($this->query, $this->additionalFields),
             'exports/' . $this->filename,

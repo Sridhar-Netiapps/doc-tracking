@@ -49,132 +49,139 @@ class ImportClaimDetails implements ToCollection, WithStartRow, WithChunkReading
             ++$this->rowCount;
             $this->chunkNumber++;
 
+        try {
 
-            $row = $this->ensureMissingIndexesAreNull($row, range(6, 69));
+                $row = $this->ensureMissingIndexesAreNull($row, range(6, 69));
 
-            $errors = $this->validateRow($row);
-            if (!empty($errors)) {
-                $this->failedRows[] = [
-                    'row' => $this->rowCount,
-                    'data' => $row->toArray(),
-                    'errors' => $errors,
+                $errors = $this->validateRow($row);
+                if (!empty($errors)) {
+                    $this->failedRows[] = [
+                        'row' => $this->rowCount,
+                        'data' => $row->toArray(),
+                        'errors' => $errors,
+                    ];
+                    continue;
+                }
+
+                $utrn = $row[0] ?? null;
+
+                if (!$utrn || InsuranceClaimDetail::where('utrn', $utrn)->exists()) {
+
+                    do {
+                        $utrn = 'INS_CLM'.rand(100000, 999999);
+                    } while (InsuranceClaimDetail::where('utrn', $utrn)->exists());
+                }
+
+                $existingClaim = InsuranceClaimDetail::where('utrn', $utrn)->first();
+
+                $claimData = [];
+
+                $fields = [
+                    'region' => 1, 'branch' => 2, 'partner' => 3, 'product' => 4,
+                    'mp_no' => 5, 'policy_number' => 6, 'policy_covered_date' => 7,
+                    'cust_id' => 9, 'actual_id' => 10, 'deceased_name' => 11,
+                    'dob' => 12, 'date_of_death' => 13, 'gender' => 14,
+                    'deceased' => 16, 'intimation_date' => 17, 'place_of_death' => 18,
+                    'cause_of_death' => 19, 'load_acc_id' => 20, 'loan_tenure' => 21,
+                    'claim_amount' => 22, 'nominee_name' => 23, 'relationship' => 24,
+                    'doc_rec_date' => 25, 'processed_by' => 26, 'submit_to_partner_date' => 27,
+                    're_submit_to_partner_date' => 28, 'ho_remark' => 29, 'ho_remark2' => 30,
+                    'cliam_status' => 31, 'cas_status' => 32, 'rl_status' => 33, 'notification_number' => 34,
+                    'loan_amount' => 35, 'loan_outstanding' => 36, 'payable_to_nominee' => 37,
+                    'settlement_date' => 38, 'neft_rejection_date' => 39, 'neft_rejection_reason' => 40,
+                    'final_settlement_date' => 41, 'utrn_mph' => 42, 'utrn_nominee' => 43,
+                    'recovery_status' => 44, 'bounced_chq_no' => 45, 'chq_deposit_date' => 46,
+                    'bounced_chq_date' => 47, 'bounced_chq_reason' => 48, 'recovered_amount' => 49,
+                    'write_off_rec' => 50, 'write_off_status' => 51, 'handed_to_bh' => 52, 'handed_to_credit' => 53, 'updated_at' => 70
                 ];
-                continue;
-            }
 
-           // $utrn = $row[0] ?? 'INS_CLM'.rand(100000, 999999);
-            $utrn = $row[0] ?? null;
-
-            // If empty or duplicate → generate a new one
-            if (!$utrn || InsuranceClaimDetail::where('utrn', $utrn)->exists()) {
-
-                do {
-                    $utrn = 'INS_CLM'.rand(100000, 999999);
-                } while (InsuranceClaimDetail::where('utrn', $utrn)->exists());
-            }
-
-            // Fetch existing claim if exists
-            $existingClaim = InsuranceClaimDetail::where('utrn', $utrn)->first();
-
-            $claimData = [];
-
-            $fields = [
-                'region' => 1, 'branch' => 2, 'partner' => 3, 'product' => 4,
-                'mp_no' => 5, 'policy_number' => 6, 'policy_covered_date' => 7,
-                'cust_id' => 9, 'actual_id' => 10, 'deceased_name' => 11,
-                'dob' => 12, 'date_of_death' => 13, 'gender' => 14,
-                'deceased' => 16, 'intimation_date' => 17, 'place_of_death' => 18,
-                'cause_of_death' => 19, 'load_acc_id' => 20, 'loan_tenure' => 21,
-                'claim_amount' => 22, 'nominee_name' => 23, 'relationship' => 24,
-                'doc_rec_date' => 25, 'processed_by' => 26, 'submit_to_partner_date' => 27,
-                're_submit_to_partner_date' => 28, 'ho_remark' => 29, 'ho_remark2' => 30,
-                'cliam_status' => 31, 'cas_status' => 32, 'rl_status' => 33, 'notification_number' => 34,
-                'loan_amount' => 35, 'loan_outstanding' => 36, 'payable_to_nominee' => 37,
-                'settlement_date' => 38, 'neft_rejection_date' => 39, 'neft_rejection_reason' => 40,
-                'final_settlement_date' => 41, 'utrn_mph' => 42, 'utrn_nominee' => 43,
-                'recovery_status' => 44, 'bounced_chq_no' => 45, 'chq_deposit_date' => 46,
-                'bounced_chq_date' => 47, 'bounced_chq_reason' => 48, 'recovered_amount' => 49,
-                'write_off_rec' => 50, 'write_off_status' => 51, 'handed_to_bh' => 52, 'handed_to_credit' => 53, 'updated_at' => 70
-            ];
-
-            foreach ($fields as $colName => $colIndex) {
-                if (!empty($row[$colIndex])) {
-                    if (in_array($colName, ['policy_covered_date','dob','date_of_death','intimation_date','submit_to_partner_date','re_submit_to_partner_date','doc_rec_date','settlement_date','neft_rejection_date','final_settlement_date','chq_deposit_date','bounced_chq_date','write_off_rec'])) {
-                        $claimData[$colName] = is_numeric($row[$colIndex])
-                            ? ExcelDate::excelToDateTimeObject($row[$colIndex])->format('Y-m-d')
-                            : $row[$colIndex];
-                    } else {
-                        $claimData[$colName] = $row[$colIndex];
+                foreach ($fields as $colName => $colIndex) {
+                    if (!empty($row[$colIndex])) {
+                        if (in_array($colName, ['policy_covered_date','dob','date_of_death','intimation_date','submit_to_partner_date','re_submit_to_partner_date','doc_rec_date','settlement_date','neft_rejection_date','final_settlement_date','chq_deposit_date','bounced_chq_date','write_off_rec'])) {
+                            $claimData[$colName] = is_numeric($row[$colIndex])
+                                ? ExcelDate::excelToDateTimeObject($row[$colIndex])->format('Y-m-d')
+                                : $row[$colIndex];
+                        } else {
+                            $claimData[$colName] = $row[$colIndex];
+                        }
+                    } elseif ($existingClaim) {
+                        $claimData[$colName] = $existingClaim->$colName;
                     }
-                } elseif ($existingClaim) {
-                    // keep old value if update and Excel cell is empty
-                    $claimData[$colName] = $existingClaim->$colName;
                 }
-            }
 
-            // Calculate policy_expiry_date if both start date and tenure exist
-            if (!empty($claimData['policy_covered_date']) && !empty($claimData['loan_tenure'])) {
-                $start = new DateTime($claimData['policy_covered_date']);
-                $start->modify("+" . (int)$claimData['loan_tenure'] . " months");
-                $claimData['policy_expiry_date'] = $start->format('Y-m-d');
-            }
+                if (!empty($claimData['policy_covered_date']) && !empty($claimData['loan_tenure'])) {
+                    $start = new DateTime($claimData['policy_covered_date']);
+                    $start->modify("+" . (int)$claimData['loan_tenure'] . " months");
+                    $claimData['policy_expiry_date'] = $start->format('Y-m-d');
+                }
 
-            // Calculate age if dob exists
-            if (!empty($claimData['dob'])) {
-                $claimData['age'] = $this->calculateAge($claimData['dob']);
-            }
+                if (!empty($claimData['dob'])) {
+                    $claimData['age'] = $this->calculateAge($claimData['dob']);
+                }
 
-           /* $claimData['ho_employee_id'] = Auth::user()->employee_id;
-            $claimData['latest_editor'] = Auth::user()->employee_id;*/
-            $claimData['ho_employee_id'] = 'Netiapps07';
-            $claimData['latest_editor'] = 'Netiapps07';
+                $claimData['ho_employee_id'] = 'Netiapps07';
+                $claimData['latest_editor'] = 'Netiapps07';
 
-            if ($existingClaim) {
-                $existingClaim->update($claimData);
-                $this->updatedCount++;
-            } else {
-                $claimData['utrn'] = $utrn;
-                $claimData['created_at'] = now();
-                $claimData['updated_at'] = now();
-                $newClaim = InsuranceClaimDetail::create($claimData);
-                $this->insertedCount++;
-            }
+                if ($existingClaim) {
+                    $existingClaim->update($claimData);
+                    $this->updatedCount++;
+                    $claimId = $existingClaim->id;
+                } else {
+                    $claimData['utrn'] = $utrn;
+                    $claimData['created_at'] = now();
+                    $claimData['updated_at'] = now();
+                    $newClaim = InsuranceClaimDetail::create($claimData);
+                    $this->insertedCount++;
+                    $claimId = $newClaim->id;
+                }
 
-            $claimId = $existingClaim->id ?? $newClaim->id;
+              
+                $nomineeFields = [
+                    'nominee_name_bank' => 54, 'bank_name' => 55, 'acc_number' => 56,
+                    'ifsc' => 57, 'branch_name' => 58, 'spdc_bank_name' => 59,
+                    'spdc_chk_no' => 60, 'courier_name' => 61, 'pod_no' => 62,
+                    'nominee_number' => 63, 'bo_remarks' => 64, 'bo_maker' => 65,
+                    'bo_checker' => 66, 'ack_rec_date' => 67, 'spdc_rec_date' => 68, 'pkt_no' => 69
+                ];
 
-            // Handle Nominee Details
-            $nomineeFields = [
-                'nominee_name_bank' => 54, 'bank_name' => 55, 'acc_number' => 56,
-                'ifsc' => 57, 'branch_name' => 58, 'spdc_bank_name' => 59,
-                'spdc_chk_no' => 60, 'courier_name' => 61, 'pod_no' => 62,
-                'nominee_number' => 63, 'bo_remarks' => 64, 'bo_maker' => 65,
-                'bo_checker' => 66, 'ack_rec_date' => 67, 'spdc_rec_date' => 68, 'pkt_no' => 69
-            ];
+                $existingNominee = InsuranceNomineeDetail::where('insurance_claim_details_id', $claimId)->first();
+                $nomineeData = ['insurance_claim_details_id' => $claimId];
 
-            $existingNominee = InsuranceNomineeDetail::where('insurance_claim_details_id', $claimId)->first();
-            $nomineeData = ['insurance_claim_details_id' => $claimId];
-
-            foreach ($nomineeFields as $colName => $colIndex) {
-                if (!empty($row[$colIndex])) {
-                    if (in_array($colName, ['ack_rec_date','spdc_rec_date'])) {
-                        $nomineeData[$colName] = is_numeric($row[$colIndex])
-                            ? ExcelDate::excelToDateTimeObject($row[$colIndex])->format('Y-m-d')
-                            : $row[$colIndex];
-                    } else {
-                        $nomineeData[$colName] = $row[$colIndex];
+                    foreach ($nomineeFields as $colName => $colIndex) {
+                        if (!empty($row[$colIndex])) {
+                            if (in_array($colName, ['ack_rec_date','spdc_rec_date'])) {
+                                $nomineeData[$colName] = is_numeric($row[$colIndex])
+                                    ? ExcelDate::excelToDateTimeObject($row[$colIndex])->format('Y-m-d')
+                                    : $row[$colIndex];
+                            } else {
+                                $nomineeData[$colName] = $row[$colIndex];
+                            }
+                        } elseif ($existingNominee) {
+                            $nomineeData[$colName] = $existingNominee->$colName;
+                        }
                     }
-                } elseif ($existingNominee) {
-                    $nomineeData[$colName] = $existingNominee->$colName;
-                }
-            }
 
-            if ($existingNominee) {
-                $existingNominee->update($nomineeData);
-            } else {
-                $nomineeData['created_at'] = now();
-                $nomineeData['updated_at'] = now();
-                InsuranceNomineeDetail::create($nomineeData);
-            }
+                    if ($existingNominee) {
+                        $existingNominee->update($nomineeData);
+                    } else {
+                        $nomineeData['created_at'] = now();
+                        $nomineeData['updated_at'] = now();
+                        InsuranceNomineeDetail::create($nomineeData);
+                    }
+
+                } catch (\Throwable $e) {
+
+                    //Log::error("Row {$this->rowCount} failed: " . $e->getMessage());
+
+                    $this->failedRows[] = [
+                        'row' => $this->rowCount,
+                        'data' => $row,
+                        'errors' => [$e->getMessage()],
+                    ];
+
+                    continue; // move to next row
+            }  
+
         }
         Log::info("Finished chunk #{$this->chunkNumber} | Total rows: {$this->rowCount}");
     }

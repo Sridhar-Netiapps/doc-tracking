@@ -9,7 +9,7 @@
 			@if(auth::user()->branch_id == '1100')
 				<a data-bs-toggle="modal" data-bs-target="#importModal"  class="nav-link form-btn"  ><button class="btn btn-secondary btn-text p-2" id="btn_open_import_module">Import</button></a>
 
-				<a data-bs-toggle="modal" data-bs-target="#importModalHistorical"  class="nav-link form-btn"  ><button class="btn btn-danger btn-text p-2" id="btn_open_import_module">Import Historical</button></a>
+				<!-- <a data-bs-toggle="modal" data-bs-target="#importModalHistorical"  class="nav-link form-btn"  ><button class="btn btn-danger btn-text p-2" id="btn_open_import_module">Import Historical</button></a> -->
 
 				<a class="nav-link form-btn" href="{{route('create_insurance')}}" ><button class="btn btn-success btn-text p-2" id="btn_create_lead">Create Lead</button></a>
 

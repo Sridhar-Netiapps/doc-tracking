@@ -33,16 +33,26 @@ class ExportInsuranceLeadsCommand extends Command
     public function handle()
     {
         $this->info('Export started...');
-        $file = $this->argument('file');
+        $file = $this->argument('file')."_".date('d_M_Y_H_i');
         $query = InsuranceClaimDetail::with('nominee')
         ->orderBy('id', 'DESC');
 
         Excel::store(
             new ExportInsuranceLeads($query),
-            'public/exports/' . $file,
-            'local',
+            'public/exports/' .'insurance_report.csv',
+            'public',
             ExcelExcel::CSV
         );
+
+        // Move to public folder
+        $sourcePath = storage_path('app/public/exports/' . 'insurance_report.csv');
+        $destinationPath = public_path('insurance_exports/' . 'insurance_report.csv');
+
+        if (!file_exists(public_path('insurance_exports'))) {
+            mkdir(public_path('insurance_exports'), 0755, true);
+        }
+
+        rename($sourcePath, $destinationPath);
 
         $this->info('Export completed successfully');
     }

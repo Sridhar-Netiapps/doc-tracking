@@ -26,17 +26,17 @@
                
                @if( (Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == 'Yes' && $nomineedata->spdc_data_verified == 'Yes' && $data->cliam_status != 'Pending From Branch') 
                ||(Auth::user()->branch_id == '1100' && $nomineedata->nominee_data_verified == '' && $nomineedata->spdc_data_verified == '') 
-               || (Auth::user()->branch_id != '1100' && $data->cliam_status == 'Pending From Branch' &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) ) ) )
+               || (Auth::user()->branch_id != '1100'  &&  ( in_array(auth::user()->hrmData->current_designation , $maker ) || auth::user()->hasRole('bo-maker')) ) )
 				  <button class="btn btn-sm btn-warning btn-text p-2" id="editBtn">Edit</button> 
 			   @endif
 
-			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified) && ( in_array(auth::user()->hrmData->current_designation, $checker ) ) )
+			@if(!empty($nomineedata->nominee_name_bank) && !empty($nomineedata->bank_name) && !empty($nomineedata->acc_number) && !empty($nomineedata->ifsc) && !empty($nomineedata->branch_name) && !empty($nomineedata->nominee_number) && empty($nomineedata->nominee_data_verified) && ( in_array(auth::user()->hrmData->current_designation, $checker ) || auth::user()->hasRole('bo-checker') ) )
              <!--  <a class="confirm-nominee_verification" href="{{ route('verify_nominee_details',encrypt($nomineedata->id)) }}" ><button class="btn btn-sm btn-danger btn-text p-2" id="btn_download_claim_form">Verify Nominee Details</button> </a> -->
              <button type="button" class="btn btn-danger p-2" data-bs-toggle="modal" data-bs-target="#nomineeModal" data-bs-whatever="Region">Verify Nominee Details</button>
                  
 			@endif
             
-			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified) && ( in_array(auth::user()->hrmData->current_designation , $checker ) ))
+			@if(!empty($nomineedata->pod_no) && !empty($nomineedata->courier_name)  && empty($nomineedata->spdc_data_verified) && ( in_array(auth::user()->hrmData->current_designation , $checker ) || auth::user()->hasRole('bo-checker')))
             
               <button type="button" class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#podModal" data-bs-whatever="Region">Verify POD Details</button>
                  
