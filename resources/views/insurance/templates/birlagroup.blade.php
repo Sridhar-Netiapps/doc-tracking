@@ -157,6 +157,7 @@
     }
     .doc-header{
       background-color: #FAD691;
+      margin: 10px;
       
     }
     .doc-text{
@@ -418,7 +419,7 @@
 
       </div>
       <br>
-      <strong class="font_declaration contentrows">Declaration by Group Policyholder</strong><br>
+      <strong class="">Declaration by Group Policyholder</strong><br>
       <span class="font_declaration">We agree to save and hold Aditya Birla Sun Life Insurance Company Limited (ABSLI) harmless and indemnified 
 against any and/or all losses, claims, liabilities, legal proceedings (Including attorney fees’), expenses, or damages 
 suffered by or taken against ABSLI arising on account of any error or misrepresentation in the information 
@@ -467,7 +468,7 @@ the right to call upon additional documents.
      
   
     <div class="contentrows"></div>
-     <strong class="contentrows font_declaration">Declaration by Claimant</strong><br>
+     <strong class="contentrows">Declaration by Claimant</strong><br>
       <span class="font_declaration">I hereby notify the Aditya Birla Sun Life Insurance Company Limited (ABSLI) that Mr./Ms./Master<strong class="declarationfillin"></strong> whose life was insured by the said company,
       under group policy no. <strong class="declarationfillin"></strong>is no more and I hereby declare that the said person is the Life Insured described above and that the aforesaid answers and statements
       made by me are true and correct. I agree that furnishing of this form, or any forms supplemental thereto, shall not constitute nor be considered an admission of claim by
