@@ -267,7 +267,7 @@
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">AWB/POD</label>
-                        <input type="text" name="awb_pod" class="form-control alphanumeric awb_pod capsonly">
+                        <input type="text" name="awb_pod" id="awb_pod" class="form-control alphanumeric awb_pod capsonly">
                     </div>
                     <div class="col-4 pb-2">
                         <label for="status" class="form-label">MMRP Barcode No <span class="text-danger">*</span></label>
@@ -316,18 +316,9 @@
 </div>
 <script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
-        // var count = $('select[name="remarks"]').length;
-        // if(count > 0){
-        //     $('#update-all').removeClass('d-none');
-        // }
         $(".readytodispatch_all").click(function () {
             $(".readytodispatch").prop('checked', $(this).prop('checked'));
         });
-        // $('#courierSelect').select2({
-        //     placeholder: "Courier Name",
-        //     width: '100%',
-        //     dropdownAutoWidth: true
-        // });
         flatpickr(".flatpickr-date", {
             dateFormat: "d-m-Y",        
             maxDate: "today",         
@@ -366,13 +357,13 @@
                         type: "POST",
                         data: {
                             awb_pod: function () {
-                                return $('.awb_pod').val();
+                                return $('#awb_pod').val();
                             },
-                            courier_name: function () {
+                            courier_id: function () {
                                 return $('#courier_name').val();
                             },
                             id: function () {
-                                return $('#id').val(); // optional (for edit)
+                                return $('input[name="dispatch_id"]').val(); // optional (for edit)
                             },
                             _token: "{{ csrf_token() }}"
                         }
@@ -404,48 +395,6 @@
                 form.submit();
             }
         });
-        // $('#update-courier').validate({
-        //     rules: {
-        //         awb_pod: { alphanumeric: true, sanitize: true },
-        //         courier_name: { required: true, sanitize: true },
-        //         mmrp_barcode: { alphanumeric: true, required: true, sanitize: true }
-        //     },
-        //     messages: {
-        //         courier_name: { required: "Courier name is required" },
-        //         mmrp_barcode: { required: "MMRP Barcode is required" }
-        //     // },
-        //     // submitHandler: async function (form) {
-        //     //     const formData = new FormData(form);
-        //     //     const isUpdate = actionUrl.includes('update-courier');
-        //     //     formData.append('_method', isUpdate ? 'PUT' : 'POST'); 
-        //     //     try {
-        //     //         const response = await $.ajax({
-        //     //             url: actionUrl,
-        //     //             type: 'POST', 
-        //     //             data: formData,
-        //     //             contentType: false,
-        //     //             processData: false,
-        //     //         });
-        //     //         if (response.success) {
-        //     //             await Swal.fire({
-        //     //                 title: "Success!",
-        //     //                 // text: "Courier details saved successfully.",
-        //     //                 text: isUpdate ? "Courier updated successfully." : "Courier created successfully.",
-        //     //                 icon: "success",
-        //     //                 confirmButtonText: "OK"
-        //     //             }).then(() => {
-        //     //                 window.location.href = `{{ route('dispatches','list') }}`;
-        //     //             });
-        //     //         } else {
-        //     //             Swal.fire({title: "Error!", text: "Failed to save courier details.", icon: "error"});
-        //     //         }
-        //     //     } catch (error) {
-        //     //         console.error("AJAX Error:", error);
-        //     //         Swal.fire({title: "Error!", text: "Something went wrong!", icon: "error"});
-        //     //     }
-        //     }
-        // });
-        
         $(document).on('click', '.edit-courier', function () {
             const courierId = $(this).data('id');
             const courierName = $(this).data('courier-name');
@@ -469,7 +418,6 @@
         });
 
 
-
         $('.awb_pod').on('focus', function () {
             let courierId = $('#courier_name').val();
 
@@ -483,44 +431,6 @@
         });
 
         let invalidAwbs = new Set();
-
-        // $('.awb_pod').on('input', function () {
-        //     let awbPod = $(this).val().trim();
-        //     let courierId = $('#courier_name').val();
-        //     let $input = $(this);
-
-        //     $('#awb-error').remove();
-        //     $input.removeClass('is-invalid');
-        //     invalidAwbs.delete($input[0]); 
-
-        //     if (awbPod != '' && courierId != '') {
-        //         $.ajax({
-        //             url: "{{ route('courier.checkAwb') }}",
-        //             type: "POST",
-        //             data: {
-        //                 awb_pod: awbPod,
-        //                 courier_id: courierId,
-        //                 _token: "{{ csrf_token() }}"
-        //             },
-        //             success: function (response) {
-        //                 if (response.exists) {
-        //                     $input.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
-        //                     $input.addClass('is-invalid');
-        //                     invalidAwbs.add($input[0]); 
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-
-        // $('form').on('submit', function () {
-        //     let $awbpodCheck = $('input.awb_pod');
-        //     if($awbpodCheck.hasClass('is-invalid')){
-        //         $awbpodCheck.after('<label id="awb-error" class="error text-danger">This AWB/POD number already exists for the selected courier.</label>');
-        //         return false;
-        //     }
-        // });
-
         $('#applyFilter').click(function () {
             let status = $('#status').val()?.trim();
             let search = $('#search').val()?.trim();
@@ -535,7 +445,7 @@
                     confirmButtonText: "OK"
                 });
             } else {
-                $('#filterForm').submit(); // or trigger AJAX filtering
+                $('#filterForm').submit();
             }
         });
 
@@ -567,7 +477,7 @@
     checkDocumentStatuses();
 
     $('.update-row').on('click', function () {
-        if ($(this).prop('disabled')) return; // Prevent if disabled
+        if ($(this).prop('disabled')) return;
 
         const row = $(this).closest('tr');
         let data;
@@ -582,19 +492,16 @@
         sendUpdateRequest(data);
     });
 
-    // Reusable function to check status
     function checkDocumentStatuses() {
         $('.disable-update-btn').each(function () {
             let button = $(this);
             let dispatchId = button.data('id');
-            // keep disabled by default
             button.prop('disabled', true).css({'background-color': '#a9a9a9', 'border-color': '#a9a9a9'});
             $.ajax({
                 url: '/dispatches/check-status/' + dispatchId,
                 method: 'GET',
                 success: function (response) {
 
-                    // Enable ONLY when update is allowed
                     if (!response.disable_update) {
                         button.prop('disabled', false)
                             .css({
@@ -610,7 +517,6 @@
                 error: function () {
                     console.error('Status check failed for dispatch ID: ' + dispatchId);
 
-                    // fail-safe: keep disabled
                     button.prop('disabled', true)
                         .attr('title', 'Unable to verify document status');
                 }
@@ -634,44 +540,6 @@
             }
         });
     }
-
-    // // Handle bulk update
-    // $('#update-all').on('click', function () {
-    //     const data = [];
-    //     let hasError = false;
-
-    //     $('tr[data-id]').each(function () {
-    //         try {
-    //             data.push(collectRowData($(this)));
-    //         } catch (err) {
-    //             Swal.fire({title: "Alert!", text: err, icon: "warning"});
-    //             hasError = true;
-    //             return false; // stop loop
-    //         }
-    //     });
-
-    //     if (!hasError && data.length) {
-    //         sendUpdateRequest(data);
-    //     }
-    // });
-
-    // Common AJAX function
-    // function sendUpdateRequest(payload) {
-    //     $.ajax({
-    //         url: '{{ route("dispatches.update") }}',
-    //         method: 'POST',
-    //         data: {
-    //             _token: '{{ csrf_token() }}',
-    //             updates: payload
-    //         },
-    //         success: function () {
-    //             Swal.fire({title: "Success" , text:  "Update successful", icon: "success"}).then(() => location.reload());
-    //         },
-    //         error: function () {
-    //             Swal.fire({title: "Error!", text: "Update failed!", icon: "error"});
-    //         }
-    //     });
-    // }
     $('.revert-status').click(function () {
         $('input.revert-reason').val($(this).data('id'));
         $('#revert-status').modal('show');

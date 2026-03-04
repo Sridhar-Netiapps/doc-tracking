@@ -267,12 +267,27 @@
 
             $.post("{{ route('courier.update') }}", formData)
                 .done(function (res) {
-                    Swal.fire({title: "Success!", text: "Courier created successfully.", icon: "success"})
+                    const successMessage = res?.message || "Courier Created successfully.";
+                    Swal.fire({title: "Success!", text: successMessage, icon: "success"})
                         .then(() => window.location.href = `{{ route('dispatches', 'ready') }}`);
                 })
                 .fail(function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                    Swal.fire({title: "Error!", text: "Request failed.", icon: "error"}).then(() => location.reload());
+                    let errorMessage = "Something went wrong. Please try again.";
+
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    } else if (xhr.responseText) {
+                        try {
+                            const parsed = JSON.parse(xhr.responseText);
+                            if (parsed && parsed.error) {
+                                errorMessage = parsed.error;
+                            }
+                        } catch (e) {
+                            // Keep fallback message when response is not JSON.
+                        }
+                    }
+
+                    Swal.fire({title: "Error!", text: errorMessage, icon: "error"}).then(() => location.reload());
                 });
         });
         $('#applyFilter').click(function () {

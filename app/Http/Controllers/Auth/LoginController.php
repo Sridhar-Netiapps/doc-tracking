@@ -104,11 +104,11 @@ class LoginController extends Controller
                 else{
                     $isValidLdap = $ldap->auth()->attempt($username,$password);
                 }
-                $user = User::where('employee_id', $username)->first();
+                $user = User::where('employee_id', $username)->where('status', 'active')->first();
 
                 if ($isValidLdap) {
                     if (!$user) {
-                        return back()->withErrors(['username' => 'You are not authorized.']);
+                        return back()->withErrors(['username' => 'You are not authorized. Please contact ID Maintenance Team.']);
                     }
                     Session::flush();
                     Auth::login($user);
