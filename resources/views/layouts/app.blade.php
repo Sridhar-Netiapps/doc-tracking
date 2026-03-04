@@ -25,14 +25,15 @@
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/apexchart.js') }}"></script>
     <script src="{{ asset('js/flatpickr.js') }}"></script>
-    <script src="{{ asset('js/flatpickr.min.js') }}"></script>    
+    <script src="{{ asset('js/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('js/decrypt-sensitive.js') }}"></script>
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand border-0">
-                    {{-- <img src="/images/logo1.svg" /> --}}
+                    <img src="/images/logo1.svg" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

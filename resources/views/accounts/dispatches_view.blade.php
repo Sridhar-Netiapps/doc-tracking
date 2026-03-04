@@ -66,7 +66,6 @@
                         @endif 
                     @endunless
                     <a href="{{ route('dispatches', $type) }}" class="btn btn-secondary">Back</a>
-                    {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a> --}}
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
@@ -108,10 +107,10 @@
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
-                                            <td class="text-nowrap">{{ $row->account_number }}</td>
+                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
+                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
                                             <td class="text-nowrap">{{ $row->loan_cycle }}</td>
-                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
@@ -218,9 +217,9 @@
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>  
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
-                                            <td class="text-nowrap">{{ $row->account_number }}</td>
-                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
+                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
+                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->loan_amount }}</td>
@@ -327,9 +326,9 @@
                                             <td class="text-nowrap">{{ $row->unique_ref_no }}</td>
                                             <td class="text-nowrap">{{ $row->branch_code }}</td>
                                             <td class="text-nowrap">{{ $row->branch_name }}</td>
-                                            <td class="text-nowrap">{{ $row->cif_id }}</td>
-                                            <td class="text-nowrap">{{ $row->account_number }}</td>
-                                            <td class="text-nowrap">{{ $row->customer_name }}</td>
+                                            <td class="text-nowrap">@sensitive($row->cif_id)</td>
+                                            <td class="text-nowrap">@sensitive($row->account_number)</td>
+                                            <td class="text-nowrap">@sensitive($row->customer_name)</td>
                                             <td class="text-nowrap">{{ date('d-m-Y', strtotime($row->account_creation_date)) }}</td>
                                             <td class="text-nowrap">{{ $row->channel }}</td>
                                             <td class="text-nowrap">{{ $row->scheme }}</td>

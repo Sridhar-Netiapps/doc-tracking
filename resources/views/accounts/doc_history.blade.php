@@ -8,11 +8,6 @@
             <div class="d-flex justify-content-between align-items-center page-heading">
                 <h3>Document Journey</h3>
                 <div>
-                    {{-- @hasanyrole('ro-supervisor|admin|master')
-                        @if (!in_array($document->status, [0,1,8,9,10,11]))
-                            <button class="btn btn-sm btn-success revert-status">Revert Status</button> 
-                        @endif
-                    @endhasanyrole --}}
                 <a href="{{ route('accounts.index',['type' => $type,'dtype' => $dtype]) }}" class="btn btn-secondary">Back</a>
                 </div>
             </div>
@@ -101,21 +96,21 @@
                         @if(!empty($document->cif_id))
                         <div class="p-2 border-bottom">
                             <label>CIF ID</label>
-                            <h6><b>{{ $document->cif_id }}</b></h6>
+                            <h6><b>@sensitive($document->cif_id)</b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->account_number))
                         <div class="p-2 border-bottom">
                             <label>Account Number</label>
-                            <h6><b>{{ $document->account_number }}</b></h6>
+                            <h6><b>@sensitive($document->account_number)</b></h6>
                         </div>
                         @endif
                     
                         @if(!empty($document->customer_name))
                         <div class="p-2 border-bottom">
                             <label>Customer Name</label>
-                            <h6><b>{{ $document->customer_name }}</b></h6>
+                            <h6><b>@sensitive($document->customer_name)</b></h6>
                         </div>
                         @endif
                     

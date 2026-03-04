@@ -329,7 +329,6 @@
             var type = $(this).data('type');
 
             Swal.fire({
-                // title: '<h5 class="mb-0 text-primary">Reason Required</h5>',
                 title: 'Reason Required',
                 input: "text",
                 inputLabel: "Enter reason for restore the document:",

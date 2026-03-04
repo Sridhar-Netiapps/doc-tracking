@@ -26,19 +26,12 @@ class UserController extends Controller
     // Constructor for middleware
     public function __construct()
     {
-        // Add the permission middleware as needed for each method
-        // Example:
-        // $this->middleware('permission:view-user')->only('index','show');
-        // $this->middleware('permission:create-user')->only(['create', 'store']);
-        // $this->middleware('permission:edit-user')->only(['edit', 'update']);
-        // $this->middleware('permission:delete-user')->only('destroy');
         $this->middleware(function ($request, $next) {
             $this->user = auth()->user();
             return $next($request);
         });
     }
 
-    // List all users
     public function index()
     {
         $filter = function ($query) {
@@ -185,9 +178,6 @@ class UserController extends Controller
             $this->auditlogs($module , $operation ,$note , $link);
 
         }
-             
-
-
 
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');

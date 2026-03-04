@@ -15,6 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\InsuranceHomeController;
+use App\Http\Controllers\DecryptController;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
@@ -23,6 +24,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+// Decrypt API endpoint (requires auth)
+Route::post('/api/decrypt', [DecryptController::class, 'decrypt'])->middleware('auth');
+
 // Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/accounts-index', function () {
@@ -49,9 +54,41 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('/{approvalType}/download', [DocumentController::class, 'downloadPDF'])->name('accounts.download');
             // Route::get('/{id}/{type}/{dtype}', [DocumentController::class, 'revertStatus'])->name('accounts.revert');
         });
+
+        Route::middleware(['signed'])->group(function () {
+            // Document sensitive views
+            Route::get('document/{id}/{type}/{dtype}', 
+                [DocumentController::class, 'viewHistory']
+            )->name('document.history');
+
+            // Route::get('dispatches/edit/{id}', 
+            //     [DocumentController::class,'editDispatches']
+            // )->name('dispatches.edit');
+
+            // Route::get('dispatches/{type}/{id}/view', 
+            //     [DocumentController::class,'viewDispatches']
+            // )->name('dispatches.view');
+
+            // Route::get('uploads/{upload}/download', 
+            //     [UploadController::class, 'download']
+            // )->name('uploads.download');
+
+            // Route::get('sync/user/{id}', 
+            //     [UserController::class, 'getUserInfo']
+            // )->name('users.sync');
+
+            // Route::get('/activity/export', 
+            //     [UserController::class, 'export']
+            // )->name('activity.export');
+
+            // Route::get('/user/export', 
+            //     [UserController::class, 'userExport']
+            // )->name('user.export');
+        });
+
         Route::get('document/trashed', [DocumentController::class, 'trashedDocuments'])->name('accounts.trash');
         Route::post('/vendor/upload', [DocumentController::class, 'uploadVendorData'])->name('vendor.upload');
-        Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
+        // Route::get('document/{id}/{type}/{dtype}', [DocumentController::class, 'viewHistory'])->name('document.history');
         Route::post('document/remove', [DocumentController::class, 'removeDocument'])->name('document.remove');
         Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
         Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->name('courier.revert');
@@ -74,12 +111,10 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::post('reports', [DocumentController::class,'export'])->name('reports');
         Route::post('reports', [DocumentExportController::class,'export'])->name('reports');
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
-        // Route::get('document/data_import', [UploadController::class, 'dataImport'])->name('accounts.data_import');
+        
         Route::get('/accounts/data_import', function () {
             return view('accounts.data_import');
         })->name('accounts.data_import');
-        // Route::group(['middleware' => ['role.access']], function () {
-        // Route::post('documents/moved', [DocumentController::class, 'addRmaDetails'])->name('accounts.moved');
         Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
 
         Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');

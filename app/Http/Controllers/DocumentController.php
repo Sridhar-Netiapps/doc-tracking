@@ -98,7 +98,12 @@ class DocumentController extends Controller
         if ($fixed_status) {
             $filters['status'] = $fixed_status;
         }
-
+        // Encrypt sensitive fields before passing to view
+        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
+        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
+        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
+        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+        
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
         else
@@ -279,6 +284,12 @@ class DocumentController extends Controller
         }
         $vendors = Vendor::all();
         // $dtype = $filters['document_type'] ?? 
+
+        // Encrypt sensitive fields before passing to view
+        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
+        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
+        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
+        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
 
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
@@ -741,6 +752,12 @@ class DocumentController extends Controller
         //     return redirect('/home')->with('error', 'Access Denied');
         // }
 
+        // Encrypt sensitive fields before passing to view
+        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
+        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
+        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
+        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
     
@@ -771,7 +788,7 @@ class DocumentController extends Controller
                 $dispatch->courier_name = $validated['courier_name'];
                 $dispatch->awb_pod = $validated['awb_pod'];
                 $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
-                $dispatch->updated_by = Auth::user()->id;
+                $dispatch->verified_by = Auth::user()->id;
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
@@ -854,7 +871,7 @@ class DocumentController extends Controller
                 $dispatch->status = $update['remarks'];
                 $dispatch->comments = $update['reason_for_rejection'];
                 $dispatch->updated_by = $this->user->id;
-                if ((int)$update['remarks'] === 12) {
+                if (in_array((int)$update['remarks'], [5,6,7], true)) {
                     $dispatch->verified_by = $this->user->id;
                     $dispatch->verified_at = now();
                 }
@@ -1133,7 +1150,8 @@ class DocumentController extends Controller
     public function viewHistory($id,$type,$dtype)
     {
         try {
-            $decryptedId = Crypt::decryptString($id);
+            // $decryptedId = Crypt::decryptString($id);
+            $decryptedId = $id;
         } catch (DecryptException $e) {
             abort(404, 'Invalid ID');
         }
@@ -1152,7 +1170,7 @@ class DocumentController extends Controller
             // dd((strtolower($this->user->region)));
         }
         $history = DocumentHistory::where('document_id',$decryptedId)->where('document_type',class_basename($this->table[$dtype]))->get();
-
+        $document = $this->encryptSensitive($document);
         return view('accounts.doc_history', compact('document','history','dtype','type'));
     }
 
@@ -1194,6 +1212,12 @@ class DocumentController extends Controller
         if ($fixed_status) {
             $filters['status'] = $fixed_status;
         }
+
+        // Encrypt sensitive fields before passing to view
+        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
+        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
+        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
+        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
 
         return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
     }

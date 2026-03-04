@@ -60,29 +60,99 @@ $(document).ready(function () {
             return;
         }
         const form = this;
-        const password = $('#password').val();
-        const aesKey = CryptoJS.lib.WordArray.random(128 / 8);
+    
+        const rawData = {
+            username: btoa($('#username').val()),
+            password: btoa($('#password').val())
+        };
+    
+        const aesKey = CryptoJS.lib.WordArray.random(256 / 8); 
         const aesIv = CryptoJS.lib.WordArray.random(128 / 8);
-        const encryptedPassword = CryptoJS.AES.encrypt(password, aesKey, {
+    
+        const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(rawData), aesKey, {
             iv: aesIv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         }).toString();
+    
         const rsaEncrypt = new JSEncrypt();
         rsaEncrypt.setPublicKey(rsaPublicKey);
-        const aesPayload = JSON.stringify({
+        const encryptedKey = rsaEncrypt.encrypt(JSON.stringify({
             key: CryptoJS.enc.Base64.stringify(aesKey),
             iv: CryptoJS.enc.Base64.stringify(aesIv)
-        });
-        
-        const encryptedAesKey = rsaEncrypt.encrypt(aesPayload);
-        
-        if (!encryptedAesKey) {
-            alert('Encryption failed. Could not encrypt session key.');
-            return;
-        }
-        $('input[name="enc_aes_key"]').val(encryptedAesKey);
-        $('#password').val(encryptedPassword);
+        }));
+    
+        const secureBlob = btoa(JSON.stringify({
+            d: encryptedData,
+            k: encryptedKey
+        }));
+    
+        $('#username, #password').remove();
+        $('input[name="payload"]').val(secureBlob);
         form.submit();
     });
+
+    // $('#login-form').on('submit', async function (e) {
+    //     e.preventDefault();
+
+    //     if (!window.crypto || !crypto.subtle) {
+    //         alert('Secure crypto not supported');
+    //         return;
+    //     }
+
+    //     if (!rsaPublicKey) {
+    //         try {
+    //             const res = await $.get('/get-key');
+    //             rsaPublicKey = res.public_key;
+    //         } catch {
+    //             alert('Security initialization failed');
+    //             return;
+    //         }
+    //     }
+
+    //     const rawData = {
+    //         username: btoa($('#username').val()),
+    //         password: btoa($('#password').val()),
+    //         ts: Date.now(),
+    //         nonce: crypto.randomUUID()
+    //     };
+
+    //     const encoder = new TextEncoder();
+    //     const data = encoder.encode(JSON.stringify(rawData));
+
+    //     // AES-GCM
+    //     const aesKey = await crypto.subtle.generateKey(
+    //         { name: 'AES-GCM', length: 256 },
+    //         true,
+    //         ['encrypt']
+    //     );
+
+    //     const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    //     const encrypted = await crypto.subtle.encrypt(
+    //         { name: 'AES-GCM', iv },
+    //         aesKey,
+    //         data
+    //     );
+
+    //     const rawKey = await crypto.subtle.exportKey('raw', aesKey);
+
+    //     const rsa = new JSEncrypt();
+    //     rsa.setPublicKey(rsaPublicKey);
+
+    //     const encryptedKey = rsa.encrypt(JSON.stringify({
+    //         key: btoa(String.fromCharCode(...new Uint8Array(rawKey))),
+    //         iv: btoa(String.fromCharCode(...iv))
+    //     }));
+
+    //     const payload = btoa(JSON.stringify({
+    //         d: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
+    //         k: encryptedKey
+    //     }));
+
+    //     $('#username, #password').remove();
+    //     $('input[name="payload"]').val(payload);
+    //     this.submit();
+    // });
+
 });

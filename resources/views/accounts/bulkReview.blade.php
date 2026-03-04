@@ -357,8 +357,8 @@
                 $('input[name="goldloan_ids[]"]').val(goldloan_ids);
                 $('input[name="aof_ids[]"]').val(aof_ids);
                 $('input[name="dtrf_ids[]"]').val(dtrf_ids);
-                return false;
-                // $('#proceed').submit();
+                // return false;
+                $('#proceed').submit();
             } else {
                 Swal.fire({
                     title: "Warning!",
