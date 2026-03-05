@@ -31,6 +31,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use phpseclib3\Crypt\AES;
 use phpseclib3\Crypt\RSA;
 use App\Helpers\EncryptHelper;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
