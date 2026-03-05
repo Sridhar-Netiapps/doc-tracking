@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('activity_logs', function (Blueprint $table) {
-            $table->text('description')->nullable()->change();
+            $table->longText('description')->nullable()->change();
+            $table->longText('route')->nullable()->change();
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('activity_logs', function (Blueprint $table) {
             $table->string('description')->nullable()->change();
+            $table->string('route')->nullable()->change();
         });
     }
 };
