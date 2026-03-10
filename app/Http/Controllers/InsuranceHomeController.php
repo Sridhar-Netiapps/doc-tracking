@@ -31,7 +31,7 @@ use App\Exports\ExportAuditLogs;
 use App\Models\AuditLog;
 use App\AuditLogTrait;
 use App\Models\Branch;
-
+use DB;
 use File;
 use Excel;
 use Auth;
@@ -52,6 +52,243 @@ class InsuranceHomeController extends Controller
     use AuditLogTrait; 
 
     public function index(Request $request)
+    {
+
+    $currentYear = date('Y');
+    $currentMonth = date('m');
+    $slectedyear = $request->fy;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Financial Year Logic
+    |--------------------------------------------------------------------------
+    */
+
+    if ($currentMonth >= 4) {
+        $startYear = $currentYear;
+        $financeyear = $startYear . '-' . ($startYear + 1);
+    } else {
+        $startYear = $currentYear - 1;
+        $financeyear = ($startYear - 1) . '-' . $startYear;
+    }
+
+    $financialYears = [];
+
+    for ($i = 0; $i < 10; $i++) {
+        $endYear = $startYear + 1;
+        $financialYears[] = $startYear . '-' . $endYear;
+        $startYear--;
+    }
+
+    if ($request->fy == '') {
+        $fy = explode('-', $financeyear);
+    } else {
+        $fy = explode('-', $slectedyear);
+    }
+
+    $start = $fy[0] . '-04-01';
+    $end = $fy[1] . '-03-31';
+
+    $branch = Auth::user()->branch_id;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Query
+    |--------------------------------------------------------------------------
+    */
+
+    $query = InsuranceClaimDetail::whereBetween('intimation_date', [$start, $end]);
+
+    if ($branch != '1100') {
+        $query->where('branch', $branch);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard Summary
+    |--------------------------------------------------------------------------
+    */
+
+    $summary = (clone $query)->selectRaw("
+    COUNT(*) as total,
+    SUM(CASE WHEN cliam_status='Completed' THEN 1 ELSE 0 END) as claimed,
+    SUM(CASE WHEN cliam_status IN ('Pending From Branch','Pending from branch-Require additional documents') THEN 1 ELSE 0 END) as pending_at_branch,
+    SUM(CASE WHEN cliam_status='Document Sent to HO to Process' THEN 1 ELSE 0 END) as doc_at_ho,
+    SUM(CASE WHEN cliam_status='Pending from Insurance Company' THEN 1 ELSE 0 END) as inprogress
+    ")->first();
+
+    $total = $summary->total;
+    $claimed = $summary->claimed;
+    $pending_at_branch = $summary->pending_at_branch;
+    $doc_at_ho = $summary->doc_at_ho;
+    $inprogress = $summary->inprogress;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Partner Chart
+    |--------------------------------------------------------------------------
+    */
+
+    $partnerData = (clone $query)
+    ->select('partner', DB::raw('count(*) as total'))
+    ->groupBy('partner')
+    ->get();
+
+    $partnerChart = [
+    'names' => $partnerData->pluck('partner'),
+    'counts' => $partnerData->pluck('total')
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Region Chart
+    |--------------------------------------------------------------------------
+    */
+
+    $regionData = (clone $query)->select(
+    'region',
+    DB::raw("SUM(CASE WHEN cliam_status='Completed' THEN 1 ELSE 0 END) as claimed"),
+    DB::raw("SUM(CASE WHEN cliam_status IN ('Not Eligible','Not Eligible [Having outstanding]') THEN 1 ELSE 0 END) as noneligible"),
+    DB::raw("SUM(CASE WHEN cliam_status='Rejected' THEN 1 ELSE 0 END) as rejected"),
+    DB::raw("SUM(CASE WHEN cliam_status NOT IN ('Completed','Not Eligible','Not Eligible [Having outstanding]','Rejected') THEN 1 ELSE 0 END) as inprogress")
+    )
+    ->groupBy('region')
+    ->get();
+
+    $regions = ['North','South','East','West'];
+
+    $claimedArray=[];
+    $noneligibleArray=[];
+    $rejectedArray=[];
+    $inprogressArray=[];
+
+    foreach($regions as $reg){
+
+    $row = $regionData->firstWhere('region',$reg);
+
+    $claimedArray[] = $row->claimed ?? 0;
+    $noneligibleArray[] = $row->noneligible ?? 0;
+    $rejectedArray[] = $row->rejected ?? 0;
+    $inprogressArray[] = $row->inprogress ?? 0;
+
+    }
+
+    $regionChart = [$claimedArray,$noneligibleArray,$rejectedArray,$inprogressArray];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Monthly Chart
+    |--------------------------------------------------------------------------
+    */
+
+    $monthArray = [
+    'Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'
+    ];
+
+    $monthData = (clone $query)->selectRaw("
+    MONTH(intimation_date) as month,
+    COUNT(*) as claimcount,
+    SUM(payable_to_nominee) as settled,
+    SUM(claim_amount) as claimed
+    ")
+    ->where('cliam_status','Completed')
+    ->groupBy('month')
+    ->get();
+
+    $claimcount = array_fill(0,12,0);
+    $settledAmount = array_fill(0,12,0);
+    $claimedAmount = array_fill(0,12,0);
+
+    foreach($monthData as $m){
+
+    $index = ($m->month >=4) ? $m->month-4 : $m->month+8;
+
+    $claimcount[$index] = $m->claimcount;
+    $settledAmount[$index] = $m->settled;
+    $claimedAmount[$index] = $m->claimed;
+
+    }
+
+    $claimchart = [$claimcount,$settledAmount,$claimedAmount];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cause Of Death
+    |--------------------------------------------------------------------------
+    */
+
+    $deathcause = (clone $query)
+    ->select('cause_of_death', DB::raw('count(*) as total'))
+    ->where('cliam_status','Completed')
+    ->groupBy('cause_of_death')
+    ->get();
+
+    $deathcausehart = [
+    $deathcause->pluck('cause_of_death'),
+    $deathcause->pluck('total')
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Age Group Chart
+    |--------------------------------------------------------------------------
+    */
+
+    $ageData = (clone $query)->selectRaw("
+    SUM(CASE WHEN age BETWEEN 0 AND 10 THEN 1 ELSE 0 END) as a1,
+    SUM(CASE WHEN age BETWEEN 11 AND 20 THEN 1 ELSE 0 END) as a2,
+    SUM(CASE WHEN age BETWEEN 21 AND 30 THEN 1 ELSE 0 END) as a3,
+    SUM(CASE WHEN age BETWEEN 31 AND 40 THEN 1 ELSE 0 END) as a4,
+    SUM(CASE WHEN age BETWEEN 41 AND 50 THEN 1 ELSE 0 END) as a5,
+    SUM(CASE WHEN age BETWEEN 51 AND 60 THEN 1 ELSE 0 END) as a6,
+    SUM(CASE WHEN age BETWEEN 61 AND 70 THEN 1 ELSE 0 END) as a7,
+    SUM(CASE WHEN age BETWEEN 71 AND 80 THEN 1 ELSE 0 END) as a8,
+    SUM(CASE WHEN age BETWEEN 81 AND 90 THEN 1 ELSE 0 END) as a9,
+    SUM(CASE WHEN age BETWEEN 91 AND 100 THEN 1 ELSE 0 END) as a10
+    ")
+    ->where('cliam_status','Completed')
+    ->first();
+
+    $deathagegroup = [
+    $ageData->a1,$ageData->a2,$ageData->a3,$ageData->a4,$ageData->a5,
+    $ageData->a6,$ageData->a7,$ageData->a8,$ageData->a9,$ageData->a10
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Return View
+    |--------------------------------------------------------------------------
+    */
+
+    return view('insurance.dashboard',compact(
+    'total',
+    'claimed',
+    'pending_at_branch',
+    'doc_at_ho',
+    'inprogress',
+    'partnerChart',
+    'regionChart',
+    'claimchart',
+    'claimedAmount',
+    'monthArray',
+    'deathcausehart',
+    'financialYears',
+    'slectedyear',
+    'deathagegroup'
+    ));
+
+    }
+
+    public function index2(Request $request)
     {
         
         $partners = InsurancePartner::get();
