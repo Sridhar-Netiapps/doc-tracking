@@ -1147,6 +1147,7 @@ class InsuranceHomeController extends Controller
 
         if($nomineedetail->id !='' || $nomineedetail->id != 0){
              $claimdata = InsuranceClaimDetail::where('id',decrypt($request->lead_id))->first();
+             InsuranceClaimDetail::where('id',decrypt($request->lead_id))->update(['updated_at' => now()]);
 
              $mailData=['message' => 'Nominee details are updated in Insurance Module.Please refer Lead ID - '.$claimdata->utrn.' to view detailed information'];
               $reciepients=array();
