@@ -4,20 +4,29 @@ namespace App\Exports;
 
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Events\AfterExport;
+use Maatwebsite\Excel\Events\ExportFailed;
+use Throwable;
 
 
-class UserExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, ShouldQueue
+class UserExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, WithEvents, ShouldQueue
 {
     protected array $filters;
+    protected string $jobId;
+    protected string $path;
 
-    public function __construct(array $filters = [])
+    public function __construct(array $filters = [], string $jobId = '', string $path = '')
     {
         $this->filters = $filters;
+        $this->jobId = $jobId;
+        $this->path = $path;
     }
 
     public function query()
@@ -76,6 +85,57 @@ class UserExport implements FromQuery, WithHeadings, WithMapping, WithChunkReadi
         return 1000;
     }
 
+    public function registerEvents(): array
+    {
+        return [
+            AfterExport::class => function () {
+                $this->updateCache([
+                    'status' => 'completed',
+                    'path' => $this->path,
+                    'error' => null,
+                ]);
+            },
+            ExportFailed::class => function (ExportFailed $event) {
+                $message = null;
+                $exception = null;
+
+                if (property_exists($event, 'exception') && $event->exception instanceof Throwable) {
+                    $exception = $event->exception;
+                } elseif (property_exists($event, 'e') && $event->e instanceof Throwable) {
+                    $exception = $event->e;
+                }
+
+                if ($exception) {
+                    $message = $exception->getMessage();
+                }
+
+                $this->updateCache([
+                    'status' => 'failed',
+                    'error' => $message ?: 'Export failed.',
+                ]);
+            },
+        ];
+    }
+
+    private function updateCache(array $updates): void
+    {
+        if ($this->jobId === '') {
+            return;
+        }
+
+        $cacheKey = 'user_export_' . $this->jobId;
+        $payload = Cache::get($cacheKey);
+        if (!is_array($payload)) {
+            $payload = [];
+        }
+
+        foreach ($updates as $key => $value) {
+            $payload[$key] = $value;
+        }
+
+        Cache::put($cacheKey, $payload, now()->addHours(2));
+    }
+
     public function headings(): array
     {
         return [
@@ -96,7 +156,7 @@ class UserExport implements FromQuery, WithHeadings, WithMapping, WithChunkReadi
 
     public function map($row): array
     {
-        static $count = 0;
+        $count = 0;
         $count++;
         // dd($row);
         $roles = $row->roles->pluck('name')->map(function ($role) {

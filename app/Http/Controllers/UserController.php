@@ -14,8 +14,11 @@ use App\Exports\UserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Str;
 use App\Models\HRMData;
 use Auth;
 use App\AuditLogTrait;
@@ -526,25 +529,93 @@ class UserController extends Controller
     public function userExport(Request $request)
     {
         $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
-        $fileName = 'users_' . now()->format('Ymd_His') . '.xlsx';
-        $path = 'exports/' . $fileName;
 
-        Excel::queue(new UserExport($filters), $path, 'public');
+        $jobId = (string) Str::uuid();
+        $cacheKey = 'user_export_' . $jobId;
+        $expiresAt = now()->addHours(2);
+        $path = 'exports/users_' . $jobId . '.xlsx';
 
-        $downloadUrl = Storage::disk('public')->url($path);
-        $downloadLink = '<a href="' . e($downloadUrl) . '" target="_blank" rel="noopener">Download file</a>';
+        Cache::put($cacheKey, [
+            'status' => 'processing',
+            'user_id' => $this->user->id,
+            'path' => null,
+            'error' => null,
+        ], $expiresAt);
 
-        if ($request->wantsJson()) {
+        Storage::disk('private')->makeDirectory('exports');
+
+        Excel::queue(new UserExport($filters, $jobId, $path), $path, 'private');
+
+        return response()->json([
+            'job_id' => $jobId,
+            'status' => 'processing',
+        ]);
+    }
+
+    public function checkExportStatus(Request $request, $jobId)
+    {
+        $cacheKey = 'user_export_' . $jobId;
+        $payload = Cache::get($cacheKey);
+
+        if (!$payload) {
+            return response()->json(['error' => 'Export job not found or expired.'], 404);
+        }
+
+        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+
+        if (($payload['status'] ?? null) === 'completed') {
+            $path = $payload['path'] ?? null;
+            if (!$path || !Storage::disk('private')->exists($path)) {
+                return response()->json(['status' => 'processing']);
+            }
+
+            $downloadUrl = URL::temporarySignedRoute(
+                'user.export.download',
+                now()->addMinutes(10),
+                ['jobId' => $jobId]
+            );
+
             return response()->json([
-                'status' => 'queued',
-                'path' => $path,
-                'url' => $downloadUrl,
+                'status' => 'completed',
+                'download_url' => $downloadUrl,
             ]);
         }
 
-        return redirect()
-            ->back()
-            ->with('success', 'Export queued. ' . $downloadLink);
+        if (($payload['status'] ?? null) === 'failed') {
+            return response()->json([
+                'status' => 'failed',
+                'error' => $payload['error'] ?? 'Export failed.',
+            ], 500);
+        }
+
+        return response()->json(['status' => 'processing']);
+    }
+
+    public function downloadExport(Request $request, $jobId)
+    {
+        $cacheKey = 'user_export_' . $jobId;
+        $payload = Cache::get($cacheKey);
+
+        if (!$payload) {
+            abort(404);
+        }
+
+        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
+            abort(403);
+        }
+
+        if (($payload['status'] ?? null) !== 'completed') {
+            return response()->json(['error' => 'Report is not ready yet.'], 409);
+        }
+
+        $path = $payload['path'] ?? null;
+        if (!$path || !Storage::disk('private')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('private')->download($path, 'users_' . $jobId . '.xlsx');
     }
 
     private function applyUsersFilters($query, $filters)

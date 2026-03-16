@@ -119,7 +119,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
         Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
-        Route::get('/user/export', [UserController::class, 'userExport'])->name('user.export');
+        Route::match(['GET', 'POST'], '/user/export', [UserController::class, 'userExport'])->name('user.export');
+        Route::get('/user/export/{jobId}/status', [UserController::class, 'checkExportStatus'])->name('user.export.status');
+        Route::get('/user/export/{jobId}/download', [UserController::class, 'downloadExport'])
+            ->middleware('signed')
+            ->name('user.export.download');
+        Route::pattern('jobId', '[0-9a-fA-F-]{36}');
         // Route::resource('branches', BranchController::class);
         Route::resource('emails', EmailController::class);
         Route::resource('uploads', UploadController::class)->only(['index', 'create', 'store']);

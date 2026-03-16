@@ -27,7 +27,6 @@ use App\Exports\DtrfExport;
 use App\Exports\AccountOpeningDocumentExport;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Encryption\DecryptException;
 
 class DocumentController extends Controller
@@ -1267,36 +1266,25 @@ class DocumentController extends Controller
         $filters = $request->all();
         $docType = $request->input('doc_type');
         $timestamp = now()->format('Ymd_His');
-        $path = null;
 
         if ($docType === 'loan') {
-            $path = "exports/loan_documents_{$timestamp}.xlsx";
-            Excel::queue(new LoanDocumentExport($filters), $path, 'public');
-        } elseif ($docType === 'goldloan') {
-            $path = "exports/gold_loan_documents_{$timestamp}.xlsx";
-            Excel::queue(new GoldLoanDocumentExport($filters), $path, 'public');
-        } elseif ($docType === 'dtrf') {
-            $path = "exports/dtrf_documents_{$timestamp}.xlsx";
-            Excel::queue(new DtrfExport($filters), $path, 'public');
-        } elseif ($docType === 'aof') {
-            $path = "exports/account_opening_documents_{$timestamp}.xlsx";
-            Excel::queue(new AccountOpeningDocumentExport($filters), $path, 'public');
-        } else {
-            return redirect()->back()->with('error', 'Invalid document type selected');
+            $fileName = "loan_documents_{$timestamp}.xlsx";
+            return Excel::download(new LoanDocumentExport($filters), $fileName);
+        }
+        if ($docType === 'goldloan') {
+            $fileName = "gold_loan_documents_{$timestamp}.xlsx";
+            return Excel::download(new GoldLoanDocumentExport($filters), $fileName);
+        }
+        if ($docType === 'dtrf') {
+            $fileName = "dtrf_documents_{$timestamp}.xlsx";
+            return Excel::download(new DtrfExport($filters), $fileName);
+        }
+        if ($docType === 'aof') {
+            $fileName = "account_opening_documents_{$timestamp}.xlsx";
+            return Excel::download(new AccountOpeningDocumentExport($filters), $fileName);
         }
 
-        $downloadUrl = Storage::disk('public')->url($path);
-        $downloadLink = '<a href="' . e($downloadUrl) . '" target="_blank" rel="noopener">Download file</a>';
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'status' => 'queued',
-                'path' => $path,
-                'url' => $downloadUrl,
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Export queued. ' . $downloadLink);
+        return redirect()->back()->with('error', 'Invalid document type selected');
     }
 
     public function sendEmail($subject, $content, $to, $cc=null)

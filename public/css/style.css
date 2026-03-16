@@ -623,4 +623,6 @@ table p{
       width: 100%;
       border-collapse: separate;
     }
-
+    .select2-container--default .select2-selection--multiple {
+            border: 1px solid #dee2e6 !important;
+    }

@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\Exports\Concerns\AppliesDocumentExportFilters;
 use App\Models\AccountOpeningDocument;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -12,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class AccountOpeningDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, WithColumnFormatting, ShouldQueue
+class AccountOpeningDocumentExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, WithColumnFormatting
 {
     use AppliesDocumentExportFilters;
 

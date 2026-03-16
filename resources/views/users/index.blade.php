@@ -8,11 +8,12 @@
                 <h3 class="me-3">User List</h3>
                 <button class="btn btn-sm btn-primary me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Filters</button>
                 @if(Request::segment(2) == 'filter')
-                <form method="GET" action="{{ route('user.export') }}">
+                <form id="userExportForm" method="POST" action="{{ route('user.export') }}">
+                    @csrf
                     @foreach(($filters ?? []) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-sm btn-success">
+                    <button id="userExportBtn" type="submit" class="btn btn-sm btn-success">
                         Export
                     </button>
                 </form>
@@ -173,6 +174,76 @@
         $('.get-user').click(function () {
             $('#add-user').modal('show');
         });
+
+        let exportPollTimer = null;
+
+        $('#userExportForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const $btn = $('#userExportBtn');
+            $btn.prop('disabled', true);
+
+            Swal.fire({
+                title: "Preparing Export",
+                text: "Please wait...",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: "json"
+            })
+            .done(function (res) {
+                if (!res || !res.job_id) {
+                    Swal.fire({ title: "Error!", text: "Unable to start export.", icon: "error" });
+                    $btn.prop('disabled', false);
+                    return;
+                }
+                startExportPolling(res.job_id, $btn);
+            })
+            .fail(function (xhr) {
+                const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : "Failed to start export.";
+                Swal.fire({ title: "Error!", text: msg, icon: "error" });
+                $btn.prop('disabled', false);
+            });
+        });
+
+        function startExportPolling(jobId, $btn) {
+            if (exportPollTimer) {
+                clearInterval(exportPollTimer);
+            }
+
+            exportPollTimer = setInterval(function () {
+                $.get("{{ url('/user/export') }}/" + jobId + "/status")
+                    .done(function (res) {
+                        if (res.status === 'completed' && res.download_url) {
+                            clearInterval(exportPollTimer);
+                            exportPollTimer = null;
+                            Swal.close();
+                            $btn.prop('disabled', false);
+                            window.location.href = res.download_url;
+                            return;
+                        }
+
+                        if (res.status === 'failed') {
+                            clearInterval(exportPollTimer);
+                            exportPollTimer = null;
+                            Swal.fire({ title: "Error!", text: res.error || "Export failed.", icon: "error" });
+                            $btn.prop('disabled', false);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        clearInterval(exportPollTimer);
+                        exportPollTimer = null;
+                        const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : "Unable to check export status.";
+                        Swal.fire({ title: "Error!", text: msg, icon: "error" });
+                        $btn.prop('disabled', false);
+                    });
+            }, 3000);
+        }
     });
 </script>
 
