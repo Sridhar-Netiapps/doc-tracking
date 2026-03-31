@@ -75,15 +75,54 @@ class DocumentController extends Controller
             }
             return $query->orderBy('account_creation_date', 'desc');
         };
-        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/loan"));
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/aof"));
+        $loan_document = null;
+        $gold_loan_document = null;
+        $dtrf_document = null;
+        $account_opening_document = null;
+
+        if ($dtype === 'loan') {
+            $loan_document = $filter(LoanDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/loan"));
+        } elseif ($dtype === 'goldloan') {
+            $gold_loan_document = $filter(GoldLoanDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/goldloan"));
+        } elseif ($dtype === 'dtrf') {
+            $dtrf_document = $filter(DtrfDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/dtrf"));
+        } elseif ($dtype === 'aof') {
+            $account_opening_document = $filter(AccountOpeningDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/aof"));
+        } else {
+            $loan_document = $filter(LoanDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/loan"));
+            $gold_loan_document = $filter(GoldLoanDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/goldloan"));
+            $dtrf_document = $filter(DtrfDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/dtrf"));
+            $account_opening_document = $filter(AccountOpeningDocument::query()->with(['statusName']))
+                ->paginate(50)
+                ->withQueryString()
+                ->withPath(url("/documents/{$type}/aof"));
+        }
     
-        $loan_total = $loan_document->total();
-        $gold_loan_total = $gold_loan_document->total();
-        $dtrf_total = $dtrf_document->total();
-        $aof_total = $account_opening_document->total();
+        $loan_total = $loan_document ? $loan_document->total() : $filter(LoanDocument::query())->count();
+        $gold_loan_total = $gold_loan_document ? $gold_loan_document->total() : $filter(GoldLoanDocument::query())->count();
+        $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
+        $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $vendors = Vendor::all();
 
@@ -736,10 +775,10 @@ class DocumentController extends Controller
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
         $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
         $account_opening_document = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->paginate(100)->withQueryString();
-        $loan_total = $loan_document->total();
-        $gold_loan_total = $gold_loan_document->total();
-        $dtrf_total = $dtrf_document->total();
-        $aof_total = $account_opening_document->total();
+        $loan_total = $loan_document ? $loan_document->total() : $filter(LoanDocument::query())->count();
+        $gold_loan_total = $gold_loan_document ? $gold_loan_document->total() : $filter(GoldLoanDocument::query())->count();
+        $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
+        $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
 
         // if($this->user->branch_id != $dispatch->branch_code){
         //     return redirect('/home')->with('error', 'Access Denied');
@@ -1182,10 +1221,10 @@ class DocumentController extends Controller
         $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
         $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
         $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString();
-        $loan_total = $loan_document->total();
-        $gold_loan_total = $gold_loan_document->total();
-        $dtrf_total = $dtrf_document->total();
-        $aof_total = $account_opening_document->total();
+        $loan_total = $loan_document ? $loan_document->total() : $filter(LoanDocument::query())->count();
+        $gold_loan_total = $gold_loan_document ? $gold_loan_document->total() : $filter(GoldLoanDocument::query())->count();
+        $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
+        $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
         $process_statuses = ProcessStatus::where('status', 1)->get();
         $vendors = Vendor::all();
 

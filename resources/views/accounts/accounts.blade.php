@@ -16,24 +16,24 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="true">
+                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'loan']) }}" class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" role="tab" aria-controls="loan-pane" aria-selected="{{ ($dtype ?? 'loan') == 'loan' ? 'true' : 'false' }}">
                         MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
-                    </button>
+                    </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="false">
+                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'goldloan']) }}" class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" role="tab" aria-controls="goldloan-pane" aria-selected="{{ ($dtype ?? '') == 'goldloan' ? 'true' : 'false' }}">
                         Gold Loan Docs <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
-                    </button>
+                    </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="false">
+                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'aof']) }}" class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" role="tab" aria-controls="aof-pane" aria-selected="{{ ($dtype ?? '') == 'aof' ? 'true' : 'false' }}">
                         Liabilities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
-                    </button>
+                    </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="false">
+                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'dtrf']) }}" class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" role="tab" aria-controls="dtrf-pane" aria-selected="{{ ($dtype ?? '') == 'dtrf' ? 'true' : 'false' }}">
                         DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
-                    </button>
+                    </a>
                 </li>
                 @hasanyrole('bo-maker|bo-checker')
                     @if (!in_array($type, ['received']))
@@ -78,6 +78,7 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
             <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
             <div class="tab-content bg-white" id="myTabContent">
+                @if(($dtype ?? 'loan') == 'loan')
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
@@ -141,16 +142,16 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type != 'rejected') --}}
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="loan @if(!in_array($row->status, [1,6])) d-none @endif" name="loan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
                                                 {{-- <input type="checkbox" class="loan" data-id="{{ $row->id }}">     --}}
-                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -165,7 +166,7 @@
                                                 <td><input type="checkbox" class="loan" name="loan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->encrypted_id,'type' => $type,'dtype' => 'loan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -227,6 +228,7 @@
                         <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
+                @elseif(($dtype ?? 'loan') == 'goldloan')
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
@@ -287,15 +289,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan @if(!in_array($row->status, [1,6])) d-none @endif" name="goldloan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -310,7 +312,7 @@
                                                 <td><input type="checkbox" class="goldloan" name="goldloan_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->encrypted_id,'type' => $type,'dtype' => 'goldloan'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -369,6 +371,7 @@
                         <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p> 
                     @endif
                 </div>
+                @elseif(($dtype ?? 'loan') == 'aof')
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
@@ -431,15 +434,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof @if(!in_array($row->status, [1,6])) d-none @endif" name="aof_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -454,7 +457,7 @@
                                                 <td><input type="checkbox" class="aof" name="aof_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->encrypted_id,'type' => $type,'dtype' => 'aof'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -515,6 +518,7 @@
                         <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
+                @elseif(($dtype ?? 'loan') == 'dtrf')
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
@@ -570,15 +574,15 @@
                                         <tr>
                                             @hasrole('master|super_admin|admin')
                                                 {{-- @if ($type !== 'rejected') --}}
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @elsehasanyrole('bo-maker|bo-checker')
                                                 @if (in_array($type, ['pending', 'all', 'rejected']))
-                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf @if(!in_array($row->status, [1,6])) d-none @endif" name="dtrf_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 @endif
                                             @elsehasrole('ro-supervisor')
                                                 {{-- @if ($type === 'received') --}}
-                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ Crypt::encryptString($row->id) }}"></td>
+                                                    <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->encrypted_id }}"></td>
                                                 {{-- @endif --}}
                                             @endhasrole
                                             {{-- @hasanyrole('master|bo-maker|bo-checker')
@@ -593,7 +597,7 @@
                                                 <td><input type="checkbox" class="dtrf" name="dtrf_ids[]" data-id="{{ $row->id }}"></td>
                                             @endif
                                             @endrole --}}
-                                            <td><a href="{{ route('document.history',['id' => Crypt::encryptString($row->id),'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
+                                            <td><a href="{{ route('document.history',['id' => $row->encrypted_id,'type' => $type,'dtype' => 'dtrf'])}}">{{ $row->unique_ref_no }}</a></td>
                                             @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                                             <td>{{ $row->region }}</td>
                                             <td>{{ $row->branch_name }}</td>
@@ -647,6 +651,7 @@
                         <p class="text-center text-muted" style="border-bottom: 1px solid #d8d3d3">No documents found.</p>
                     @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -884,60 +889,6 @@
    
 <script>
     $(document).ready(function () {
-        let dtype = '{{$dtype}}';
-        let activeTab = null;
-        let fallbackTab = null;
-
-        $('button.nav-link').each(function() {
-            let tab = $(this).attr('id');
-            let count = parseInt($(this).find('span').text()) || 0;
-
-            // Primary choice: dtype matches tab & count > 0
-            if (!activeTab && dtype === tab && count > 0) {
-                activeTab = tab;
-            }
-
-            // Fallback choice: dtype doesn't match tab but count > 0
-            if (!fallbackTab && dtype !== tab && count > 0) {
-                fallbackTab = tab;
-            }
-        });
-
-        // Decide final active tab
-        if (!activeTab) {
-            // If all tabs have > 0, prefer dtype tab
-            if ($('button.nav-link').filter(function() {
-                return parseInt($(this).find('span').text()) || 0;
-            }).length === $('button.nav-link').length) {
-                activeTab = dtype;
-            } else {
-                activeTab = fallbackTab;
-            }
-        }
-
-        // Activate the selected tab
-        if (activeTab) {
-            $('button.nav-link, .tab-pane').removeClass('active show');
-            $(`#${activeTab}`).addClass('active');
-            $(`#${activeTab}-pane`).addClass('show active');
-        }
-
-        // let dtype = '{{$dtype}}';
-        // $('button.nav-link').each(function() {
-        //     let tab = $(this).attr('id');
-        //     if(dtype == tab){    
-        //         if(parseInt($(this).find('span').text()) > 0){
-        //             $(this).addClass('active');
-        //             $(`#${tab}-pane`).addClass('show active');
-        //             return false;
-        //         }
-        //         else{
-        //             $(this).removeClass('active');
-        //             let tab = $(this).attr('id');
-        //             $(`#${tab}-pane`).removeClass('show active');
-        //         }
-        //     }
-        // });
         $(".loan_all").click(function () {
             $(".loan:visible").prop('checked', $(this).prop('checked'));
         });
