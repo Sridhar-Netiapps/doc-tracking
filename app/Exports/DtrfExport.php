@@ -4,13 +4,12 @@ namespace App\Exports;
 
 use App\Exports\Concerns\AppliesDocumentExportFilters;
 use App\Models\DtrfDocument;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class DtrfExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading, ShouldQueue
+class DtrfExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
 {
     use AppliesDocumentExportFilters;
 

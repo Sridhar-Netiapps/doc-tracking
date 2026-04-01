@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GoldLoanDocument extends Model
 {
+
+    protected $appends = ['encrypted_id'];
+    protected $_encrypted_id = null;
+
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'unique_ref_no', 'region', 'branch_code', 'branch_name', 'cif_id',
@@ -39,5 +43,12 @@ class GoldLoanDocument extends Model
                     ->where('document_type', 'GoldLoanDocument')
                     ->whereIn('current_status', [5,6,7])
                     ->orderby('created_at', 'desc');
+    }
+    public function getEncryptedIdAttribute()
+    {
+        if ($this->_encrypted_id === null) {
+            $this->_encrypted_id = \Illuminate\Support\Facades\Crypt::encryptString($this->id);
+        }
+        return $this->_encrypted_id;
     }
 }

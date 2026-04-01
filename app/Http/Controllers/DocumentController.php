@@ -79,10 +79,10 @@ class DocumentController extends Controller
             }
             return $query->orderBy('account_creation_date', 'desc');
         };
-        $loan_document = $filter(LoanDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/loan"));
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(25)->withQueryString()->withPath(url("/documents/{$type}/aof"));
+        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/loan"));
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/goldloan"));
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/dtrf"));
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString()->withPath(url("/documents/{$type}/aof"));
     
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
@@ -751,10 +751,10 @@ class DocumentController extends Controller
         $gold_loan_document = GoldLoanDocument::whereIn('id', explode(',', $dispatch->goldloan_ids))->paginate(100)->withQueryString();
         $dtrf_document = DtrfDocument::whereIn('id', explode(',', $dispatch->dtrf_ids))->paginate(100)->withQueryString();
         $account_opening_document = AccountOpeningDocument::whereIn('id', explode(',', $dispatch->aof_ids))->paginate(100)->withQueryString();
-        $loan_total = $loan_document->total();
-        $gold_loan_total = $gold_loan_document->total();
-        $dtrf_total = $dtrf_document->total();
-        $aof_total = $account_opening_document->total();
+        $loan_total = $loan_document ? $loan_document->total() : $filter(LoanDocument::query())->count();
+        $gold_loan_total = $gold_loan_document ? $gold_loan_document->total() : $filter(GoldLoanDocument::query())->count();
+        $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
+        $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
 
         // if($this->user->branch_id != $dispatch->branch_code){
         //     return redirect('/home')->with('error', 'Access Denied');
@@ -1358,11 +1358,11 @@ class DocumentController extends Controller
             }
             return $query->onlyTrashed()->orderBy('deleted_at', 'desc');
         };
-        
-        $loan_document = $filter(LoanDocument::query())->paginate(25)->withQueryString();
-        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(25)->withQueryString();
-        $dtrf_document = $filter(DtrfDocument::query())->paginate(25)->withQueryString();
-        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(25)->withQueryString();
+        // dd($filter(LoanDocfiltersument::query())->tosql());
+        $loan_document = $filter(LoanDocument::query())->paginate(100)->withQueryString();
+        $gold_loan_document = $filter(GoldLoanDocument::query())->paginate(100)->withQueryString();
+        $dtrf_document = $filter(DtrfDocument::query())->paginate(100)->withQueryString();
+        $account_opening_document = $filter(AccountOpeningDocument::query())->paginate(100)->withQueryString();
         $loan_total = $loan_document->total();
         $gold_loan_total = $gold_loan_document->total();
         $dtrf_total = $dtrf_document->total();
@@ -1453,36 +1453,25 @@ class DocumentController extends Controller
         $filters = $request->all();
         $docType = $request->input('doc_type');
         $timestamp = now()->format('Ymd_His');
-        $path = null;
 
         if ($docType === 'loan') {
-            $path = "exports/loan_documents_{$timestamp}.xlsx";
-            Excel::queue(new LoanDocumentExport($filters), $path, 'public');
-        } elseif ($docType === 'goldloan') {
-            $path = "exports/gold_loan_documents_{$timestamp}.xlsx";
-            Excel::queue(new GoldLoanDocumentExport($filters), $path, 'public');
-        } elseif ($docType === 'dtrf') {
-            $path = "exports/dtrf_documents_{$timestamp}.xlsx";
-            Excel::queue(new DtrfExport($filters), $path, 'public');
-        } elseif ($docType === 'aof') {
-            $path = "exports/account_opening_documents_{$timestamp}.xlsx";
-            Excel::queue(new AccountOpeningDocumentExport($filters), $path, 'public');
-        } else {
-            return redirect()->back()->with('error', 'Invalid document type selected');
+            $fileName = "loan_documents_{$timestamp}.xlsx";
+            return Excel::download(new LoanDocumentExport($filters), $fileName);
+        }
+        if ($docType === 'goldloan') {
+            $fileName = "gold_loan_documents_{$timestamp}.xlsx";
+            return Excel::download(new GoldLoanDocumentExport($filters), $fileName);
+        }
+        if ($docType === 'dtrf') {
+            $fileName = "dtrf_documents_{$timestamp}.xlsx";
+            return Excel::download(new DtrfExport($filters), $fileName);
+        }
+        if ($docType === 'aof') {
+            $fileName = "account_opening_documents_{$timestamp}.xlsx";
+            return Excel::download(new AccountOpeningDocumentExport($filters), $fileName);
         }
 
-        $downloadUrl = Storage::disk('public')->url($path);
-        $downloadLink = '<a href="' . e($downloadUrl) . '" target="_blank" rel="noopener">Download file</a>';
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'status' => 'queued',
-                'path' => $path,
-                'url' => $downloadUrl,
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Export queued. ' . $downloadLink);
+        return redirect()->back()->with('error', 'Invalid document type selected');
     }
     
 
