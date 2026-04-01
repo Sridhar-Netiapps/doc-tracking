@@ -103,10 +103,10 @@ class DocumentController extends Controller
             $filters['status'] = $fixed_status;
         }
         // Encrypt sensitive fields before passing to view
-        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
-        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
-        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
-        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+        $loan_document = $this->encryptPaginator($loan_document);
+        $gold_loan_document = $this->encryptPaginator($gold_loan_document);
+        $dtrf_document = $this->encryptPaginator($dtrf_document);
+        $account_opening_document = $this->encryptPaginator($account_opening_document);
         
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
@@ -148,7 +148,6 @@ class DocumentController extends Controller
 
         // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
         // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
-        // dd($toDate);
 
         $cifId = $filters['cif_id'] ?? null;
         $accountNumber = $filters['account_number'] ?? null;
@@ -224,6 +223,7 @@ class DocumentController extends Controller
             return $query->orderBy('account_creation_date', 'desc');
         };
         
+        dd($filterFunction);
 
         $loan_document = null;
         $gold_loan_document = null;
@@ -248,7 +248,9 @@ class DocumentController extends Controller
         } elseif ($docType === 'aof') {
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
-            })->paginate(100)->withQueryString();
+            })->tosql();
+            // ->paginate(100)->withQueryString();
+            dd($account_opening_document);
 
         } else {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
@@ -272,7 +274,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
-        
+        dd($loan_total,$gold_loan_total,$dtrf_total,$aof_total);
         $fixedStatuses = [
             'pending' => 1,
             'rejected' => 6,
@@ -290,10 +292,10 @@ class DocumentController extends Controller
         // $dtype = $filters['document_type'] ?? 
 
         // Encrypt sensitive fields before passing to view
-        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
-        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
-        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
-        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+        $loan_document = $this->encryptPaginator($loan_document);
+        $gold_loan_document = $this->encryptPaginator($gold_loan_document);
+        $account_opening_document = $this->encryptPaginator($account_opening_document);
+        $dtrf_document = $this->encryptPaginator($dtrf_document);
 
         if($type != 'moved')
             return view('accounts.accounts', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'dtype', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','filters', 'process_statuses', 'vendors', 'fixed_status' ));
@@ -507,6 +509,18 @@ class DocumentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
         
+    }
+
+    private function encryptPaginator($paginator)
+    {
+        if (!$paginator) {
+            return $paginator;
+        }
+        if ($paginator->count() === 0) {
+            return $paginator;
+        }
+        $paginator->setCollection($this->encryptSensitive(collect($paginator->items())));
+        return $paginator;
     }
 
     private function assignDispatchToDocuments(string $modelClass, array $ids, int $dispatchId): void
@@ -761,10 +775,10 @@ class DocumentController extends Controller
         // }
 
         // Encrypt sensitive fields before passing to view
-        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
-        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
-        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
-        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+        $loan_document = $this->encryptPaginator($loan_document);
+        $gold_loan_document = $this->encryptPaginator($gold_loan_document);
+        $dtrf_document = $this->encryptPaginator($dtrf_document);
+        $account_opening_document = $this->encryptPaginator($account_opening_document);
 
         return view('accounts.dispatches_view', compact('dispatch', 'loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total','dtype'));
     }
@@ -1384,10 +1398,10 @@ class DocumentController extends Controller
         }
 
         // Encrypt sensitive fields before passing to view
-        $loan_document->setCollection($this->encryptSensitive(collect($loan_document->items())));
-        $gold_loan_document->setCollection($this->encryptSensitive(collect($gold_loan_document->items())));
-        $dtrf_document->setCollection($this->encryptSensitive(collect($dtrf_document->items())));
-        $account_opening_document->setCollection($this->encryptSensitive(collect($account_opening_document->items())));
+        $loan_document = $this->encryptPaginator($loan_document);
+        $gold_loan_document = $this->encryptPaginator($gold_loan_document);
+        $dtrf_document = $this->encryptPaginator($dtrf_document);
+        $account_opening_document = $this->encryptPaginator($account_opening_document);
 
         return view('accounts.trashed', compact('loan_document', 'gold_loan_document', 'dtrf_document', 'account_opening_document', 'type', 'loan_total', 'gold_loan_total', 'dtrf_total', 'aof_total', 'process_statuses', 'vendors', 'fixed_status'));
     }
