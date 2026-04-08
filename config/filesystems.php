@@ -44,6 +44,13 @@ return [
             'throw' => false,
         ],
 
+        // Private storage for exports that must not be directly web-accessible.
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

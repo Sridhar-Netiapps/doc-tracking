@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\ActivityLog;
 use App\Exports\ActivityExport;
 use App\Exports\UserExport;
+use App\Jobs\GenerateUserExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -432,29 +434,9 @@ class UserController extends Controller
 
     public function userFilter(Request $request)
     {
-        $filters = session('user_filters', []);
+        $filters = $this->normalizeUsersFilters(session('user_filters', []));
         
-        $query = User::query();
-    
-        if (!empty($filters['region'])) {
-            $query->where('region', $filters['region']);
-        }
-    
-        if (!empty($filters['branch_id'])) {
-            $query->where('branch_id', $filters['branch_id']);
-        }
-    
-        if (!empty($filters['employee_id'])) {
-            $query->where('employee_id', $filters['employee_id']);
-        }
-    
-        if (!empty($filters['email'])) {
-            $query->where('email', $filters['email']);
-        }
-
-        if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
+        $query = $this->applyUsersFilters(User::query(), $filters);
       
         $users = $query->orderBy('created_at', 'desc')->paginate(100);
     
@@ -517,7 +499,9 @@ class UserController extends Controller
 
     public function userExportCheck(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+        $filters = $this->normalizeUsersFilters(
+            $request->only(['region', 'branch_id', 'employee_id', 'email', 'status'])
+        );
 
         if (empty(array_filter($filters))) {
             return response()->json(['status' => 'error']);
@@ -528,11 +512,15 @@ class UserController extends Controller
 
     public function userExport(Request $request)
     {
-        $filters = $request->only(['region', 'branch_id', 'employee_id', 'email','status']);
+        $filters = $this->normalizeUsersFilters(
+            $request->only(['region', 'branch_id', 'employee_id', 'email', 'status'])
+        );
+
+        $expectedCount = (clone $this->applyUsersFilters(User::query(), $filters))->count();
 
         $jobId = (string) Str::uuid();
         $cacheKey = 'user_export_' . $jobId;
-        $expiresAt = now()->addHours(2);
+        $expiresAt = now()->addHours(6);
         $path = 'exports/users_' . $jobId . '.xlsx';
 
         Cache::put($cacheKey, [
@@ -540,11 +528,36 @@ class UserController extends Controller
             'user_id' => $this->user->id,
             'path' => null,
             'error' => null,
+            'queued_at' => now()->toDateTimeString(),
+            'expected_count' => $expectedCount,
         ], $expiresAt);
 
         Storage::disk('private')->makeDirectory('exports');
 
-        Excel::queue(new UserExport($filters, $jobId, $path), $path, 'private');
+        try {
+            GenerateUserExport::dispatch($filters, $jobId, (int) $this->user->id, $path)
+                ->onQueue('exports');
+        } catch (\Throwable $e) {
+            Cache::put($cacheKey, [
+                'status' => 'failed',
+                'user_id' => $this->user->id,
+                'path' => null,
+                'error' => $e->getMessage(),
+                'queued_at' => now()->toDateTimeString(),
+            ], $expiresAt);
+
+            return response()->json([
+                'status' => 'failed',
+                'error' => 'Unable to queue export. Please try again.',
+            ], 500);
+        }
+
+        Log::info('User export queued', [
+            'job_id' => $jobId,
+            'user_id' => (int) $this->user->id,
+            'filters' => $filters,
+            'expected_count' => $expectedCount,
+        ]);
 
         return response()->json([
             'job_id' => $jobId,
@@ -565,10 +578,36 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
 
+        if (($payload['status'] ?? null) === 'processing') {
+            $queuedAtRaw = $payload['queued_at'] ?? null;
+            if (!empty($queuedAtRaw)) {
+                $queuedAt = Carbon::parse($queuedAtRaw);
+                if ($queuedAt->addMinutes(45)->isPast()) {
+                    Cache::put($cacheKey, array_merge($payload, [
+                        'status' => 'failed',
+                        'error' => 'Export processing timeout. Please try again.',
+                    ]), now()->addHours(6));
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'error' => 'Export timed out. Please re-run export.',
+                    ], 500);
+                }
+            }
+        }
+
         if (($payload['status'] ?? null) === 'completed') {
             $path = $payload['path'] ?? null;
             if (!$path || !Storage::disk('private')->exists($path)) {
-                return response()->json(['status' => 'processing']);
+                Cache::put($cacheKey, array_merge($payload, [
+                    'status' => 'failed',
+                    'error' => 'Export file was not found after completion.',
+                ]), now()->addHours(6));
+
+                return response()->json([
+                    'status' => 'failed',
+                    'error' => 'Export file not found. Please re-run export.',
+                ], 500);
             }
 
             $downloadUrl = URL::temporarySignedRoute(
@@ -621,6 +660,8 @@ class UserController extends Controller
     private function applyUsersFilters($query, $filters)
     {
         $query->withoutRole('master');
+        $filters = $this->normalizeUsersFilters($filters);
+
         if (!empty($filters['region'])) {
             $query->where('region', $filters['region']);
         }
@@ -638,10 +679,21 @@ class UserController extends Controller
         }
 
         if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
+            $query->whereRaw('LOWER(users.status) = ?', [$filters['status']]);
         }
     
         return $query;
+    }
+
+    private function normalizeUsersFilters(array $filters): array
+    {
+        return [
+            'region' => trim((string) ($filters['region'] ?? '')),
+            'branch_id' => trim((string) ($filters['branch_id'] ?? '')),
+            'employee_id' => trim((string) ($filters['employee_id'] ?? '')),
+            'email' => trim((string) ($filters['email'] ?? '')),
+            'status' => Str::lower(trim((string) ($filters['status'] ?? ''))),
+        ];
     }
     
 

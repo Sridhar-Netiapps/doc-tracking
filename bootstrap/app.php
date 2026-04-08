@@ -49,7 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
             'can' => \Illuminate\Auth\Middleware\Authorize::class,
             'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-            'signed' => \App\Http\Middleware\ValidateSignature::class,
+            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
             'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             'role.access' => \App\Http\Middleware\CheckRole::class,

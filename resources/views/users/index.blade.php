@@ -138,8 +138,8 @@
                 <div class="col-12 mt-3">
                     <select class="form-select status" name="status">
                         <option value="">Select Status</option>
-                        <option value="Active" {{ ($filters['status'] ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
-                        <option value="Inactive" {{ ($filters['status'] ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="active" {{ strtolower($filters['status'] ?? '') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ strtolower($filters['status'] ?? '') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
                 <div class="col-12 d-flex gap-2 mt-3">
