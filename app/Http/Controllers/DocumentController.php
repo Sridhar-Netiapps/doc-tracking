@@ -228,8 +228,6 @@ class DocumentController extends Controller
             return $query->orderBy('account_creation_date', 'desc');
         };
         
-        dd($filterFunction);
-
         $loan_document = null;
         $gold_loan_document = null;
         $dtrf_document = null;
@@ -279,7 +277,7 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
-        dd($loan_total,$gold_loan_total,$dtrf_total,$aof_total);
+        
         $fixedStatuses = [
             'pending' => 1,
             'rejected' => 6,
