@@ -3,33 +3,58 @@
 namespace App\Exports;
 
 use App\Exports\Concerns\AppliesDocumentExportFilters;
+use App\Exports\Concerns\TracksQueuedDocumentExport;
 use App\Models\DtrfDocument;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class DtrfExport implements FromQuery, WithHeadings, WithMapping, WithChunkReading
+class DtrfExport implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, ShouldQueue
 {
     use AppliesDocumentExportFilters;
+    use TracksQueuedDocumentExport;
 
     protected array $filters;
 
-    public function __construct(array $filters = [])
+    public function __construct(array $filters = [], ?string $jobId = null, ?int $requestedBy = null)
     {
         $this->filters = $filters;
+        $this->bootQueueTracking($jobId, $requestedBy);
     }
 
     public function query()
     {
-        $query = DtrfDocument::query()->with([
-            'dispatch.courierName',
-            'dispatch.dispatcher',
-            'dispatch.modifier',
-            'statusName',
-            'getReceivedDetails.newStatus',
-            'getReceivedDetails.creator',
-        ]);
+        $query = DtrfDocument::query()
+            ->select([
+                'id',
+                'unique_ref_no',
+                'region',
+                'branch_code',
+                'branch_name',
+                'account_creation_date',
+                'business_category',
+                'barcode',
+                'status',
+                'reason',
+                'lot_no',
+                'category_of_document',
+                'work_order_no',
+                'vendor_name',
+                'vendor_movement_date',
+                'file_barcode',
+                'box_barcode',
+                'date_added_to_vendor',
+            ])
+            ->with([
+                'dispatch.courierName',
+                'dispatch.dispatcher',
+                'dispatch.modifier',
+                'statusName',
+                'getReceivedDetails.newStatus',
+                'getReceivedDetails.creator',
+            ]);
 
         return $this->applyDocumentExportFilters($query, 'dtrf_documents', $this->filters);
     }

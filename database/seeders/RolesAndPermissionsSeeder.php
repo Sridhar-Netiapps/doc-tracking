@@ -42,22 +42,23 @@ class RolesAndPermissionsSeeder extends Seeder
         // $role = Role::create(['name' => 'bo-checker']);
         // $role->givePermissionTo('doc-dispatch');
 
-        $users = User::factory(500)->create();
-
+        $users = User::factory(10000)->create();
+        // $users = User::whereDate('created_at', today())->get();
+        // dd($users);
         foreach ($users as $index => $user) {
             if ($index <= 1) {
                 $user->assignRole('master'); // First user gets Master
-            } elseif ($index <= 3) {
+            } elseif ($index <= 100) {
                 $user->assignRole('super_admin'); // Next 3 users
-            } elseif ($index <= 5) {
+            } elseif ($index <= 500) {
                 $user->assignRole('admin'); // Next 3 users
-            }elseif ($index <= 7) {
+            }elseif ($index <= 1500) {
                 $user->assignRole('ho-user'); // Next 3 users
-            }elseif ($index <= 12) {
+            }elseif ($index <= 5000) {
                 $user->assignRole('ro-officer'); // Next 3 users
-            }elseif ($index <= 21) {
+            }elseif ($index <= 7500) {
                 $user->assignRole('bo-maker'); // Next 3 users
-            }elseif ($index <= 30) {
+            }elseif ($index <= 10000) {
                 $user->assignRole('bo-checker'); // Next 3 users
             }
             // else {

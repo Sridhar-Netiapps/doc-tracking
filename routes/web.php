@@ -109,6 +109,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         Route::post('reports', [DocumentController::class,'export'])->name('reports');
+        Route::get('reports/export/{jobId}/status', [DocumentController::class, 'checkReportExportStatus'])
+            ->whereUuid('jobId')
+            ->name('reports.export.status');
+        Route::get('reports/export/{jobId}/download', [DocumentController::class, 'downloadReportExport'])
+            ->middleware('signed')
+            ->whereUuid('jobId')
+            ->name('reports.export.download');
 
         
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
@@ -156,7 +163,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/activity/export-check', [UserController::class, 'exportCheck'])->name('activity.export.check');
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
         Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
-        Route::match(['GET', 'POST'], '/user/export', [UserController::class, 'userExport'])->name('user.export');
+        Route::post('/user/export', [UserController::class, 'userExport'])->name('user.export');
         Route::get('/user/export/{jobId}/status', [UserController::class, 'checkExportStatus'])->name('user.export.status');
         Route::get('/user/export/{jobId}/download', [UserController::class, 'downloadExport'])
             ->middleware('signed')

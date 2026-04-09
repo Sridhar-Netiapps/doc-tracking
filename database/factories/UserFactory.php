@@ -36,8 +36,8 @@ class UserFactory extends Factory
             'first_name'        => $this->faker->firstName($gender),
             'last_name'         => $this->faker->lastName,
             'middle_name'       => $this->faker->optional()->firstName,
-            'employee_id'       => strtoupper('NET' . $this->faker->unique()->numberBetween(1000, 9999)),
-            'email'             => $this->faker->unique()->safeEmail,
+            'employee_id'       => strtoupper('NET' . $this->faker->unique()->numberBetween(10000, 99999)),
+            'email'             => $this->faker->safeEmail,
             'email_verified_at' => now(),
             'password'          => Hash::make('password'), // Use bcrypt or Hash::make
             'dor'               => NULL, // Date of resignation
@@ -56,7 +56,7 @@ class UserFactory extends Factory
             // 'designation_id'    => 0,
             // 'department_id'     => 0,
         ];
-    }
+    }   
 
     public function unverified(): static
     {
