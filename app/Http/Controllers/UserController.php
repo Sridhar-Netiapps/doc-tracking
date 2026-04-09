@@ -174,17 +174,27 @@ class UserController extends Controller
         ]);
         $user->syncRoles([$request->input('role')]);
 
-        if($is_ins_user == 1){
-
+        if($is_ins_user == 1 && $is_doc_user == 0){
             $module = 'Insurance'; 
-             $operation = 'create';
-             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
-             $link = '';
-
+            $operation = 'create';
+            $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
+            $link = '';
             $this->auditlogs($module , $operation ,$note , $link);
-
         }
-
+        elseif ($is_ins_user == 0 && $is_doc_user == 1) {
+            $module = 'Document tracker'; 
+            $operation = 'create';
+            $note = 'Document tracker Module access granted for the user - '.$request->input('employee_id');
+            $link = '';
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
+        elseif ($is_ins_user == 1 && $is_doc_user == 1) {
+            $module = 'Document tracker and Insurance'; 
+            $operation = 'create';
+            $note = 'Document tracker and Insurance Module access granted for the user - '.$request->input('employee_id');
+            $link = '';
+            $this->auditlogs($module , $operation ,$note , $link);
+        }
         // Redirecting back with success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -271,6 +281,9 @@ class UserController extends Controller
 
         $userData = User::where('id',$user->id)->first();
 
+        $branchId = $request->branch_id ? explode('-', $request->branch_id)[0] : null;
+        $regionId = $branchId ? substr((string)$branchId, 0, 1) : null;
+
         // Updating the user
         $user->update([
             'first_name' => $request->input('first_name'),
@@ -278,8 +291,8 @@ class UserController extends Controller
             'last_name' => $request->input('last_name'),
             'employee_id' => $request->input('employee_id'),
             'region' => $request->input('region'),
-            'region_id' => $request->input('region_id'),
-            'branch_id' => $request->input('branch_id'),
+            'region_id' => $regionId,
+            'branch_id' => $branchId,
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
             'dob' => $request->input('dob'),
@@ -317,22 +330,20 @@ class UserController extends Controller
 
         ]);
 
-        if($userData->ins_user == '1' && $is_ins_user == '0'){
-             $module = 'Insurance'; 
-             $operation = 'Update';
-             $note = 'Insurance Module access removed for the user - '.$request->input('employee_id');
-             $link = '';
+        $empId = $request->input('employee_id');
+        $operation = 'Update';
+        $link = '';
 
-            $this->auditlogs($module , $operation ,$note , $link);
+        if ($userData->ins_user == '1' && $is_ins_user == '0') {
+            $this->auditlogs('Insurance', $operation, "Insurance Module access removed for the user - $empId", $link);
+        } elseif ($userData->ins_user == '0' && $is_ins_user == '1') {
+            $this->auditlogs('Insurance', $operation, "Insurance Module access granted for the user - $empId", $link);
         }
 
-        if($userData->ins_user == '0' && $is_ins_user == '1'){
-             $module = 'Insurance'; 
-             $operation = 'Update';
-             $note = 'Insurance Module access granted for the user - '.$request->input('employee_id');
-             $link = '';
-
-            $this->auditlogs($module , $operation ,$note , $link);
+        if ($userData->doc_user == '1' && $is_doc_user == '0') {
+            $this->auditlogs('Document tracker', $operation, "Document tracker Module access removed for the user - $empId", $link);
+        } elseif ($userData->doc_user == '0' && $is_doc_user == '1') {
+            $this->auditlogs('Document tracker', $operation, "Document tracker Module access granted for the user - $empId", $link);
         }
 
         $request->validate([
