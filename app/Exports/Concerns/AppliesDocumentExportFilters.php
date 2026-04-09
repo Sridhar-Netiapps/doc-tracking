@@ -12,9 +12,22 @@ trait AppliesDocumentExportFilters
     {
         $fromDate = !empty($filters['from_date']) ? Carbon::parse($filters['from_date'])->startOfDay() : null;
         $toDate = !empty($filters['to_date']) ? Carbon::parse($filters['to_date'])->endOfDay() : Carbon::now()->endOfDay();
+        static $columnsCache = [];
 
         foreach ($filters as $field => $value) {
-            if (empty($value) || !Schema::hasColumn($table, $field)) {
+            if (is_array($value)) {
+                $value = array_values(array_filter($value, static fn ($item) => $item !== '' && $item !== null));
+            }
+
+            if ($value === null || $value === '' || $value === []) {
+                continue;
+            }
+
+            if (!isset($columnsCache[$table])) {
+                $columnsCache[$table] = array_flip(Schema::getColumnListing($table));
+            }
+
+            if (!isset($columnsCache[$table][$field])) {
                 continue;
             }
 
@@ -85,6 +98,10 @@ trait AppliesDocumentExportFilters
             }
         }
 
-        return $query->orderBy('account_creation_date', 'desc');
+        if (!empty($filters['snapshot_max_id'])) {
+            $query->where('id', '<=', (int) $filters['snapshot_max_id']);
+        }
+
+        return $query->orderBy('id');
     }
 }
