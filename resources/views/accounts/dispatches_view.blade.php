@@ -704,7 +704,7 @@
             try {
                 data = [collectRowData(row)];
             } catch (err) {
-                // Swal.fire({title: "Alert!", text: err, icon: "warning"});
+                $(this).prop('disabled', false);
                 Swal.fire({title: "Alert!", text: err, icon: "warning"});
                 return;
             }
@@ -752,8 +752,6 @@
         });
 
         function sendUpdateRequest(payload, type) {
-        console.log(payload);
-        // return false;
             $.ajax({
                 url: '{{ route("document.update") }}',
                 method: 'POST',
