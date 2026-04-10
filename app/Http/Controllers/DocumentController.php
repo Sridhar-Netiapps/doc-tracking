@@ -251,10 +251,8 @@ class DocumentController extends Controller
         } elseif ($docType === 'aof') {
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
-            })->tosql();
-            // ->paginate(100)->withQueryString();
-            dd($account_opening_document);
-
+            })->paginate(100)->withQueryString();
+            
         } else {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');

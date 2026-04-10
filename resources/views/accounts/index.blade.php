@@ -57,7 +57,6 @@
                                     <th scope="col" class="text-nowrap"> Business Category</th>
                                     <th scope="col" class="text-nowrap"> Status</th>
                                     <th scope="col" class="text-nowrap"> Activity Date</th>
-                                    <th scope="col" class="text-nowrap"> Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,12 +106,6 @@
                                         <td>{{ $doc->business_category ?? '-' }}</td>
                                         <td>{{ $doc->statusName->name ?? '-' }}</td>
                                         <td>{{ date('d-m-Y', strtotime($doc->updated_at)) ?? '-' }}</td>
-                                        <td>
-                                            <a class="btn btn-sm btn-outline-primary"
-                                               href="{{ route('document.secure-view', ['id' => $doc->id, 'dtype' => $doc->doc_type, 'type' => $type]) }}">
-                                                View Details
-                                            </a>
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
