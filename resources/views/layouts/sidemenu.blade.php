@@ -10,7 +10,7 @@
                 <li><a href="{{ route('users.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Users</a></li>
                 @role('master|admin')
                 <li><a href="{{ route('vendor.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Vendor</a></li>
-                <li><a href="{{ route('emails.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Emails</a></li>
+                {{-- <li><a href="{{ route('emails.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Emails</a></li> --}}
                 <li><a href="{{ route('process_status.index') }}"><img src="/images/material-symbols-light--folder-supervised-outline.svg" /> Process Status</a></li>
                 <li><a href="{{ route('couriers.index') }}"><img src="/images/material-symbols-light--group-add.svg"/> Courier</a></li>
                 <li><a href="{{ route('accounts.trash') }}"><img src="/images/material-symbols-light--group-add.svg"/> Recycle Bin</a></li>

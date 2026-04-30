@@ -236,44 +236,40 @@ class DocumentController extends Controller
         if ($docType === 'loan') {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
-            })->paginate(100)->withQueryString();
-
+            })->paginate(100)->withQueryString(); 
         } elseif ($docType === 'goldloan') {
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100)->withQueryString();
-
-        } elseif ($docType === 'dtrf') {
-            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'dtrf_documents');
-            })->paginate(100)->withQueryString();
-
         } elseif ($docType === 'aof') {
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
-            
-        } else {
+        } elseif ($docType === 'dtrf') {
+            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'dtrf_documents');
+            })->paginate(100)->withQueryString();
+        } 
+        else {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
             })->paginate(100)->withQueryString();
-            
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
+            })->paginate(100)->withQueryString();
+            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
             if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
                 $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
                     $filterFunction($q, 'dtrf_documents');
                 })->paginate(100)->withQueryString();
             }
-            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'account_opening_documents');
-            })->paginate(100)->withQueryString();
         }
         $loan_total =$loan_document != null ? $loan_document->total():0;
         $gold_loan_total = $gold_loan_document != null ? $gold_loan_document->total():0;
-        $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
+        $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
         
         $fixedStatuses = [
@@ -282,9 +278,18 @@ class DocumentController extends Controller
             'received' => [5, 7],
             
         ];
-        $dtype = $docType != null ? $docType : $dtype;
+        if ($loan_total > 0) {
+            $dtype = 'loan';
+        } elseif ($gold_loan_total > 0) {
+            $dtype = 'goldloan';
+        } elseif ($aof_total > 0) {
+            $dtype = 'aof';
+        } elseif ($dtrf_total > 0) {
+            $dtype = 'dtrf';
+        } else {
+            $dtype = $docType != null ? $docType : $dtype;
+        }
         $fixed_status = $fixedStatuses[$type] ?? null;
-        
         // if ($fixed_status) {
         if (!empty($fixed_status) && !is_array($fixed_status)) {
             $filters['status'] = $fixed_status;
