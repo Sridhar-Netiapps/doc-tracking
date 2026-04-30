@@ -10,11 +10,11 @@
 
                 <div class="ms-auto ">
                     <div class="d-flex">
-                       <a class="nav-link" href="{{route('leads_report')}}"><i class="fa fa-sync m-3"></i></a>
+                       <a class="nav-link" href="{{route('leads_report')}}"><img src="/images/sync.png" class="syncimg mt-2 me-2"> </a>
                        <div class="ms-auto ">
                             <div class="card">
                              <div id="reportrange" class="pull-right datepiker p-2" >
-                                <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
+                                <img src="/images/calend.png" class="syncimg glyphicon glyphicon-calendar fa fa-calendar justify-content-center " max="<?php echo date('Y-m-d');  ?>">&nbsp;
                                 <span name="daterange"></span> <b class="caret"></b>
                                
                              </div> 
