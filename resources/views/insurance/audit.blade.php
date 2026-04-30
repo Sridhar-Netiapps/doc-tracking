@@ -14,7 +14,7 @@
               <a class="nav-link" href="{{route('audit')}}"><i class="fa fa-sync m-3"></i></a>
                   <div class="card me-3 p-2">
                     <div id="reportrange" class="datepiker">
-                      <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d'); ?>"></i>&nbsp;
+                      <img src="/images/calend.png" class="syncimg glyphicon glyphicon-calendar fa fa-calendar justify-content-center " max="<?php echo date('Y-m-d'); ?>">&nbsp;
                       <span name="daterange"></span> <b class="caret"></b>
                     </div>
                   </div>

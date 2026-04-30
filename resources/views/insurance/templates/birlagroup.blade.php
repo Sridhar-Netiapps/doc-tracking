@@ -74,6 +74,11 @@
      padding-left: 5px;
      font-size: 12px;
     }
+    .policy2{
+     padding-right: 30px;
+     padding-left: 5px;
+     font-size: 15px;
+    }
     .smallpad{
       padding-left: 10px;
       padding-right: 10px;
@@ -96,7 +101,7 @@
       border-bottom: 2px solid black;
       display: inline-block;
       margin-right: 30px;
-      width: 130px;
+      width: 100px;
     }
     .twocol-table {
       width: 100%;
@@ -132,6 +137,7 @@
       font-size: 15px;
       margin-left: 10px;
       margin-right: 10px;
+      padding-bottom: 5px;
 
     }
 
@@ -218,6 +224,9 @@
     padding: 10px 0;
     background: #fff;
 }
+.mr-right{
+  margin-right: 5px;
+}
 
 
 
@@ -293,11 +302,15 @@
       <div class="contentrows">
         <label class="label-font"> Time of Death : <strong class="policy text-placeholder">@foreach(str_split("HHMM") as $char)<span class="policy-box">{{ $char }}</span>@endforeach</strong></strong></label>
         <label class="label-font"> A.M/P.M</label>
+
+        <label class="label-font"> Client ID : <strong class="policy2">@foreach(str_split($data->actual_id) as $char)<span class="policy-box1">{{ $char }}</span>@endforeach</strong></strong></label>
+        <label class="label-font"> Claim Amount : <strong class="policy2">@foreach(str_split($data->claim_amount) as $char)<span class="policy-box1">{{ $char }}</span>@endforeach</strong></strong></label>
+        <label class="label-font"> LAN : <strong class="policy2">@foreach(str_split($data->load_acc_id) as $char)<span class="policy-box1">{{ $char }}</span>@endforeach</strong></strong></label>
       </div>
 
       <div class="contentrows">
         <label class="label-font"> Cause of Death : <strong class="policy {{ empty($data->cause_of_death)?'policyunderline': ''}}">{{$data->cause_of_death}}</strong></label>
-        <label class="label-font "> Age as on Date of Death : </label><strong class="policyunderline" >{{ $data->age}}</strong>
+        <label class="label-font "> Age as on Date of Death : </label><strong class="" >{{ $data->age}}</strong>
         <label>Years</label>
         <strong class="policyunderline" ></strong>
         <label>Month(s)</label>
@@ -443,7 +456,7 @@ the right to call upon additional documents.
   <div class="page-break"></div>
 
   <div class="pagelayout">   
-  <div class="contentmain">  
+  <div class="contentmain mr-right">  
        
       <div class="contentrows">
         <label class="label-font">Name and Designation of the Authorized Person:</label>

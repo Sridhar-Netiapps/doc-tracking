@@ -270,7 +270,7 @@ $policyStartDate = is_numeric($row['7'])
                   if(!empty($row['51'])){ $claimDetail->write_off_status = $row['51']; } 
                   if(!empty($row['52'])){ $claimDetail->handed_to_bh = $row['52']; } 
                   if(!empty($row['53'])){ $claimDetail->handed_to_credit = $row['53']; } 
-                  if(!empty($row['70'])){ $claimDetail->updated_at = $row['70']; } 
+                  if(!empty($row['70'])){ $claimDetail->updated_at = is_numeric($row['70'])? Date::excelToDateTimeObject($row['70'])->format('Y-m-d'): $row['70']; } 
             
         DB::beginTransaction();
 

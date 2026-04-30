@@ -160,7 +160,7 @@
 	var options = {
       series: @json($partnerChart['counts']),
       chart: {
-      width: 600,
+      width: 350,
       type: 'pie',
       events: {
       dataPointSelection: function(event, chartContext, config) {

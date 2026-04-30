@@ -16,10 +16,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}"/>
-
-    <!-- <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}"/> -->
+    
    
    
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
