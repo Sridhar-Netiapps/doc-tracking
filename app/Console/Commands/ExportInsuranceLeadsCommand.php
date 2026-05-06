@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Exports\ExportInsuranceLeads;
 use App\Models\InsuranceClaimDetail;
-
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Excel as ExcelExcel;
 
@@ -16,9 +15,7 @@ class ExportInsuranceLeadsCommand extends Command
      *
      * @var string
      */
-    //protected $signature = 'app:export-insurance-leads';
-   // protected $signature = 'app:export-insurance-leads {userId} {file}';
-   protected $signature = 'insurance:export-all {file}';
+  protected $signature = 'insurance:export-all {file}';
 
     /**
      * The console command description.
@@ -33,20 +30,25 @@ class ExportInsuranceLeadsCommand extends Command
     public function handle()
     {
         $this->info('Export started...');
-        $file = $this->argument('file')."_".date('d_M_Y_H_i');
+        $file = $this->argument('file');
+
+        ini_set('memory_limit','-1');
+        set_time_limit(0);
+
         $query = InsuranceClaimDetail::with('nominee')
         ->orderBy('id', 'DESC');
 
         Excel::store(
             new ExportInsuranceLeads($query),
-            'public/exports/' .'insurance_report.csv',
-            'public',
+            'public/exports/' . 'insurance_reports.csv',
+            'local',
             ExcelExcel::CSV
         );
 
-        // Move to public folder
-        $sourcePath = storage_path('app/public/exports/' . 'insurance_report.csv');
-        $destinationPath = public_path('insurance_exports/' . 'insurance_report.csv');
+        $this->info('Export completed successfully');
+
+       $sourcePath = storage_path('app/public/exports/' . 'insurance_reports.csv');
+        $destinationPath = public_path('insurance_exports/' . 'insurance_reports.csv');
 
         if (!file_exists(public_path('insurance_exports'))) {
             mkdir(public_path('insurance_exports'), 0755, true);
@@ -54,6 +56,5 @@ class ExportInsuranceLeadsCommand extends Command
 
         rename($sourcePath, $destinationPath);
 
-        $this->info('Export completed successfully');
     }
 }

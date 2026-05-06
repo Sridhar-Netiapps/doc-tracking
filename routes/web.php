@@ -230,7 +230,9 @@ Route::middleware(['auth', 'insuranceOnly:1,2,3'])->group(function () {
     Route::get('/insurance/leads-report',[InsuranceHomeController::class,'report'])->name('leads_report');
     Route::post('/download-error-report', [InsuranceHomeController::class, 'downloadErrorReport'])->name('download.error.report');
 
-   Route::post(
+   Route::get('/insurance/export/download/{file}',[InsuranceHomeController::class, 'downloadExport'])->name('insurance.export.download');
+  
+ Route::post(
     '/insurance/leads-export',
     [InsuranceHomeController::class, 'export']
 )->name('insurance.leads_export');
@@ -254,7 +256,6 @@ Route::get('/insurance/export/status/{file}', function ($file) {
     ]);
 });
 
-
 Route::post(
     '/insurance/export-all',
     [InsuranceHomeController::class, 'exportAll']
@@ -268,10 +269,7 @@ Route::get('/insurance/export/download/{file}', function ($file) {
     return response()->download($path)->deleteFileAfterSend(false);
 })->name('insurance.export.download');
 
-
-
-});
    
-   
+});   
    
 });

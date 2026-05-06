@@ -3,18 +3,18 @@
 
 <div class="container-dashboard py-2">
     <div class="container-dashboard">
-    	 <div class="align-items-center m-2">
+       <div class="align-items-center m-2">
             <div class="d-flex align-items-center">
                 <img src="/images/note.svg">
                 <strong>Report</strong> 
 
                 <div class="ms-auto ">
                     <div class="d-flex">
-                       <a class="nav-link" href="{{route('leads_report')}}"><img src="/images/sync.png" class="syncimg mt-2 me-2"> </a>
+                       <a class="nav-link" href="{{route('leads_report')}}"><i class="fa fa-sync m-3"></i></a>
                        <div class="ms-auto ">
                             <div class="card">
                              <div id="reportrange" class="pull-right datepiker p-2" >
-                                <img src="/images/calend.png" class="syncimg glyphicon glyphicon-calendar fa fa-calendar justify-content-center " max="<?php echo date('Y-m-d');  ?>">&nbsp;
+                                <i class="glyphicon glyphicon-calendar fa fa-calendar" max="<?php echo date('Y-m-d');  ?>"></i>&nbsp;
                                 <span name="daterange"></span> <b class="caret"></b>
                                
                              </div> 
@@ -26,22 +26,17 @@
               
                 </div>
 
-               
-                <!-- <button
+                <a target="_blank" href="{{ asset('insurance_exports/insurance_reports.csv')}}"  <button
                     type="button"
-                    class="btn btn-warning rounded-2 ms-3"
-                    id="btn_export_full">
-                    Export
-                </button> -->
-
-
-
+                    class="btn btn-dark rounded-2 ms-3"
+                    >
+                    Export ALL Leads
+                </button> </a> 
 
             </div>
 
             <div class="mt-2">
-             <form method="GET" action="{{route('leads_report')}}" id="exportForm">
-                @csrf
+             <form method="GET" action="{{route('leads_report')}}">
                <input type="hidden" id="start" name="start" value="{{$start}}">
                <input type="hidden" id="end" name="end" value="{{ $end}}">
                
@@ -64,7 +59,7 @@
                     
                 </select>
 
-                <select class="form-control form-select border-0 ms-3" name="partner">
+                <select class="form-control form-select border-0 ms-3" name="partner" required >
                     <option value="">All Partner</option>
                     @foreach($partners as $key=>$val)
                      <option {{ ($val->partner == $partner)?'selected':''}} value="{{$val->partner}}">{{$val->partner}}</option>
@@ -95,23 +90,22 @@
                
 
                 <div class="input-group-prepend ms-3">
-                   <button class="btn btn-success rounded-2" type="submit" id="getdata"  name="action" value="filter">Filter</button>
+                   <button class="btn btn-success rounded-2" id="getdata"  name="action" value="filter">Filter</button>
 
                     <button class="btn btn-warning rounded-2 ms-3" id="btn_export"  name="action" value="export" value="export">Export</button> 
-
                 </div>
                </div>
              </form>
             </div>
  
         </div>
-	    
+          
 
-	</div>
+      </div>
 
-
+<span class="ms-3 text-danger"> NOTE : Please use multiple filters if data export is failed </span>
 <div class="mt-3 p-3">
-	<div class="table-responsive tablescrollable">
+      <div class="table-responsive tablescrollable">
         <table class="table  table-bordered" >
             <thead class="table-dark">
                 <th class="text-nowrap">Created Date</th>
@@ -226,8 +220,7 @@ $(function() {
      
     });
 
-
-   $('#btn_export').on('click', function (e) {
+$('#btn_export').on('click', function (e) {
     e.preventDefault();
 
     let btn = $(this);
@@ -266,8 +259,42 @@ $(function() {
     });
 });
 
+$('#btn_export_full').click(function (e) {
+    e.preventDefault();
 
-$('#btn_export_full').on('click', function () {
+    let btn = $(this);
+    btn.prop('disabled', true).text('Generating...');
+
+    $.post('/insurance/export-all', {}, function (res) {
+
+        if (!res.file) {
+            alert('Export failed');
+            btn.prop('disabled', false).text('Export');
+            return;
+        }
+
+        let file = res.file;
+
+        let timer = setInterval(function () {
+            $.get('/insurance/export/status/' + file, function (r) {
+
+                if (r.ready) {
+                    clearInterval(timer);
+
+                    window.location.href =
+                        '/insurance/export/download/' + file;
+
+                    btn.prop('disabled', false).text('Export');
+                }
+            });
+        }, 4000);
+    }).fail(function () {
+        alert('Server error');
+        btn.prop('disabled', false).text('Export');
+    });
+});
+
+$('#btn_export_full2').on('click', function () {
 
     let btn = $(this);
     btn.prop('disabled', true).text('Generating...');
@@ -300,14 +327,8 @@ $('#btn_export_full').on('click', function () {
         }
     });
 });
-
-
-
-
-
     
 });
-
 
 
 
