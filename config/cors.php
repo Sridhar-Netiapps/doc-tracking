@@ -17,7 +17,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://dtrackuat.ujjivan.com','https://dtrackconnect.ujjivan.com'],
+    'allowed_origins' => [env('APP_URL')],
 
     'allowed_origins_patterns' => [],
 
@@ -29,4 +29,3 @@ return [
 
     'supports_credentials' => false,
 ];
-
