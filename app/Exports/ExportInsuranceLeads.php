@@ -12,7 +12,7 @@ class ExportInsuranceLeads implements
     WithHeadings,
     WithMapping,
     WithChunkReading
-    
+   
 {
     protected $query;
 
@@ -35,38 +35,38 @@ class ExportInsuranceLeads implements
     public function map($value): array
     {
         return [
-            date('d-m-Y',strtotime($value->created_at)),
-                date('d-m-Y',strtotime($value->updated_at)),    
-                $value->id,
-                $value->utrn,
-                $value->region,
-                $value->branch,
-                $value->partner,
-                $value->product,
-                $value->mp_no,
-                $value->policy_number,
-                ($value->policy_covered_date !='') ? date('d-m-Y',strtotime($value->policy_covered_date)) : '',
-                ($value->policy_expiry_date !='') ? date('d-m-Y',strtotime($value->policy_expiry_date)) : '',
-                $value->cust_id,
-                $value->actual_id,
-                $value->deceased_name,
-                ($value->dob !='')? date('d-m-Y',strtotime($value->dob)) : '',
-                ($value->date_of_death !='') ? date('d-m-Y',strtotime($value->date_of_death)) : '',
-                $value->gender,
-                $value->age,
-                $value->deceased,
-                ($value->intimation_date !='') ? date('d-m-Y',strtotime($value->intimation_date)) : '',
-                $value->place_of_death,
-                $value->cause_of_death,
-                //$value->load_acc_id,
-                '="'.$value->load_acc_id.'"',
-                $value->loan_tenure,
-                $value->claim_amount,        
-                $value->nominee_name,
+            optional($value->created_at)->format('d-m-Y'),
+            optional($value->updated_at)->format('d-m-Y'),
+            $value->id,
+            $value->utrn,
+            $value->region,
+            $value->branch,
+            $value->partner,
+            $value->product,
+            $value->mp_no,
+            $value->policy_number,
+            ($value->policy_covered_date !='') ? date('d-m-Y',strtotime($value->policy_covered_date)) : '',
+            ($value->policy_expiry_date !='') ? date('d-m-Y',strtotime($value->policy_expiry_date)) : '',
+            $value->cust_id,
+            $value->actual_id,
+            $value->deceased_name,
+            ($value->dob !='')? date('d-m-Y',strtotime($value->dob)) : '',
+             ($value->date_of_death !='') ? date('d-m-Y',strtotime($value->date_of_death)) : '',
+            $value->gender,
+            $value->age,
+            $value->deceased,
+            ($value->intimation_date !='') ? date('d-m-Y',strtotime($value->intimation_date)) : '',           
+            $value->place_of_death,
+            $value->cause_of_death,
+            '="'.$value->load_acc_id.'"',
+            $value->loan_tenure,
+            $value->claim_amount,
+
+           $value->nominee_name,
                 $value->relationship,
                 ($value->doc_rec_date!='') ? date('d-m-Y',strtotime($value->doc_rec_date)) : '',
                 $value->processed_by,
-                ($value->submit_to_partner_date !='') ? date('d-m-Y',strtotime($value->submit_to_partner_date)) : '',
+($value->submit_to_partner_date !='') ? date('d-m-Y',strtotime($value->submit_to_partner_date)) : '',
                 ($value->re_submit_to_partner_date !='') ? date('d-m-Y',strtotime($value->re_submit_to_partner_date)) : '',
                 $value->ho_remark,
                 $value->ho_remark2,
@@ -93,31 +93,30 @@ class ExportInsuranceLeads implements
                 $value->write_off_status,
                 $value->handed_to_bh,
                 $value->handed_to_credit,
-            
-                $value->nominee?->nominee_name_bank ,
-                $value->nominee?->bank_name,
-                '="'.$value->nominee->acc_number.'"',
-                $value->nominee?->ifsc,
-                $value->nominee?->branch_name,
-                $value->nominee?->spdc_bank_name,
-                $value->nominee?->spdc_chk_no,
-                $value->nominee?->courier_name,
-                $value->nominee?->pod_no,
-                $value->nominee?->nominee_number,
-                $value->nominee?->bo_remarks,
-                ($value->nominee?->ack_rec_date)
-                    ? date('d-m-Y', strtotime($value->nominee->ack_rec_date))
-                    : '',
 
-                ($value->nominee?->spdc_rec_date)
-                    ? date('d-m-Y', strtotime($value->nominee->spdc_rec_date))
-                    : '',
-                $value->nominee?->pkt_no,
-                $value->nominee?->bo_maker,
-                $value->nominee?->bo_checker,
+
+
+           $value->nominee?->nominee_name_bank ,
+            $value->nominee?->bank_name ,
+            '="'.( $value->nominee?->acc_number).'"',
+            $value->nominee?->ifsc ,
+            $value->nominee?->branch_name,
+
+            $value->nominee?->spdc_bank_name,
+            $value->nominee?->spdc_chk_no ,
+            $value->nominee?->courier_name,
+            $value->nominee?->pod_no, 
+            $value->nominee?->nominee_number ,
+            $value->nominee?->bo_remarks ,
+                (isset($value->nominee->ack_rec_date) && $value->nominee->ack_rec_date !='') ? date('d-m-Y',strtotime($value->nominee->ack_rec_date)) : '' ,
+                (isset($value->nominee->spdc_rec_date) && $value->nominee->spdc_rec_date !='') ? date('d-m-Y',strtotime($value->nominee->spdc_rec_date)) : '',
+            $value->nominee?->pkt_no,
+            $value->nominee?->bo_maker ,
+            $value->nominee?->bo_checker ,
 
                 $value->ho_employee_id,
                 $value->latest_editor,
+
         ];
     }
 
@@ -126,45 +125,46 @@ class ExportInsuranceLeads implements
      */
     public function chunkSize(): int
     {
-        return 1000; // safe & fast
+        return 300; // safe & fast
     }
 
     public function headings(): array
     {
         return [
             'Creation Date',
-        'Last Modified Date',
-        "Reference ID ",
-        "Lead ID",
-        "REgion",
-        "Branch ID - Name",
-        "Partner",  
-        "Product" ,
-        "Member Code",
-        "Policy Number" ,
-        "Policy Covered Date",
-        "Policy Expired Date",
-        "Customer ID",  
-        "Actual ID",    
-        "Deceased Name" ,
-        "Date of Birth",
-        "Date of Death",
-        "Gender",
-        "Age",
-        "Deceased",
-        "Death Intimation Date",
-        "Place of Death",
-        "Cause of Death",
-        "Loan Account ID",
-        "Loan Tenure",
-        "Claim Amount",
-        "Nominee Name",
+            'Last Modified Date',
+            'Reference ID',
+            'Lead ID',
+            'Region',
+            'Branch',
+            'Partner',
+            'Product',
+            'Member Code',
+            'Policy Number',
+            'Policy Covered Date',
+            'Policy Expiry Date',
+            'Customer ID',
+            'Actual ID',
+            'Deceased Name',
+            'DOB',
+            'Date of Death',
+            'Gender',
+            'Age',
+            'Deceased',
+            'Intimation Date',
+            'Place of Death',
+            'Cause of Death',
+            'Loan Account ID',
+            'Loan Tenure',
+            'Claim Amount',
+
+            "Nominee Name",
         "Relationship",
         "Date of Document Received",
         "Processed by",
         "Date of Submision to Partner",
         "Date of Re-submision to partner",
-        "HO Remarks",
+"HO Remarks",
         "Remarks",
         "Claim Status",
         "CAS Status",
@@ -189,25 +189,26 @@ class ExportInsuranceLeads implements
         "Write off Status",
         "Handed over to Business Head",
         "Handed over to Credit",
-        "Nominee Name as per Bank Records",
-        "Name of the Bank",
-        "Bank A/c Number",
-        "IFSC Code",
-        "Bank Branch Name",
+
+            'Nominee Name',
+            'Bank Name',
+            'Account Number',
+            'IFSC',
+            'Branch Name',
         "SPDC-Bank Name",
         "SPDC-Chq Number",
         "Courier Name",
         "POD Number",
-        "Nominee Contact Number",
+"Nominee Contact Number",
         "Branch Remarks",
         "Ack Received Date",
         "SPDC Received Date",
         "Packet Number",
-        "Maker at Branch",  
+        "Maker at Branch",
         "Checker at Branch",
         "Created By",
         "Modified By"
+
         ];
     }
 }
-
