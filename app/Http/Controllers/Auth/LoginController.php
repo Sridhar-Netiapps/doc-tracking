@@ -93,8 +93,8 @@ class LoginController extends Controller
         }
         $username = $userData['username'];
         $password = $userData['password'];
-    
-        if(env('APP_ENV') != 'local'){
+        
+        if(env('APP_ENV') == 'production' || env('APP_ENV') == 'uat'){
             try {
                 $ldap = Container::getDefaultConnection();
                 $ldap->connect();
