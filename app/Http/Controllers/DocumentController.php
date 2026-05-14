@@ -50,8 +50,15 @@ class DocumentController extends Controller
             return $next($request);
         });
     }
-    public function index($type, $dtype)
+    public function index($type, $dtype = 'loan')
     {
+        $validTypes = ['all', 'pending', 'rejected', 'received', 'moved'];
+        $validDtypes = ['loan', 'goldloan', 'dtrf', 'aof'];
+
+        if (!in_array($type, $validTypes, true) || !in_array($dtype, $validDtypes, true)) {
+            abort(404);
+        }
+
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
@@ -184,7 +191,6 @@ class DocumentController extends Controller
 
         // $fromDate = !empty($filters['from_date']) ? Carbon::createFromFormat('d-m-Y', $filters['from_date'])->format('Y-m-d') : null;
         // $toDate = !empty($filters['to_date']) ? Carbon::createFromFormat('d-m-Y', $filters['to_date'])->format('Y-m-d') : null;
-        // dd($toDate);
 
         $cifId = $filters['cif_id'] ?? null;
         $accountNumber = $filters['account_number'] ?? null;
@@ -260,7 +266,6 @@ class DocumentController extends Controller
             return $query->orderBy('account_creation_date', 'desc');
         };
         
-
         $loan_document = null;
         $gold_loan_document = null;
         $dtrf_document = null;
@@ -269,44 +274,40 @@ class DocumentController extends Controller
         if ($docType === 'loan') {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
-            })->paginate(100)->withQueryString();
-
+            })->paginate(100)->withQueryString(); 
         } elseif ($docType === 'goldloan') {
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
             })->paginate(100)->withQueryString();
-
-        } elseif ($docType === 'dtrf') {
-            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'dtrf_documents');
-            })->paginate(100)->withQueryString();
-
         } elseif ($docType === 'aof') {
             $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
-
-        } else {
+        } elseif ($docType === 'dtrf') {
+            $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'dtrf_documents');
+            })->paginate(100)->withQueryString();
+        } 
+        else {
             $loan_document = LoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'loan_documents');
             })->paginate(100)->withQueryString();
-            
             $gold_loan_document = GoldLoanDocument::where(function ($q) use ($filterFunction) {
                 $filterFunction($q, 'gold_loan_documents');
+            })->paginate(100)->withQueryString();
+            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
+                $filterFunction($q, 'account_opening_documents');
             })->paginate(100)->withQueryString();
             if (!isset($filters['cif_id']) && !isset($filters['account_number']) && !isset($filters['channel'])) {
                 $dtrf_document = DtrfDocument::where(function ($q) use ($filterFunction) {
                     $filterFunction($q, 'dtrf_documents');
                 })->paginate(100)->withQueryString();
             }
-            $account_opening_document = AccountOpeningDocument::where(function ($q) use ($filterFunction) {
-                $filterFunction($q, 'account_opening_documents');
-            })->paginate(100)->withQueryString();
         }
         $loan_total =$loan_document != null ? $loan_document->total():0;
         $gold_loan_total = $gold_loan_document != null ? $gold_loan_document->total():0;
-        $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $aof_total = $account_opening_document != null ? $account_opening_document->total():0;
+        $dtrf_total = $dtrf_document != null ? $dtrf_document->total():0;
         $process_statuses = ProcessStatus::where('status', 1)->get();
         
         $fixedStatuses = [
@@ -315,9 +316,18 @@ class DocumentController extends Controller
             'received' => [5, 7],
             
         ];
-        $dtype = $docType != null ? $docType : $dtype;
+        if ($loan_total > 0) {
+            $dtype = 'loan';
+        } elseif ($gold_loan_total > 0) {
+            $dtype = 'goldloan';
+        } elseif ($aof_total > 0) {
+            $dtype = 'aof';
+        } elseif ($dtrf_total > 0) {
+            $dtype = 'dtrf';
+        } else {
+            $dtype = $docType != null ? $docType : $dtype;
+        }
         $fixed_status = $fixedStatuses[$type] ?? null;
-        
         // if ($fixed_status) {
         if (!empty($fixed_status) && !is_array($fixed_status)) {
             $filters['status'] = $fixed_status;
@@ -649,6 +659,9 @@ class DocumentController extends Controller
     
     public function getDispatches($type, Request $request)
     {
+        if (!in_array($type, ['ready', 'list', 'tracking', 'delivered', 'reject'], true)) {
+            abort(404);
+        }
         
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
@@ -716,7 +729,7 @@ class DocumentController extends Controller
         
         $ready_to_dispatch_count =  $filter(CourierDispatch::query())->where('status', 3)->count();
         $dispatched_count = $filter(CourierDispatch::query())->where('status', 4)->count();
-        $tracking_count = $filter(CourierDispatch::query())->where('status', [5, 7])->count();
+        $tracking_count = $filter(CourierDispatch::query())->whereIn('status', [5, 7])->count();
         $delivered_count = $filter(CourierDispatch::query())->where('status', 12)->count();
         $reject_count = $filter(CourierDispatch::query())->where('status', 6)->count();
 
@@ -820,6 +833,7 @@ class DocumentController extends Controller
                 $dispatch->courier_name = $validated['courier_name'];
                 $dispatch->awb_pod = $validated['awb_pod'];
                 $dispatch->mmrp_barcode = $validated['mmrp_barcode'];
+                $dispatch->verified_by = Auth::user()->id;
                 $dispatch->dispatch_date = date('Y-m-d');
                 $dispatch->status = 4;
                 // dd($this->buildDispatchNumber($this->user->branch_id, $sequence,now()));
@@ -955,7 +969,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
-                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->where('status', 'active')->pluck('email')->toArray();
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -967,7 +981,7 @@ class DocumentController extends Controller
                     'dispatch_date' => Carbon::parse($dispatch->dispatch_date)->format('d-m-Y'),
                     'branch_code' => $dispatch->branch_code,
                 ];
-                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->pluck('email')->toArray();
+                $emails = User::role(['bo-maker', 'bo-checker'])->where('branch_id', $dispatch->branch_code)->where('status', 'active')->pluck('email')->toArray();
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
@@ -1004,7 +1018,7 @@ class DocumentController extends Controller
     
             // Remove the doc ID from the appropriate column
             $values = collect(explode(',', $dispatch->$columnName))
-                ->map(fn($v) => trim($v))->filter(fn($v) => $v !== $docId && $v !== '')
+                ->map(fn($v) => trim($v))->filter(fn($v) => $v !== $docIdString && $v !== '')
                 ->values()->implode(',');
     
             $dispatch->$columnName = $values;
@@ -1066,7 +1080,7 @@ class DocumentController extends Controller
 
     public function removeDocument(Request $request)
     {
-        $docIds = $request->doc_ids;  // array of selected IDs
+        $docIds = $request->doc_ids;  // grouped selected IDs
         $reason = $request->reason;
         try {
             DB::beginTransaction();
@@ -1189,10 +1203,17 @@ class DocumentController extends Controller
         } catch (DecryptException $e) {
             abort(404, 'Invalid ID');
         }
+
+        if (!isset($this->table[$dtype])) {
+            abort(404, 'Invalid document type');
+        }
     
         // $history = DocumentHistory::findOrFail($decryptedId);
 
         $document = $this->table[$dtype]::find($decryptedId);
+        if (!$document) {
+            abort(404, 'Document not found');
+        }
         if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
             if($this->user->branch_id != $document->branch_code){
                 return redirect('/home')->with('error', 'Access Denied');

@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
         // exit('1');
         return view('sample.accounts-process');
     });
-    Route::get('/test', [DocumentController::class, 'test']);
+    Route::get('/test-email', [DocumentController::class, 'sendEmail']);
     Route::get('/', function () { 
         return redirect(route('login'));
     });
@@ -39,7 +39,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('document/filter', [DocumentController::class, 'filter'])->name('document.filter');
         Route::get('document/filter', [DocumentController::class, 'filteredList'])->name('document.filtered');
         Route::prefix('documents')->group(function () {
-            Route::get('/{type}/{dtype?}', [DocumentController::class, 'index'])->name('accounts.index');
+            Route::get('/{type}/{dtype?}', [DocumentController::class, 'index'])
+                ->whereIn('type', ['all', 'pending', 'rejected', 'received', 'moved'])
+                ->whereIn('dtype', ['loan', 'goldloan', 'dtrf', 'aof'])
+                ->name('accounts.index');
             Route::post('/update', [DocumentController::class, 'addCourierDetails'])->name('courier.update');
             // Route::get('/proceed', [DocumentController::class, 'getBulkReview'])->name('accounts.selected');
             Route::post('/proceed', [DocumentController::class, 'bulkReview'])->name('accounts.proceed');
@@ -54,18 +57,28 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
         Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->name('courier.revert');
         Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
-        Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails']);
+        Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails'])
+            ->whereIn('type', ['loan', 'goldloan', 'dtrf', 'aof'])
+            ->whereNumber('id');;
         Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->name('courier.checkAwb');
         Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->name('courier.add');
         Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->name('courier.updateDetails');
         Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
         Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
-        Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->name('dispatches');
-        Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])->name('dispatches.filter');
-        Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->name('dispatches.clear');
+        Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])
+            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
+            ->name('dispatches');
+        Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])
+            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
+            ->name('dispatches.filter');
+        Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])
+            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
+            ->name('dispatches.clear');
         Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
-        Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->name('dispatches.view');
-        Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus']);
+        Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])
+            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
+            ->name('dispatches.view');
+        Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus'])->whereNumber('id');
         Route::post('dispatches', [DocumentController::class,'updateCourier'])->name('dispatched');
         Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->name('dispatches.update');
         Route::get('home', [HomeController::class, 'index'])->name('home');
@@ -86,7 +99,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/accounts/data_import', function () {
             return view('accounts.data_import');
         })->name('accounts.data_import');
-        Route::get('document/{type}',[DocumentController::class, 'reports'])->name('report-page');
+        Route::get('document/{type}',[DocumentController::class, 'reports'])->whereIn('type', ['reports'])->name('report-page');
 
         Route::get('process-status', [ProcessStatusController::class,'index'])->name('process_status.index');
         Route::get('process-status/create', [ProcessStatusController::class,'create'])->name('process_status.create');
@@ -127,9 +140,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/activity/export', [UserController::class, 'export'])->name('activity.export');
         Route::get('/user/export-check', [UserController::class, 'userExportCheck'])->name('user.export.check');
         Route::post('/user/export', [UserController::class, 'userExport'])->name('user.export');
-        Route::get('/user/export/{jobId}/status', [UserController::class, 'checkExportStatus'])->name('user.export.status');
+        Route::get('/user/export/{jobId}/status', [UserController::class, 'checkExportStatus'])->whereUuid('jobId')->name('user.export.status');
         Route::get('/user/export/{jobId}/download', [UserController::class, 'downloadExport'])
             ->middleware('signed')
+            ->whereUuid('jobId')
             ->name('user.export.download');
         Route::pattern('jobId', '[0-9a-fA-F-]{36}');
         // Route::resource('branches', BranchController::class);
