@@ -53,8 +53,15 @@ class DocumentController extends Controller
             return $next($request);
         });
     }
-    public function index($type, $dtype)
+    public function index($type, $dtype = 'loan')
     {
+        $validTypes = ['all', 'pending', 'rejected', 'received', 'moved'];
+        $validDtypes = ['loan', 'goldloan', 'dtrf', 'aof'];
+
+        if (!in_array($type, $validTypes, true) || !in_array($dtype, $validDtypes, true)) {
+            abort(404);
+        }
+
         $start_date = Carbon::now()->subWeek()->startOfWeek(); 
         $end_date = Carbon::now()->subWeek()->endOfWeek();
 
@@ -640,6 +647,9 @@ class DocumentController extends Controller
     
     public function getDispatches($type, Request $request)
     {
+        if (!in_array($type, ['ready', 'list', 'tracking', 'delivered', 'reject'], true)) {
+            abort(404);
+        }
         
         // $filters = session('filters', []);
         $filters = session()->pull('filters', []);
@@ -1208,10 +1218,17 @@ class DocumentController extends Controller
         if (is_null($decryptedId)) {
             abort(404, 'Invalid ID');
         }
+
+        if (!isset($this->table[$dtype])) {
+            abort(404, 'Invalid document type');
+        }
     
         // $history = DocumentHistory::findOrFail($decryptedId);
 
         $document = $this->table[$dtype]::find($decryptedId);
+        if (!$document) {
+            abort(404, 'Document not found');
+        }
         if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
             if($this->user->branch_id != $document->branch_code){
                 return redirect('/home')->with('error', 'Access Denied');
