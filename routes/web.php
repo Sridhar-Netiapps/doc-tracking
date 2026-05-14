@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
         // exit('1');
         return view('sample.accounts-process');
     });
-    Route::get('/test', [DocumentController::class, 'test']);
+    Route::get('/test-email', [DocumentController::class, 'sendEmail']);
     Route::get('/', function () { 
         return redirect(route('login'));
     });

@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
 use App\Models\HRMData;
 use Auth;
 use App\AuditLogTrait;
-
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -61,7 +61,9 @@ class UserController extends Controller
             'employee_id' => 'required|unique:users,employee_id',
             'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email',
+            'email'       => ['required','email',Rule::unique('users', 'email')
+                            ->ignore($employee->emp_id ?? null, 'employee_id')
+                            ->where(fn ($query) => $query->where('status', 'active'))],
             'gender' => 'required|string|max:10',
             'dob' => 'required|date',
             'status' => 'required|string|max:10',
@@ -94,7 +96,7 @@ class UserController extends Controller
             'department_id' => 'nullable|string|max:255',
         ],[
             'employee_id.unique' => 'This Employee ID already exists.',
-            'email.unique'       => 'This Email is already registered.',
+            'email.unique' => 'This employee email is still active in the system.',
         ]);
 
         
@@ -161,12 +163,12 @@ class UserController extends Controller
             'prac_role' => $request->input('prac_role'),
             'pac_designation' => $request->input('pac_designation'),
             'pac_role' => $request->input('pac_role'),
-            'designation_id' => 0,
-            'department_id' => 0,
+            // 'designation_id' => 0,
+            // 'department_id' => 0,
             'module_role' => $request->module_role,
             'ins_user' => $is_ins_user,
             'doc_user' => $is_doc_user,
-            'created_by' => Auth::user()->employee_id
+            'created_by' => Auth::user()->id
         ]);
 
         $request->validate([
@@ -228,7 +230,9 @@ class UserController extends Controller
             'employee_id' => 'required|string|max:255|unique:users,employee_id,' . $user->id,
             'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => ['required','email',Rule::unique('users', 'email')
+                            ->ignore($employee->emp_id ?? null, 'employee_id')
+                            ->where(fn ($query) => $query->where('status', 'active'))],
             'gender' => 'required|string|max:10',
             'dob' => 'required|date',
             'status' => 'required|string|max:10',
@@ -247,7 +251,7 @@ class UserController extends Controller
             'office_location' => 'nullable|string|max:255',
             'current_department' => 'nullable|string|max:255',
             'top_department' => 'nullable|string|max:255',
-            'department_hierarchy_1_nNoame' => 'nullable|string|max:255',
+            'department_hierarchy_1_name' => 'nullable|string|max:255',
             'department_hierarchy_2_name' => 'nullable|string|max:255',
             'department_hierarchy_3_name' => 'nullable|string|max:255',
             'functional_head' => 'nullable|string|max:255',
@@ -260,6 +264,9 @@ class UserController extends Controller
             'doj' => 'required|date',
             'dor' => 'nullable|date',
 
+        ],[
+            'employee_id.unique' => 'This Employee ID already exists.',
+            'email.unique' => 'This employee email is still active in the system.',
         ]);
 
         $is_ins_user='0';
@@ -326,7 +333,7 @@ class UserController extends Controller
             'module_role' => $request->module_role,
             'ins_user' => $is_ins_user,
             'doc_user' => $is_doc_user,
-
+            'updated_by' => Auth::user()->id
         ]);
 
         $empId = $request->input('employee_id');
