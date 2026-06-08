@@ -26,7 +26,8 @@
               
                 </div>
 
-                <a target="_blank" href="{{ asset('insurance_exports/insurance_reports.csv')}}"  <button
+                <a target="_blank" href="{{ asset('insurance_exports/insurance_reports.csv')}}" >
+                <button
                     type="button"
                     class="btn btn-dark rounded-2 ms-3"
                     >
