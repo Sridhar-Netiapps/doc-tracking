@@ -26,7 +26,7 @@ class ExportInsuranceLeads implements
      */
     public function query()
     {
-        return $this->query->with('nominee');
+        return $this->query;
     }
 
     /**
