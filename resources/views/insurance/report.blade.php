@@ -10,7 +10,9 @@
 
                 <div class="ms-auto ">
                     <div class="d-flex">
-                       <a class="nav-link" href="{{route('leads_report')}}"><i class="fa fa-sync m-3"></i></a>
+
+                       <a class="nav-link" href="{{route('leads_report')}}"><img src="/images/sync.png" 
+                        class="syncimg mt-2 me-2"> </a>
                        <div class="ms-auto ">
                             <div class="card">
                              <div id="reportrange" class="pull-right datepiker p-2" >
