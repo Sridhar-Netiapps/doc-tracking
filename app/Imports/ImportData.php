@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Validation\Rule;
 
+
 class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;

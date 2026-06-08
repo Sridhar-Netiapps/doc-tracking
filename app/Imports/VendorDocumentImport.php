@@ -42,8 +42,8 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
             return null;
         }
         try {
-            if (is_numeric($dateValue) && ExcelDate::isDateTime($dateValue)) {
-                $dateTimeObject = ExcelDate::excelToDateTimeObject((float) $dateValue);
+            if (is_numeric($dateValue) ) {
+                $dateTimeObject = Date::excelToDateTimeObject((float) $dateValue);
                 return Carbon::instance($dateTimeObject);
             }
             $formats = [
