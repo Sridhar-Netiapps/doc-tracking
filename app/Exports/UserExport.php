@@ -22,7 +22,7 @@ class UserExport implements FromQuery, WithHeadings, WithMapping
     }
 
     public function query()
-    {
+    { 
         $query = User::query();
         $query->withoutRole('master');
 
@@ -50,7 +50,6 @@ class UserExport implements FromQuery, WithHeadings, WithMapping
         if ($status !== '') {
             $query->whereRaw('LOWER(users.status) = ?', [$status]);
         }
-
         $query->orderBy('users.id')
             ->select([
                 'id',

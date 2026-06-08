@@ -653,7 +653,6 @@ class UserController extends Controller
     {
         $cacheKey = 'user_export_' . $jobId;
         $payload = Cache::get($cacheKey);
-
         if (!$payload) {
             abort(404);
         }
@@ -670,7 +669,6 @@ class UserController extends Controller
         if (!$path || !Storage::disk('private')->exists($path)) {
             abort(404);
         }
-
         return Storage::disk('private')->download($path, 'users_' . $jobId . '.xlsx');
     }
 
