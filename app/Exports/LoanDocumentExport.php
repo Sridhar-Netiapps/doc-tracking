@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Log;
 
 class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, WithColumnFormatting, ShouldQueue
 {
@@ -28,6 +29,7 @@ class LoanDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCu
 
     public function query()
     {
+        \Log::info('Document export function');
         $query = LoanDocument::query()
             ->select([
                 'id',

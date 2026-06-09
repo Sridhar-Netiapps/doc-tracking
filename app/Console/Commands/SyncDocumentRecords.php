@@ -67,6 +67,7 @@ class SyncDocumentRecords extends Command
         $html = view('emails.doc_sync_complete', ['data' => $data])->render();
         $subject = "Document Tracking – Document Syncing Completed";
         $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
+        // $emails =  ['shekhar.poojary@ujjivan.com','maharajan.d@ujjivan.com','anand.m@ujjivan.com','bharathi.k276@ujjivan.com','yasotha.a@ujjivan.com','vidyasagar@ujjivan.com','krishnakumar.marapalli@ujjivan.com','d.robin@ujjivan.com','b.nithin@ujjivan.com','vigneshwari.r633@ujjivan.com'];
         Mail::to($emails)->send(new \App\Mail\SyncMail($html, $subject));
     }
 }

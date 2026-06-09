@@ -786,10 +786,6 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
         $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
 
-        // if($this->user->branch_id != $dispatch->branch_code){
-        //     return redirect('/home')->with('error', 'Access Denied');
-        // }
-
         // Encrypt sensitive fields before passing to view
         $loan_document = $this->encryptPaginator($loan_document);
         $gold_loan_document = $this->encryptPaginator($gold_loan_document);

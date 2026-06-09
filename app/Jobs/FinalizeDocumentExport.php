@@ -27,7 +27,12 @@ class FinalizeDocumentExport implements ShouldQueue
     {
         $cacheKey = 'document_export_' . $this->jobId;
         $payload = Cache::get($cacheKey, []);
-
+        Log::info('Document export job ', [
+            'job_id' => $this->jobId,
+            'user_id' => $this->userId,
+            'path' => $this->path,
+            'expected_count' => $this->expectedCount,
+        ]);
         if (!Storage::disk('private')->exists($this->path)) {
             Cache::put($cacheKey, array_merge($payload, [
                 'status' => 'failed',
@@ -39,6 +44,13 @@ class FinalizeDocumentExport implements ShouldQueue
 
             return;
         }
+
+        Log::info('Document export write ', [
+            'job_id' => $this->jobId,
+            'user_id' => $this->userId,
+            'path' => $this->path,
+            'expected_count' => $this->expectedCount,
+        ]);
 
         Cache::put($cacheKey, array_merge($payload, [
             'status' => 'completed',

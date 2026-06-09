@@ -230,9 +230,7 @@ class UserController extends Controller
             'employee_id' => 'required|string|max:255|unique:users,employee_id,' . $user->id,
             'region' => 'required|string|max:255',
             'branch_id' => 'required|string|max:255',
-            'email' => ['required','email',Rule::unique('users', 'email')
-                            ->ignore($employee->emp_id ?? null, 'employee_id')
-                            ->where(fn ($query) => $query->where('status', 'active'))],
+            'email' => ['required','email'],
             'gender' => 'required|string|max:10',
             'dob' => 'required|date',
             'status' => 'required|string|max:10',
@@ -265,8 +263,7 @@ class UserController extends Controller
             'dor' => 'nullable|date',
 
         ],[
-            'employee_id.unique' => 'This Employee ID already exists.',
-            'email.unique' => 'This employee email is still active in the system.',
+            'employee_id.unique' => 'This Employee ID already exists.'
         ]);
 
         $is_ins_user='0';
@@ -552,8 +549,7 @@ class UserController extends Controller
         Storage::disk('private')->makeDirectory('exports');
 
         try {
-            GenerateUserExport::dispatch($filters, $jobId, (int) $this->user->id, $path)
-                ->onQueue('exports');
+            GenerateUserExport::dispatch($filters, $jobId, (int) $this->user->id, $path)->onQueue('exports');
         } catch (\Throwable $e) {
             Cache::put($cacheKey, [
                 'status' => 'failed',

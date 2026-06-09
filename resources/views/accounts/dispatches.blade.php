@@ -214,7 +214,7 @@
                     </select>                  
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="number" class="form-control alphanumeric capsonly" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode" min="0">
+                    <input type="text" class="form-control alphanumeric capsonly" placeholder="MMRP Code" value="{{ old('mmrp_barcode', $filters['mmrp_barcode'] ?? '') }}" name="mmrp_barcode" min="0">
                 </div>
                 @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker', 'branch-user']))
                 <div class="col-12 mt-3">

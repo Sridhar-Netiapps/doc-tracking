@@ -164,7 +164,7 @@ class ExportInsuranceLeads implements
         "Processed by",
         "Date of Submision to Partner",
         "Date of Re-submision to partner",
-"HO Remarks",
+        "HO Remarks",
         "Remarks",
         "Claim Status",
         "CAS Status",
