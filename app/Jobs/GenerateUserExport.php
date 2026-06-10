@@ -15,8 +15,9 @@ class GenerateUserExport implements ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 1800;
-    public int $tries = 1;
+    public $timeout = 1800;    // 30 min — enough for ~10L xlsx
+    public $tries = 2;
+    public $backoff = 60;
 
     public function __construct(
         private readonly array $filters,

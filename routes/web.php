@@ -36,6 +36,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () { 
         return redirect(route('login'));
     });
+
+    Route::post('/api/secure-reveal-batch', [DocumentController::class, 'secureRevealBatch'])->name('api.secure-reveal-batch');
+    
     Route::group(['middleware' => ['role.access']], function () {
         Route::get('/api/secure-reveal-key', [DocumentController::class, 'getRevealPublicKey'])->name('api.secure-reveal-key');
         Route::post('/api/secure-reveal', [DocumentController::class, 'secureReveal'])->name('api.secure-reveal');
@@ -112,15 +115,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         Route::post('reports', [DocumentController::class,'export'])->name('reports');
-        Route::get('reports/export/{jobId}/status', [DocumentController::class, 'checkReportExportStatus'])
-            ->whereUuid('jobId')
-            ->name('reports.export.status');
-        Route::get('reports/export/{jobId}/download', [DocumentController::class, 'downloadReportExport'])
-            ->middleware('signed')
-            ->whereUuid('jobId')
-            ->name('reports.export.download');
+        Route::get('reports/export/{jobId}/status', [DocumentController::class, 'checkReportExportStatus'])->whereUuid('jobId')->name('reports.export.status');
+        Route::get('reports/export/{jobId}/download', [DocumentController::class, 'downloadReportExport'])->middleware('signed')->whereUuid('jobId')->name('reports.export.download');
 
-        
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
         
         Route::get('/accounts/data_import', function () {

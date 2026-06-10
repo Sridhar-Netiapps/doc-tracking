@@ -2,16 +2,16 @@
 
 namespace App\Exports;
 
-use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Carbon\Carbon;
 
 
-class UserExport implements FromQuery, WithHeadings, WithMapping
+class UserExport implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize
 {
     protected array $filters;
     protected int $rowNumber = 0;
@@ -65,20 +65,20 @@ class UserExport implements FromQuery, WithHeadings, WithMapping
                 'updated_at',
                 'created_by',
                 'updated_by',
-                'last_login_at' => ActivityLog::query()
-                    ->select('created_at')
-                    ->whereColumn('user_id', 'users.id')
-                    ->where('route', 'login')
-                    ->latest('created_at')
-                    ->limit(1),
             ])
             ->with([
                 'roles:id,name',
                 'creator:id,first_name',
                 'modifier:id,first_name',
+                'latestLogin',
             ]);
 
         return $query;
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function headings(): array
@@ -114,7 +114,7 @@ class UserExport implements FromQuery, WithHeadings, WithMapping
             $row->branch_id ?? '-',
             $roles ?: '-',
             $row->status ?? '-',
-            $row->last_login_at ? Carbon::parse($row->last_login_at)->format('d-M-Y') : '-', 
+            $row->latestLogin ? Carbon::parse($row->latestLogin->created_at)->format('d-M-Y') : '-',
             $row->creator != null ? $row->creator->first_name: '-',
             $row->created_at ? Carbon::parse($row->created_at)->format('d-M-Y') : '-', 
             $row->modifier != null ? $row->modifier->first_name: '-',

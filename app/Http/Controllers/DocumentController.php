@@ -141,12 +141,12 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        $filters = session()->pull('filters', []);
-        
-        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
-        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
-        // $type = $filters['type'] ?? session()->pull('type', 'all');
-        // $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
+        $filters = session('filters', []);
+
+        $type = isset($filters['type']) ? $filters['type'] : session('type', 'all');
+        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session('dtype', 'loan');
+        // $type = $filters['type'] ?? session('type', 'all');
+        // $dtype = $filters['dtype'] ?? session('dtype', 'loan');
         if(empty($filters)){
             if(isset($type) && isset($dtype))
                 return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
@@ -481,10 +481,10 @@ class DocumentController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => 'No documents selected.'], 422);
             }
-            $availableLoanIds = LoanDocument::whereIn('id', $loanIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableGoldLoanIds = GoldLoanDocument::whereIn('id', $goldLoanIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableDtrfIds = DtrfDocument::whereIn('id', $dtrfIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableAofIds = AccountOpeningDocument::whereIn('id', $aofIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
+            $availableLoanIds = LoanDocument::whereIn('id', $loanIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableGoldLoanIds = GoldLoanDocument::whereIn('id', $goldLoanIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableDtrfIds = DtrfDocument::whereIn('id', $dtrfIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableAofIds = AccountOpeningDocument::whereIn('id', $aofIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
 
             $availableCount = count($availableLoanIds) + count($availableGoldLoanIds) + count($availableDtrfIds) + count($availableAofIds);
             if ($availableCount !== $selectedCount) {
@@ -1372,7 +1372,7 @@ class DocumentController extends Controller
             return response()->json([
                 'secure_res' => base64_encode($finalBinary),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json(['message' => 'Unable to process secure reveal'], 422);
         }
     }
@@ -1837,4 +1837,118 @@ class DocumentController extends Controller
     //         // $targetModel::create($data);
     //     }
     // }
+
+    public function secureRevealBatch(Request $request)
+    {
+        $validated = $request->validate(['secure_req' => 'required|string']);
+
+        try {
+            $outerBlob = json_decode(base64_decode($validated['secure_req']), true);
+            if (!is_array($outerBlob) || !isset($outerBlob['k'], $outerBlob['i'], $outerBlob['d'])) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $privateKey = RSA::load(Storage::get('keys/private_key.pem'), config('app.private_key_passphrase'))
+                ->withPadding(RSA::ENCRYPTION_OAEP)
+                ->withHash('sha256')
+                ->withMGFHash('sha256');
+
+            $tempAesKey = $privateKey->decrypt(base64_decode($outerBlob['k']));
+            if ($tempAesKey === false || strlen($tempAesKey) !== 32) {
+                return response()->json(['message' => 'Invalid reveal key'], 422);
+            }
+
+            $requestIv = base64_decode($outerBlob['i']);
+            $requestCipherCombined = base64_decode($outerBlob['d']);
+            if (!$requestIv || strlen($requestIv) !== 12 || !$requestCipherCombined || strlen($requestCipherCombined) <= 16) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $requestAes = new AES('gcm');
+            $requestAes->setKey($tempAesKey);
+            $requestAes->setNonce($requestIv);
+            $requestAes->setTag(substr($requestCipherCombined, -16));
+            $decryptedRequest = $requestAes->decrypt(substr($requestCipherCombined, 0, -16));
+
+            if ($decryptedRequest === false) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $inner = json_decode($decryptedRequest, true);
+            if (!is_array($inner) || !isset($inner['tokens']) || !is_array($inner['tokens']) || count($inner['tokens']) > 300) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            // Decode tokens and group by document type for batch DB queries
+            $decodedTokens = [];
+            $byType = [];
+            foreach ($inner['tokens'] as $item) {
+                if (!isset($item['idx'], $item['token']) || !is_string($item['token'])) {
+                    continue;
+                }
+                try {
+                    $tokenBinary = hex2bin($item['token']);
+                    $payload = json_decode(Crypt::decryptString($tokenBinary), true);
+                    if (
+                        !is_array($payload) ||
+                        !isset($payload['id'], $payload['t'], $payload['f']) ||
+                        !in_array($payload['f'], ['cif_id', 'account_number', 'customer_name'], true) ||
+                        !in_array($payload['t'], ['loan', 'goldloan', 'dtrf', 'aof'], true)
+                    ) {
+                        continue;
+                    }
+                    $decodedTokens[(int) $item['idx']] = $payload;
+                    $byType[$payload['t']][(int) $payload['id']] = true;
+                } catch (\Exception $e) {
+                    // skip invalid token
+                }
+            }
+
+            // Batch fetch — at most 4 queries total (one per document type)
+            $documents = [];
+            foreach ($byType as $type => $idMap) {
+                $this->table[$type]::whereIn('id', array_keys($idMap))
+                    ->get()
+                    ->each(function ($doc) use ($type, &$documents) {
+                        $documents[$type][$doc->id] = $doc;
+                    });
+            }
+
+            $results = [];
+            foreach ($decodedTokens as $idx => $payload) {
+                $doc = $documents[$payload['t']][$payload['id']] ?? null;
+                if (!$doc) {
+                    $results[] = ['idx' => $idx, 'error' => true];
+                    continue;
+                }
+
+                if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
+                    if ($this->user->branch_id != $doc->branch_code) {
+                        $results[] = ['idx' => $idx, 'error' => true];
+                        continue;
+                    }
+                } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
+                    if (strtolower($this->user->region) != strtolower($doc->region)) {
+                        $results[] = ['idx' => $idx, 'error' => true];
+                        continue;
+                    }
+                }
+
+                $plaintext = (string) EncryptHelper::decrypt($doc->{$payload['f']} ?? '');
+                $responseIv = random_bytes(12);
+
+                $aes = new AES('gcm');
+                $aes->setKey($tempAesKey);
+                $aes->setNonce($responseIv);
+                $ciphertext = $aes->encrypt($plaintext);
+                $finalBinary = $responseIv . $ciphertext . $aes->getTag();
+
+                $results[] = ['idx' => $idx, 'secure_res' => base64_encode($finalBinary)];
+            }
+
+            return response()->json(['results' => $results]);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'Unable to process secure reveal'], 422);
+        }
+    }
 }

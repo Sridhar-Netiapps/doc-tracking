@@ -71,5 +71,14 @@ class User extends Authenticatable
         return $this->hasOne(ActivityLog::class, 'user_id')
             ->where('route', 'login');
     }
+
+    public function latestLogin()
+    {
+        return $this->hasOne(ActivityLog::class, 'user_id')
+            ->ofMany(
+                ['created_at' => 'max'],
+                fn ($q) => $q->where('route', 'login')
+            );
+    }
 }
 

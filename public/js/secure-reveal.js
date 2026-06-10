@@ -140,10 +140,138 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', async function () {
-        const nodes = document.querySelectorAll('.secure-data-node[data-token]');
-        for (const node of nodes) {
-            await revealNode(node);
+    // document.addEventListener('DOMContentLoaded', async function () {
+    //     const nodes = document.querySelectorAll('.secure-data-node[data-token]');
+    //     for (const node of nodes) {
+    //         await revealNode(node);
+    //     }
+    // });
+
+    async function revealChunk(nodes, rsaKey) {
+        const aesKey = await window.crypto.subtle.generateKey(
+            { name: 'AES-GCM', length: 256 },
+            true,
+            ['encrypt', 'decrypt']
+        );
+
+        const rawAesKey = new Uint8Array(await window.crypto.subtle.exportKey('raw', aesKey));
+        const wrappedKeyBuffer = await window.crypto.subtle.encrypt(
+            { name: 'RSA-OAEP' },
+            rsaKey,
+            rawAesKey
+        );
+
+        const tokens = nodes.map(function (node, idx) {
+            return { idx: idx, token: $(node).data('token') || '' };
+        });
+
+        const requestIv = window.crypto.getRandomValues(new Uint8Array(12));
+        const requestData = new TextEncoder().encode(JSON.stringify({ tokens: tokens }));
+        const encryptedRequestBuffer = await window.crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: requestIv },
+            aesKey,
+            requestData
+        );
+
+        const secureBlob = btoa(JSON.stringify({
+            k: uint8ArrayToBase64(new Uint8Array(wrappedKeyBuffer)),
+            i: uint8ArrayToBase64(requestIv),
+            d: uint8ArrayToBase64(new Uint8Array(encryptedRequestBuffer))
+        }));
+
+        let response;
+        try {
+            response = await $.ajax({
+                url: '/api/secure-reveal-batch',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({ secure_req: secureBlob })
+            });
+        } catch (e) {
+            console.error('Batch reveal failed', e);
+            return;
         }
+
+        if (!response || !Array.isArray(response.results)) {
+            return;
+        }
+
+        for (var r = 0; r < response.results.length; r++) {
+            var result = response.results[r];
+            if (result.error || !result.secure_res) {
+                continue;
+            }
+            var node = nodes[result.idx];
+            if (!node) {
+                continue;
+            }
+            try {
+                var responseBinary = base64ToUint8Array(result.secure_res);
+                if (responseBinary.length <= 12) {
+                    continue;
+                }
+                var decryptedBuffer = await window.crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: responseBinary.slice(0, 12) },
+                    aesKey,
+                    responseBinary.slice(12)
+                );
+                $(node).text(new TextDecoder().decode(decryptedBuffer)).attr('data-revealed', '1');
+            } catch (e) {
+                console.error('Field decrypt failed', e);
+            }
+        }
+    }
+
+    async function revealBatch(nodes) {
+        var pending = nodes.filter(function (n) {
+            return $(n).data('revealed') !== 1 &&
+                $(n).attr('data-revealed') !== '1' &&
+                $(n).data('token');
+        });
+        if (pending.length === 0) {
+            return;
+        }
+
+        var publicKeyPem = await getPublicKeyPem();
+        var publicKeyBytes = pemToDerBytes(publicKeyPem);
+        var rsaKey = await window.crypto.subtle.importKey(
+            'spki',
+            publicKeyBytes,
+            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            false,
+            ['encrypt']
+        );
+
+        // Send up to 300 tokens per request
+        var BATCH_SIZE = 300;
+        for (var i = 0; i < pending.length; i += BATCH_SIZE) {
+            await revealChunk(pending.slice(i, i + BATCH_SIZE), rsaKey);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Reveal active tab only on load
+        var activePane = document.querySelector('.tab-pane.active');
+        var initialNodes = activePane
+            ? Array.from(activePane.querySelectorAll('.secure-data-node[data-token]'))
+            : Array.from(document.querySelectorAll('.secure-data-node[data-token]'));
+        await revealBatch(initialNodes);
+
+        // Reveal each tab's nodes when user switches to it
+        $(document).on('shown.bs.tab', async function (e) {
+            var targetSelector = $(e.target).attr('data-bs-target') || $(e.target).attr('href');
+            if (!targetSelector) {
+                return;
+            }
+            var pane = document.querySelector(targetSelector);
+            if (!pane) {
+                return;
+            }
+            await revealBatch(Array.from(pane.querySelectorAll('.secure-data-node[data-token]')));
+        });
     });
 })(jQuery);

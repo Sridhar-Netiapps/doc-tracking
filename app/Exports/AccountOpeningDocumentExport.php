@@ -3,20 +3,22 @@
 namespace App\Exports;
 
 use App\Exports\Concerns\AppliesDocumentExportFilters;
+use App\Exports\Concerns\ForceNumericStringAsText;
 use App\Exports\Concerns\TracksQueuedDocumentExport;
 use App\Models\AccountOpeningDocument;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 
-class AccountOpeningDocumentExport implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, WithColumnFormatting, ShouldQueue
+class AccountOpeningDocumentExport extends DefaultValueBinder implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, WithCustomValueBinder, ShouldQueue
 {
     use AppliesDocumentExportFilters;
     use TracksQueuedDocumentExport;
+    use ForceNumericStringAsText;
 
     protected array $filters;
 
@@ -71,13 +73,6 @@ class AccountOpeningDocumentExport implements FromQuery, WithHeadings, WithMappi
     public function chunkSize(): int
     {
         return 1000;
-    }
-
-    public function columnFormats(): array
-    {
-        return [
-            'F' => NumberFormat::FORMAT_TEXT,
-        ];
     }
 
     public function headings(): array
