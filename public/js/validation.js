@@ -235,7 +235,7 @@ $(document).ready(function(){
         const fileSignatures = {
             'pdf': '25504446', 'doc': 'd0cf11e0', 'docx': '504b0304',
             'jpg': 'ffd8ffe0', 'png': '89504e47', 'xls': 'd0cf11e0',
-            'xlsx': '504b0304', 'csv': '446f6375', 'eml': ''
+            'xlsx': '504b0304', 'csv': '', 'eml': ''
         };    
         return fileSignatures[extension] ? fileSignatures[extension] === magicBytes : true;
     }

@@ -16,7 +16,8 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation,
     SkipsOnFailure,
     SkipsOnError,
-    ToCollection
+    ToCollection,
+    WithChunkReading
 };
 use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Validators\Failure;
@@ -25,16 +26,22 @@ use Illuminate\Support\Facades\DB;
 use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use Config;
 use Log;
 
-class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError
+class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidation, SkipsOnFailure, SkipsOnError, WithChunkReading
 {
     use SkipsFailures;
 
     protected $total = 0;
     protected $success = 0;
+    protected $userId;
+
+    public function __construct(?int $userId = null)
+    {
+        $this->userId = $userId;
+    }
     
     function parseExcelDate($dateValue)
     {
@@ -81,7 +88,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
             'PERMOUNT' => 10,
             'DESTROYED' => 11,
         ];
-        
+        dd($rows);
         foreach ($rows as $row) {
             $this->total++;
             try {
@@ -120,7 +127,7 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
                 // dd($document);
                 if ($document->isDirty()) {
                     // Log::info($document->unique_ref_no.' Updated');
-                    $document->updated_by = auth()->user()->id;
+                    $document->updated_by = $this->userId ?? auth()->id();
                     $document->save();
                 }
                 DB::commit();
@@ -153,6 +160,11 @@ class VendorDocumentImport implements WithHeadingRow, ToCollection, WithValidati
             'document_type.required'      => 'Document Type is required.',
             'document_type.string'        => 'Document Type must be a string.',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function getTotal(): int

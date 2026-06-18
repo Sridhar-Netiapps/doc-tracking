@@ -139,7 +139,7 @@ class LoanDocumentExport extends DefaultValueBinder implements FromQuery, WithHe
             $doc->status >= 4 ? (optional($doc->dispatch)->dispatch_date ? date('d-m-Y', strtotime($doc->dispatch->dispatch_date)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->getDispatchedDetails)->current_status == 4 ? optional($doc->getDispatchedDetails->creator)->employee_id . ' - ' . optional($doc->getDispatchedDetails->creator)->first_name.' '.optional($doc->getDispatchedDetails->creator)->last_name : '-') : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->verified_at ? date('d-m-Y', strtotime($doc->dispatch->verified_at)) : '-') : '-',
-            $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name.' '.optional($doc->dispatch->modifier)->last_name : '-') : '-',
+            // $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name.' '.optional($doc->dispatch->modifier)->last_name : '-') : '-',
             $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',
             (in_array($doc->status, [6,7]) ? ($doc->reason) : '-'),

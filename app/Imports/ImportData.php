@@ -36,11 +36,14 @@ class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsO
     protected $total = 0;
     protected $success = 0;
     protected $doc_type;
+    protected $userId;
+    protected array $branchCounters = [];
 
 
-    public function __construct($doc_type)
+    public function __construct($doc_type, ?int $userId = null)
     {
         $this->doc_type = $doc_type;
+        $this->userId = $userId;
     }
     function parseExcelDate($value)
     {
@@ -139,7 +142,7 @@ class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsO
                 }
             
                 if ($document->isDirty()) {
-                    $document->updated_by = auth()->user()->id;
+                    $document->updated_by = $this->userId ?? auth()->id();
                     $document->save();
                 }
                 DB::commit();
@@ -165,8 +168,17 @@ class ImportData implements WithHeadingRow, ToCollection, SkipsOnFailure, SkipsO
         ];
 
         $prefix = $prefixMap[strtolower($docType)] ?? strtoupper($docType);
-        $last = $table[$docType]::whereLike('unique_ref_no', 'H%')->where('branch_code', $branchCode)->orderBy('created_at', 'desc')->count();
-        return 'H' . $prefix . $branchCode . str_pad(++$last, 7, '0', STR_PAD_LEFT);
+        $counterKey = strtolower($docType) . '|' . $branchCode;
+
+        if (!array_key_exists($counterKey, $this->branchCounters)) {
+            $this->branchCounters[$counterKey] = $table[$docType]::whereLike('unique_ref_no', 'H%')
+                ->where('branch_code', $branchCode)
+                ->count();
+        }
+
+        $this->branchCounters[$counterKey]++;
+
+        return 'H' . $prefix . $branchCode . str_pad($this->branchCounters[$counterKey], 7, '0', STR_PAD_LEFT);
     }
     public function chunkSize(): int
     {
