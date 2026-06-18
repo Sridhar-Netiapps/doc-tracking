@@ -26,7 +26,7 @@ class ExportInsuranceLeads implements
      */
     public function query()
     {
-        return $this->query->with('nominee');
+        return $this->query;
     }
 
     /**
@@ -164,7 +164,7 @@ class ExportInsuranceLeads implements
         "Processed by",
         "Date of Submision to Partner",
         "Date of Re-submision to partner",
-"HO Remarks",
+        "HO Remarks",
         "Remarks",
         "Claim Status",
         "CAS Status",

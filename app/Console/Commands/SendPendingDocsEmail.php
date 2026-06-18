@@ -64,7 +64,6 @@ class SendPendingDocsEmail extends Command
                 $branchCounts[$branchCode][$label] = $row->count;
             }
         }
-        // dd($branchCounts);
         foreach ($branchCounts as $data) {
             $branchCode = $data['branch_code'];
             $emails = User::where('branch_id', $branchCode)->where('status', 'active')

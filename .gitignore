@@ -23,3 +23,6 @@ yarn-error.log
 composer.lock
 /phpmyadmin
 /storage
+/cleanup_archive_2026_03_04
+/cleanup_archive_2026_03_09
+/cleanup_archive_*

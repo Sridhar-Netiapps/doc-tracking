@@ -25,13 +25,10 @@ use App\Exports\LoanDocumentExport;
 use App\Exports\GoldLoanDocumentExport;
 use App\Exports\DtrfExport;
 use App\Exports\AccountOpeningDocumentExport;
-use App\Jobs\FinalizeDocumentExport;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Contracts\Encryption\DecryptException;
 use phpseclib3\Crypt\AES;
 use phpseclib3\Crypt\RSA;
@@ -141,12 +138,12 @@ class DocumentController extends Controller
     
     public function filteredList(Request $request)
     {
-        $filters = session()->pull('filters', []);
-        
-        $type = isset($filters['type']) ? $filters['type'] : session()->pull('type', 'all');
-        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session()->pull('dtype', 'loan');
-        // $type = $filters['type'] ?? session()->pull('type', 'all');
-        // $dtype = $filters['dtype'] ?? session()->pull('dtype', 'loan');
+        $filters = session('filters', []);
+
+        $type = isset($filters['type']) ? $filters['type'] : session('type', 'all');
+        $dtype = isset($filters['dtype']) ? $filters['dtype'] : session('dtype', 'loan');
+        // $type = $filters['type'] ?? session('type', 'all');
+        // $dtype = $filters['dtype'] ?? session('dtype', 'loan');
         if(empty($filters)){
             if(isset($type) && isset($dtype))
                 return redirect()->route('accounts.index',['type' => $type,'dtype' => $dtype]);
@@ -481,10 +478,10 @@ class DocumentController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => 'No documents selected.'], 422);
             }
-            $availableLoanIds = LoanDocument::whereIn('id', $loanIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableGoldLoanIds = GoldLoanDocument::whereIn('id', $goldLoanIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableDtrfIds = DtrfDocument::whereIn('id', $dtrfIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
-            $availableAofIds = AccountOpeningDocument::whereIn('id', $aofIds)->whereNull('dispatch_id')->lockForUpdate()->pluck('id')->toArray();
+            $availableLoanIds = LoanDocument::whereIn('id', $loanIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableGoldLoanIds = GoldLoanDocument::whereIn('id', $goldLoanIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableDtrfIds = DtrfDocument::whereIn('id', $dtrfIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
+            $availableAofIds = AccountOpeningDocument::whereIn('id', $aofIds)->where('status', 2)->lockForUpdate()->pluck('id')->toArray();
 
             $availableCount = count($availableLoanIds) + count($availableGoldLoanIds) + count($availableDtrfIds) + count($availableAofIds);
             if ($availableCount !== $selectedCount) {
@@ -786,10 +783,6 @@ class DocumentController extends Controller
         $dtrf_total = $dtrf_document ? $dtrf_document->total() : $filter(DtrfDocument::query())->count();
         $aof_total = $account_opening_document ? $account_opening_document->total() : $filter(AccountOpeningDocument::query())->count();
 
-        // if($this->user->branch_id != $dispatch->branch_code){
-        //     return redirect('/home')->with('error', 'Access Denied');
-        // }
-
         // Encrypt sensitive fields before passing to view
         $loan_document = $this->encryptPaginator($loan_document);
         $gold_loan_document = $this->encryptPaginator($gold_loan_document);
@@ -965,7 +958,7 @@ class DocumentController extends Controller
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
             } elseif ((int)$update['remarks'] === 12) {
                 $data = [
                     'dispatch_no' => $dispatch->dispatch_no,
@@ -977,7 +970,7 @@ class DocumentController extends Controller
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
 
             DB::commit();
@@ -1376,7 +1369,7 @@ class DocumentController extends Controller
             return response()->json([
                 'secure_res' => base64_encode($finalBinary),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json(['message' => 'Unable to process secure reveal'], 422);
         }
     }
@@ -1492,186 +1485,28 @@ class DocumentController extends Controller
         $docType = $filters['doc_type'] ?? null;
 
         if (!isset($this->table[$docType])) {
-            return response()->json([
-                'status' => 'failed',
-                'error' => 'Invalid document type selected.',
-            ], 422);
+            abort(422, 'Invalid document type selected.');
         }
-
-        $jobId = (string) Str::uuid();
-        $cacheKey = 'document_export_' . $jobId;
-        $expiresAt = now()->addHours(24);
-        $userId = (int) $this->user->id;
 
         $modelClass = $this->table[$docType];
         $filters['snapshot_max_id'] = (int) ($modelClass::max('id') ?? 0);
 
-        $export = $this->makeDocumentExport($docType, $filters, $jobId, $userId);
+        $export = $this->makeDocumentExport($docType, $filters);
         $expectedCount = (clone $export->query())->count();
-
         $writerType = $expectedCount > 1000000 ? ExcelWriter::CSV : ExcelWriter::XLSX;
         $extension = $writerType === ExcelWriter::CSV ? 'csv' : 'xlsx';
-        $path = "exports/documents/{$docType}_{$jobId}.{$extension}";
+        $filename = "{$docType}_documents_report_" . now()->format('Ymd_His') . ".{$extension}";
 
-        Cache::put($cacheKey, [
-            'status' => 'processing',
-            'user_id' => $userId,
-            'path' => null,
-            'doc_type' => $docType,
-            'error' => null,
-            'queued_at' => now()->toDateTimeString(),
-            'expected_count' => $expectedCount,
-            'file_extension' => $extension,
-        ], $expiresAt);
-
-        Storage::disk('private')->makeDirectory('exports/documents');
-
-        try {
-            $pending = Excel::queue($export, $path, 'private', $writerType);
-            $pending
-                ->onQueue('exports-heavy')
-                ->allOnQueue('exports-heavy')
-                ->chain([
-                    new FinalizeDocumentExport($jobId, $userId, $path, (int) $expectedCount),
-                ]);
-        } catch (\Throwable $e) {
-            Cache::put($cacheKey, [
-                'status' => 'failed',
-                'user_id' => $userId,
-                'path' => null,
-                'doc_type' => $docType,
-                'error' => $e->getMessage(),
-                'queued_at' => now()->toDateTimeString(),
-                'expected_count' => $expectedCount,
-                'file_extension' => $extension,
-            ], $expiresAt);
-
-            return response()->json([
-                'status' => 'failed',
-                'error' => 'Unable to queue report export. Please try again.',
-            ], 500);
-        }
-
-        Log::info('Document export queued', [
-            'job_id' => $jobId,
-            'user_id' => $userId,
-            'doc_type' => $docType,
-            'expected_count' => $expectedCount,
-            'writer_type' => $writerType,
-        ]);
-
-        return response()->json([
-            'status' => 'processing',
-            'job_id' => $jobId,
-            'expected_count' => $expectedCount,
-            'file_type' => strtoupper($extension),
-        ]);
+        return Excel::download($export, $filename, $writerType);
     }
 
-    public function checkReportExportStatus(Request $request, string $jobId)
-    {
-        $cacheKey = 'document_export_' . $jobId;
-        $payload = Cache::get($cacheKey);
-
-        if (!$payload) {
-            return response()->json(['error' => 'Export job not found or expired.'], 404);
-        }
-
-        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
-            return response()->json(['error' => 'Unauthorized.'], 403);
-        }
-
-        if (($payload['status'] ?? null) === 'processing') {
-            $queuedAtRaw = $payload['queued_at'] ?? null;
-            if (!empty($queuedAtRaw)) {
-                $queuedAt = Carbon::parse($queuedAtRaw);
-                if ($queuedAt->addHours(8)->isPast()) {
-                    Cache::put($cacheKey, array_merge($payload, [
-                        'status' => 'failed',
-                        'error' => 'Export processing timeout. Please try again.',
-                        'failed_at' => now()->toDateTimeString(),
-                    ]), now()->addHours(24));
-
-                    return response()->json([
-                        'status' => 'failed',
-                        'error' => 'Export timed out. Please re-run export.',
-                    ], 500);
-                }
-            }
-        }
-
-        if (($payload['status'] ?? null) === 'completed') {
-            $path = $payload['path'] ?? null;
-            if (!$path || !Storage::disk('private')->exists($path)) {
-                Cache::put($cacheKey, array_merge($payload, [
-                    'status' => 'failed',
-                    'error' => 'Export file was not found after completion.',
-                    'failed_at' => now()->toDateTimeString(),
-                ]), now()->addHours(24));
-
-                return response()->json([
-                    'status' => 'failed',
-                    'error' => 'Export file not found. Please re-run export.',
-                ], 500);
-            }
-
-            $downloadUrl = URL::temporarySignedRoute(
-                'reports.export.download',
-                now()->addMinutes(15),
-                ['jobId' => $jobId]
-            );
-
-            return response()->json([
-                'status' => 'completed',
-                'download_url' => $downloadUrl,
-                'expected_count' => $payload['expected_count'] ?? null,
-            ]);
-        }
-
-        if (($payload['status'] ?? null) === 'failed') {
-            return response()->json([
-                'status' => 'failed',
-                'error' => $payload['error'] ?? 'Export failed.',
-            ], 500);
-        }
-
-        return response()->json(['status' => 'processing']);
-    }
-
-    public function downloadReportExport(Request $request, string $jobId)
-    {
-        $cacheKey = 'document_export_' . $jobId;
-        $payload = Cache::get($cacheKey);
-
-        if (!$payload) {
-            abort(404);
-        }
-
-        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
-            abort(403);
-        }
-
-        if (($payload['status'] ?? null) !== 'completed') {
-            return response()->json(['error' => 'Report is not ready yet.'], 409);
-        }
-
-        $path = $payload['path'] ?? null;
-        if (!$path || !Storage::disk('private')->exists($path)) {
-            abort(404);
-        }
-
-        $downloadName = basename($path);
-
-        return Storage::disk('private')->download($path, $downloadName);
-    }
-
-    private function makeDocumentExport(string $docType, array $filters, string $jobId, int $userId): object
+    private function makeDocumentExport(string $docType, array $filters): object
     {
         return match ($docType) {
-            'loan' => new LoanDocumentExport($filters, $jobId, $userId),
-            'goldloan' => new GoldLoanDocumentExport($filters, $jobId, $userId),
-            'dtrf' => new DtrfExport($filters, $jobId, $userId),
-            'aof' => new AccountOpeningDocumentExport($filters, $jobId, $userId),
+            'loan' => new LoanDocumentExport($filters),
+            'goldloan' => new GoldLoanDocumentExport($filters),
+            'dtrf' => new DtrfExport($filters),
+            'aof' => new AccountOpeningDocumentExport($filters),
             default => throw new \InvalidArgumentException('Unsupported document type.'),
         };
     }
@@ -1841,4 +1676,118 @@ class DocumentController extends Controller
     //         // $targetModel::create($data);
     //     }
     // }
+
+    public function secureRevealBatch(Request $request)
+    {
+        $validated = $request->validate(['secure_req' => 'required|string']);
+
+        try {
+            $outerBlob = json_decode(base64_decode($validated['secure_req']), true);
+            if (!is_array($outerBlob) || !isset($outerBlob['k'], $outerBlob['i'], $outerBlob['d'])) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $privateKey = RSA::load(Storage::get('keys/private_key.pem'), config('app.private_key_passphrase'))
+                ->withPadding(RSA::ENCRYPTION_OAEP)
+                ->withHash('sha256')
+                ->withMGFHash('sha256');
+
+            $tempAesKey = $privateKey->decrypt(base64_decode($outerBlob['k']));
+            if ($tempAesKey === false || strlen($tempAesKey) !== 32) {
+                return response()->json(['message' => 'Invalid reveal key'], 422);
+            }
+
+            $requestIv = base64_decode($outerBlob['i']);
+            $requestCipherCombined = base64_decode($outerBlob['d']);
+            if (!$requestIv || strlen($requestIv) !== 12 || !$requestCipherCombined || strlen($requestCipherCombined) <= 16) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $requestAes = new AES('gcm');
+            $requestAes->setKey($tempAesKey);
+            $requestAes->setNonce($requestIv);
+            $requestAes->setTag(substr($requestCipherCombined, -16));
+            $decryptedRequest = $requestAes->decrypt(substr($requestCipherCombined, 0, -16));
+
+            if ($decryptedRequest === false) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            $inner = json_decode($decryptedRequest, true);
+            if (!is_array($inner) || !isset($inner['tokens']) || !is_array($inner['tokens']) || count($inner['tokens']) > 300) {
+                return response()->json(['message' => 'Invalid request'], 422);
+            }
+
+            // Decode tokens and group by document type for batch DB queries
+            $decodedTokens = [];
+            $byType = [];
+            foreach ($inner['tokens'] as $item) {
+                if (!isset($item['idx'], $item['token']) || !is_string($item['token'])) {
+                    continue;
+                }
+                try {
+                    $tokenBinary = hex2bin($item['token']);
+                    $payload = json_decode(Crypt::decryptString($tokenBinary), true);
+                    if (
+                        !is_array($payload) ||
+                        !isset($payload['id'], $payload['t'], $payload['f']) ||
+                        !in_array($payload['f'], ['cif_id', 'account_number', 'customer_name'], true) ||
+                        !in_array($payload['t'], ['loan', 'goldloan', 'dtrf', 'aof'], true)
+                    ) {
+                        continue;
+                    }
+                    $decodedTokens[(int) $item['idx']] = $payload;
+                    $byType[$payload['t']][(int) $payload['id']] = true;
+                } catch (\Exception $e) {
+                    // skip invalid token
+                }
+            }
+
+            // Batch fetch — at most 4 queries total (one per document type)
+            $documents = [];
+            foreach ($byType as $type => $idMap) {
+                $this->table[$type]::whereIn('id', array_keys($idMap))
+                    ->get()
+                    ->each(function ($doc) use ($type, &$documents) {
+                        $documents[$type][$doc->id] = $doc;
+                    });
+            }
+
+            $results = [];
+            foreach ($decodedTokens as $idx => $payload) {
+                $doc = $documents[$payload['t']][$payload['id']] ?? null;
+                if (!$doc) {
+                    $results[] = ['idx' => $idx, 'error' => true];
+                    continue;
+                }
+
+                if ($this->user->hasRole('bo-maker') || $this->user->hasRole('bo-checker') || $this->user->hasRole('branch-user')) {
+                    if ($this->user->branch_id != $doc->branch_code) {
+                        $results[] = ['idx' => $idx, 'error' => true];
+                        continue;
+                    }
+                } elseif ($this->user->hasRole('ro-officer') || $this->user->hasRole('ro-supervisor') || $this->user->hasRole('ro-user')) {
+                    if (strtolower($this->user->region) != strtolower($doc->region)) {
+                        $results[] = ['idx' => $idx, 'error' => true];
+                        continue;
+                    }
+                }
+
+                $plaintext = (string) EncryptHelper::decrypt($doc->{$payload['f']} ?? '');
+                $responseIv = random_bytes(12);
+
+                $aes = new AES('gcm');
+                $aes->setKey($tempAesKey);
+                $aes->setNonce($responseIv);
+                $ciphertext = $aes->encrypt($plaintext);
+                $finalBinary = $responseIv . $ciphertext . $aes->getTag();
+
+                $results[] = ['idx' => $idx, 'secure_res' => base64_encode($finalBinary)];
+            }
+
+            return response()->json(['results' => $results]);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'Unable to process secure reveal'], 422);
+        }
+    }
 }

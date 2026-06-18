@@ -36,6 +36,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () { 
         return redirect(route('login'));
     });
+
+    Route::post('/api/secure-reveal-batch', [DocumentController::class, 'secureRevealBatch'])->name('api.secure-reveal-batch');
+    
     Route::group(['middleware' => ['role.access']], function () {
         Route::get('/api/secure-reveal-key', [DocumentController::class, 'getRevealPublicKey'])->name('api.secure-reveal-key');
         Route::post('/api/secure-reveal', [DocumentController::class, 'secureReveal'])->name('api.secure-reveal');
@@ -94,27 +97,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('document/revert', [DocumentController::class, 'revertStatus'])->name('document.revert');
         Route::post('courier/revert', [DocumentController::class, 'revertCourierStatus'])->middleware('ale')->name('courier.revert');
         Route::post('document/restore', [DocumentController::class, 'restoreDocument'])->name('document.restore');
-        Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails'])
-            ->whereIn('type', ['loan', 'goldloan', 'dtrf', 'aof'])
-            ->whereNumber('id');
+        Route::get('/get-document-details/{type}/{id}', [DocumentController::class, 'getDocumentDetails'])->whereIn('type', ['loan', 'goldloan', 'dtrf', 'aof'])->whereNumber('id');
         Route::post('/courier/check-awb', [DocumentController::class, 'checkAwb'])->middleware('ale')->name('courier.checkAwb');
         Route::post('/dispatches/add-courier', [DocumentController::class, 'addCourier'])->middleware('ale')->name('courier.add');
         Route::put('/dispatches/update-updateDetails/{id}', [DocumentController::class, 'updateCourierDetails'])->middleware('ale')->name('courier.updateDetails');
         Route::post('document/dispatchremove', [DocumentController::class, 'removeDispatchesDocument'])->name('document.dispatchremove');
         Route::post('document/update', [DocumentController::class, 'statusUpdate'])->name('document.update');
-        Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])
-            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
-            ->name('dispatches');
-        Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])
-            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
-            ->name('dispatches.filter');
-        Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])
-            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
-            ->name('dispatches.clear');
+        Route::get('dispatches/{type}', [DocumentController::class,'getDispatches'])->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])->name('dispatches');
+        Route::post('/dispatches/{type}/filter', [DocumentController::class, 'filterDispatches'])->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])->name('dispatches.filter');
+        Route::get('/dispatches/clear/{type}', [DocumentController::class, 'clearFilters'])->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])->name('dispatches.clear');
         Route::get('dispatches/edit/{id}', [DocumentController::class,'editDispatches'])->name('dispatches.edit');
-        Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])
-            ->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])
-            ->name('dispatches.view');
+        Route::get('dispatches/{type}/{id}/view', [DocumentController::class,'viewDispatches'])->whereIn('type', ['ready', 'list', 'tracking', 'delivered', 'reject'])->name('dispatches.view');
         Route::get('dispatches/check-status/{id}', [DocumentController::class, 'checkDispatchStatus'])->whereNumber('id');
         Route::post('dispatches', [DocumentController::class,'updateCourier'])->middleware('ale')->name('dispatched');
         Route::post('dispatches/update', [DocumentController::class, 'dispatchDetails'])->middleware('ale')->name('dispatches.update');
@@ -122,15 +115,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         Route::post('reports', [DocumentController::class,'export'])->name('reports');
-        Route::get('reports/export/{jobId}/status', [DocumentController::class, 'checkReportExportStatus'])
-            ->whereUuid('jobId')
-            ->name('reports.export.status');
-        Route::get('reports/export/{jobId}/download', [DocumentController::class, 'downloadReportExport'])
-            ->middleware('signed')
-            ->whereUuid('jobId')
-            ->name('reports.export.download');
 
-        
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
         
         Route::get('/accounts/data_import', function () {

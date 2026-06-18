@@ -16,25 +16,27 @@
         <div class="col">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'loan']) }}" class="nav-link {{($dtype ?? 'loan') == 'loan' ? 'active':''}}" id="loan" role="tab" aria-controls="loan-pane" aria-selected="{{ ($dtype ?? 'loan') == 'loan' ? 'true' : 'false' }}">
+                    <button class="nav-link {{ ($dtype ?? 'loan') == 'loan' ? 'active' : '' }}" id="loan" data-bs-toggle="tab" data-bs-target="#loan-pane" type="button" role="tab" aria-controls="loan-pane" aria-selected="{{ ($dtype ?? 'loan') == 'loan' ? 'true' : 'false' }}">
                         MB Loan Docs <span class="badge text-bg-warning">{{ $loan_total }}</span>
-                    </a>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'goldloan']) }}" class="nav-link {{($dtype ?? '') == 'goldloan' ? 'active':''}}" id="goldloan" role="tab" aria-controls="goldloan-pane" aria-selected="{{ ($dtype ?? '') == 'goldloan' ? 'true' : 'false' }}">
+                    <button class="nav-link {{ ($dtype ?? '') == 'goldloan' ? 'active' : '' }}" id="goldloan" data-bs-toggle="tab" data-bs-target="#goldloan-pane" type="button" role="tab" aria-controls="goldloan-pane" aria-selected="{{ ($dtype ?? '') == 'goldloan' ? 'true' : 'false' }}">
                         Gold Loan Docs <span class="badge text-bg-warning">{{ $gold_loan_total }}</span>
-                    </a>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'aof']) }}" class="nav-link {{($dtype ?? '') == 'aof' ? 'active':''}}" id="aof" role="tab" aria-controls="aof-pane" aria-selected="{{ ($dtype ?? '') == 'aof' ? 'true' : 'false' }}">
+                    <button class="nav-link {{ ($dtype ?? '') == 'aof' ? 'active' : '' }}" id="aof" data-bs-toggle="tab" data-bs-target="#aof-pane" type="button" role="tab" aria-controls="aof-pane" aria-selected="{{ ($dtype ?? '') == 'aof' ? 'true' : 'false' }}">
                         Liabilities Docs <span class="badge text-bg-warning">{{ $aof_total }}</span>
-                    </a>
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a href="{{ route('accounts.index', ['type' => $type, 'dtype' => 'dtrf']) }}" class="nav-link {{($dtype ?? '') == 'dtrf' ? 'active':''}}" id="dtrf" role="tab" aria-controls="dtrf-pane" aria-selected="{{ ($dtype ?? '') == 'dtrf' ? 'true' : 'false' }}">
+                    <button class="nav-link {{ ($dtype ?? '') == 'dtrf' ? 'active' : '' }}" id="dtrf" data-bs-toggle="tab" data-bs-target="#dtrf-pane" type="button" role="tab" aria-controls="dtrf-pane" aria-selected="{{ ($dtype ?? '') == 'dtrf' ? 'true' : 'false' }}">
                         DTR Files <span class="badge text-bg-warning">{{ $dtrf_total }}</span>
-                    </a>
+                    </button>
                 </li>
+
+                {{-- action buttons below kept exactly as your original --}}
                 @hasanyrole('bo-maker|bo-checker')
                     @if (!in_array($type, ['received']))
                         <li class="ms-auto">
@@ -55,20 +57,19 @@
                         </li>
                     @endif
                 @endhasanyrole
-
                 @role('ro-supervisor|master|super_admin|admin')
                     {{-- @if ($type !== 'rejected') --}}
-                        <li class="ms-auto">
-                            {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
-                                {{-- @csrf --}}
-                                <button class="btn btn-danger btn-sm remove-doc" type="button">Move to Trash</button>
-                            {{-- </form> --}}
-                        </li>
+                    <li class="ms-auto">
+                        {{-- <form method="POST" action="{{ route('accounts.proceed') }}" id="proceed"> --}}
+                        {{-- @csrf --}}
+                        <button class="btn btn-danger btn-sm remove-doc" type="button">Move to Trash</button>
+                        {{-- </form> --}}
+                    </li>
                     {{-- @endif --}}
                     @if ($type == 'received')
-                    <li>
-                        <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
-                    </li>
+                        <li>
+                            <button class="btn btn-primary vendor-upload" type="button">Upload RMA Details</button>
+                        </li>
                     @endif
                 @endrole
             </ul>
@@ -78,7 +79,6 @@
             {{-- <input type="hidden" name="dispatch_id" value="{{ $dispatch->id }}">
             <input type="hidden" name="doc-type" value="{{ $type }}"> --}}
             <div class="tab-content bg-white" id="myTabContent">
-                @if(($dtype ?? 'loan') == 'loan')
                 <div class="tab-pane fade {{($dtype ?? 'loan') == 'loan' ? 'show active':''}}" id="loan-pane" role="tabpanel" aria-labelledby="loan" tabindex="0">
                     @if(isset($loan_document) && $loan_document->count())
                         {{ $loan_document->links('pagination::bootstrap-5') }}
@@ -236,7 +236,6 @@
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
-                @elseif(($dtype ?? 'loan') == 'goldloan')
                 <div class="tab-pane fade {{($dtype ?? '') == 'goldloan' ? 'show active':''}}" id="goldloan-pane" role="tabpanel" aria-labelledby="goldloan" tabindex="0">
                     @if(isset($gold_loan_document) && $gold_loan_document->count())
                         {{ $gold_loan_document->links('pagination::bootstrap-5') }}
@@ -387,7 +386,6 @@
                         <p class="text-center text-muted">No documents found.</p> 
                     @endif
                 </div>
-                @elseif(($dtype ?? 'loan') == 'aof')
                 <div class="tab-pane fade {{($dtype ?? '') == 'aof' ? 'show active':''}}" id="aof-pane" role="tabpanel" aria-labelledby="aof" tabindex="0">
                     @if(isset($account_opening_document) && $account_opening_document->count())
                         {{ $account_opening_document->links('pagination::bootstrap-5') }}
@@ -542,7 +540,6 @@
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
-                @elseif(($dtype ?? 'loan') == 'dtrf')
                 <div class="tab-pane fade {{($dtype ?? '') == 'dtrf' ? 'show active':''}}" id="dtrf-pane" role="tabpanel" aria-labelledby="dtrf" tabindex="0">
                     @if(isset($dtrf_document) && $dtrf_document->count())
                         {{ $dtrf_document->links('pagination::bootstrap-5') }}
@@ -674,7 +671,6 @@
                         <p class="text-center text-muted">No documents found.</p>
                     @endif
                 </div>
-                @endif
             </div>
         </div>
     </div>
@@ -712,11 +708,11 @@
                         <option value="West" {{ ($filters['region'] ?? '') == 'West' ? 'selected' : '' }}>West</option>
                     </select>
                 </div>
-                {{-- @endunless --}}
+                @endunless
                 <div class="col-12 mt-3">
                     <input type="number" class="form-control branch_code" placeholder="Branch Code" value="{{ old('branch_code', $filters['branch_code'] ?? '') }}" name="branch_code" min="0">
                 </div>
-                {{-- @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker'])) --}}
+                @unless(auth()->user()->hasAnyRole(['bo-maker', 'bo-checker']))
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control branch_name alphanumeric" placeholder="Branch Name" value="{{ old('branch_name', $filters['branch_name'] ?? '') }}" name="branch_name">
                 </div>

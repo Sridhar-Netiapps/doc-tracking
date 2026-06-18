@@ -68,11 +68,27 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (\Throwable $e, Request $request) {
             if ($request->is('api/*') || $request->wantsJson()) {
+                // Let Laravel handle these with their proper status codes
+                if (
+                    $e instanceof \Illuminate\Validation\ValidationException ||
+                    $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException ||
+                    $e instanceof \Illuminate\Auth\AuthenticationException ||
+                    $e instanceof \Illuminate\Session\TokenMismatchException
+                ) {
+                    return null;
+                }
                 return response()->json([
                     'error' => 'A secure connection error occurred. Please try again later.'
                 ], 500);
             }
         });
+        // $exceptions->render(function (\Throwable $e, Request $request) {
+        //     if ($request->is('api/*') || $request->wantsJson()) {
+        //         return response()->json([
+        //             'error' => 'A secure connection error occurred. Please try again later.'
+        //         ], 500);
+        //     }
+        // });
     })
     /* ->withSchedule(function () {
         Schedule::command('app:sync-h-r-mdata')->everyMinute();

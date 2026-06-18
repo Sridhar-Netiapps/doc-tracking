@@ -425,10 +425,10 @@
                 </div>
                 @endunless
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('cif_id', $filters['cif_id'] ?? '')) }}" name="cif_id">
+                    <input type="text" class="form-control cif_id alphanumeric capsonly" placeholder="CIF ID" value="{{ old('cif_id', $filters['cif_id'] ?? '') }}" name="cif_id">
                 </div>
                 <div class="col-12 mt-3">
-                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ \App\Helpers\EncryptHelper::maskIdentifier(old('account_number', $filters['account_number'] ?? '')) }}" name="account_number">
+                    <input type="text" class="form-control account_number alphanumeric capsonly" placeholder="A/C No" value="{{ old('account_number', $filters['account_number'] ?? '') }}" name="account_number">
                 </div>
                 <div class="col-12 mt-3">
                     <input type="text" class="form-control alphanumeric" placeholder="Business Category" value="{{ old('business_category', $filters['business_category'] ?? '') }}" name="business_category">
