@@ -29,6 +29,7 @@ class GoldLoanDocumentExport extends DefaultValueBinder implements FromQuery, Wi
         $query = GoldLoanDocument::query()
             ->select([
                 'id',
+                'dispatch_id',
                 'unique_ref_no',
                 'region',
                 'branch_code',
@@ -54,8 +55,8 @@ class GoldLoanDocumentExport extends DefaultValueBinder implements FromQuery, Wi
             ])
             ->with([
                 'dispatch.courierName',
-                'dispatch.dispatcher',
                 'dispatch.modifier',
+                'getDispatchedDetails.creator',
                 'statusName',
                 'getReceivedDetails.newStatus',
                 'getReceivedDetails.creator',
@@ -125,8 +126,8 @@ class GoldLoanDocumentExport extends DefaultValueBinder implements FromQuery, Wi
             $doc->status >= 4 ? optional($doc->dispatch)->awb_pod : '-',
             $doc->status >= 4 ? optional(optional($doc->dispatch)->courierName)->name : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->dispatch_date ? date('d-m-Y', strtotime($doc->dispatch->dispatch_date)) : '-') : '-',
-            $doc->status >= 4 ? (optional($doc->dispatch)->status >= 4 ? optional($doc->dispatch->dispatcher)->employee_id . ' - ' . optional($doc->dispatch->dispatcher)->first_name.' '.optional($doc->dispatch->dispatcher)->last_name : '-') : '-',
-            $doc->status >= 4 ? (in_array(optional($doc->dispatch)->status, [5,6,7]) ? date('d-m-Y', strtotime($doc->dispatch->verified_at))  : '-') : '-',
+            $doc->status >= 4 ? (optional($doc->getDispatchedDetails)->current_status == 4 ? optional($doc->getDispatchedDetails->creator)->employee_id . ' - ' . optional($doc->getDispatchedDetails->creator)->first_name.' '.optional($doc->getDispatchedDetails->creator)->last_name : '-') : '-',
+            $doc->status >= 4 ? (optional($doc->dispatch)->verified_at ? date('d-m-Y', strtotime($doc->dispatch->verified_at)) : '-') : '-',
             $doc->status >= 4 ? (optional($doc->dispatch)->status == 12 ? optional($doc->dispatch->modifier)->employee_id . ' - ' . optional($doc->dispatch->modifier)->first_name.' '.optional($doc->dispatch->modifier)->last_name : '-') : '-',
             $doc->status >= 4 ? optional($doc->statusName)->name : '-',
             $doc->status >= 4 ? optional(optional($doc->getReceivedDetails)->newStatus)->name : '-',

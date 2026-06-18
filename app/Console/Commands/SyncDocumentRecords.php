@@ -34,7 +34,7 @@ class SyncDocumentRecords extends Command
     protected function syncLoanType($sourceModel, $targetModel, string $prefix, string $dateColumn)
     {
         $today = now()->toDateString();
-        $today = '2025-10-23'; // Hardcoded for testing purposes    
+        // $today = '2025-10-23'; // Hardcoded for testing purposes    
         $formattedMonthYear = now()->format('my');
         $currentMonth = now()->month;
         $currentYear = now()->year;

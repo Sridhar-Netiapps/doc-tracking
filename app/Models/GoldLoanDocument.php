@@ -44,6 +44,14 @@ class GoldLoanDocument extends Model
                     ->whereIn('current_status', [5,6,7])
                     ->orderby('created_at', 'desc');
     }
+
+    public function getDispatchedDetails()
+    {
+        return $this->hasOne(DocumentHistory::class, 'document_id')
+                    ->where('document_type', 'GoldLoanDocument')
+                    ->where('current_status', 4)
+                    ->orderby('created_at', 'desc');
+    }
     public function getEncryptedIdAttribute()
     {
         if ($this->_encrypted_id === null) {
