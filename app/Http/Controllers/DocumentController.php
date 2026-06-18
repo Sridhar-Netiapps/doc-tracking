@@ -25,13 +25,10 @@ use App\Exports\LoanDocumentExport;
 use App\Exports\GoldLoanDocumentExport;
 use App\Exports\DtrfExport;
 use App\Exports\AccountOpeningDocumentExport;
-use App\Jobs\FinalizeDocumentExport;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Contracts\Encryption\DecryptException;
 use phpseclib3\Crypt\AES;
 use phpseclib3\Crypt\RSA;
@@ -961,7 +958,7 @@ class DocumentController extends Controller
                 $html = view('emails.dispatches_mail', ['data' => $data])->render();
                 $subject = "Document Tracking – Courier receipt acknowledgement Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject)); 
             } elseif ((int)$update['remarks'] === 12) {
                 $data = [
                     'dispatch_no' => $dispatch->dispatch_no,
@@ -973,7 +970,7 @@ class DocumentController extends Controller
                 $html = view('emails.tracking_completed', ['data' => $data])->render();
                 $subject = "Document Tracking Update - Dispatch ref no:#".$dispatch->dispatch_no;
                 // $emails = ['sridhar@netiapps.com','ragavi@netiapps.com','suraksha@netiapps.com'];
-                Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
+                // Mail::to($emails)->send(new \App\Mail\DispatchesMail($html, $subject));
             }
 
             DB::commit();
@@ -1488,186 +1485,28 @@ class DocumentController extends Controller
         $docType = $filters['doc_type'] ?? null;
 
         if (!isset($this->table[$docType])) {
-            return response()->json([
-                'status' => 'failed',
-                'error' => 'Invalid document type selected.',
-            ], 422);
+            abort(422, 'Invalid document type selected.');
         }
-
-        $jobId = (string) Str::uuid();
-        $cacheKey = 'document_export_' . $jobId;
-        $expiresAt = now()->addHours(24);
-        $userId = (int) $this->user->id;
 
         $modelClass = $this->table[$docType];
         $filters['snapshot_max_id'] = (int) ($modelClass::max('id') ?? 0);
 
-        $export = $this->makeDocumentExport($docType, $filters, $jobId, $userId);
+        $export = $this->makeDocumentExport($docType, $filters);
         $expectedCount = (clone $export->query())->count();
-
         $writerType = $expectedCount > 1000000 ? ExcelWriter::CSV : ExcelWriter::XLSX;
         $extension = $writerType === ExcelWriter::CSV ? 'csv' : 'xlsx';
-        $path = "exports/documents/{$docType}_{$jobId}.{$extension}";
+        $filename = "{$docType}_documents_report_" . now()->format('Ymd_His') . ".{$extension}";
 
-        Cache::put($cacheKey, [
-            'status' => 'processing',
-            'user_id' => $userId,
-            'path' => null,
-            'doc_type' => $docType,
-            'error' => null,
-            'queued_at' => now()->toDateTimeString(),
-            'expected_count' => $expectedCount,
-            'file_extension' => $extension,
-        ], $expiresAt);
-
-        Storage::disk('private')->makeDirectory('exports/documents');
-
-        try {
-            $pending = Excel::queue($export, $path, 'private', $writerType);
-            $pending
-                ->onQueue('exports-heavy')
-                ->allOnQueue('exports-heavy')
-                ->chain([
-                    new FinalizeDocumentExport($jobId, $userId, $path, (int) $expectedCount),
-                ]);
-        } catch (\Throwable $e) {
-            Cache::put($cacheKey, [
-                'status' => 'failed',
-                'user_id' => $userId,
-                'path' => null,
-                'doc_type' => $docType,
-                'error' => $e->getMessage(),
-                'queued_at' => now()->toDateTimeString(),
-                'expected_count' => $expectedCount,
-                'file_extension' => $extension,
-            ], $expiresAt);
-
-            return response()->json([
-                'status' => 'failed',
-                'error' => 'Unable to queue report export. Please try again.',
-            ], 500);
-        }
-
-        Log::info('Document export queued', [
-            'job_id' => $jobId,
-            'user_id' => $userId,
-            'doc_type' => $docType,
-            'expected_count' => $expectedCount,
-            'writer_type' => $writerType,
-        ]);
-
-        return response()->json([
-            'status' => 'processing',
-            'job_id' => $jobId,
-            'expected_count' => $expectedCount,
-            'file_type' => strtoupper($extension),
-        ]);
+        return Excel::download($export, $filename, $writerType);
     }
 
-    public function checkReportExportStatus(Request $request, string $jobId)
-    {
-        $cacheKey = 'document_export_' . $jobId;
-        $payload = Cache::get($cacheKey);
-
-        if (!$payload) {
-            return response()->json(['error' => 'Export job not found or expired.'], 404);
-        }
-
-        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
-            return response()->json(['error' => 'Unauthorized.'], 403);
-        }
-
-        if (($payload['status'] ?? null) === 'processing') {
-            $queuedAtRaw = $payload['queued_at'] ?? null;
-            if (!empty($queuedAtRaw)) {
-                $queuedAt = Carbon::parse($queuedAtRaw);
-                if ($queuedAt->addHours(8)->isPast()) {
-                    Cache::put($cacheKey, array_merge($payload, [
-                        'status' => 'failed',
-                        'error' => 'Export processing timeout. Please try again.',
-                        'failed_at' => now()->toDateTimeString(),
-                    ]), now()->addHours(24));
-
-                    return response()->json([
-                        'status' => 'failed',
-                        'error' => 'Export timed out. Please re-run export.',
-                    ], 500);
-                }
-            }
-        }
-
-        if (($payload['status'] ?? null) === 'completed') {
-            $path = $payload['path'] ?? null;
-            if (!$path || !Storage::disk('private')->exists($path)) {
-                Cache::put($cacheKey, array_merge($payload, [
-                    'status' => 'failed',
-                    'error' => 'Export file was not found after completion.',
-                    'failed_at' => now()->toDateTimeString(),
-                ]), now()->addHours(24));
-
-                return response()->json([
-                    'status' => 'failed',
-                    'error' => 'Export file not found. Please re-run export.',
-                ], 500);
-            }
-
-            $downloadUrl = URL::temporarySignedRoute(
-                'reports.export.download',
-                now()->addMinutes(15),
-                ['jobId' => $jobId]
-            );
-
-            return response()->json([
-                'status' => 'completed',
-                'download_url' => $downloadUrl,
-                'expected_count' => $payload['expected_count'] ?? null,
-            ]);
-        }
-
-        if (($payload['status'] ?? null) === 'failed') {
-            return response()->json([
-                'status' => 'failed',
-                'error' => $payload['error'] ?? 'Export failed.',
-            ], 500);
-        }
-
-        return response()->json(['status' => 'processing']);
-    }
-
-    public function downloadReportExport(Request $request, string $jobId)
-    {
-        $cacheKey = 'document_export_' . $jobId;
-        $payload = Cache::get($cacheKey);
-
-        if (!$payload) {
-            abort(404);
-        }
-
-        if (!isset($payload['user_id']) || (int) $payload['user_id'] !== (int) $this->user->id) {
-            abort(403);
-        }
-
-        if (($payload['status'] ?? null) !== 'completed') {
-            return response()->json(['error' => 'Report is not ready yet.'], 409);
-        }
-
-        $path = $payload['path'] ?? null;
-        if (!$path || !Storage::disk('private')->exists($path)) {
-            abort(404);
-        }
-
-        $downloadName = basename($path);
-
-        return Storage::disk('private')->download($path, $downloadName);
-    }
-
-    private function makeDocumentExport(string $docType, array $filters, string $jobId, int $userId): object
+    private function makeDocumentExport(string $docType, array $filters): object
     {
         return match ($docType) {
-            'loan' => new LoanDocumentExport($filters, $jobId, $userId),
-            'goldloan' => new GoldLoanDocumentExport($filters, $jobId, $userId),
-            'dtrf' => new DtrfExport($filters, $jobId, $userId),
-            'aof' => new AccountOpeningDocumentExport($filters, $jobId, $userId),
+            'loan' => new LoanDocumentExport($filters),
+            'goldloan' => new GoldLoanDocumentExport($filters),
+            'dtrf' => new DtrfExport($filters),
+            'aof' => new AccountOpeningDocumentExport($filters),
             default => throw new \InvalidArgumentException('Unsupported document type.'),
         };
     }

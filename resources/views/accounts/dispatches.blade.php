@@ -346,12 +346,29 @@
             $('#add-courier').modal('show');
         });
 
-        const updateCourierValidator = $('#update-courier').validate({
+        $('#update-courier').validate({
             rules: {
                 awb_pod: {
                     required: false,
                     alphanumeric: true,
-                    sanitize: true
+                    sanitize: true,
+                    remote: {
+                        url: "{{ route('courier.checkAwb') }}",
+                        type: "POST",
+                        data: {
+                            awb_pod: function () {
+                                return $('#awb_pod').val();
+                            },
+                            courier_id: function () {
+                                return $('#courier_name').val();
+                            },
+                            id: function () {
+                                return $('input[name="dispatch_id"]').val(); // optional (for edit)
+                            },
+                            _token: "{{ csrf_token() }}"
+                        }
+                    }
+
                 },
                 courier_name: {
                     required: true,
@@ -365,7 +382,8 @@
             },
             messages: {
                 awb_pod: {
-                    required: "AWB/POD is required"
+                    required: "AWB/POD is required",
+                    remote: "This AWB already exists for the selected courier"
                 },
                 courier_name: {
                     required: "Courier name is required"

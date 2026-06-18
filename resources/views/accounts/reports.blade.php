@@ -169,8 +169,6 @@
 </div>
 <script nonce='{{ env("CSP_NONCE") }}'>
     $(document).ready(function () {
-        let reportExportPollTimer = null;
-
         function docfields() {
             var docType = $('#doc_type').val();
             var search_type = $('#search_type').val();
@@ -242,77 +240,6 @@
             }
         });
 
-        $('#reportForm').on('submit', function (e) {
-            e.preventDefault();
-
-            const $form = $(this);
-            if (!$form.valid()) {
-                return;
-            }
-
-            const $btn = $('#reportExportBtn');
-            $btn.prop('disabled', true);
-
-            Swal.fire({
-                title: 'Preparing Report',
-                text: 'Please wait, this can take a few minutes for large datasets.',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
-
-            $.ajax({
-                url: $form.attr('action'),
-                type: 'POST',
-                data: $form.serialize(),
-                dataType: 'json'
-            }).done(function (res) {
-                if (!res || !res.job_id) {
-                    Swal.fire({ title: 'Error!', text: 'Unable to start report export.', icon: 'error' });
-                    $btn.prop('disabled', false);
-                    return;
-                }
-
-                startReportExportPolling(res.job_id, $btn);
-            }).fail(function (xhr) {
-                const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : 'Failed to start report export.';
-                Swal.fire({ title: 'Error!', text: msg, icon: 'error' });
-                $btn.prop('disabled', false);
-            });
-        });
-
-        function startReportExportPolling(jobId, $btn) {
-            if (reportExportPollTimer) {
-                clearInterval(reportExportPollTimer);
-            }
-
-            reportExportPollTimer = setInterval(function () {
-                $.get("{{ url('reports/export') }}/" + jobId + "/status")
-                    .done(function (res) {
-                        if (res.status === 'completed' && res.download_url) {
-                            clearInterval(reportExportPollTimer);
-                            reportExportPollTimer = null;
-                            Swal.close();
-                            $btn.prop('disabled', false);
-                            window.location.href = res.download_url;
-                            return;
-                        }
-
-                        if (res.status === 'failed') {
-                            clearInterval(reportExportPollTimer);
-                            reportExportPollTimer = null;
-                            Swal.fire({ title: 'Error!', text: res.error || 'Report export failed.', icon: 'error' });
-                            $btn.prop('disabled', false);
-                        }
-                    })
-                    .fail(function (xhr) {
-                        clearInterval(reportExportPollTimer);
-                        reportExportPollTimer = null;
-                        const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : 'Unable to check report export status.';
-                        Swal.fire({ title: 'Error!', text: msg, icon: 'error' });
-                        $btn.prop('disabled', false);
-                    });
-            }, 3000);
-        }
     });
 </script>
 @endsection

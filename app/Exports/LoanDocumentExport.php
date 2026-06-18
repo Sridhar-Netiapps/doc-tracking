@@ -4,9 +4,7 @@ namespace App\Exports;
 
 use App\Exports\Concerns\AppliesDocumentExportFilters;
 use App\Exports\Concerns\ForceNumericStringAsText;
-use App\Exports\Concerns\TracksQueuedDocumentExport;
 use App\Models\LoanDocument;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
@@ -15,18 +13,16 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use Log;
 
-class LoanDocumentExport extends DefaultValueBinder implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, WithCustomValueBinder, ShouldQueue
+class LoanDocumentExport extends DefaultValueBinder implements FromQuery, WithHeadings, WithMapping, WithCustomChunkSize, WithCustomValueBinder
 {
     use AppliesDocumentExportFilters;
-    use TracksQueuedDocumentExport;
     use ForceNumericStringAsText;
 
     protected array $filters;
 
-    public function __construct(array $filters = [], ?string $jobId = null, ?int $requestedBy = null)
+    public function __construct(array $filters = [])
     {
         $this->filters = $filters;
-        $this->bootQueueTracking($jobId, $requestedBy);
     }
 
     public function query()

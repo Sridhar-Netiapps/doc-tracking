@@ -115,8 +115,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         Route::post('reports', [DocumentController::class,'export'])->name('reports');
-        Route::get('reports/export/{jobId}/status', [DocumentController::class, 'checkReportExportStatus'])->whereUuid('jobId')->name('reports.export.status');
-        Route::get('reports/export/{jobId}/download', [DocumentController::class, 'downloadReportExport'])->middleware('signed')->whereUuid('jobId')->name('reports.export.download');
 
         Route::post('/get-tat-data', [HomeController::class, 'getTatData'])->name('tat.data');
         
