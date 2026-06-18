@@ -27,8 +27,8 @@ class UploadController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'doc_type' => 'nullable|string',
-            'excel_file' => 'required|file',
+            'doc_type' => 'nullable|string|in:loan,goldloan,aof,dtrf',
+            'excel_file' => 'required|file|max:102400',
         ]);
         if ($validator->fails()) {
             if($request->doc_type){
@@ -40,47 +40,61 @@ class UploadController extends Controller
         $data = $this->CheckFile($request->file('excel_file'));
         if($data->getData()->success){
             $file = $request->file('excel_file');
-            $collection = \Maatwebsite\Excel\Facades\Excel::toCollection(null, $file);
-            $rows = $collection->first();
-
-            if ($rows->count() <= 1) {
-                return back()->with('error', 'The uploaded file has no data rows beyond the header.');
-            }
-            
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = now()->format('YmdHis') . '_' . Str::random(8) . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
             $filePath = $file->storeAs('uploads/excel', $fileName, 'public');
-            if ($request->doc_type) {
-                $import = new ImportData($request->doc_type);
-            }else {
-                $import = new VendorDocumentImport();
-            }
-            
-            Excel::import($import, $file);
 
             $upload = Upload::create([
                 'file_name' => $fileName,
                 'file_path' => $filePath,
-                'created_by' => auth()->user()->id,
-                'total_rows' => $import->getTotal(),
-                'successful_rows' => $import->getSuccessCount(),
-                'failed_rows' => count($import->failures()),
+                'process' => $request->doc_type ? 'data_import' : 'rma_vendor_movement',
+                'created_by' => auth()->id(),
+                'total_rows' => 0,
+                'successful_rows' => 0,
+                'failed_rows' => 0,
+                'status' => 'processing',
+                'remarks' => 'Upload accepted. Import is processing in background.',
             ]);
-            // dd($import->failures());
-            if($import->failures()->isNotEmpty()){
-                session()->flash('upload_failures', $import->failures());
-                if($request->doc_type){
-                    return redirect()->route('accounts.data_import')->with('error', 'Upload Unsuccessfull.');
+
+            try {
+                ini_set('memory_limit', '1024M');
+                set_time_limit(0);
+
+                if ($request->doc_type) {
+                    $import = new ImportData($request->doc_type, (int) auth()->id());
                 } else {
-                    return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Upload Unsuccessfull.');
+                    $import = new VendorDocumentImport((int) auth()->id());
                 }
-            }
-            else{
+
+                Excel::import($import, $filePath, 'public');
+
+                $failures = $import->failures();
+                $upload->update([
+                    'total_rows' => $import->getTotal(),
+                    'successful_rows' => $import->getSuccessCount(),
+                    'failed_rows' => $failures->count(),
+                    'status' => $failures->isNotEmpty() ? 'completed_with_errors' : 'completed',
+                    'remarks' => $failures->isNotEmpty()
+                        ? 'Upload completed with some failures.'
+                        : 'Upload completed successfully.',
+                ]);
+            } catch (\Throwable $e) {
+                $upload->update([
+                    'status' => 'failed',
+                    'remarks' => $e->getMessage(),
+                ]);
+
                 if($request->doc_type){
-                    return redirect()->route('accounts.data_import')->with('success', 'Upload completed Successfully.');
-                } else {
-                    return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Upload completed Successfully.');
+                    return redirect()->route('accounts.data_import')->with('error', 'Unable to start upload processing. Please try again.');
                 }
+
+                return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('error', 'Unable to start upload processing. Please try again.');
             }
+
+            if($request->doc_type){
+                return redirect()->route('accounts.data_import')->with('success', 'Upload completed successfully.');
+            }
+
+            return redirect()->route('accounts.index',['type' => 'moved','dtype' => 'loan'])->with('success', 'Upload completed successfully.');
         }
         else{
             if($request->doc_type){
@@ -156,6 +170,10 @@ class UploadController extends Controller
         fclose($handle);
 
         $magicBytes = bin2hex($bytes);
+
+        if ($extension === 'csv') {
+            return response()->json(['success' => true]);
+        }
 
         if (!in_array($magicBytes, $fileSignatures)) {
             return response()->json(['error' => "File signature mismatch. Potentially malicious file."], 400);
